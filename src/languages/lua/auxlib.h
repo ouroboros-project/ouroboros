@@ -26,13 +26,13 @@ class AuxLib {
 
     const Constant loadfile(const char* filename) {
         return Constant(
-            std::tr1::bind(luaL_loadfile, L_, filename)
+            std::bind(luaL_loadfile, L_, filename)
         );
     }
 
     const Constant loadstring(const char* str) {
         return Constant(
-            std::tr1::bind(luaL_loadstring, L_, str)
+            std::bind(luaL_loadstring, L_, str)
         );
     }
 

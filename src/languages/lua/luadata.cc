@@ -134,7 +134,7 @@ VirtualData::Ptr LuaData::Execute(const vector<Ptr>& args) {
     std::for_each(
         args.begin(),
         args.end(),
-        std::tr1::mem_fn(&VirtualData::AddToBuffer)
+        std::mem_fn(&VirtualData::AddToBuffer)
     );
     return wrapper_->OperateBuffer(id_, DataGear::Execute);
 }

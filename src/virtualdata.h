@@ -20,12 +20,12 @@ class VirtualData;
 namespace std {
 
 template <>
-struct less<std::tr1::shared_ptr<ouroboros::VirtualData> > :
-binary_function <std::tr1::shared_ptr<ouroboros::VirtualData>,
-                 std::tr1::shared_ptr<ouroboros::VirtualData>,
+struct less<std::shared_ptr<ouroboros::VirtualData> > :
+binary_function <std::shared_ptr<ouroboros::VirtualData>,
+                 std::shared_ptr<ouroboros::VirtualData>,
                  bool> {
-    bool operator() (const std::tr1::shared_ptr<ouroboros::VirtualData>& x,
-                     const std::tr1::shared_ptr<ouroboros::VirtualData>& y)
+    bool operator() (const std::shared_ptr<ouroboros::VirtualData>& x,
+                     const std::shared_ptr<ouroboros::VirtualData>& y)
         const
         {return x.get()<y.get();}
 };
