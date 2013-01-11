@@ -1,12 +1,11 @@
 
-#ifndef UGDK_SCRIPT_VIRTUALPRIMITIVE_H_
-#define UGDK_SCRIPT_VIRTUALPRIMITIVE_H_
+#ifndef OUROBOROS_SCRIPT_VIRTUALPRIMITIVE_H_
+#define OUROBOROS_SCRIPT_VIRTUALPRIMITIVE_H_
 
-#include <ugdk/script/virtualdata.h>
-#include <ugdk/script/type.h>
+#include <virtualdata.h>
+#include <type.h>
 
-namespace ugdk {
-namespace script {
+namespace ouroboros {
 
 #define TYPENAME_MAP(definition) \
     definition(const char*, String); \
@@ -58,7 +57,6 @@ TYPENAME_MAP(DEFINE_SCRIPT_SIMPLE_PRIMITIVE_VALUE)
 
 #undef TYPENAME_MAP
 
-} /* namespace script */
-} /* namespace ugdk */
+} /* namespace ouroboros */
 
-#endif /* UGDK_SCRIPT_VIRTUALPRIMITIVE_H_ */
+#endif /* OUROBOROS_SCRIPT_VIRTUALPRIMITIVE_H_ */

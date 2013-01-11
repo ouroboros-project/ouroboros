@@ -1,9 +1,9 @@
 
-#ifndef UGDK_UTIL_UNCOPIABLE_H_
-#define UGDK_UTIL_UNCOPIABLE_H_
+#ifndef OUROBOROS_UTILS_UNCOPIABLE_H_
+#define OUROBOROS_UTILS_UNCOPIABLE_H_
 
-namespace ugdk {
-namespace util {
+namespace ouroboros {
+namespace utils {
 
 class Uncopyable {
   protected:
@@ -14,7 +14,7 @@ class Uncopyable {
     Uncopyable& operator=(const Uncopyable&);
 };
 
-} /* namespace util */
-} /* namespace ugdk */
+} /* namespace utils */
+} /* namespace ouroboros */
 
-#endif /* UGDK_UTIL_UNCOPIABLE_H_ */
+#endif /* OUROBOROS_UTILS_UNCOPIABLE_H_ */

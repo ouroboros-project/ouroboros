@@ -1,30 +1,26 @@
 #include <Python.h>
 
-#include <ugdk/script/languages/python/pythonwrapper.h>
+#include <languages/python/pythonwrapper.h>
 
 #include <string>
 #include <cstdlib>
 
-#include <ugdk/portable/tr1.h>
-#include FROM_TR1(memory)
+#include <memory>
 
-#include <ugdk/config/config.h>
-#include <ugdk/script/languages/python/pythondata.h>
-#include <ugdk/script/virtualobj.h>
-#include <ugdk/script/scriptmanager.h>
-#include <ugdk/script/languages/python/swigpyrun.h>
-#include <ugdk/script/languages/python/modules.h>
-#include <ugdk/util/pathmanager.h>   // Two includes just so that we can use the engine's PathManager in a
-#include <ugdk/base/engine.h>        // single line of code here. Not nice. =(
+#include <config.h>
+#include <languages/python/pythondata.h>
+#include <virtualobj.h>
+#include <scriptmanager.h>
+#include <languages/python/swigpyrun.h>
+#include <languages/python/modules.h>
 
-namespace ugdk {
-namespace script {
+namespace ouroboros {
 namespace python {
 
-using std::tr1::shared_ptr;
+using std::shared_ptr;
 
 VirtualData::Ptr PythonWrapper::NewData() {
-    VirtualData::Ptr vdata( new PythonData(this, NULL, false) ); 
+    VirtualData::Ptr vdata( new PythonData(this, nullptr, false) ); 
     return vdata;
 }
 
@@ -33,10 +29,9 @@ void PythonWrapper::ExecuteCode(const std::string& code) {
 }
 
 VirtualObj PythonWrapper::LoadModule(const std::string& name) {
-    std::string dotted_name =
-        SCRIPT_MANAGER()->ConvertPathToDottedNotation(name);
+    std::string dotted_name = SCRIPT_MANAGER()->ConvertPathToDottedNotation(name);
     PyObject* module = PyImport_ImportModule(dotted_name.c_str()); //new ref
-    if (module == NULL) {
+    if (module == nullptr) {
         fprintf(stderr, "[Python] Error loading module: '%s' (python exception details below)\n", dotted_name.c_str());
         PrintPythonExceptionDetails();
         return VirtualObj();
@@ -56,15 +51,15 @@ bool PythonWrapper::Initialize() {
     Py_Initialize();
 
     PyObject *path = PySys_GetObject("path");
-    PyList_Append(path, PyString_FromString(PATH_MANAGER()->ResolvePath("scripts/").c_str()));
+    PyList_Append(path, PyString_FromString( SCRIPT_MANAGER()->scripts_path().c_str() ));
 
-#ifdef UGDK_INSTALL_LOCATION
-    PyList_Append(path, PyString_FromString(UGDK_INSTALL_LOCATION "/" UGDK_BIGVERSION "/python"));
+#ifdef OUROBOROS_INSTALL_LOCATION
+    PyList_Append(path, PyString_FromString(OUROBOROS_INSTALL_LOCATION "/" OUROBOROS_BIGVERSION "/python"));
 #endif
-    const char* ugdk_dir = getenv("UGDK_DIR");
+    const char* ugdk_dir = getenv("OUROBOROS_DIR");
     if(ugdk_dir) {
         std::string fullpath = ugdk_dir;
-        fullpath += "/" UGDK_BIGVERSION "/python";
+        fullpath += "/" OUROBOROS_BIGVERSION "/python";
         PyList_Append(path, PyString_FromString(fullpath.c_str()));
     }
 
@@ -83,7 +78,7 @@ void PythonWrapper::Finalize() {
 }
 
 void PythonWrapper::PrintPythonExceptionDetails() {
-    if(PyErr_Occurred() == NULL) {
+    if(PyErr_Occurred() == nullptr) {
         puts("No Exception.");
         return;
     }
@@ -92,15 +87,15 @@ void PythonWrapper::PrintPythonExceptionDetails() {
     PyErr_NormalizeException(&exc_typ,&exc_val,&exc_tb);
 
     temp = PyObject_GetAttrString(exc_typ, "__name__");
-    if (temp != NULL) {
+    if (temp != nullptr) {
         fprintf(stderr, "%s: ", PyString_AsString(temp));
         Py_DECREF(temp);
     }
     Py_DECREF(exc_typ);
 
-    if(exc_val != NULL) {
+    if(exc_val != nullptr) {
         temp = PyObject_Str(exc_val);
-        if (temp != NULL) {
+        if (temp != nullptr) {
             fprintf(stderr, "%s", PyString_AsString(temp));
             Py_DECREF(temp);
         }
@@ -108,13 +103,13 @@ void PythonWrapper::PrintPythonExceptionDetails() {
     }
 
     fprintf(stderr, "\n");
-    if(exc_tb == NULL) return;
+    if(exc_tb == nullptr) return;
     
     PyObject *pName = PyString_FromString("traceback");
     PyObject *pModule = PyImport_Import(pName);
     Py_DECREF(pName);
     
-    if(pModule == NULL) return;
+    if(pModule == nullptr) return;
 
     PyObject *pFunc = PyObject_GetAttrString(pModule, "format_tb");
     
@@ -123,7 +118,7 @@ void PythonWrapper::PrintPythonExceptionDetails() {
         PyTuple_SetItem(pArgs, 0, exc_tb);
 
         PyObject *pValue = PyObject_CallObject(pFunc, pArgs);
-        if (pValue != NULL) {
+        if (pValue != nullptr) {
             Py_ssize_t len = PyList_Size(pValue);
             PyObject *t;
             for (Py_ssize_t i = 0; i < len; i++) {
@@ -144,6 +139,5 @@ void PythonWrapper::PrintPythonExceptionDetails() {
     Py_DECREF(pModule);
 }
 
-}
 }
 }

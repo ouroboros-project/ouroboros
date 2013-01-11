@@ -1,10 +1,9 @@
 
-#include <ugdk/script/virtualobj.h>
+#include <virtualobj.h>
 
 #include <algorithm>
 
-namespace ugdk {
-namespace script {
+namespace ouroboros {
 
 using std::vector;
 using std::list;
@@ -33,5 +32,4 @@ VirtualObj VirtualObj::Create (const char* obj, LangWrapper* wrapper) {
 }
 
 
-} /* namespace script */
-} /* namespace ugdk */
+} /* namespace ouroboros */

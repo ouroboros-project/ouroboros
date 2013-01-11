@@ -1,18 +1,17 @@
 
-#ifndef UGDK_SCRIPT_LANGWRAPPER_H_
-#define UGDK_SCRIPT_LANGWRAPPER_H_
+#ifndef OUROBOROS_SCRIPT_LANGWRAPPER_H_
+#define OUROBOROS_SCRIPT_LANGWRAPPER_H_
 
 #include <string>
 
-#include <ugdk/script.h>
+#include <script.h>
 
-#include <ugdk/script/defs.h>
-#include <ugdk/script/type.h>
-#include <ugdk/script/virtualdata.h>
-#include <ugdk/script/module.h>
+#include <defs.h>
+#include <type.h>
+#include <virtualdata.h>
+#include <module.h>
 
-namespace ugdk {
-namespace script {
+namespace ouroboros {
 
 class LangWrapper {
 
@@ -111,7 +110,6 @@ class InheritableLangWrapper : public LangWrapper {
 
 };
 
-} /* namespace script */
-} /* namespace ugdk */
+} /* namespace ouroboros */
 
-#endif /* UGDK_SCRIPT_LANGWRAPPER_H_ */
+#endif /* OUROBOROS_SCRIPT_LANGWRAPPER_H_ */

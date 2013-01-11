@@ -1,6 +1,6 @@
 
-#ifndef UGDK_SCRIPT_LUA_DEFS_H_
-#define UGDK_SCRIPT_LUA_DEFS_H_
+#ifndef OUROBOROS_SCRIPT_LUA_DEFS_H_
+#define OUROBOROS_SCRIPT_LUA_DEFS_H_
 
 #ifndef lua_h
 extern "C" {
@@ -13,8 +13,7 @@ typedef int (*lua_CFunction)(lua_State*);
 #include <list>
 #include <map>
 
-namespace ugdk {
-namespace script {
+namespace ouroboros {
 namespace lua {
 
 typedef int                     DataID;
@@ -34,12 +33,11 @@ typedef lua_CFunction inittype;
 
 #define LUA_INIT_FUNCTION_NAME(name) luaopen_##name
 #define LUA_INIT_FUNCTION_SIGNATURE(name) int LUA_INIT_FUNCTION_NAME(name)(lua_State*)
-#define LUA_MODULE_NAME(name) ugdk::script::lua::NameConversion(#name)
-#define LUA_NAMESPACE ::ugdk::script::lua
+#define LUA_MODULE_NAME(name) ouroboros::lua::NameConversion(#name)
+#define LUA_NAMESPACE ::ouroboros::lua
 
 } /* namespace lua */
-} /* namespace script */
-} /* namespace ugdk */
+} /* namespace ouroboros */
 
 
-#endif /* UGDK_SCRIPT_LUA_DEFS_H_ */
+#endif /* OUROBOROS_SCRIPT_LUA_DEFS_H_ */

@@ -1,7 +1,7 @@
 /// Here are the common definitions of the script system.
 
-#ifndef UGDK_SCRIPT_DEFS_H_
-#define UGDK_SCRIPT_DEFS_H_
+#ifndef OUROBOROS_SCRIPT_DEFS_H_
+#define OUROBOROS_SCRIPT_DEFS_H_
 
 /// The ID, if defined, of the script language called 'name'.
 #define LANG(name) name##Lang
@@ -18,9 +18,7 @@ struct swig_type_info;
 }
 #endif
 
-namespace ugdk {
-
-namespace script {
+namespace ouroboros {
 
 /// Type used for script languages' IDs.
 typedef size_t LangID;
@@ -29,8 +27,7 @@ typedef size_t LangID;
 DEFINE_LANG_ID(Lua,     0);
 DEFINE_LANG_ID(Python,  1);
 
-} /* namespace script */
 
-} /* namespace ugdk */
+} /* namespace ouroboros */
 
-#endif /* UGDK_SCRIPT_DEFS_H_ */
+#endif /* OUROBOROS_SCRIPT_DEFS_H_ */

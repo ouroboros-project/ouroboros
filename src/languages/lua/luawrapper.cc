@@ -1,20 +1,17 @@
 
 
-#include <ugdk/script/languages/lua/luawrapper.h>
+#include <languages/lua/luawrapper.h>
 
-#include <ugdk/script/virtualdata.h>
-#include <ugdk/script/virtualobj.h>
-#include <ugdk/script/languages/lua/luadata.h>
-#include <ugdk/script/languages/lua/bootstrapgear.h>
-#include <ugdk/script/languages/lua/datagear.h>
-#include <ugdk/script/languages/lua/modules.h>
+#include <virtualdata.h>
+#include <virtualobj.h>
+#include <languages/lua/luadata.h>
+#include <languages/lua/bootstrapgear.h>
+#include <languages/lua/datagear.h>
+#include <languages/lua/modules.h>
 
-#include <ugdk/script/scriptmanager.h>
-#include <ugdk/util/pathmanager.h>
-#include <ugdk/base/engine.h>
+#include <scriptmanager.h>
 
-namespace ugdk {
-namespace script {
+namespace ouroboros {
 namespace lua {
 
 using std::string;
@@ -39,7 +36,7 @@ bool LuaWrapper::Initialize() {
 
 void LuaWrapper::Finalize() {
     delete data_gear_;
-    data_gear_ = NULL;
+    data_gear_ = nullptr;
 }
 
 VirtualData::Ptr LuaWrapper::NewData() {
@@ -51,11 +48,7 @@ void LuaWrapper::ExecuteCode(const std::string& code) {
 }
 
 VirtualObj LuaWrapper::LoadModule(const string& name) {
-    string fullpath = PATH_MANAGER()->ResolvePath(
-        "scripts/" +
-        SCRIPT_MANAGER()->ConvertDottedNotationToPath(name) +
-        "." + file_extension()
-    );
+	string fullpath = SCRIPT_MANAGER()->scripts_path() + SCRIPT_MANAGER()->ConvertDottedNotationToPath(name) + "." + file_extension();
     return VirtualObj(LoadChunk(fullpath, DataGear::DoFile));
 }
 
@@ -125,5 +118,4 @@ std::string NameConversion(const std::string& name) {
 }
 
 } /* namespace lua */
-} /* namespace script */
-} /* namespace ugdk */
+} /* namespace ouroboros */

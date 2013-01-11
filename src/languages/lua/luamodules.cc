@@ -1,13 +1,12 @@
-#include <ugdk/script/languages/lua/modules.h>
+#include <languages/lua/modules.h>
 
 #include <vector>
 #include <cstdio>
 
-#include <ugdk/script/module.h>
-#include <ugdk/script/languages/lua/luawrapper.h>
+#include <module.h>
+#include <languages/lua/luawrapper.h>
 
-namespace ugdk {
-namespace script {
+namespace ouroboros {
 namespace lua {
 
 typedef std::vector< Module<inittype> > LuaModuleList;
@@ -35,5 +34,4 @@ void RegisterModules(LuaWrapper* wrapper) {
 }
 
 } /* namespace lua */
-} /* namespace script */
-} /* namespace ugdk */
+} /* namespace ouroboros */

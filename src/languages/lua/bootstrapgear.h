@@ -1,23 +1,22 @@
 
-#ifndef UGDK_SCRIPT_LUA_BOOTSTRAPGEAR_H_
-#define UGDK_SCRIPT_LUA_BOOTSTRAPGEAR_H_
+#ifndef OUROBOROS_SCRIPT_LUA_BOOTSTRAPGEAR_H_
+#define OUROBOROS_SCRIPT_LUA_BOOTSTRAPGEAR_H_
 
 #include <vector>
 
-#include <ugdk/script/languages/lua/header.h>
-#include <ugdk/script/languages/lua/basegear.h>
-#include <ugdk/script/languages/lua/state.h>
+#include <languages/lua/header.h>
+#include <languages/lua/basegear.h>
+#include <languages/lua/state.h>
 
-#include <ugdk/script/langwrapper.h>
-#include <ugdk/script/module.h>
+#include <langwrapper.h>
+#include <module.h>
 
-namespace ugdk {
-namespace script {
+namespace ouroboros {
 namespace lua {
 
 class DataGear;
 
-typedef ugdk::script::Module<lua_CFunction> LuaModule;
+typedef ouroboros::Module<lua_CFunction> LuaModule;
 typedef const std::vector<LuaModule> ModuleList;
 
 class BootstrapGear : public BaseGear {
@@ -25,7 +24,7 @@ class BootstrapGear : public BaseGear {
   public:
 
     BootstrapGear() :
-        BaseGear(NULL) {}
+        BaseGear(nullptr) {}
 
     ~BootstrapGear() {}
 
@@ -46,7 +45,6 @@ class BootstrapGear : public BaseGear {
 };
 
 } /* namespace lua */
-} /* namespace script */
-} /* namespace ugdk */
+} /* namespace ouroboros */
 
-#endif /* UGDK_SCRIPT_LUA_BOOTSTRAPGEAR_H_ */
+#endif /* OUROBOROS_SCRIPT_LUA_BOOTSTRAPGEAR_H_ */

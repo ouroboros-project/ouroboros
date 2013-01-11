@@ -1,12 +1,12 @@
 
-#ifndef UGDK_SCRIPT_VIRTUALOBJ_H_
-#define UGDK_SCRIPT_VIRTUALOBJ_H_
+#ifndef OUROBOROS_SCRIPT_VIRTUALOBJ_H_
+#define OUROBOROS_SCRIPT_VIRTUALOBJ_H_
 
-#include <ugdk/script/virtualdata.h>
-#include <ugdk/script/type.h>
-#include <ugdk/script/langwrapper.h>
-#include <ugdk/script/virtualprimitive.h>
-#include <ugdk/util/uncopyable.h>
+#include <virtualdata.h>
+#include <type.h>
+#include <langwrapper.h>
+#include <virtualprimitive.h>
+#include <utils/uncopyable.h>
 
 #include <list>
 #include <vector>
@@ -15,8 +15,7 @@
 
 #include <cstdio>
 
-namespace ugdk {
-namespace script {
+namespace ouroboros {
 
 class VirtualObj;
 class Bind;
@@ -231,7 +230,6 @@ inline Bind VirtualObj::operator|(const std::string& method_name) {
     return result;
 }
 
-} /* namespace script */
-} /* namespace ugdk */
+} /* namespace ouroboros */
 
-#endif /* UGDK_SCRIPT_VIRTUALOBJ_H_ */
+#endif /* OUROBOROS_SCRIPT_VIRTUALOBJ_H_ */

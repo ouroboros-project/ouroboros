@@ -1,22 +1,18 @@
 
-#ifndef UGDK_SCRIPT_LUA_STATE_H_
-#define UGDK_SCRIPT_LUA_STATE_H_
-
-//#include <ugdk/portable/tr1.h>
+#ifndef OUROBOROS_SCRIPT_LUA_STATE_H_
+#define OUROBOROS_SCRIPT_LUA_STATE_H_
 
 #include <cstdlib>
 #include <cstdio>
 
-#include <ugdk/portable/tr1.h>
-#include FROM_TR1(functional)
+#include <functional>
 
-#include <ugdk/script/languages/lua/header.h>
-#include <ugdk/script/languages/lua/defs.h>
-#include <ugdk/script/languages/lua/primitive.h>
-#include <ugdk/script/languages/lua/auxlib.h>
+#include <languages/lua/header.h>
+#include <languages/lua/defs.h>
+#include <languages/lua/primitive.h>
+#include <languages/lua/auxlib.h>
 
-namespace ugdk {
-namespace script {
+namespace ouroboros {
 namespace lua {
 
 class State {
@@ -31,7 +27,7 @@ class State {
 
     operator lua_State*() const { return L_; }
 
-    void close() { lua_close(L_); L_ = NULL; }
+    void close() { lua_close(L_); L_ = nullptr; }
 
     AuxLib& aux() { return auxlib_; }
 
@@ -113,8 +109,7 @@ class State {
 };
 
 } /* namespace lua */
-} /* namespace script */
-} /* namespace ugdk */
+} /* namespace ouroboros */
 
-#endif /* UGDK_SCRIPT_LUA_STATE_H_ */
+#endif /* OUROBOROS_SCRIPT_LUA_STATE_H_ */
 

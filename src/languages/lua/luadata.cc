@@ -1,13 +1,11 @@
 
 #include <algorithm>
-#include <ugdk/portable/tr1.h>
-#include FROM_TR1(functional)
+#include <functional>
 
-#include <ugdk/script/languages/lua/luadata.h>
-#include <ugdk/script/languages/lua/datagear.h>
+#include <languages/lua/luadata.h>
+#include <languages/lua/datagear.h>
 
-namespace ugdk {
-namespace script {
+namespace ouroboros {
 namespace lua {
 
 using std::vector;
@@ -26,7 +24,7 @@ void* LuaData::Unwrap(const VirtualType& type, bool disown) const {
         .Arg(id_)
         .Arg(type.FromLang(LANG(Lua)))
         .Arg(static_cast<int>(disown))
-        .GetResult<UData>(NULL);
+        .GetResult<UData>(nullptr);
 }
 
 template <class T>
@@ -38,7 +36,7 @@ T UnwrapPrimitive(LuaWrapper* wrapper, const DataID id, const T default_value) {
 }
 
 const char* LuaData::UnwrapString() const {
-    return UnwrapPrimitive<const char*>(wrapper_, id_, NULL);
+    return UnwrapPrimitive<const char*>(wrapper_, id_, nullptr);
 }
 
 bool LuaData::UnwrapBoolean() const {
@@ -166,5 +164,4 @@ void LuaData::AddToBuffer() {
 }
 
 } /* namespace lua */
-} /* namespace script */
-} /* namespace ugdk */
+} /* namespace ouroboros */

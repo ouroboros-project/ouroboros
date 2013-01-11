@@ -1,21 +1,20 @@
 
-#ifndef UGDK_SCRIPT_LUA_LUAWRAPPER_H_
-#define UGDK_SCRIPT_LUA_LUAWRAPPER_H_
+#ifndef OUROBOROS_SCRIPT_LUA_LUAWRAPPER_H_
+#define OUROBOROS_SCRIPT_LUA_LUAWRAPPER_H_
 
 #include <string>
 #include <list>
 #include <vector>
 
-#include <ugdk/script/languages/lua/defs.h>
-#include <ugdk/script/langwrapper.h>
+#include <languages/lua/defs.h>
+#include <langwrapper.h>
 
-namespace ugdk {
-namespace script {
+namespace ouroboros {
 namespace lua {
 
 class DataGear;
 class LuaData;
-typedef ugdk::script::InheritableLangWrapper<lua_CFunction> LuaWrapperBase;
+typedef ouroboros::InheritableLangWrapper<lua_CFunction> LuaWrapperBase;
 
 class LuaWrapper: public LuaWrapperBase {
 
@@ -23,7 +22,7 @@ class LuaWrapper: public LuaWrapperBase {
 
     LuaWrapper() :
         LuaWrapperBase("lua",LANG(Lua), "Lua"),
-        data_gear_(NULL) {}
+        data_gear_(nullptr) {}
     ~LuaWrapper() {
         if (data_gear_) Finalize();
     }
@@ -80,7 +79,6 @@ class LuaWrapper: public LuaWrapperBase {
 std::string NameConversion(const std::string& name);
 
 } /* namespace lua */
-} /* namespace script */
-} /* namespace ugdk */
+} /* namespace ouroboros */
 
-#endif /* UGDK_SCRIPT_LUA_LUAWRAPPER_H_ */
+#endif /* OUROBOROS_SCRIPT_LUA_LUAWRAPPER_H_ */

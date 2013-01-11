@@ -1,15 +1,14 @@
 
-#ifndef UGDK_SCRIPT_LUA_LUADATA_H_
-#define UGDK_SCRIPT_LUA_LUADATA_H_
+#ifndef OUROBOROS_SCRIPT_LUA_LUADATA_H_
+#define OUROBOROS_SCRIPT_LUA_LUADATA_H_
 
-#include <ugdk/script/type.h>
-#include <ugdk/script/virtualdata.h>
+#include <type.h>
+#include <virtualdata.h>
 
-#include <ugdk/script/languages/lua/defs.h>
-#include <ugdk/script/languages/lua/luawrapper.h>
+#include <languages/lua/defs.h>
+#include <languages/lua/luawrapper.h>
 
-namespace ugdk {
-namespace script {
+namespace ouroboros {
 namespace lua {
 
 class LuaData : public VirtualData {
@@ -69,7 +68,6 @@ class LuaData : public VirtualData {
 };
 
 } /* namespace lua */
-} /* namespace script */
-} /* namespace ugdk */
+} /* namespace ouroboros */
 
-#endif /* UGDK_SCRIPT_LUA_LUADATA_H_ */
+#endif /* OUROBOROS_SCRIPT_LUA_LUADATA_H_ */

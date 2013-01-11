@@ -1,20 +1,18 @@
 
-#ifndef UGDK_SCRIPT_VIRTUALTYPE_H_
-#define UGDK_SCRIPT_VIRTUALTYPE_H_
+#ifndef OUROBOROS_SCRIPT_VIRTUALTYPE_H_
+#define OUROBOROS_SCRIPT_VIRTUALTYPE_H_
 
 #include <vector>
 
-#include <ugdk/script/defs.h>
+#include <defs.h>
 
-namespace ugdk {
-
-namespace script {
+namespace ouroboros {
 
 class VirtualType {
 
   public:
 
-    VirtualType() : types_(10, (struct swig_type_info*)NULL) {}
+    VirtualType() : types_(10, (struct swig_type_info*)nullptr) {}
     ~VirtualType() {}
 
     struct swig_type_info* FromLang(LangID id) const {
@@ -54,9 +52,7 @@ class TypeRegistry {
 template <class T>
 VirtualType TypeRegistry<T>::type_;
 
-} /* namespace script */
-
-} /* namespace ugdk */
+} /* namespace ouroboros */
 
 template <class T>
 static void RegisterType(T* tp) {
@@ -64,6 +60,6 @@ static void RegisterType(T* tp) {
 }
 
 template <typename T>
-T* GetNull () { return NULL; }
+T* GetNull () { return nullptr; }
 
-#endif /* UGDK_SCRIPT_VIRTUALTYPE_H_ */
+#endif /* OUROBOROS_SCRIPT_VIRTUALTYPE_H_ */

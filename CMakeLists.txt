@@ -18,7 +18,7 @@ message ("=== Ouroboros Project version ${FRAMEWORK_VERSION} ===")
 # make it prominent in the GUI.
 option(BUILD_SHARED_LIBS "Build shared libraries (DLLs)." OFF)
 
-option(OUROBOROS_BUILD_TESTS "Set to ON to enable building tests." ON)
+option(OUROBOROS_BUILD_TESTS "Set to ON to enable building tests." OFF)
 option(OUROBOROS_CREATE_BINDINGS "Set to ON to generate bindings for supported script languages." ON)
 option(OUROBOROS_LUA_BINDINGS "Set to ON to enable Lua as one of the languages to create bindings." ON)
 option(OUROBOROS_PYTHON_BINDINGS "Set to ON to enable Python as one of the languages to create bindings." ON)
@@ -51,6 +51,10 @@ CONFIGURE_FILE(
 include (${SRC_DIR}/src_list.cmake)
 include (${SRC_DIR}/lua_src_list.cmake)
 include (${SRC_DIR}/py_src_list.cmake)
+SET(OUROBOROS_MODULE_SRC 
+
+)
+
 
 # LDFLAGS: flags que voce queira enviar ao ligador
 set (LDFLAGS "" CACHE STRING "flags enviadas ao linker")
@@ -61,7 +65,7 @@ endif ()
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG")
 if (UNIX OR MINGW)
     # se for o g++ para *nix ou o MinGW para Windows:
-    add_definitions(-Wall -ansi -U_FORTIFY_SOURCE -msse2)
+    add_definitions(-Wall -ansi -U_FORTIFY_SOURCE -msse2 -std=gnu++11)
 elseif (MSVC) 
     add_definitions(/D_CRT_SECURE_NO_WARNINGS /D_VARIADIC_MAX=10 /W4 /wd4100 /wd4127 /wd4201 /wd4211 /wd4250 /wd4706 /fp:fast /MP)
 endif ()
@@ -170,8 +174,8 @@ endif (UNIX AND PYTHONLIBS_FOUND)
 set(OUROBOROS_EXTERNAL_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/src;${SDL_INCLUDE_DIR};${SDLTTF_INCLUDE_DIR} CACHE STRING "OUROBOROS include directories" FORCE)
 
 CONFIGURE_FILE(
-    "${SRC_DIR}/ouroboros/config.h.in"
-    "${SRC_DIR}/ouroboros/config.h"
+    "${SRC_DIR}/config.h.in"
+    "${SRC_DIR}/config.h"
 )
 
 install(TARGETS libouroboros

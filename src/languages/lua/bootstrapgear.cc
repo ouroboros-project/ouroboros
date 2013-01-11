@@ -1,12 +1,11 @@
 
 #include <cstdio>
 
-#include <ugdk/script/languages/lua/bootstrapgear.h>
-#include <ugdk/script/languages/lua/auxlib.h>
-#include <ugdk/script/languages/lua/datagear.h>
+#include <languages/lua/bootstrapgear.h>
+#include <languages/lua/auxlib.h>
+#include <languages/lua/datagear.h>
 
-namespace ugdk {
-namespace script {
+namespace ouroboros {
 namespace lua {
 
 /// Public:
@@ -23,9 +22,9 @@ bool BootstrapGear::Initialize(const ModuleList& modules) {
 DataGear* BootstrapGear::NextGear() {
     // too small to call in protected mode.
     L_.newtable();
-    L_.setfield(Constant::REGISTRYINDEX(), "UGDK_LUA_DATATABLE");
+    L_.setfield(Constant::REGISTRYINDEX(), "OUROBOROS_LUA_DATATABLE");
     //int datatable_id = L_.aux().ref(Constant::REGISTRYINDEX());
-    //return datatable_id == LUA_NOREF ? NULL : new DataGear(L_, datatable_id);
+    //return datatable_id == LUA_NOREF ? nullptr : new DataGear(L_, datatable_id);
     return new DataGear(L_);
 }
 
@@ -69,5 +68,4 @@ void BootstrapGear::PreloadModules (const ModuleList& modules) {
 }
 
 } /* namespace lua */
-} /* namespace script */
-} /* namespace ugdk */
+} /* namespace ouroboros */

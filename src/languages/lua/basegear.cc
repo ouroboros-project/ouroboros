@@ -1,13 +1,12 @@
 
 #include <cstdio>
 
-#include <ugdk/script/languages/lua/basegear.h>
-#include <ugdk/script/languages/lua/auxlib.h>
+#include <languages/lua/basegear.h>
+#include <languages/lua/auxlib.h>
 
-#include <ugdk/script/languages/lua/native/traceback.h>
+#include <languages/lua/native/traceback.h>
 
-namespace ugdk {
-namespace script {
+namespace ouroboros {
 namespace lua {
 
 static int traceback (lua_State *L);
@@ -17,7 +16,7 @@ static int traceback (lua_State *L);
 const Constant BaseGear::Report (const Constant& c) {
   if (c != Constant::OK() && !L_.isnil(-1)) {
     const char *msg = L_.tostring(-1);
-    if (msg == NULL) msg = "(error object is not a string)";
+    if (msg == nullptr) msg = "(error object is not a string)";
     LuaMsg("%s\n", msg);
     L_.pop(1);
     /* force a complete garbage collection in case of errors */
@@ -53,5 +52,4 @@ static int traceback (lua_State *L) {
 }
 
 } /* namespace lua */
-} /* namespace script */
-} /* namespace ugdk */
+} /* namespace ouroboros */

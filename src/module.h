@@ -1,10 +1,9 @@
-#ifndef UGDK_SCRIPT_MODULE_H_
-#define UGDK_SCRIPT_MODULE_H_
+#ifndef OUROBOROS_SCRIPT_MODULE_H_
+#define OUROBOROS_SCRIPT_MODULE_H_
 
 #include <string>
 
-namespace ugdk {
-namespace script {
+namespace ouroboros {
 
 template <class loader_t>
 class Module {
@@ -19,7 +18,6 @@ class Module {
     loader_t        init_func_;
 };
 
-} /* namespace script */
-} /* namespace ugdk */
+} /* namespace ouroboros */
 
-#endif /* UGDK_SCRIPT_MODULE_H_ */
+#endif /* OUROBOROS_SCRIPT_MODULE_H_ */

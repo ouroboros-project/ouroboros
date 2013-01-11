@@ -1,13 +1,12 @@
-#include <ugdk/script/languages/python/modules.h>
+#include <languages/python/modules.h>
 
 #include <vector>
 #include <cstdio>
 
-#include <ugdk/script/module.h>
-#include <ugdk/script/languages/python/pythonwrapper.h>
+#include <module.h>
+#include <languages/python/pythonwrapper.h>
 
-namespace ugdk {
-namespace script {
+namespace ouroboros {
 namespace python {
 
 typedef std::vector< Module<inittype> > PythonModuleList;
@@ -35,5 +34,4 @@ void RegisterModules(PythonWrapper* wrapper) {
 }
 
 } /* namespace python */
-} /* namespace script */
-} /* namespace ugdk */
+} /* namespace ouroboros */

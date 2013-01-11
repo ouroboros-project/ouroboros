@@ -1,27 +1,26 @@
-#include <ugdk/script/scriptmanager.h>
+#include <scriptmanager.h>
 
 #include <cstdio>
 #include <algorithm>
 
-#include <ugdk/base/engine.h>
-#include <ugdk/util/pathmanager.h>
-#include <ugdk/script/langwrapper.h>
-#include <ugdk/script/virtualobj.h>
+#include <langwrapper.h>
+#include <virtualobj.h>
 
-namespace ugdk {
-namespace script {
+namespace ouroboros {
 
 using std::string;
 
-ScriptManager* ScriptManager::ref_ = NULL;
+ScriptManager* ScriptManager::ref_ = nullptr;
 
 ScriptManager::ScriptManager() {
     // TODO Auto-generated constructor stub
 
 }
 
-bool ScriptManager::Initialize() {
+bool ScriptManager::Initialize(const std::string& scripts_path) {
     bool is_ok = true;
+
+	scripts_path_ = scripts_path;
 
     WrapperMap::iterator it = wrappers_.begin();
     while (it != wrappers_.end()) {
@@ -50,7 +49,7 @@ void ScriptManager::Register(LangWrapper* wrapper) {
 }
 
 LangWrapper* ScriptManager::GetWrapper(const string& name) {
-    if (!wrappers_.count(name))	return NULL;
+    if (!wrappers_.count(name))	return nullptr;
     return wrappers_[name];
 }
 
@@ -62,9 +61,7 @@ void ScriptManager::ExecuteCode(const string& language, const string& code) {
 
 
 VirtualObj ScriptManager::LoadModule(const string& script) {
-    string filepath = PATH_MANAGER()->ResolvePath(
-        "scripts/" + ConvertDottedNotationToPath(script)
-    );
+    string filepath = scripts_path_ + ConvertDottedNotationToPath(script);
 
     WrapperMap::iterator it = wrappers_.begin();
     while (it != wrappers_.end()) {
@@ -101,5 +98,4 @@ std::string ScriptManager::ConvertDottedNotationToPath(const std::string& dotted
     return path;
 }
 
-}
 }

@@ -2,13 +2,12 @@
 #include <cstdio>
 #include <string>
 
-#include <ugdk/script/languages/lua/datagear.h>
-#include <ugdk/script/languages/lua/auxlib.h>
+#include <languages/lua/datagear.h>
+#include <languages/lua/auxlib.h>
 
-#include <ugdk/script/languages/lua/swigluarun.h>
+#include <languages/lua/swigluarun.h>
 
-namespace ugdk {
-namespace script {
+namespace ouroboros {
 namespace lua {
 
 /// Public:
@@ -98,7 +97,7 @@ int DataGear::UnwrapData(lua_State* L) {
     bool disown = (L_.aux().checkintteger(4) != 0);
     L_.settop(0);
 
-    void *data = NULL; // dummy
+    void *data = nullptr; // dummy
 
     if (dtgear.GetData(id) &&
         SWIG_IsOK(SWIG_ConvertPtr(L, -1, &data, type, disown ? SWIG_POINTER_DISOWN : 0))) {
@@ -414,7 +413,7 @@ bool DataGear::HasValue (DataID id) {
 /// Private:
 
 bool DataGear::PushDataTable() {
-    L_.getfield(Constant::REGISTRYINDEX(), "UGDK_LUA_DATATABLE");
+    L_.getfield(Constant::REGISTRYINDEX(), "OUROBOROS_LUA_DATATABLE");
     if (!L_.istable(-1)) {
         L_.pop(1);
         return false;
@@ -423,5 +422,4 @@ bool DataGear::PushDataTable() {
 }
 
 } /* namespace lua */
-} /* namespace script */
-} /* namespace ugdk */
+} /* namespace ouroboros */

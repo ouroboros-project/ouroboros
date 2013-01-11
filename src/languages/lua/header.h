@@ -1,6 +1,6 @@
 
-#ifndef UGDK_SCRIPT_LUA_HEADER_H_
-#define UGDK_SCRIPT_LUA_HEADER_H_
+#ifndef OUROBOROS_SCRIPT_LUA_HEADER_H_
+#define OUROBOROS_SCRIPT_LUA_HEADER_H_
 
 extern "C" {
 
@@ -14,8 +14,7 @@ extern "C" {
 
 }
 
-namespace ugdk {
-namespace script {
+namespace ouroboros {
 namespace lua {
 
 #define DECLARE_LUA_CONSTANT(category,name) \
@@ -83,8 +82,7 @@ inline void LuaMsg (const char *format, ...) {
 }
 
 } /* namespace lua */
-} /* namespace script */
-} /* namespace ugdk */
+} /* namespace ouroboros */
 
 
-#endif /* UGDK_SCRIPT_LUA_HEADER_H_ */
+#endif /* OUROBOROS_SCRIPT_LUA_HEADER_H_ */

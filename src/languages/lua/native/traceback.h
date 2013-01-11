@@ -1,12 +1,12 @@
 
-#ifndef UGDK_SCRIPT_LUA_NATIVE_TRACEBACK_H_
-#define UGDK_SCRIPT_LUA_NATIVE_TRACEBACK_H_
+#ifndef OUROBOROS_SCRIPT_LUA_NATIVE_TRACEBACK_H_
+#define OUROBOROS_SCRIPT_LUA_NATIVE_TRACEBACK_H_
 
-#include <ugdk/script/languages/lua/header.h>
+#include <languages/lua/header.h>
 
 extern "C" {
 
 
 }
 
-#endif /* UGDK_SCRIPT_LUA_NATIVE_TRACEBACK_H_ */
+#endif /* OUROBOROS_SCRIPT_LUA_NATIVE_TRACEBACK_H_ */

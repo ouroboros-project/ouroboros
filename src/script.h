@@ -1,8 +1,7 @@
-#ifndef UGDK_SCRIPT_H_
-#define UGDK_SCRIPT_H_
+#ifndef OUROBOROS_SCRIPT_H_
+#define OUROBOROS_SCRIPT_H_
 
-namespace ugdk {
-namespace script {
+namespace ouroboros {
 
 // Functions
 void InitScripts();
@@ -40,7 +39,6 @@ class PythonWrapper;
 
 } /* namespace python */
 
-}  // namespace script
-}  // namespace ugdk
+}  // namespace ouroboros
 
-#endif /* UGDK_SCRIPT_H_ */
+#endif /* OUROBOROS_SCRIPT_H_ */

@@ -1,30 +1,30 @@
-#ifndef UGDK_SCRIPT_SCRIPTMANAGER_H_
-#define UGDK_SCRIPT_SCRIPTMANAGER_H_
+#ifndef OUROBOROS_SCRIPT_SCRIPTMANAGER_H_
+#define OUROBOROS_SCRIPT_SCRIPTMANAGER_H_
 
 #include <string>
 #include <map>
 
-#include <ugdk/script.h>
+#include <script.h>
 
 #ifdef MODULE_AUTO_LOAD
 #define FORCE_LOAD_MODULE(x) void force_link_function_##x(void) { extern int x##_MODULES_HEARTBEAT; x##_MODULES_HEARTBEAT = 1; }
 MODULE_AUTO_LOAD(FORCE_LOAD_MODULE)
 #endif
 
-namespace ugdk {
+namespace ouroboros {
 
-namespace script {
-
-#define SCRIPT_MANAGER() (ugdk::script::ScriptManager::ref())
+#define SCRIPT_MANAGER() (ouroboros::ScriptManager::ref())
 
 class ScriptManager {
 public:
     static ScriptManager* ref() {
         return ref_ ? ref_ : ref_ = new ScriptManager;
     }
-    ~ScriptManager() { ref_ = NULL; }
+    ~ScriptManager() { ref_ = nullptr; }
 
-    bool Initialize();
+	std::string scripts_path() const { return scripts_path_; }
+
+    bool Initialize(const std::string& scripts_path);
     void Finalize();
 
     void Register(LangWrapper* wrapper);
@@ -45,11 +45,11 @@ private:
     static ScriptManager* ref_;
     ScriptManager();
 
+	std::string scripts_path_;
     typedef std::map<std::string, LangWrapper*> WrapperMap;
     WrapperMap wrappers_;
 };
 
 }
-}
 
-#endif /* UGDK_SCRIPT_SCRIPTMANAGER_H_ */
+#endif /* OUROBOROS_SCRIPT_SCRIPTMANAGER_H_ */

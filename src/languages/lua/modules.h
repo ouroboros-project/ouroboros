@@ -1,11 +1,10 @@
-#ifndef UGDK_SCRIPT_LUA_MODULES_H_
-#define UGDK_SCRIPT_LUA_MODULES_H_
+#ifndef OUROBOROS_SCRIPT_LUA_MODULES_H_
+#define OUROBOROS_SCRIPT_LUA_MODULES_H_
 
-#include <ugdk/script.h>
-#include <ugdk/script/languages/lua/defs.h>
+#include <script.h>
+#include <languages/lua/defs.h>
 
-namespace ugdk {
-namespace script {
+namespace ouroboros {
 namespace lua {
 
 void AddModule(const Module<inittype> &);
@@ -13,8 +12,7 @@ void AddModule(const Module<inittype> &);
 void RegisterModules(LuaWrapper* wrapper);
 
 } /* namespace lua */
-} /* namespace script */
-} /* namespace ugdk */
+} /* namespace ouroboros */
 
 
-#endif /* UGDK_SCRIPT_LUA_MODULES_H_ */
+#endif /* OUROBOROS_SCRIPT_LUA_MODULES_H_ */

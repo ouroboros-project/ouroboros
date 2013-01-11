@@ -1,19 +1,18 @@
 
-#ifndef UGDK_SCRIPT_LUA_DATAGEAR_H_
-#define UGDK_SCRIPT_LUA_DATAGEAR_H_
+#ifndef OUROBOROS_SCRIPT_LUA_DATAGEAR_H_
+#define OUROBOROS_SCRIPT_LUA_DATAGEAR_H_
 
-#include <ugdk/script/type.h>
-#include <ugdk/script/languages/lua/header.h>
-#include <ugdk/script/languages/lua/state.h>
-#include <ugdk/script/languages/lua/basegear.h>
-#include <ugdk/util/uncopyable.h>
-#include <ugdk/util/idgenerator.h>
+#include <type.h>
+#include <languages/lua/header.h>
+#include <languages/lua/state.h>
+#include <languages/lua/basegear.h>
+#include <utils/uncopyable.h>
+#include <utils/idgenerator.h>
 
-namespace ugdk {
-namespace script {
+namespace ouroboros {
 namespace lua {
 
-class DataGear : public BaseGear, private ugdk::util::Uncopyable {
+class DataGear : public BaseGear, private ouroboros::utils::Uncopyable {
 
   public:
 
@@ -27,7 +26,7 @@ class DataGear : public BaseGear, private ugdk::util::Uncopyable {
 
     ~DataGear() {
         L_.pushnil();
-        L_.setfield(Constant::REGISTRYINDEX(), "UGDK_LUA_DATATABLE");
+        L_.setfield(Constant::REGISTRYINDEX(), "OUROBOROS_LUA_DATATABLE");
         /*L_.aux().unref(Constant::REGISTRYINDEX(), datatable_id_);
         datatable_id_ = LUA_NOREF;*/
         L_.close();
@@ -103,7 +102,7 @@ class DataGear : public BaseGear, private ugdk::util::Uncopyable {
   private:
 
     //DataID datatable_id_;
-    ugdk::util::IDGenerator idgen_;
+    ouroboros::utils::IDGenerator idgen_;
 
     DataGear& operator=(const DataGear& rhs) {
         return *this;
@@ -166,7 +165,6 @@ int DataGear::WrapPrimitive(lua_State* L) {
 }
 
 } /* namespace lua */
-} /* namespace script */
-} /* namespace ugdk */
+} /* namespace ouroboros */
 
-#endif /* UGDK_SCRIPT_LUA_DATAGEAR_H_ */
+#endif /* OUROBOROS_SCRIPT_LUA_DATAGEAR_H_ */

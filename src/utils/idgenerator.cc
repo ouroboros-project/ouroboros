@@ -1,11 +1,11 @@
 
 #include <cstdio>
-#include <ugdk/util/idgenerator.h>
+#include <utils/idgenerator.h>
 
-namespace ugdk {
-namespace util {
+namespace ouroboros {
+namespace utils {
 
-using std::tr1::unordered_set;
+using std::unordered_set;
 
 IDGenerator::IDGenerator(int min_id, int max_id, int error_value) :
     current_id_(min_id),
@@ -14,7 +14,7 @@ IDGenerator::IDGenerator(int min_id, int max_id, int error_value) :
       error_value_(error_value)  {
 #ifdef DEBUG
     if ( min_id > max_id ) {
-      printf("UGDK - IdGenerator\n");
+      printf("Ouroboros - IdGenerator\n");
       printf("The min_id is greater than the max_id"); 
       printf("(%d > %d)\n", min_id, max_id);
     }
@@ -39,5 +39,5 @@ int IDGenerator::ReleaseID(int id) {
     return id;
 }
 
-} // namespace util
-} // namespace ugdk
+} // namespace utils
+} // namespace ouroboros

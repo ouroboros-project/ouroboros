@@ -1,32 +1,29 @@
-#ifndef UGDK_MODULE_PROXY_CACHE_H_
-#define UGDK_MODULE_PROXY_CACHE_H_
+#ifndef OUROBOROS_MODULE_PROXY_CACHE_H_
+#define OUROBOROS_MODULE_PROXY_CACHE_H_
 
 #include <map>
-#include <ugdk/script/virtualobj.h>
-#
+#include <virtualobj.h>
 
-namespace ugdk {
-namespace script {
-
+namespace ouroboros {
 
 template <class T>
 class BaseProxy {
 public:
-    BaseProxy(const ugdk::script::VirtualObj& proxy) : proxy_(proxy) {}
+    BaseProxy(const ouroboros::VirtualObj& proxy) : proxy_(proxy) {}
     ~BaseProxy() {
         BaseProxy::table_.erase(proxy_.unsafe_data());
     }
 
-    ugdk::script::VirtualObj get_proxy_vobj() const { return proxy_; }
+    ouroboros::VirtualObj get_proxy_vobj() const { return proxy_; }
     
 
     static void Set(void* key, T* object) { BaseProxy::table_[key] = object; }
 
-    static bool Check(const ugdk::script::VirtualObj& proxy) {
+    static bool Check(const ouroboros::VirtualObj& proxy) {
         return BaseProxy::table_.count(proxy.unsafe_data()) > 0;
     }
 
-    static T* Get(const ugdk::script::VirtualObj& proxy) {
+    static T* Get(const ouroboros::VirtualObj& proxy) {
         void* key = proxy.unsafe_data();
         T* obj;
         if (BaseProxy::table_.count(key) == 0) {
@@ -39,7 +36,7 @@ public:
         return obj;
     }
 
-    static T* Get(ugdk::script::VirtualData* proxy) {
+    static T* Get(ouroboros::VirtualData* proxy) {
         void* key = proxy->unsafe_data();
         T* obj;
         if (BaseProxy::table_.count(key) == 0) {
@@ -53,7 +50,7 @@ public:
     }
 
 protected:
-    ugdk::script::VirtualObj proxy_;
+    ouroboros::VirtualObj proxy_;
 
 private:
     static std::map<void*, T*> table_;
@@ -62,6 +59,5 @@ private:
 template <class T>
 std::map<void*, T*> BaseProxy<T>::table_;
 
-}
 }
 #endif

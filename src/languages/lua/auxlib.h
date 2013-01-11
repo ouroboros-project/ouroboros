@@ -1,15 +1,13 @@
 
-#ifndef UGDK_SCRIPT_LUA_AUXLIB_H_
-#define UGDK_SCRIPT_LUA_AUXLIB_H_
+#ifndef OUROBOROS_SCRIPT_LUA_AUXLIB_H_
+#define OUROBOROS_SCRIPT_LUA_AUXLIB_H_
 
-#include <ugdk/portable/tr1.h>
-#include FROM_TR1(functional)
+#include <functional>
 
-#include <ugdk/script/languages/lua/header.h>
-#include <ugdk/script/languages/lua/primitive.h>
+#include <languages/lua/header.h>
+#include <languages/lua/primitive.h>
 
-namespace ugdk {
-namespace script {
+namespace ouroboros {
 namespace lua {
 
 class State;
@@ -52,8 +50,7 @@ class AuxLib {
 };
 
 } /* namespace lua */
-} /* namespace script */
-} /* namespace ugdk */
+} /* namespace ouroboros */
 
 
-#endif /* UGDK_SCRIPT_LUA_AUXLIB_H_ */
+#endif /* OUROBOROS_SCRIPT_LUA_AUXLIB_H_ */

@@ -1,18 +1,15 @@
 
-#ifndef UGDK_SCRIPT_LUA_BASEGEAR_H_
-#define UGDK_SCRIPT_LUA_BASEGEAR_H_
+#ifndef OUROBOROS_SCRIPT_LUA_BASEGEAR_H_
+#define OUROBOROS_SCRIPT_LUA_BASEGEAR_H_
 
 #include <vector>
-#include <ugdk/portable/tr1.h>
-#include FROM_TR1(tuple)
 
-#include <ugdk/script/languages/lua/header.h>
-#include <ugdk/script/languages/lua/state.h>
+#include <languages/lua/header.h>
+#include <languages/lua/state.h>
 
-#include <ugdk/util/uncopyable.h>
+#include <utils/uncopyable.h>
 
-namespace ugdk {
-namespace script {
+namespace ouroboros {
 namespace lua {
 
 class BaseGear {
@@ -102,7 +99,6 @@ class BaseGear {
     T& name = *(static_cast<T*>((L).touserdata(i)))
 
 } /* namespace lua */
-} /* namespace script */
-} /* namespace ugdk */
+} /* namespace ouroboros */
 
-#endif /* UGDK_SCRIPT_LUA_BASEGEAR_H_ */
+#endif /* OUROBOROS_SCRIPT_LUA_BASEGEAR_H_ */

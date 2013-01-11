@@ -12,7 +12,7 @@ SET(OUROBOROS_SRC
     ./src/virtualobj.cc 
     ./src/virtualobj.h 
     ./src/virtualprimitive.h 
-    ./src/util/idgenerator.cc 
-    ./src/util/idgenerator.h 
-    ./src/util/uncopyable.h 
+    ./src/utils/idgenerator.cc 
+    ./src/utils/idgenerator.h 
+    ./src/utils/uncopyable.h 
 )

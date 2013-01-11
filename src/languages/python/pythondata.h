@@ -1,13 +1,12 @@
-#ifndef UGDK_SCRIPT_PYTHON_PYTHONDATA_H_
-#define UGDK_SCRIPT_PYTHON_PYTHONDATA_H_
+#ifndef OUROBOROS_SCRIPT_PYTHON_PYTHONDATA_H_
+#define OUROBOROS_SCRIPT_PYTHON_PYTHONDATA_H_
 
 #include <Python.h>
 #include <vector>
-#include <ugdk/script/virtualdata.h>
-#include <ugdk/script/languages/python/pythonwrapper.h>
+#include <virtualdata.h>
+#include <languages/python/pythonwrapper.h>
 
-namespace ugdk {
-namespace script {
+namespace ouroboros {
 
 class VirtualObj;
 class VirtualType;
@@ -63,7 +62,6 @@ class PythonData : public VirtualData {
 };
 
 }
-} /* namespace script */
-} /* namespace ugdk */
+} /* namespace ouroboros */
 
-#endif /* UGDK_SCRIPT_PYTHON_PYTHONDATA_H_ */
+#endif /* OUROBOROS_SCRIPT_PYTHON_PYTHONDATA_H_ */

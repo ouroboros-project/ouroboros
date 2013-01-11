@@ -1,11 +1,10 @@
 
-#ifndef UGDK_SCRIPT_LUA_PRIMITIVE_H_
-#define UGDK_SCRIPT_LUA_PRIMITIVE_H_
+#ifndef OUROBOROS_SCRIPT_LUA_PRIMITIVE_H_
+#define OUROBOROS_SCRIPT_LUA_PRIMITIVE_H_
 
-#include <ugdk/script/languages/lua/header.h>
+#include <languages/lua/header.h>
 
-namespace ugdk {
-namespace script {
+namespace ouroboros {
 namespace lua {
 
 #define CHECK_LUA_TYPE(name, type) (defined name) && (name == type)
@@ -83,7 +82,7 @@ DEFINE_LUA_PRIMITIVE_OP(to);
 #define DEFINE_LUA_SIMPLE_TO(type, name) \
     DEFINE_LUA_TO(type, static_cast<type>(lua_to##name(L, index)))
 
-DEFINE_LUA_TO(const char*, lua_tolstring(L, index, NULL));
+DEFINE_LUA_TO(const char*, lua_tolstring(L, index, nullptr));
 DEFINE_LUA_TO(bool, !!(lua_toboolean(L, index)));
 DEFINE_LUA_SIMPLE_TO(int, integer);
 DEFINE_LUA_SIMPLE_TO(double, number);
@@ -119,7 +118,6 @@ DEFINE_LUA_SIMPLE_IS(double, number);
  */
 
 } /* namespace lua */
-} /* namespace script */
-} /* namespace ugdk */
+} /* namespace ouroboros */
 
-#endif /* UGDK_SCRIPT_LUA_PRIMITIVE_H_ */
+#endif /* OUROBOROS_SCRIPT_LUA_PRIMITIVE_H_ */
