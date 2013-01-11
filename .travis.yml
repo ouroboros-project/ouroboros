@@ -1,0 +1,16 @@
+env:
+ - OPTIONS="-DCMAKE_BUILD_TYPE=Release"
+ - OPTIONS="-DCMAKE_BUILD_TYPE=Debug"
+
+before_script:
+  - sudo apt-get update > /dev/null
+  - sudo apt-get install cmake swig2.0 liblua5.1-0-dev python-dev  > /dev/null
+
+script:
+  - cmake . $OPTIONS
+  - make
+
+notifications:
+  email:
+      - kazuo256@gmail.com
+      - rewasvat@gmail.com

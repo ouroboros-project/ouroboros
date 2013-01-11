@@ -5,6 +5,8 @@
 
 - Decidir padrão de código e aplicá-lo
 
+- Suporte a Testes
+
 - Tirando dependências do SWIG
   - Implementar metadados
   - Gerador de wrappers
