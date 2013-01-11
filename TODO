@@ -1,0 +1,25 @@
+
+- Separar sistema de scripts da UGDK.
+
+- Migrar para C++11
+
+- Decidir padrão de código e aplicá-lo
+
+- Tirando dependências do SWIG
+  - Implementar metadados
+  - Gerador de wrappers
+  - Nukar SWIG
+
+- Obtenção de metadados
+  - Parser
+  - Especificação não intrusiva
+  - Especificação intrusiva
+
+- Scriptception
+
+- CMake (inclusão e automatização de wrappers)
+
+- Publicação (download, referência, tutoriais)
+
+- Monografia
+
