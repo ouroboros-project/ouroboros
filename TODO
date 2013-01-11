@@ -1,5 +1,5 @@
 
-- Separar sistema de scripts da UGDK.
+- TIO TRAVIS
 
 - Migrar para C++11
 
@@ -17,7 +17,9 @@
 
 - Scriptception
 
-- CMake (inclusão e automatização de wrappers)
+- CMake
+  - Inclusão e Automatização de Wrappers
+  - 'Módulos' de linguagens de script pro sistema
 
 - Publicação (download, referência, tutoriais)
 

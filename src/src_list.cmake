@@ -1,0 +1,18 @@
+SET(OUROBOROS_SRC 
+    ./src/script.h 
+    ./src/baseproxy.h 
+    ./src/defs.h 
+    ./src/initscripts.cc 
+    ./src/langwrapper.h 
+    ./src/module.h 
+    ./src/scriptmanager.cc 
+    ./src/scriptmanager.h 
+    ./src/type.h 
+    ./src/virtualdata.h 
+    ./src/virtualobj.cc 
+    ./src/virtualobj.h 
+    ./src/virtualprimitive.h 
+    ./src/utils/idgenerator.cc 
+    ./src/utils/idgenerator.h 
+    ./src/utils/uncopyable.h 
+)

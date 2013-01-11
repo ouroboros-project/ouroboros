@@ -1,0 +1,9 @@
+SET(OUROBOROS_PYTHON_SRC 
+    ./src/languages/python/modules.h 
+    ./src/languages/python/pythondata.cc 
+    ./src/languages/python/pythondata.h 
+    ./src/languages/python/pythonmodules.cc 
+    ./src/languages/python/pythonwrapper.cc 
+    ./src/languages/python/pythonwrapper.h 
+    ./src/languages/python/swigpyrun.h 
+)

@@ -1,0 +1,21 @@
+SET(OUROBOROS_LUA_SRC 
+    ./src/languages/lua/auxlib.h 
+    ./src/languages/lua/basegear.cc 
+    ./src/languages/lua/basegear.h 
+    ./src/languages/lua/bootstrapgear.cc 
+    ./src/languages/lua/bootstrapgear.h 
+    ./src/languages/lua/datagear.cc 
+    ./src/languages/lua/datagear.h 
+    ./src/languages/lua/defs.h 
+    ./src/languages/lua/header.h 
+    ./src/languages/lua/luadata.cc 
+    ./src/languages/lua/luadata.h 
+    ./src/languages/lua/luamodules.cc 
+    ./src/languages/lua/luawrapper.cc 
+    ./src/languages/lua/luawrapper.h 
+    ./src/languages/lua/modules.h 
+    ./src/languages/lua/native/traceback.h 
+    ./src/languages/lua/primitive.h 
+    ./src/languages/lua/state.h 
+    ./src/languages/lua/swigluarun.h 
+)
