@@ -93,7 +93,7 @@ class State {
     void call (int nargs, int nres) { lua_call(L_, nargs, nres); }
     const Constant pcall (int nargs, int nres, int errfunc) {
         return Constant(
-            std::tr1::bind(lua_pcall, L_, nargs, nres, errfunc)
+            std::bind(lua_pcall, L_, nargs, nres, errfunc)
         );
     }
 
