@@ -1,0 +1,43 @@
+
+TCC - Codinome OUROBOROS
+
+Resumidamente: um sistema de integração entre C++ e várias linguagens de
+script.
+
+Funcionalidades básicas:
+
+  1) Exportar API em C++ para uma linguagem de script.
+
+    1.1) É preciso construir os metadados do código C++ para gerar wrappers.
+
+    1.2) Problema: Como obter os metadados?
+
+      1.2.1) Intrusivo: usuário coloca metainformações no próprio código.
+
+        1.2.1.1) Nos comentários
+        1.2.1.2) Com macros
+        1.2.1.3) Com símbolos específicos
+
+      1.2.2) Não intrusivo: usuário descreve metadados em um arquivo separado.
+
+        1.2.2.1) Arquivo permissivo: independente do código C++ original
+        1.2.2.2) Não-permissivo: analisa o código C++ original (SWIG-like)
+
+    1.3) Metadados:
+
+      1.3.1) Tipos
+      1.3.2) Variáveis
+      1.3.3) Enums
+      1.3.4) Funções/métodos
+        1.3.4.1) Ownership de parâmetros e valores de retorno
+      1.3.5) Classes
+        1.3.5.1) Acesso (protected/public)
+        1.3.5.2) Atributos (tipo, nome, acesso)
+        1.3.5.3) Métodos (assinatura, nome, acesso, sobrecargas)
+        1.3.5.4) Contrutor/Destrutor (assinatura, acesso, sobrecargas)
+        1.3.5.5) Operadores (assinatura, "nome", acesso, sobrecargas)
+
+  2) Importar informações de script para C++.
+
+    2.1) Praticamente feito no sistema de script da UGDK.
+
