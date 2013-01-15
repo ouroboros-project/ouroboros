@@ -2,17 +2,17 @@ SET(OUROBOROS_SRC
     ./src/ouroboros/script.h 
     ./src/ouroboros/baseproxy.h 
     ./src/ouroboros/defs.h 
-    ./src/ouroboros/initscripts.cc 
+    ./src/ouroboros/initscripts.cxx 
     ./src/ouroboros/langwrapper.h 
     ./src/ouroboros/module.h 
-    ./src/ouroboros/scriptmanager.cc 
+    ./src/ouroboros/scriptmanager.cxx 
     ./src/ouroboros/scriptmanager.h 
     ./src/ouroboros/type.h 
     ./src/ouroboros/virtualdata.h 
-    ./src/ouroboros/virtualobj.cc 
+    ./src/ouroboros/virtualobj.cxx 
     ./src/ouroboros/virtualobj.h 
     ./src/ouroboros/virtualprimitive.h 
-    ./src/ouroboros/utils/idgenerator.cc 
+    ./src/ouroboros/utils/idgenerator.cxx 
     ./src/ouroboros/utils/idgenerator.h 
     ./src/ouroboros/utils/uncopyable.h 
 )

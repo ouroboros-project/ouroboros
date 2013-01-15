@@ -1,17 +1,17 @@
 SET(OUROBOROS_LUA_SRC 
     ./src/ouroboros/languages/lua/auxlib.h 
-    ./src/ouroboros/languages/lua/basegear.cc 
+    ./src/ouroboros/languages/lua/basegear.cxx 
     ./src/ouroboros/languages/lua/basegear.h 
-    ./src/ouroboros/languages/lua/bootstrapgear.cc 
+    ./src/ouroboros/languages/lua/bootstrapgear.cxx 
     ./src/ouroboros/languages/lua/bootstrapgear.h 
-    ./src/ouroboros/languages/lua/datagear.cc 
+    ./src/ouroboros/languages/lua/datagear.cxx 
     ./src/ouroboros/languages/lua/datagear.h 
     ./src/ouroboros/languages/lua/defs.h 
     ./src/ouroboros/languages/lua/header.h 
-    ./src/ouroboros/languages/lua/luadata.cc 
+    ./src/ouroboros/languages/lua/luadata.cxx 
     ./src/ouroboros/languages/lua/luadata.h 
-    ./src/ouroboros/languages/lua/luamodules.cc 
-    ./src/ouroboros/languages/lua/luawrapper.cc 
+    ./src/ouroboros/languages/lua/luamodules.cxx 
+    ./src/ouroboros/languages/lua/luawrapper.cxx 
     ./src/ouroboros/languages/lua/luawrapper.h 
     ./src/ouroboros/languages/lua/modules.h 
     ./src/ouroboros/languages/lua/primitive.h 
