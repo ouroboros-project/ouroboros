@@ -8,7 +8,8 @@ before_script:
 
 script:
   - cmake . $OPTIONS
-  - make
+  - make ouroboros_test
+  - ./test/ouroboros_test
 
 notifications:
   email:

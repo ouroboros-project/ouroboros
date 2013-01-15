@@ -18,7 +18,7 @@ message ("=== Ouroboros Project version ${FRAMEWORK_VERSION} ===")
 # make it prominent in the GUI.
 option(BUILD_SHARED_LIBS "Build shared libraries (DLLs)." OFF)
 
-option(OUROBOROS_BUILD_TESTS "Set to ON to enable building tests." OFF)
+option(OUROBOROS_BUILD_TESTS "Set to ON to enable building tests." ON)
 option(OUROBOROS_CREATE_BINDINGS "Set to ON to generate bindings for supported script languages." ON)
 option(OUROBOROS_LUA_BINDINGS "Set to ON to enable Lua as one of the languages to create bindings." ON)
 option(OUROBOROS_PYTHON_BINDINGS "Set to ON to enable Python as one of the languages to create bindings." ON)
@@ -174,8 +174,8 @@ endif (UNIX AND PYTHONLIBS_FOUND)
 set(OUROBOROS_EXTERNAL_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/src;${SDL_INCLUDE_DIR};${SDLTTF_INCLUDE_DIR} CACHE STRING "OUROBOROS include directories" FORCE)
 
 CONFIGURE_FILE(
-    "${SRC_DIR}/config.h.in"
-    "${SRC_DIR}/config.h"
+    "${SRC_DIR}/ouroboros/config.h.in"
+    "${SRC_DIR}/ouroboros/config.h"
 )
 
 install(TARGETS libouroboros

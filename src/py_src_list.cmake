@@ -1,9 +1,9 @@
 SET(OUROBOROS_PYTHON_SRC 
-    ./src/languages/python/modules.h 
-    ./src/languages/python/pythondata.cc 
-    ./src/languages/python/pythondata.h 
-    ./src/languages/python/pythonmodules.cc 
-    ./src/languages/python/pythonwrapper.cc 
-    ./src/languages/python/pythonwrapper.h 
-    ./src/languages/python/swigpyrun.h 
+    ./src/ouroboros/languages/python/modules.h 
+    ./src/ouroboros/languages/python/pythondata.cc 
+    ./src/ouroboros/languages/python/pythondata.h 
+    ./src/ouroboros/languages/python/pythonmodules.cc 
+    ./src/ouroboros/languages/python/pythonwrapper.cc 
+    ./src/ouroboros/languages/python/pythonwrapper.h 
+    ./src/ouroboros/languages/python/swigpyrun.h 
 )
