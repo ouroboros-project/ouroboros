@@ -1,11 +1,15 @@
 
-- TIO TRAVIS
+[DONE] - Separar da UGDK
 
-- Migrar para C++11
+[DONE] - TIO TRAVIS
 
-- Decidir padrão de código e aplicá-lo
+[DONE] - Migrar para C++11
+
+[DONE] - Decidir padrão de código e aplicá-lo
 
 - Suporte a Testes
+
+- ALWAYS: testes unitários e documentação
 
 - Tirando dependências do SWIG
   - Implementar metadados
@@ -17,11 +21,11 @@
   - Especificação não intrusiva
   - Especificação intrusiva
 
-- Scriptception
-
 - CMake
   - Inclusão e Automatização de Wrappers
   - 'Módulos' de linguagens de script pro sistema
+
+- Scriptception
 
 - Publicação (download, referência, tutoriais)
 
