@@ -1,0 +1,7 @@
+*.exe
+lib/
+*.pdb
+*.ilk
+/ouroboros_test
+/*.dll
+ouroboros_script_test

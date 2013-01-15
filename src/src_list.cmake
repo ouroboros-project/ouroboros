@@ -1,18 +1,18 @@
 SET(OUROBOROS_SRC 
-    ./src/script.h 
-    ./src/baseproxy.h 
-    ./src/defs.h 
-    ./src/initscripts.cc 
-    ./src/langwrapper.h 
-    ./src/module.h 
-    ./src/scriptmanager.cc 
-    ./src/scriptmanager.h 
-    ./src/type.h 
-    ./src/virtualdata.h 
-    ./src/virtualobj.cc 
-    ./src/virtualobj.h 
-    ./src/virtualprimitive.h 
-    ./src/utils/idgenerator.cc 
-    ./src/utils/idgenerator.h 
-    ./src/utils/uncopyable.h 
+    ./src/ouroboros/script.h 
+    ./src/ouroboros/baseproxy.h 
+    ./src/ouroboros/defs.h 
+    ./src/ouroboros/initscripts.cc 
+    ./src/ouroboros/langwrapper.h 
+    ./src/ouroboros/module.h 
+    ./src/ouroboros/scriptmanager.cc 
+    ./src/ouroboros/scriptmanager.h 
+    ./src/ouroboros/type.h 
+    ./src/ouroboros/virtualdata.h 
+    ./src/ouroboros/virtualobj.cc 
+    ./src/ouroboros/virtualobj.h 
+    ./src/ouroboros/virtualprimitive.h 
+    ./src/ouroboros/utils/idgenerator.cc 
+    ./src/ouroboros/utils/idgenerator.h 
+    ./src/ouroboros/utils/uncopyable.h 
 )
