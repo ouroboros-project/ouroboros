@@ -39,8 +39,12 @@ Problemas com wrappers de Lua do SWIG:
   <!> Uma das informações necessárias (metatabelas das classes) só pode ser
       obtida fazendo suposições sobre a implementação interna dos wrappers de
       Lua do SWIG.
+    EXEMPLO:
+      (+) ugdk/module/proxy.swig:40-59
   <!> Duas funções internas dos wrappers de Lua do SWIG precisam ter uma linha
       de codigo alterada para que proxies funcionem.
+    EXEMPLO:
+      (+) ugdk/module/luaproxy.h
     SOLUÇÃO PARA AMBOS:
       Fazer fork do SWIG, mudando as ditas linhas de código e formalizando
       esse fork como "a versão do SWIG que nossos sistema usa" e tentar
@@ -52,6 +56,8 @@ Problemas com wrappers de Lua do SWIG:
 Problemas com herança:
 
   <!> SWIG não tem suporte a herança geral de classes em C++ nos scripts.
+    EXEMPLO:
+      (+) ugdk::action::Entity
     SOLUÇÃO:
       Implementar proxies.
     CONTRAS:
@@ -63,6 +69,8 @@ Problemas com herança:
 
   <!> O SWIG não exporta variáveis e métodos 'protected', justamente pq ele
       não dá suporte a herança.
+    EXEMPLO:
+      (+) asteroids (ugdk::action::Entity)
     SOLUÇÃO:
       Modificar o código do SWIG para satisfazer isso, ou gerar
       getters/setters na mão para cada classe que tiver membros 'protected'.
