@@ -1,0 +1,78 @@
+
+Problemas gerais:
+
+  <!> Tag de 'disown' depende do nome dos parâmetros na API do usuário.
+    EXEMPLO:
+      (+) ugdk/module/ugdk_base.i
+    SOLUÇÃO:
+      Usar uma macro intrusiva que expande para o nome certo qnd o SWIG lê o
+      código.
+    CONTRAS:
+      É intrusivo no código do usuário, apesar de pouco.
+    VIABILIDADE:  OK (bem fácil na verdade)
+
+  <!> Tag de 'disown' não é prática.
+    EXEMPLO:
+      (+) ugdk/module/ugdk_base.i
+    SOLUÇÃO:
+      Desenvolver um formato de arquivo de meta-dados intermediário que
+      esconda isso.
+    CONTRAS:
+      Precisa desenvolver um parser para o novo formato.
+      Precisa fornecer meios de facilitar o processo de pré-compilação.
+    VIABILIDADE:  OK (dá um trabalho, mas é perfeitamente factível)
+
+  <!> O SWIG não tem suporte (e não pretende ter tão cedo) a classes, structs
+      e unions aninhadas em outras classes.
+    EXEMPLO:
+      (+) ugdk::math::Vector2D
+      (+) iterators
+    SOLUÇÃO:
+      Modificar o código do SWIG para satisfazer essa necessidade.
+    CONTRAS:
+      O código do SWIG é legado e confuso, portanto é bastante difícil senão
+      impraticável para nós conseguirmos mexer nele.
+    VIABILIDADE:  RUIM (arrumar uma porção grande de código legado...)
+
+Problemas com wrappers de Lua do SWIG:
+
+  <!> Uma das informações necessárias (metatabelas das classes) só pode ser
+      obtida fazendo suposições sobre a implementação interna dos wrappers de
+      Lua do SWIG.
+  <!> Duas funções internas dos wrappers de Lua do SWIG precisam ter uma linha
+      de codigo alterada para que proxies funcionem.
+    SOLUÇÃO PARA AMBOS:
+      Fazer fork do SWIG, mudando as ditas linhas de código e formalizando
+      esse fork como "a versão do SWIG que nossos sistema usa" e tentar
+      faciitar o máximo o acesso dela ao usuário.
+    CONTRAS:
+      Difícil dar suporte a futuras versões do SWIG.
+    VIABILIDADE:  OK (essas modificações no SWIG são mínimas e fáceis)
+
+Problemas com herança:
+
+  <!> SWIG não tem suporte a herança geral de classes em C++ nos scripts.
+    SOLUÇÃO:
+      Implementar proxies.
+    CONTRAS:
+      Fazer esses proxies dentro do SWIG é desanimador senão desesperador.
+      Logo o jeito é fazer eles externamente ao SWIG, o que torna parte do
+      nosso sistema um "puxadinho" dele.
+    VIABILIDADE:  FEITO (se for externamente ao SWIG), ou
+                  RUIM (se for internamente ao SWIG, pois há mto código legado)
+
+  <!> O SWIG não exporta variáveis e métodos 'protected', justamente pq ele
+      não dá suporte a herança.
+    SOLUÇÃO:
+      Modificar o código do SWIG para satisfazer isso, ou gerar
+      getters/setters na mão para cada classe que tiver membros 'protected'.
+    CONTRAS:
+      Novamente, mexer no código do SWIG é complicado.
+      Fazer os getters/setters seria um trabalho a mais para o usuário, por
+      mais que ele fosse parcialmente automatizado (o que imaginamos ser
+      possível)
+    VIABILIDADE:  OK (se for externamente ao SWIG), ou
+                  RUIM (se for internamente ao SWIG, pois há mto código legado)
+          
+
+
