@@ -1,0 +1,8 @@
+
+- Módulo de linguagens:
+  - Cunjunto de classes que implementam interfaces (data, wrapper, ...)
+  - Um CmakeLists.txt pra acoplar o módulo ao sistema
+    - Compilar arquivos certos
+    - Especificar as classes que o sistema precisa
+    - Gerar código de inicialização
+
