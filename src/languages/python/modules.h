@@ -2,7 +2,7 @@
 #define OUROBOROS_SCRIPT_PYTHON_MODULES_H_
 
 #include <ouroboros/script.h>
-#include <ouroboros/languages/python/pythonwrapper.h>
+#include <languages/python/pythonwrapper.h>
 
 namespace ouroboros {
 namespace python {

@@ -2,7 +2,7 @@
 #ifndef OUROBOROS_SCRIPT_LUA_PRIMITIVE_H_
 #define OUROBOROS_SCRIPT_LUA_PRIMITIVE_H_
 
-#include <ouroboros/languages/lua/header.h>
+#include <languages/lua/header.h>
 
 namespace ouroboros {
 namespace lua {

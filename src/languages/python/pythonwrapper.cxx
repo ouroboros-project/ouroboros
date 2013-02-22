@@ -1,6 +1,6 @@
 #include <Python.h>
 
-#include <ouroboros/languages/python/pythonwrapper.h>
+#include <languages/python/pythonwrapper.h>
 
 #include <string>
 #include <cstdlib>
@@ -8,11 +8,11 @@
 #include <memory>
 
 #include <ouroboros/config.h>
-#include <ouroboros/languages/python/pythondata.h>
+#include <languages/python/pythondata.h>
 #include <ouroboros/virtualobj.h>
 #include <ouroboros/scriptmanager.h>
-#include <ouroboros/languages/python/swigpyrun.h>
-#include <ouroboros/languages/python/modules.h>
+#include <languages/python/swigpyrun.h>
+#include <languages/python/modules.h>
 
 namespace ouroboros {
 namespace python {

@@ -2,8 +2,8 @@
 
 #include <ouroboros/config.h>
 #include <ouroboros/scriptmanager.h>
-#include <ouroboros/languages/lua/luawrapper.h>
-#include <ouroboros/languages/python/pythonwrapper.h>
+#include <languages/lua/luawrapper.h>
+#include <languages/python/pythonwrapper.h>
 
 void force_link_function_ouroboros_internal(void) { 
     extern int OUROBOROS_MODULES_HEARTBEAT; 

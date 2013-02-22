@@ -1,9 +1,9 @@
 
 #include <cstdio>
 
-#include <ouroboros/languages/lua/bootstrapgear.h>
-#include <ouroboros/languages/lua/auxlib.h>
-#include <ouroboros/languages/lua/datagear.h>
+#include <languages/lua/bootstrapgear.h>
+#include <languages/lua/auxlib.h>
+#include <languages/lua/datagear.h>
 
 namespace ouroboros {
 namespace lua {

@@ -1,13 +1,13 @@
 
 
-#include <ouroboros/languages/lua/luawrapper.h>
+#include <languages/lua/luawrapper.h>
 
 #include <ouroboros/virtualdata.h>
 #include <ouroboros/virtualobj.h>
-#include <ouroboros/languages/lua/luadata.h>
-#include <ouroboros/languages/lua/bootstrapgear.h>
-#include <ouroboros/languages/lua/datagear.h>
-#include <ouroboros/languages/lua/modules.h>
+#include <languages/lua/luadata.h>
+#include <languages/lua/bootstrapgear.h>
+#include <languages/lua/datagear.h>
+#include <languages/lua/modules.h>
 
 #include <ouroboros/scriptmanager.h>
 

@@ -2,7 +2,7 @@
 #define OUROBOROS_SCRIPT_LUA_MODULES_H_
 
 #include <ouroboros/script.h>
-#include <ouroboros/languages/lua/defs.h>
+#include <languages/lua/defs.h>
 
 namespace ouroboros {
 namespace lua {

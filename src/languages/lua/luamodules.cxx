@@ -1,10 +1,10 @@
-#include <ouroboros/languages/lua/modules.h>
+#include <languages/lua/modules.h>
 
 #include <vector>
 #include <cstdio>
 
 #include <ouroboros/module.h>
-#include <ouroboros/languages/lua/luawrapper.h>
+#include <languages/lua/luawrapper.h>
 
 namespace ouroboros {
 namespace lua {

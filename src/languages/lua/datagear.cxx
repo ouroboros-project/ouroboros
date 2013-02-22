@@ -2,10 +2,10 @@
 #include <cstdio>
 #include <string>
 
-#include <ouroboros/languages/lua/datagear.h>
-#include <ouroboros/languages/lua/auxlib.h>
+#include <languages/lua/datagear.h>
+#include <languages/lua/auxlib.h>
 
-#include <ouroboros/languages/lua/swigluarun.h>
+#include <languages/lua/swigluarun.h>
 
 namespace ouroboros {
 namespace lua {

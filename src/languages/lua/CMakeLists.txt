@@ -1,23 +1,23 @@
 
 SET(OUROBOROS_LUA_SRC 
-    ./src/languages/lua/auxlib.h 
-    ./src/languages/lua/basegear.cxx 
-    ./src/languages/lua/basegear.h 
-    ./src/languages/lua/bootstrapgear.cxx 
-    ./src/languages/lua/bootstrapgear.h 
-    ./src/languages/lua/datagear.cxx 
-    ./src/languages/lua/datagear.h 
-    ./src/languages/lua/defs.h 
-    ./src/languages/lua/header.h 
-    ./src/languages/lua/luadata.cxx 
-    ./src/languages/lua/luadata.h 
-    ./src/languages/lua/luamodules.cxx 
-    ./src/languages/lua/luawrapper.cxx 
-    ./src/languages/lua/luawrapper.h 
-    ./src/languages/lua/modules.h 
-    ./src/languages/lua/primitive.h 
-    ./src/languages/lua/state.h 
-    ./src/languages/lua/swigluarun.h 
+    ./auxlib.h 
+    ./basegear.cxx 
+    ./basegear.h 
+    ./bootstrapgear.cxx 
+    ./bootstrapgear.h 
+    ./datagear.cxx 
+    ./datagear.h 
+    ./defs.h 
+    ./header.h 
+    ./luadata.cxx 
+    ./luadata.h 
+    ./luamodules.cxx 
+    ./luawrapper.cxx 
+    ./luawrapper.h 
+    ./modules.h 
+    ./primitive.h 
+    ./state.h 
+    ./swigluarun.h 
 )
 
 find_package (Lua51)
@@ -33,4 +33,20 @@ target_link_libraries (libouroboros-lua  ${LUA_LIBRARIES})
 
 target_link_libraries (libouroboros-lua LINK_INTERFACE_LIBRARIES ${LUA_LIBRARIES})
 
+set_target_properties (libouroboros-lua PROPERTIES 
+    LINK_FLAGS "${LDFLAGS}"
+    PROJECT_NAME OUROBOROS-LUA
+    OUTPUT_NAME ouroboros-lua${FRAMEWORK_BIGVERSION}
+    OUTPUT_NAME_DEBUG ouroboros-lua${FRAMEWORK_BIGVERSION}-dbg
+    SOVERSION ${FRAMEWORK_VERSION_PATCH}
+    VERSION ${FRAMEWORK_VERSION}
+)
+
 ouroboros_add_langmodule(Lua libouroboros-lua)
+
+install(TARGETS libouroboros-lua
+    DESTINATION lib
+#    CONFIGURATIONS Release
+)
+
+install(DIRECTORY . DESTINATION include/ouroboros${FRAMEWORK_BIGVERSION} FILES_MATCHING PATTERN "*.h" PATTERN "*.th" PATTERN "*.tcc")

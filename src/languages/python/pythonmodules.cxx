@@ -1,10 +1,10 @@
-#include <ouroboros/languages/python/modules.h>
+#include <languages/python/modules.h>
 
 #include <vector>
 #include <cstdio>
 
 #include <ouroboros/module.h>
-#include <ouroboros/languages/python/pythonwrapper.h>
+#include <languages/python/pythonwrapper.h>
 
 namespace ouroboros {
 namespace python {

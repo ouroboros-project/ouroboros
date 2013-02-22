@@ -7,10 +7,10 @@
 
 #include <functional>
 
-#include <ouroboros/languages/lua/header.h>
-#include <ouroboros/languages/lua/defs.h>
-#include <ouroboros/languages/lua/primitive.h>
-#include <ouroboros/languages/lua/auxlib.h>
+#include <languages/lua/header.h>
+#include <languages/lua/defs.h>
+#include <languages/lua/primitive.h>
+#include <languages/lua/auxlib.h>
 
 namespace ouroboros {
 namespace lua {

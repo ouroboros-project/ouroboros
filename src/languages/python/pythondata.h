@@ -4,7 +4,7 @@
 #include <Python.h>
 #include <vector>
 #include <ouroboros/virtualdata.h>
-#include <ouroboros/languages/python/pythonwrapper.h>
+#include <languages/python/pythonwrapper.h>
 
 namespace ouroboros {
 

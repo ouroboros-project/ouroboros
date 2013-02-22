@@ -6,7 +6,7 @@
 #include <list>
 #include <vector>
 
-#include <ouroboros/languages/lua/defs.h>
+#include <languages/lua/defs.h>
 #include <ouroboros/langwrapper.h>
 
 namespace ouroboros {

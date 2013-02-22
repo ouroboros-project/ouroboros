@@ -4,8 +4,8 @@
 
 #include <functional>
 
-#include <ouroboros/languages/lua/header.h>
-#include <ouroboros/languages/lua/primitive.h>
+#include <languages/lua/header.h>
+#include <languages/lua/primitive.h>
 
 namespace ouroboros {
 namespace lua {

@@ -2,8 +2,8 @@
 #include <algorithm>
 #include <functional>
 
-#include <ouroboros/languages/lua/luadata.h>
-#include <ouroboros/languages/lua/datagear.h>
+#include <languages/lua/luadata.h>
+#include <languages/lua/datagear.h>
 
 namespace ouroboros {
 namespace lua {
