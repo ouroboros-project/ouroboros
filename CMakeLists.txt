@@ -49,8 +49,6 @@ CONFIGURE_FILE(
 #set (CMAKE_CURRENT_BINARY_DIR "${CMAKE_CURRENT_BINARY_DIR}/${WRAPPER_DIR}")
 
 include (${SRC_DIR}/src_list.cmake)
-include (${SRC_DIR}/lua_src_list.cmake)
-include (${SRC_DIR}/py_src_list.cmake)
 SET(OUROBOROS_MODULE_SRC 
 
 )
@@ -105,17 +103,6 @@ include (CPack)
 
 #
 ##########################################
-set(OUROBOROS_LANGUAGES_LIST "")
-if (OUROBOROS_CREATE_BINDINGS)
-    if (OUROBOROS_LUA_BINDINGS)
-        list(APPEND OUROBOROS_LANGUAGES_LIST Lua)
-    endif()
-    if (OUROBOROS_PYTHON_BINDINGS)
-        list(APPEND OUROBOROS_LANGUAGES_LIST Python)
-    endif()
-    ouroboros_setup_package(SWIG)
-endif (OUROBOROS_CREATE_BINDINGS)
-
 # Bit hacky way so all the output files are placed on the ${LIB_DIR} folder.
 # Code found on http://stackoverflow.com/questions/7747857/in-cmake-how-do-i-work-around-the-debug-and-release-directories-visual-studio-2
 
@@ -130,6 +117,13 @@ foreach( OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES} )
     set( CMAKE_LIBRARY_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${LIB_DIR} )
     set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${LIB_DIR} )
 endforeach( OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES )
+
+
+if (OUROBOROS_CREATE_BINDINGS)
+    ouroboros_setup_package(SWIG)
+    add_subdirectory( src/languages )
+endif (OUROBOROS_CREATE_BINDINGS)
+
 
 add_library (libouroboros ${OUROBOROS_SRC} ${GENERATED_SRC})
 

@@ -9,10 +9,6 @@ SET(OUROBOROS_PYTHON_SRC
     ./src/languages/python/swigpyrun.h 
 )
 
-
-include_directories ("src")
-include (cmake/ouroboros.cmake)
-
 find_package (PythonLibs 2.6)
 
 include_directories (${PYTHON_INCLUDE_DIRS})
@@ -24,12 +20,12 @@ else()
     LIST(OUROBOROS_PYTHON_LIBRARIES ${PYTHON_LIBRARIES})
 endif()
 
-message ("-- Python modules added.")
+message ("-- Python module added.")
 
 add_library (libouroboros-python ${OUROBOROS_PYTHON_SRC})
 
-target_link_libraries (libouroboros-python
-                       ${OUROBOROS_PYTHON_LIBRARIES})
+target_link_libraries (libouroboros-python  ${OUROBOROS_PYTHON_LIBRARIES})
 
-target_link_libraries (libouroboros-python LINK_INTERFACE_LIBRARIES 
-                       ${OUROBOROS_PYTHON_LIBRARIES})
+target_link_libraries (libouroboros-python LINK_INTERFACE_LIBRARIES ${OUROBOROS_PYTHON_LIBRARIES})
+
+ouroboros_add_langmodule(Python libouroboros-python)
