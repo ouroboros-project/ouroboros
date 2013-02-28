@@ -5,8 +5,8 @@
 #include <ouroboros/type.h>
 #include <ouroboros/virtualdata.h>
 
-#include <ouroboros/languages/lua/defs.h>
-#include <ouroboros/languages/lua/luawrapper.h>
+#include <languages/lua/defs.h>
+#include <languages/lua/luawrapper.h>
 
 namespace ouroboros {
 namespace lua {

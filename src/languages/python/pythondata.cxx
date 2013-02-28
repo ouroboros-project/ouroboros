@@ -1,7 +1,7 @@
-#include <ouroboros/languages/python/pythondata.h>
+#include <languages/python/pythondata.h>
 #include <ouroboros/scriptmanager.h>
 #include <ouroboros/virtualobj.h>
-#include <ouroboros/languages/python/swigpyrun.h>
+#include <languages/python/swigpyrun.h>
 
 #include <memory>
 #include <cstdlib>

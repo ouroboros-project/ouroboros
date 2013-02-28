@@ -49,8 +49,6 @@ CONFIGURE_FILE(
 #set (CMAKE_CURRENT_BINARY_DIR "${CMAKE_CURRENT_BINARY_DIR}/${WRAPPER_DIR}")
 
 include (${SRC_DIR}/src_list.cmake)
-include (${SRC_DIR}/lua_src_list.cmake)
-include (${SRC_DIR}/py_src_list.cmake)
 SET(OUROBOROS_MODULE_SRC 
 
 )
@@ -105,31 +103,27 @@ include (CPack)
 
 #
 ##########################################
-set(OUROBOROS_LANGUAGES_LIST "")
-if (OUROBOROS_CREATE_BINDINGS)
-    if (OUROBOROS_LUA_BINDINGS)
-        list(APPEND OUROBOROS_LANGUAGES_LIST Lua)
-    endif()
-    if (OUROBOROS_PYTHON_BINDINGS)
-        list(APPEND OUROBOROS_LANGUAGES_LIST Python)
-    endif()
-    ouroboros_setup_package(SWIG)
-endif (OUROBOROS_CREATE_BINDINGS)
-
 # Bit hacky way so all the output files are placed on the ${LIB_DIR} folder.
 # Code found on http://stackoverflow.com/questions/7747857/in-cmake-how-do-i-work-around-the-debug-and-release-directories-visual-studio-2
 
 # First for the generic no-config case (e.g. with mingw)
-set( CMAKE_RUNTIME_OUTPUT_DIRECTORY ${LIB_DIR} )
-set( CMAKE_LIBRARY_OUTPUT_DIRECTORY ${LIB_DIR} )
-set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${LIB_DIR} )
+set( CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${LIB_DIR} )
+set( CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${LIB_DIR} )
+set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${LIB_DIR} )
 # Second, for multi-config builds (e.g. msvc)
 foreach( OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES} )
     string( TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG )
-    set( CMAKE_RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${LIB_DIR} )
-    set( CMAKE_LIBRARY_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${LIB_DIR} )
-    set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${LIB_DIR} )
+    set( CMAKE_RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_CURRENT_SOURCE_DIR}/${LIB_DIR} )
+    set( CMAKE_LIBRARY_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_CURRENT_SOURCE_DIR}/${LIB_DIR} )
+    set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_CURRENT_SOURCE_DIR}/${LIB_DIR} )
 endforeach( OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES )
+
+
+if (OUROBOROS_CREATE_BINDINGS)
+    ouroboros_setup_package(SWIG)
+    add_subdirectory( src/languages )
+endif (OUROBOROS_CREATE_BINDINGS)
+
 
 add_library (libouroboros ${OUROBOROS_SRC} ${GENERATED_SRC})
 
@@ -145,6 +139,8 @@ endif (WIN32)
 
 
 # We could use LINK_PUBLIC here, but it's a new feature in cmake 2.8.7, so we'd rather not require the newest version.
+
+message (" OUROBOROS LIBRARIES: ${OUROBOROS_LIBRARIES}")
 
 target_link_libraries (libouroboros
                        ${EXTRA_LIBRARIES}
@@ -167,11 +163,6 @@ if(OUROBOROS_BUILD_TESTS)
     add_subdirectory (test)
 endif(OUROBOROS_BUILD_TESTS)
 
-if (UNIX AND PYTHONLIBS_FOUND)
-    set (OUROBOROS_INSTALL_LOCATION_DEFINE "#define OUROBOROS_INSTALL_LOCATION \"/usr/${OUROBOROS_INSTALL_LOCATION}\"")
-endif (UNIX AND PYTHONLIBS_FOUND)
-
-set(OUROBOROS_EXTERNAL_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/src;${SDL_INCLUDE_DIR};${SDLTTF_INCLUDE_DIR} CACHE STRING "OUROBOROS include directories" FORCE)
 
 CONFIGURE_FILE(
     "${SRC_DIR}/ouroboros/config.h.in"
@@ -184,10 +175,4 @@ install(TARGETS libouroboros
 )
 
 install(DIRECTORY src/ouroboros DESTINATION include/ouroboros${FRAMEWORK_BIGVERSION} FILES_MATCHING PATTERN "*.h" PATTERN "*.th" PATTERN "*.tcc")
-
-if (PYTHONLIBS_FOUND AND PYTHON_INCLUDE_DIR AND EXISTS "${PYTHON_INCLUDE_DIR}/patchlevel.h")
-    install(DIRECTORY src/generated/ 
-            DESTINATION ${OUROBOROS_INSTALL_LOCATION}/${FRAMEWORK_BIGVERSION}/python
-            FILES_MATCHING PATTERN "*.py")
-endif (PYTHONLIBS_FOUND AND PYTHON_INCLUDE_DIR AND EXISTS "${PYTHON_INCLUDE_DIR}/patchlevel.h")
 

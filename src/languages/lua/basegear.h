@@ -4,8 +4,8 @@
 
 #include <vector>
 
-#include <ouroboros/languages/lua/header.h>
-#include <ouroboros/languages/lua/state.h>
+#include <languages/lua/header.h>
+#include <languages/lua/state.h>
 
 #include <ouroboros/utils/uncopyable.h>
 

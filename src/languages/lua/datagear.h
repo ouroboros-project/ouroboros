@@ -3,9 +3,9 @@
 #define OUROBOROS_SCRIPT_LUA_DATAGEAR_H_
 
 #include <ouroboros/type.h>
-#include <ouroboros/languages/lua/header.h>
-#include <ouroboros/languages/lua/state.h>
-#include <ouroboros/languages/lua/basegear.h>
+#include <languages/lua/header.h>
+#include <languages/lua/state.h>
+#include <languages/lua/basegear.h>
 #include <ouroboros/utils/uncopyable.h>
 #include <ouroboros/utils/idgenerator.h>
 

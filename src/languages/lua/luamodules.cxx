@@ -1,18 +1,18 @@
-#include <ouroboros/languages/python/modules.h>
+#include <languages/lua/modules.h>
 
 #include <vector>
 #include <cstdio>
 
 #include <ouroboros/module.h>
-#include <ouroboros/languages/python/pythonwrapper.h>
+#include <languages/lua/luawrapper.h>
 
 namespace ouroboros {
-namespace python {
+namespace lua {
 
-typedef std::vector< Module<inittype> > PythonModuleList;
+typedef std::vector< Module<inittype> > LuaModuleList;
 
-static PythonModuleList& get_module_list() {
-    static PythonModuleList lua_modules;
+static LuaModuleList& get_module_list() {
+    static LuaModuleList lua_modules;
     return lua_modules;
 }
 
@@ -20,9 +20,9 @@ void AddModule(const Module<inittype> & module) {
     get_module_list().push_back(module);
 }
 
-void RegisterModules(PythonWrapper* wrapper) {
-    PythonModuleList& lua_modules = get_module_list();
-    for(PythonModuleList::const_iterator it = lua_modules.begin(); it != lua_modules.end(); ++it) {
+void RegisterModules(LuaWrapper* wrapper) {
+    LuaModuleList& lua_modules = get_module_list();
+    for(LuaModuleList::const_iterator it = lua_modules.begin(); it != lua_modules.end(); ++it) {
         if(!wrapper->RegisterModule(*it)) {
             fprintf(stderr, "[%s] Load module '%s': >>ERROR<<\n", wrapper->lang_name().c_str(), it->name().c_str());
         } else {
@@ -33,5 +33,5 @@ void RegisterModules(PythonWrapper* wrapper) {
     }
 }
 
-} /* namespace python */
+} /* namespace lua */
 } /* namespace ouroboros */

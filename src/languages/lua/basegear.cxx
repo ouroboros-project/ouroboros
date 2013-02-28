@@ -1,8 +1,8 @@
 
 #include <cstdio>
 
-#include <ouroboros/languages/lua/basegear.h>
-#include <ouroboros/languages/lua/auxlib.h>
+#include <languages/lua/basegear.h>
+#include <languages/lua/auxlib.h>
 
 namespace ouroboros {
 namespace lua {

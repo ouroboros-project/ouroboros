@@ -6,10 +6,10 @@
     ACTION(PYTHON)
 
 #include <ouroboros/module.h>
-#include <ouroboros/languages/lua/luawrapper.h>
-#include <ouroboros/languages/lua/modules.h>
-#include <ouroboros/languages/python/pythonwrapper.h>
-#include <ouroboros/languages/python/modules.h>
+#include <languages/lua/luawrapper.h>
+#include <languages/lua/modules.h>
+#include <languages/python/pythonwrapper.h>
+#include <languages/python/modules.h>
 
 #define MODULE_INIT_DECLARTION(LANG, NAME) extern LANG##_INIT_FUNCTION_SIGNATURE(NAME);
 

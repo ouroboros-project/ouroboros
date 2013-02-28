@@ -1,9 +1,0 @@
-SET(OUROBOROS_PYTHON_SRC 
-    ./src/ouroboros/languages/python/modules.h 
-    ./src/ouroboros/languages/python/pythondata.cxx 
-    ./src/ouroboros/languages/python/pythondata.h 
-    ./src/ouroboros/languages/python/pythonmodules.cxx 
-    ./src/ouroboros/languages/python/pythonwrapper.cxx 
-    ./src/ouroboros/languages/python/pythonwrapper.h 
-    ./src/ouroboros/languages/python/swigpyrun.h 
-)
