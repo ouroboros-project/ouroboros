@@ -124,6 +124,7 @@ if (OUROBOROS_CREATE_BINDINGS)
     add_subdirectory( src/languages )
 endif (OUROBOROS_CREATE_BINDINGS)
 
+add_subdirectory (src/opwig)
 
 add_library (libouroboros ${OUROBOROS_SRC} ${GENERATED_SRC})
 
