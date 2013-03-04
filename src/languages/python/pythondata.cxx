@@ -1,6 +1,6 @@
 #include <languages/python/pythondata.h>
-#include <ouroboros/scriptmanager.h>
-#include <ouroboros/virtualobj.h>
+#include <OPA/scriptmanager.h>
+#include <OPA/virtualobj.h>
 #include <languages/python/swigpyrun.h>
 
 #include <memory>

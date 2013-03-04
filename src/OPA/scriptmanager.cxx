@@ -1,10 +1,10 @@
-#include <ouroboros/scriptmanager.h>
+#include <OPA/scriptmanager.h>
 
 #include <cstdio>
 #include <algorithm>
 
-#include <ouroboros/langwrapper.h>
-#include <ouroboros/virtualobj.h>
+#include <OPA/langwrapper.h>
+#include <OPA/virtualobj.h>
 
 namespace ouroboros {
 

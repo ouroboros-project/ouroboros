@@ -7,10 +7,10 @@
 
 #include <memory>
 
-#include <ouroboros/config.h>
+#include <OPA/config.h>
 #include <languages/python/pythondata.h>
-#include <ouroboros/virtualobj.h>
-#include <ouroboros/scriptmanager.h>
+#include <OPA/virtualobj.h>
+#include <OPA/scriptmanager.h>
 #include <languages/python/swigpyrun.h>
 #include <languages/python/modules.h>
 

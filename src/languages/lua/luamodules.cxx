@@ -3,7 +3,7 @@
 #include <vector>
 #include <cstdio>
 
-#include <ouroboros/module.h>
+#include <OPA/module.h>
 #include <languages/lua/luawrapper.h>
 
 namespace ouroboros {

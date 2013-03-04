@@ -2,8 +2,8 @@
 #ifndef OUROBOROS_SCRIPT_VIRTUALPRIMITIVE_H_
 #define OUROBOROS_SCRIPT_VIRTUALPRIMITIVE_H_
 
-#include <ouroboros/virtualdata.h>
-#include <ouroboros/type.h>
+#include <OPA/virtualdata.h>
+#include <OPA/type.h>
 
 namespace ouroboros {
 

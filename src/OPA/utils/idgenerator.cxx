@@ -1,6 +1,6 @@
 
 #include <cstdio>
-#include <ouroboros/utils/idgenerator.h>
+#include <OPA/utils/idgenerator.h>
 
 namespace ouroboros {
 namespace utils {

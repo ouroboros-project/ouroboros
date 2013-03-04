@@ -1,7 +1,7 @@
 #ifndef OUROBOROS_SCRIPT_LUA_MODULES_H_
 #define OUROBOROS_SCRIPT_LUA_MODULES_H_
 
-#include <ouroboros/script.h>
+#include <OPA/script.h>
 #include <languages/lua/defs.h>
 
 namespace ouroboros {

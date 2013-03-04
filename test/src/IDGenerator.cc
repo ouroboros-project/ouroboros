@@ -1,6 +1,6 @@
 
 #include "gtest/gtest.h"
-#include <ouroboros/utils/idgenerator.h>
+#include <OPA/utils/idgenerator.h>
 
 using ouroboros::utils::IDGenerator;
 

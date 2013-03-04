@@ -2,11 +2,11 @@
 #ifndef OUROBOROS_SCRIPT_VIRTUALOBJ_H_
 #define OUROBOROS_SCRIPT_VIRTUALOBJ_H_
 
-#include <ouroboros/virtualdata.h>
-#include <ouroboros/type.h>
-#include <ouroboros/langwrapper.h>
-#include <ouroboros/virtualprimitive.h>
-#include <ouroboros/utils/uncopyable.h>
+#include <OPA/virtualdata.h>
+#include <OPA/type.h>
+#include <OPA/langwrapper.h>
+#include <OPA/virtualprimitive.h>
+#include <OPA/utils/uncopyable.h>
 
 #include <list>
 #include <vector>

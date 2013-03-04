@@ -2,14 +2,14 @@
 
 #include <languages/lua/luawrapper.h>
 
-#include <ouroboros/virtualdata.h>
-#include <ouroboros/virtualobj.h>
+#include <OPA/virtualdata.h>
+#include <OPA/virtualobj.h>
 #include <languages/lua/luadata.h>
 #include <languages/lua/bootstrapgear.h>
 #include <languages/lua/datagear.h>
 #include <languages/lua/modules.h>
 
-#include <ouroboros/scriptmanager.h>
+#include <OPA/scriptmanager.h>
 
 namespace ouroboros {
 namespace lua {

@@ -1,7 +1,7 @@
-#include <ouroboros/script.h>
+#include <OPA/script.h>
 
-#include <ouroboros/config.h>
-#include <ouroboros/scriptmanager.h>
+#include <OPA/config.h>
+#include <OPA/scriptmanager.h>
 #include <languages/lua/luawrapper.h>
 #include <languages/python/pythonwrapper.h>
 

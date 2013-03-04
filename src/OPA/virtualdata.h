@@ -9,7 +9,7 @@
 #include <map>
 #include <functional>
 
-#include <ouroboros/type.h>
+#include <OPA/type.h>
 
 /*namespace ouroboros {
 namespace script {

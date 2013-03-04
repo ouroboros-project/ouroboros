@@ -7,7 +7,7 @@
 #include <vector>
 
 #include <languages/lua/defs.h>
-#include <ouroboros/langwrapper.h>
+#include <OPA/langwrapper.h>
 
 namespace ouroboros {
 namespace lua {

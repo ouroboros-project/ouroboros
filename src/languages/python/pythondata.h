@@ -3,7 +3,7 @@
 
 #include <Python.h>
 #include <vector>
-#include <ouroboros/virtualdata.h>
+#include <OPA/virtualdata.h>
 #include <languages/python/pythonwrapper.h>
 
 namespace ouroboros {

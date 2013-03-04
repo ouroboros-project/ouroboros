@@ -1,5 +1,5 @@
 
-#include <ouroboros/virtualobj.h>
+#include <OPA/virtualobj.h>
 
 #include <algorithm>
 
