@@ -4,6 +4,6 @@
 #include <cstdlib>
 
 int main (int argc, char** argv) {
-  return std::EXIT_SUCCESS;
+  return EXIT_SUCCESS;
 }
 
