@@ -9,12 +9,12 @@
 #include <languages/lua/defs.h>
 #include <opa/langwrapper.h>
 
-namespace ouroboros {
+namespace opa {
 namespace lua {
 
 class DataGear;
 class LuaData;
-typedef ouroboros::InheritableLangWrapper<lua_CFunction> LuaWrapperBase;
+typedef opa::InheritableLangWrapper<lua_CFunction> LuaWrapperBase;
 
 class LuaWrapper: public LuaWrapperBase {
 
@@ -79,6 +79,6 @@ class LuaWrapper: public LuaWrapperBase {
 std::string NameConversion(const std::string& name);
 
 } /* namespace lua */
-} /* namespace ouroboros */
+} /* namespace opa */
 
 #endif /* OUROBOROS_SCRIPT_LUA_LUAWRAPPER_H_ */

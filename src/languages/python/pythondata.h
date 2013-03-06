@@ -6,7 +6,7 @@
 #include <opa/virtualdata.h>
 #include <languages/python/pythonwrapper.h>
 
-namespace ouroboros {
+namespace opa {
 
 class VirtualObj;
 class VirtualType;
@@ -62,6 +62,6 @@ class PythonData : public VirtualData {
 };
 
 }
-} /* namespace ouroboros */
+} /* namespace opa */
 
 #endif /* OUROBOROS_SCRIPT_PYTHON_PYTHONDATA_H_ */

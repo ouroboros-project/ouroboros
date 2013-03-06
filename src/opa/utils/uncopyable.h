@@ -2,7 +2,7 @@
 #ifndef OUROBOROS_UTILS_UNCOPIABLE_H_
 #define OUROBOROS_UTILS_UNCOPIABLE_H_
 
-namespace ouroboros {
+namespace opa {
 namespace utils {
 
 class Uncopyable {
@@ -15,6 +15,6 @@ class Uncopyable {
 };
 
 } /* namespace utils */
-} /* namespace ouroboros */
+} /* namespace opa */
 
 #endif /* OUROBOROS_UTILS_UNCOPIABLE_H_ */

@@ -12,7 +12,7 @@
 #include <languages/lua/primitive.h>
 #include <languages/lua/auxlib.h>
 
-namespace ouroboros {
+namespace opa {
 namespace lua {
 
 class State {
@@ -109,7 +109,7 @@ class State {
 };
 
 } /* namespace lua */
-} /* namespace ouroboros */
+} /* namespace opa */
 
 #endif /* OUROBOROS_SCRIPT_LUA_STATE_H_ */
 

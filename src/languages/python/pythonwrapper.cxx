@@ -14,7 +14,7 @@
 #include <languages/python/swigpyrun.h>
 #include <languages/python/modules.h>
 
-namespace ouroboros {
+namespace opa {
 namespace python {
 
 using std::shared_ptr;

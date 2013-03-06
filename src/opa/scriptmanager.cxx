@@ -6,7 +6,7 @@
 #include <opa/langwrapper.h>
 #include <opa/virtualobj.h>
 
-namespace ouroboros {
+namespace opa {
 
 using std::string;
 

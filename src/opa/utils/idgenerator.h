@@ -5,7 +5,7 @@
 #include <unordered_set>
 #include <opa/utils/uncopyable.h>
 
-namespace ouroboros {
+namespace opa {
 namespace utils {
 class IDGenerator : public Uncopyable {
   public:
@@ -33,6 +33,6 @@ class IDGenerator : public Uncopyable {
 };
 
 } // namespace util
-} // namespace ouroboros
+} // namespace opa
 
 #endif

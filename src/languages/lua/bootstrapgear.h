@@ -11,12 +11,12 @@
 #include <opa/langwrapper.h>
 #include <opa/module.h>
 
-namespace ouroboros {
+namespace opa {
 namespace lua {
 
 class DataGear;
 
-typedef ouroboros::Module<lua_CFunction> LuaModule;
+typedef opa::Module<lua_CFunction> LuaModule;
 typedef const std::vector<LuaModule> ModuleList;
 
 class BootstrapGear : public BaseGear {
@@ -45,6 +45,6 @@ class BootstrapGear : public BaseGear {
 };
 
 } /* namespace lua */
-} /* namespace ouroboros */
+} /* namespace opa */
 
 #endif /* OUROBOROS_SCRIPT_LUA_BOOTSTRAPGEAR_H_ */

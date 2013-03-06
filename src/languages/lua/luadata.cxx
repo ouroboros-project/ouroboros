@@ -5,7 +5,7 @@
 #include <languages/lua/luadata.h>
 #include <languages/lua/datagear.h>
 
-namespace ouroboros {
+namespace opa {
 namespace lua {
 
 using std::vector;
@@ -164,4 +164,4 @@ void LuaData::AddToBuffer() {
 }
 
 } /* namespace lua */
-} /* namespace ouroboros */
+} /* namespace opa */

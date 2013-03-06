@@ -9,10 +9,10 @@
 #include <opa/utils/uncopyable.h>
 #include <opa/utils/idgenerator.h>
 
-namespace ouroboros {
+namespace opa {
 namespace lua {
 
-class DataGear : public BaseGear, private ouroboros::utils::Uncopyable {
+class DataGear : public BaseGear, private opa::utils::Uncopyable {
 
   public:
 
@@ -102,7 +102,7 @@ class DataGear : public BaseGear, private ouroboros::utils::Uncopyable {
   private:
 
     //DataID datatable_id_;
-    ouroboros::utils::IDGenerator idgen_;
+    opa::utils::IDGenerator idgen_;
 
     DataGear& operator=(const DataGear& rhs) {
         return *this;
@@ -165,6 +165,6 @@ int DataGear::WrapPrimitive(lua_State* L) {
 }
 
 } /* namespace lua */
-} /* namespace ouroboros */
+} /* namespace opa */
 
 #endif /* OUROBOROS_SCRIPT_LUA_DATAGEAR_H_ */

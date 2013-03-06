@@ -6,7 +6,7 @@
 
 #include <opa/defs.h>
 
-namespace ouroboros {
+namespace opa {
 
 class VirtualType {
 
@@ -52,7 +52,7 @@ class TypeRegistry {
 template <class T>
 VirtualType TypeRegistry<T>::type_;
 
-} /* namespace ouroboros */
+} /* namespace opa */
 
 template <class T>
 static void RegisterType(T* tp) {

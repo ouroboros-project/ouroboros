@@ -11,7 +11,7 @@
 #include <opa/virtualdata.h>
 #include <opa/module.h>
 
-namespace ouroboros {
+namespace opa {
 
 class LangWrapper {
 
@@ -110,6 +110,6 @@ class InheritableLangWrapper : public LangWrapper {
 
 };
 
-} /* namespace ouroboros */
+} /* namespace opa */
 
 #endif /* OUROBOROS_SCRIPT_LANGWRAPPER_H_ */

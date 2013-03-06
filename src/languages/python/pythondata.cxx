@@ -6,7 +6,7 @@
 #include <memory>
 #include <cstdlib>
 
-namespace ouroboros {
+namespace opa {
 namespace python {
 
 using std::shared_ptr;

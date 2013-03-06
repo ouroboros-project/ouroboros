@@ -11,9 +11,9 @@
 MODULE_AUTO_LOAD(FORCE_LOAD_MODULE)
 #endif
 
-namespace ouroboros {
+namespace opa {
 
-#define SCRIPT_MANAGER() (ouroboros::ScriptManager::ref())
+#define SCRIPT_MANAGER() (opa::ScriptManager::ref())
 
 class ScriptManager {
 public:

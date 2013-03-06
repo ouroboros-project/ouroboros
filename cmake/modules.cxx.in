@@ -14,7 +14,7 @@
 #define DECLARE_MODULE_INITS(LANG) extern "C" { MODULES_LIST(LANG, MODULE_INIT_DECLARTION) }
 
 #define MODULE_ITEM(LANG, name) \
-    LANG##_NAMESPACE::AddModule(::ouroboros::Module< LANG##_NAMESPACE::inittype >(LANG##_MODULE_NAME(name), LANG##_INIT_FUNCTION_NAME(name)));
+    LANG##_NAMESPACE::AddModule(::opa::Module< LANG##_NAMESPACE::inittype >(LANG##_MODULE_NAME(name), LANG##_INIT_FUNCTION_NAME(name)));
 
 #define DECLARE_MODULES(LANG) \
 static int build_##LANG##_MODULES() { \

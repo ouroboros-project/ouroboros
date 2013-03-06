@@ -11,7 +11,7 @@
 
 #include <opa/scriptmanager.h>
 
-namespace ouroboros {
+namespace opa {
 namespace lua {
 
 using std::string;
@@ -118,4 +118,4 @@ std::string NameConversion(const std::string& name) {
 }
 
 } /* namespace lua */
-} /* namespace ouroboros */
+} /* namespace opa */

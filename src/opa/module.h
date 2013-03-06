@@ -3,7 +3,7 @@
 
 #include <string>
 
-namespace ouroboros {
+namespace opa {
 
 template <class loader_t>
 class Module {
@@ -18,6 +18,6 @@ class Module {
     loader_t        init_func_;
 };
 
-} /* namespace ouroboros */
+} /* namespace opa */
 
 #endif /* OUROBOROS_SCRIPT_MODULE_H_ */

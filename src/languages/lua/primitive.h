@@ -4,7 +4,7 @@
 
 #include <languages/lua/header.h>
 
-namespace ouroboros {
+namespace opa {
 namespace lua {
 
 #define CHECK_LUA_TYPE(name, type) (defined name) && (name == type)
@@ -118,6 +118,6 @@ DEFINE_LUA_SIMPLE_IS(double, number);
  */
 
 } /* namespace lua */
-} /* namespace ouroboros */
+} /* namespace opa */
 
 #endif /* OUROBOROS_SCRIPT_LUA_PRIMITIVE_H_ */

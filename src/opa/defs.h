@@ -18,7 +18,7 @@ struct swig_type_info;
 }
 #endif
 
-namespace ouroboros {
+namespace opa {
 
 /// Type used for script languages' IDs.
 typedef size_t LangID;
@@ -28,6 +28,6 @@ DEFINE_LANG_ID(Lua,     0);
 DEFINE_LANG_ID(Python,  1);
 
 
-} /* namespace ouroboros */
+} /* namespace opa */
 
 #endif /* OUROBOROS_SCRIPT_DEFS_H_ */
