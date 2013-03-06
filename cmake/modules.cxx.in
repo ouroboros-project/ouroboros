@@ -3,7 +3,7 @@
 
 #define LANGUAGES_LIST(ACTION) @LANGUAGES_LIST@
 
-#include <OPA/module.h>
+#include <opa/module.h>
 #include <languages/lua/luawrapper.h>
 #include <languages/lua/modules.h>
 #include <languages/python/pythonwrapper.h>

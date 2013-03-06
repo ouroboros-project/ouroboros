@@ -4,7 +4,7 @@
 
 #include <vector>
 
-#include <OPA/defs.h>
+#include <opa/defs.h>
 
 namespace ouroboros {
 

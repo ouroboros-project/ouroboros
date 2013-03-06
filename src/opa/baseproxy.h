@@ -2,7 +2,7 @@
 #define OUROBOROS_MODULE_PROXY_CACHE_H_
 
 #include <map>
-#include <OPA/virtualobj.h>
+#include <opa/virtualobj.h>
 
 namespace ouroboros {
 

@@ -1,5 +1,5 @@
 
-#include <OPA/virtualobj.h>
+#include <opa/virtualobj.h>
 
 #include <algorithm>
 

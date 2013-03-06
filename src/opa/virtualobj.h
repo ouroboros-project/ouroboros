@@ -2,11 +2,11 @@
 #ifndef OUROBOROS_SCRIPT_VIRTUALOBJ_H_
 #define OUROBOROS_SCRIPT_VIRTUALOBJ_H_
 
-#include <OPA/virtualdata.h>
-#include <OPA/type.h>
-#include <OPA/langwrapper.h>
-#include <OPA/virtualprimitive.h>
-#include <OPA/utils/uncopyable.h>
+#include <opa/virtualdata.h>
+#include <opa/type.h>
+#include <opa/langwrapper.h>
+#include <opa/virtualprimitive.h>
+#include <opa/utils/uncopyable.h>
 
 #include <list>
 #include <vector>

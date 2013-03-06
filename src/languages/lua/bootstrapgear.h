@@ -8,8 +8,8 @@
 #include <languages/lua/basegear.h>
 #include <languages/lua/state.h>
 
-#include <OPA/langwrapper.h>
-#include <OPA/module.h>
+#include <opa/langwrapper.h>
+#include <opa/module.h>
 
 namespace ouroboros {
 namespace lua {

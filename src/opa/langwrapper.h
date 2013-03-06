@@ -4,12 +4,12 @@
 
 #include <string>
 
-#include <OPA/script.h>
+#include <opa/script.h>
 
-#include <OPA/defs.h>
-#include <OPA/type.h>
-#include <OPA/virtualdata.h>
-#include <OPA/module.h>
+#include <opa/defs.h>
+#include <opa/type.h>
+#include <opa/virtualdata.h>
+#include <opa/module.h>
 
 namespace ouroboros {
 

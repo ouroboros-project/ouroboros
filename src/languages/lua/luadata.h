@@ -2,8 +2,8 @@
 #ifndef OUROBOROS_SCRIPT_LUA_LUADATA_H_
 #define OUROBOROS_SCRIPT_LUA_LUADATA_H_
 
-#include <OPA/type.h>
-#include <OPA/virtualdata.h>
+#include <opa/type.h>
+#include <opa/virtualdata.h>
 
 #include <languages/lua/defs.h>
 #include <languages/lua/luawrapper.h>

@@ -2,7 +2,7 @@
 #define OUROBOROS_SCRIPT_PYTHON_PYTHONWRAPPER_H_
 
 #include <vector>
-#include <OPA/langwrapper.h>
+#include <opa/langwrapper.h>
 
 namespace ouroboros {
 

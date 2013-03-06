@@ -7,7 +7,7 @@
 #include <languages/lua/header.h>
 #include <languages/lua/state.h>
 
-#include <OPA/utils/uncopyable.h>
+#include <opa/utils/uncopyable.h>
 
 namespace ouroboros {
 namespace lua {

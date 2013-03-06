@@ -1,6 +1,6 @@
 #include <languages/python/pythondata.h>
-#include <OPA/scriptmanager.h>
-#include <OPA/virtualobj.h>
+#include <opa/scriptmanager.h>
+#include <opa/virtualobj.h>
 #include <languages/python/swigpyrun.h>
 
 #include <memory>

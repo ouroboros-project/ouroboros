@@ -2,12 +2,12 @@
 #ifndef OUROBOROS_SCRIPT_LUA_DATAGEAR_H_
 #define OUROBOROS_SCRIPT_LUA_DATAGEAR_H_
 
-#include <OPA/type.h>
+#include <opa/type.h>
 #include <languages/lua/header.h>
 #include <languages/lua/state.h>
 #include <languages/lua/basegear.h>
-#include <OPA/utils/uncopyable.h>
-#include <OPA/utils/idgenerator.h>
+#include <opa/utils/uncopyable.h>
+#include <opa/utils/idgenerator.h>
 
 namespace ouroboros {
 namespace lua {

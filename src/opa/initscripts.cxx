@@ -1,7 +1,7 @@
-#include <OPA/script.h>
+#include <opa/script.h>
 
-#include <OPA/config.h>
-#include <OPA/scriptmanager.h>
+#include <opa/config.h>
+#include <opa/scriptmanager.h>
 #include <languages/lua/luawrapper.h>
 #include <languages/python/pythonwrapper.h>
 

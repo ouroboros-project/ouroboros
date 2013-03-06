@@ -7,10 +7,10 @@
 
 #include <memory>
 
-#include <OPA/config.h>
+#include <opa/config.h>
 #include <languages/python/pythondata.h>
-#include <OPA/virtualobj.h>
-#include <OPA/scriptmanager.h>
+#include <opa/virtualobj.h>
+#include <opa/scriptmanager.h>
 #include <languages/python/swigpyrun.h>
 #include <languages/python/modules.h>
 
