@@ -1,10 +1,15 @@
 
-%class-name   MDParser
-%namespace    opwig
+%class-name           MDParser
+%baseclass-preinclude iostream
+%namespace            opwig
+
+%token IDENTIFIER
 
 %%
 
 input:
   // empty
+|
+  IDENTIFIER input { std::cout << "Token" << std::endl; }
 ;
 

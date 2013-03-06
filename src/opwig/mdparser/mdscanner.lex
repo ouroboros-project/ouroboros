@@ -8,7 +8,7 @@
 
 %%
 
-[_a-zA-Z][_a-zA-Z0-9]*  return 1;
+[_a-zA-Z][_a-zA-Z0-9]*  return MDParserBase::IDENTIFIER;
 
 .|\n                    { /*skip*/ }
 
