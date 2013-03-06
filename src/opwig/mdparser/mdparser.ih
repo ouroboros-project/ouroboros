@@ -3,7 +3,7 @@
     // Include this file in the sources of the class MDParser.
 
 // $insert class.h
-#include "mdparser.h"
+#include <opwig/mdparser/mdparser.h>
 
 // $insert namespace-open
 namespace opwig
@@ -17,7 +17,7 @@ inline void MDParser::error(char const *msg)
 // $insert lex
 inline int MDParser::lex()
 {
-    return 1337;//d_scanner.lex();
+    return d_scanner.lex();
 }
 
 inline void MDParser::print()         

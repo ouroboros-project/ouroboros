@@ -4,31 +4,33 @@
 #define MDParser_h_included
 
 // $insert baseclass
-#include "mdparserbase.h"
+#include <opwig/mdparser/mdparserbase.h>
+
+#include <opwig/mdparser/mdscanner.h>
 
 // $insert namespace-open
-namespace opwig
-{
+namespace opwig {
 
 #undef MDParser
-class MDParser: public MDParserBase
-{
-        
-    public:
-        int parse();
+class MDParser: public MDParserBase {
 
-    private:
-        void error(char const *msg);    // called on (syntax) errors
-        int lex();                      // returns the next token from the
-                                        // lexical scanner. 
-        void print();                   // use, e.g., d_token, d_loc
+  public:
+    int parse();
+
+  private:
+    MDScanner d_scanner;
+
+    void error(char const *msg);    // called on (syntax) errors
+    int lex();                      // returns the next token from the
+                                    // lexical scanner. 
+    void print();                   // use, e.g., d_token, d_loc
 
     // support functions for parse():
-        void executeAction(int ruleNr);
-        void errorRecovery();
-        int lookup(bool recovery);
-        void nextToken();
-        void print__();
+    void executeAction(int ruleNr);
+    void errorRecovery();
+    int lookup(bool recovery);
+    void nextToken();
+    void print__();
 };
 
 // $insert namespace-close

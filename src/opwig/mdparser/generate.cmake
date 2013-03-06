@@ -1,4 +1,42 @@
 
+# Lex stuff
+set (
+  OPWIG_MDSCANNER_LEX_SRC
+  ${CMAKE_CURRENT_LIST_DIR}/mdscanner.lex
+)
+
+set (
+  OPWIG_MDSCANNER_PERSISTENT_SRC
+  ${CMAKE_CURRENT_LIST_DIR}/mdscanner.h
+  ${CMAKE_CURRENT_LIST_DIR}/mdscanner.ih
+)
+
+set (
+  OPWIG_MDSCANNER_GENERATED_SRC
+  ${CMAKE_CURRENT_LIST_DIR}/mdscannerbase.h
+  ${CMAKE_CURRENT_LIST_DIR}/mdscanner-lex.cxx
+)
+
+add_custom_command (
+  OUTPUT  ${OPWIG_MDSCANNER_GENERATED_SRC}
+  COMMAND flexc++ ARGS mdscanner.lex
+  DEPENDS ${OPWIG_MDSCANNER_LEX_SRC}
+  WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
+)
+
+set_source_files_properties (
+  ${OPWIG_MDSCANNER_GENERATED_SRC}
+  PROPERTIES
+  GENERATED 1
+)
+
+set (
+  OPWIG_MDSCANNER_SRC
+  ${OPWIG_MDSCANNER_PERSISTENT_SRC}
+  ${OPWIG_MDSCANNER_GENERATED_SRC}
+)
+
+# Parser stuff
 set (
   OPWIG_MDPARER_GRAMMAR_SRC
   ${CMAKE_CURRENT_LIST_DIR}/mdparser.gr
