@@ -2,10 +2,10 @@
 #ifndef OUROBOROS_SCRIPT_VIRTUALPRIMITIVE_H_
 #define OUROBOROS_SCRIPT_VIRTUALPRIMITIVE_H_
 
-#include <ouroboros/virtualdata.h>
-#include <ouroboros/type.h>
+#include <opa/virtualdata.h>
+#include <opa/type.h>
 
-namespace ouroboros {
+namespace opa {
 
 #define TYPENAME_MAP(definition) \
     definition(const char*, String); \
@@ -57,6 +57,6 @@ TYPENAME_MAP(DEFINE_SCRIPT_SIMPLE_PRIMITIVE_VALUE)
 
 #undef TYPENAME_MAP
 
-} /* namespace ouroboros */
+} /* namespace opa */
 
 #endif /* OUROBOROS_SCRIPT_VIRTUALPRIMITIVE_H_ */

@@ -5,7 +5,7 @@
 #include <languages/lua/auxlib.h>
 #include <languages/lua/datagear.h>
 
-namespace ouroboros {
+namespace opa {
 namespace lua {
 
 /// Public:
@@ -68,4 +68,4 @@ void BootstrapGear::PreloadModules (const ModuleList& modules) {
 }
 
 } /* namespace lua */
-} /* namespace ouroboros */
+} /* namespace opa */

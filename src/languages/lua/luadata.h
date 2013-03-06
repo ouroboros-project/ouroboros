@@ -2,13 +2,13 @@
 #ifndef OUROBOROS_SCRIPT_LUA_LUADATA_H_
 #define OUROBOROS_SCRIPT_LUA_LUADATA_H_
 
-#include <ouroboros/type.h>
-#include <ouroboros/virtualdata.h>
+#include <opa/type.h>
+#include <opa/virtualdata.h>
 
 #include <languages/lua/defs.h>
 #include <languages/lua/luawrapper.h>
 
-namespace ouroboros {
+namespace opa {
 namespace lua {
 
 class LuaData : public VirtualData {
@@ -68,6 +68,6 @@ class LuaData : public VirtualData {
 };
 
 } /* namespace lua */
-} /* namespace ouroboros */
+} /* namespace opa */
 
 #endif /* OUROBOROS_SCRIPT_LUA_LUADATA_H_ */

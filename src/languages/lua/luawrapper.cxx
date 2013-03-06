@@ -2,16 +2,16 @@
 
 #include <languages/lua/luawrapper.h>
 
-#include <ouroboros/virtualdata.h>
-#include <ouroboros/virtualobj.h>
+#include <opa/virtualdata.h>
+#include <opa/virtualobj.h>
 #include <languages/lua/luadata.h>
 #include <languages/lua/bootstrapgear.h>
 #include <languages/lua/datagear.h>
 #include <languages/lua/modules.h>
 
-#include <ouroboros/scriptmanager.h>
+#include <opa/scriptmanager.h>
 
-namespace ouroboros {
+namespace opa {
 namespace lua {
 
 using std::string;
@@ -118,4 +118,4 @@ std::string NameConversion(const std::string& name) {
 }
 
 } /* namespace lua */
-} /* namespace ouroboros */
+} /* namespace opa */

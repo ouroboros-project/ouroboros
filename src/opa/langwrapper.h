@@ -4,14 +4,14 @@
 
 #include <string>
 
-#include <ouroboros/script.h>
+#include <opa/script.h>
 
-#include <ouroboros/defs.h>
-#include <ouroboros/type.h>
-#include <ouroboros/virtualdata.h>
-#include <ouroboros/module.h>
+#include <opa/defs.h>
+#include <opa/type.h>
+#include <opa/virtualdata.h>
+#include <opa/module.h>
 
-namespace ouroboros {
+namespace opa {
 
 class LangWrapper {
 
@@ -110,6 +110,6 @@ class InheritableLangWrapper : public LangWrapper {
 
 };
 
-} /* namespace ouroboros */
+} /* namespace opa */
 
 #endif /* OUROBOROS_SCRIPT_LANGWRAPPER_H_ */

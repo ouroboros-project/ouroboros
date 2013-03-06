@@ -4,7 +4,7 @@
 #include <languages/lua/basegear.h>
 #include <languages/lua/auxlib.h>
 
-namespace ouroboros {
+namespace opa {
 namespace lua {
 
 static int traceback (lua_State *L);
@@ -50,4 +50,4 @@ static int traceback (lua_State *L) {
 }
 
 } /* namespace lua */
-} /* namespace ouroboros */
+} /* namespace opa */

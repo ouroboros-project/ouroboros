@@ -1,8 +1,8 @@
 
 #include "gtest/gtest.h"
-#include <ouroboros/utils/idgenerator.h>
+#include <opa/utils/idgenerator.h>
 
-using ouroboros::utils::IDGenerator;
+using opa::utils::IDGenerator;
 
 TEST(IDGenerator, StraightGeneration) {
   IDGenerator idgen(1,10,-1);

@@ -1,9 +1,9 @@
 
-#include <ouroboros/virtualobj.h>
+#include <opa/virtualobj.h>
 
 #include <algorithm>
 
-namespace ouroboros {
+namespace opa {
 
 using std::vector;
 using std::list;
@@ -32,4 +32,4 @@ VirtualObj VirtualObj::Create (const char* obj, LangWrapper* wrapper) {
 }
 
 
-} /* namespace ouroboros */
+} /* namespace opa */

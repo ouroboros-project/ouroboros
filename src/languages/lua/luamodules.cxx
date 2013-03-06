@@ -3,10 +3,10 @@
 #include <vector>
 #include <cstdio>
 
-#include <ouroboros/module.h>
+#include <opa/module.h>
 #include <languages/lua/luawrapper.h>
 
-namespace ouroboros {
+namespace opa {
 namespace lua {
 
 typedef std::vector< Module<inittype> > LuaModuleList;
@@ -34,4 +34,4 @@ void RegisterModules(LuaWrapper* wrapper) {
 }
 
 } /* namespace lua */
-} /* namespace ouroboros */
+} /* namespace opa */

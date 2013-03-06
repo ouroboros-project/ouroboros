@@ -7,9 +7,9 @@
 #include <languages/lua/header.h>
 #include <languages/lua/state.h>
 
-#include <ouroboros/utils/uncopyable.h>
+#include <opa/utils/uncopyable.h>
 
-namespace ouroboros {
+namespace opa {
 namespace lua {
 
 class BaseGear {
@@ -99,6 +99,6 @@ class BaseGear {
     T& name = *(static_cast<T*>((L).touserdata(i)))
 
 } /* namespace lua */
-} /* namespace ouroboros */
+} /* namespace opa */
 
 #endif /* OUROBOROS_SCRIPT_LUA_BASEGEAR_H_ */

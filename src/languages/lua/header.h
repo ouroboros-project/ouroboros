@@ -14,7 +14,7 @@ extern "C" {
 
 }
 
-namespace ouroboros {
+namespace opa {
 namespace lua {
 
 #define DECLARE_LUA_CONSTANT(category,name) \
@@ -82,7 +82,7 @@ inline void LuaMsg (const char *format, ...) {
 }
 
 } /* namespace lua */
-} /* namespace ouroboros */
+} /* namespace opa */
 
 
 #endif /* OUROBOROS_SCRIPT_LUA_HEADER_H_ */

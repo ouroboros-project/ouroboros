@@ -3,10 +3,10 @@
 #include <vector>
 #include <cstdio>
 
-#include <ouroboros/module.h>
+#include <opa/module.h>
 #include <languages/python/pythonwrapper.h>
 
-namespace ouroboros {
+namespace opa {
 namespace python {
 
 typedef std::vector< Module<inittype> > PythonModuleList;
@@ -34,4 +34,4 @@ void RegisterModules(PythonWrapper* wrapper) {
 }
 
 } /* namespace python */
-} /* namespace ouroboros */
+} /* namespace opa */

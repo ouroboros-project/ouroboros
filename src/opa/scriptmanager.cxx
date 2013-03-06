@@ -1,12 +1,12 @@
-#include <ouroboros/scriptmanager.h>
+#include <opa/scriptmanager.h>
 
 #include <cstdio>
 #include <algorithm>
 
-#include <ouroboros/langwrapper.h>
-#include <ouroboros/virtualobj.h>
+#include <opa/langwrapper.h>
+#include <opa/virtualobj.h>
 
-namespace ouroboros {
+namespace opa {
 
 using std::string;
 

@@ -2,11 +2,11 @@
 #ifndef OUROBOROS_SCRIPT_VIRTUALOBJ_H_
 #define OUROBOROS_SCRIPT_VIRTUALOBJ_H_
 
-#include <ouroboros/virtualdata.h>
-#include <ouroboros/type.h>
-#include <ouroboros/langwrapper.h>
-#include <ouroboros/virtualprimitive.h>
-#include <ouroboros/utils/uncopyable.h>
+#include <opa/virtualdata.h>
+#include <opa/type.h>
+#include <opa/langwrapper.h>
+#include <opa/virtualprimitive.h>
+#include <opa/utils/uncopyable.h>
 
 #include <list>
 #include <vector>
@@ -15,7 +15,7 @@
 
 #include <cstdio>
 
-namespace ouroboros {
+namespace opa {
 
 class VirtualObj;
 class Bind;
@@ -230,6 +230,6 @@ inline Bind VirtualObj::operator|(const std::string& method_name) {
     return result;
 }
 
-} /* namespace ouroboros */
+} /* namespace opa */
 
 #endif /* OUROBOROS_SCRIPT_VIRTUALOBJ_H_ */

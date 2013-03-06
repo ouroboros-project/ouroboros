@@ -7,14 +7,14 @@
 
 #include <memory>
 
-#include <ouroboros/config.h>
+#include <opa/config.h>
 #include <languages/python/pythondata.h>
-#include <ouroboros/virtualobj.h>
-#include <ouroboros/scriptmanager.h>
+#include <opa/virtualobj.h>
+#include <opa/scriptmanager.h>
 #include <languages/python/swigpyrun.h>
 #include <languages/python/modules.h>
 
-namespace ouroboros {
+namespace opa {
 namespace python {
 
 using std::shared_ptr;

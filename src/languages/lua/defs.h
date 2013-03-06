@@ -13,7 +13,7 @@ typedef int (*lua_CFunction)(lua_State*);
 #include <list>
 #include <map>
 
-namespace ouroboros {
+namespace opa {
 namespace lua {
 
 typedef int                     DataID;
@@ -33,11 +33,11 @@ typedef lua_CFunction inittype;
 
 #define LUA_INIT_FUNCTION_NAME(name) luaopen_##name
 #define LUA_INIT_FUNCTION_SIGNATURE(name) int LUA_INIT_FUNCTION_NAME(name)(lua_State*)
-#define LUA_MODULE_NAME(name) ouroboros::lua::NameConversion(#name)
-#define LUA_NAMESPACE ::ouroboros::lua
+#define LUA_MODULE_NAME(name) opa::lua::NameConversion(#name)
+#define LUA_NAMESPACE ::opa::lua
 
 } /* namespace lua */
-} /* namespace ouroboros */
+} /* namespace opa */
 
 
 #endif /* OUROBOROS_SCRIPT_LUA_DEFS_H_ */

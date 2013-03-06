@@ -9,9 +9,9 @@
 #include <map>
 #include <functional>
 
-#include <ouroboros/type.h>
+#include <opa/type.h>
 
-/*namespace ouroboros {
+/*namespace opa {
 namespace script {
 class VirtualData;
 }
@@ -20,19 +20,19 @@ class VirtualData;
 namespace std {
 
 template <>
-struct less<std::shared_ptr<ouroboros::VirtualData> > :
-binary_function <std::shared_ptr<ouroboros::VirtualData>,
-                 std::shared_ptr<ouroboros::VirtualData>,
+struct less<std::shared_ptr<opa::VirtualData> > :
+binary_function <std::shared_ptr<opa::VirtualData>,
+                 std::shared_ptr<opa::VirtualData>,
                  bool> {
-    bool operator() (const std::shared_ptr<ouroboros::VirtualData>& x,
-                     const std::shared_ptr<ouroboros::VirtualData>& y)
+    bool operator() (const std::shared_ptr<opa::VirtualData>& x,
+                     const std::shared_ptr<opa::VirtualData>& y)
         const
         {return x.get()<y.get();}
 };
 
 }*/
 
-namespace ouroboros {
+namespace opa {
 
 class VirtualObj;
 class LangWrapper;
@@ -82,7 +82,7 @@ class VirtualData : public std::enable_shared_from_this<VirtualData> {
      ** @param type - a virtual type got from TypeRegistry<T>::type(), where
      **               T is the original declarated type of the data.
      ** @return A shared pointer to the wrapped data.
-     ** @see ouroboros::TypeRegistry
+     ** @see opa::TypeRegistry
      ** @depracated
      */
     virtual void Wrap(void* data, const VirtualType& type) = 0;
@@ -119,6 +119,6 @@ class VirtualData : public std::enable_shared_from_this<VirtualData> {
 
 };
 
-} /* namespace ouroboros */
+} /* namespace opa */
 
 #endif /* OUROBOROS_SCRIPT_VIRTUALDATA_H_ */

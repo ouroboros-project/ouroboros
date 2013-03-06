@@ -7,7 +7,7 @@
 
 #include <languages/lua/swigluarun.h>
 
-namespace ouroboros {
+namespace opa {
 namespace lua {
 
 /// Public:
@@ -422,4 +422,4 @@ bool DataGear::PushDataTable() {
 }
 
 } /* namespace lua */
-} /* namespace ouroboros */
+} /* namespace opa */

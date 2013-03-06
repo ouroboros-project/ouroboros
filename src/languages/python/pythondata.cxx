@@ -1,12 +1,12 @@
 #include <languages/python/pythondata.h>
-#include <ouroboros/scriptmanager.h>
-#include <ouroboros/virtualobj.h>
+#include <opa/scriptmanager.h>
+#include <opa/virtualobj.h>
 #include <languages/python/swigpyrun.h>
 
 #include <memory>
 #include <cstdlib>
 
-namespace ouroboros {
+namespace opa {
 namespace python {
 
 using std::shared_ptr;

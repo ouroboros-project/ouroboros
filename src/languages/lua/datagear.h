@@ -2,17 +2,17 @@
 #ifndef OUROBOROS_SCRIPT_LUA_DATAGEAR_H_
 #define OUROBOROS_SCRIPT_LUA_DATAGEAR_H_
 
-#include <ouroboros/type.h>
+#include <opa/type.h>
 #include <languages/lua/header.h>
 #include <languages/lua/state.h>
 #include <languages/lua/basegear.h>
-#include <ouroboros/utils/uncopyable.h>
-#include <ouroboros/utils/idgenerator.h>
+#include <opa/utils/uncopyable.h>
+#include <opa/utils/idgenerator.h>
 
-namespace ouroboros {
+namespace opa {
 namespace lua {
 
-class DataGear : public BaseGear, private ouroboros::utils::Uncopyable {
+class DataGear : public BaseGear, private opa::utils::Uncopyable {
 
   public:
 
@@ -102,7 +102,7 @@ class DataGear : public BaseGear, private ouroboros::utils::Uncopyable {
   private:
 
     //DataID datatable_id_;
-    ouroboros::utils::IDGenerator idgen_;
+    opa::utils::IDGenerator idgen_;
 
     DataGear& operator=(const DataGear& rhs) {
         return *this;
@@ -165,6 +165,6 @@ int DataGear::WrapPrimitive(lua_State* L) {
 }
 
 } /* namespace lua */
-} /* namespace ouroboros */
+} /* namespace opa */
 
 #endif /* OUROBOROS_SCRIPT_LUA_DATAGEAR_H_ */

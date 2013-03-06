@@ -1,7 +1,7 @@
 #ifndef OUROBOROS_SCRIPT_H_
 #define OUROBOROS_SCRIPT_H_
 
-namespace ouroboros {
+namespace opa {
 
 // Functions
 void InitScripts();
@@ -39,6 +39,6 @@ class PythonWrapper;
 
 } /* namespace python */
 
-}  // namespace ouroboros
+}  // namespace opa
 
 #endif /* OUROBOROS_SCRIPT_H_ */

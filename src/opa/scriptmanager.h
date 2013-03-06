@@ -4,16 +4,16 @@
 #include <string>
 #include <map>
 
-#include <ouroboros/script.h>
+#include <opa/script.h>
 
 #ifdef MODULE_AUTO_LOAD
 #define FORCE_LOAD_MODULE(x) void force_link_function_##x(void) { extern int x##_MODULES_HEARTBEAT; x##_MODULES_HEARTBEAT = 1; }
 MODULE_AUTO_LOAD(FORCE_LOAD_MODULE)
 #endif
 
-namespace ouroboros {
+namespace opa {
 
-#define SCRIPT_MANAGER() (ouroboros::ScriptManager::ref())
+#define SCRIPT_MANAGER() (opa::ScriptManager::ref())
 
 class ScriptManager {
 public:

@@ -2,23 +2,23 @@
 #define OUROBOROS_SCRIPT_PYTHON_PYTHONWRAPPER_H_
 
 #include <vector>
-#include <ouroboros/langwrapper.h>
+#include <opa/langwrapper.h>
 
-namespace ouroboros {
+namespace opa {
 
 class VirtualObj;
 
 namespace python {
 
 typedef void (*PyInitFunction)(void);
-typedef ouroboros::Module<PyInitFunction> PythonModule;
-typedef ouroboros::InheritableLangWrapper<PyInitFunction> PythonWrapperBase;
-typedef ouroboros::python::PyInitFunction inittype;
+typedef opa::Module<PyInitFunction> PythonModule;
+typedef opa::InheritableLangWrapper<PyInitFunction> PythonWrapperBase;
+typedef opa::python::PyInitFunction inittype;
 
 #define PYTHON_INIT_FUNCTION_NAME(name) init_##name
 #define PYTHON_INIT_FUNCTION_SIGNATURE(name) void PYTHON_INIT_FUNCTION_NAME(name)(void)
 #define PYTHON_MODULE_NAME(name) "_" #name
-#define PYTHON_NAMESPACE ::ouroboros::python
+#define PYTHON_NAMESPACE ::opa::python
 
 class PythonWrapper : public PythonWrapperBase {
   public:

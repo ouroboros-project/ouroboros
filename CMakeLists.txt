@@ -165,8 +165,8 @@ endif(OUROBOROS_BUILD_TESTS)
 
 
 CONFIGURE_FILE(
-    "${SRC_DIR}/ouroboros/config.h.in"
-    "${SRC_DIR}/ouroboros/config.h"
+  "${SRC_DIR}/opa/config.h.in"
+  "${SRC_DIR}/opa/config.h"
 )
 
 install(TARGETS libouroboros

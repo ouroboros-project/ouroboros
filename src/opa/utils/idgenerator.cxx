@@ -1,8 +1,8 @@
 
 #include <cstdio>
-#include <ouroboros/utils/idgenerator.h>
+#include <opa/utils/idgenerator.h>
 
-namespace ouroboros {
+namespace opa {
 namespace utils {
 
 using std::unordered_set;
@@ -40,4 +40,4 @@ int IDGenerator::ReleaseID(int id) {
 }
 
 } // namespace utils
-} // namespace ouroboros
+} // namespace opa
