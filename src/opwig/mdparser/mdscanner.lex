@@ -21,14 +21,35 @@ identifier                  ({non_digit}({non_digit}|{digit})*)
 character_lit               (L?\'([^\'\\\n]|\\.)*)
 character_literal           ({character_lit}\')
 
-string_lit                  (L?\"([^\"\\\n]|\\.)*)
-string_literal              ({string_lit}\")
+string_begin                (L?\")
+string_content              ([^\"\\\n]|\\.)
+string_end                  (\")
 
 pp_number                   (\.?{digit}({digit}|{non_digit}|[eE][-+]|\.)*)
 
+%x string
+
 %%
 
-[_a-zA-Z][_a-zA-Z0-9]*  return MDParserBase::IDENTIFIER;
+{ws} {}
 
-.|\n                    { /*skip*/ }
+{string_begin} {
+  more();
+  begin(StartCondition__::string);
+}
+
+<string> {
+
+  {string_end} {
+    begin(StartCondition__::INITIAL);
+    return MDParserBase::STRING_LITERAL;
+  }
+
+  {string_content} {
+    more();
+  }
+
+}
+
+{identifier}      return MDParserBase::IDENTIFIER;
 

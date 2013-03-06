@@ -4,12 +4,15 @@
 %namespace            opwig
 
 %token IDENTIFIER
+%token STRING_LITERAL
 
 %%
 
 input:
-  // empty
+  /* empty */ { std::cout << "nothing" << std::endl; }
 |
-  IDENTIFIER input { std::cout << "Token" << std::endl; }
+  input IDENTIFIER { std::cout << "Token" << std::endl; }
+|
+  input STRING_LITERAL { std::cout << "String" << std::endl; }
 ;
 
