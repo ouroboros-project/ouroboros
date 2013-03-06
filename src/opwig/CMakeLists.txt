@@ -1,11 +1,11 @@
 
 cmake_minimum_required (VERSION 2.8)
 
-add_subdirectory (mdparser)
+include (mdparser/src.cmake)
 
 add_executable (
   opwig
   main.cxx
-  ${OPWIG_GENERATED_SRC}
+  ${OPWIG_MDPARSER_SRC}
 )
 
