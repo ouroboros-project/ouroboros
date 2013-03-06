@@ -8,6 +8,9 @@
 
 #include <opwig/mdparser/mdscanner.h>
 
+#include <iostream>
+#include <string>
+
 // $insert namespace-open
 namespace opwig {
 
@@ -15,6 +18,9 @@ namespace opwig {
 class MDParser: public MDParserBase {
 
   public:
+    MDParser () {}
+    explicit MDParser (std::istream& in) : d_scanner(in) {}
+
     int parse();
 
   private:
