@@ -1,6 +1,4 @@
 
-require "ugdk.math"
-
 print "============ HEY FROM LUA"
 
 --- Lists the contents of a table to the standard output.
@@ -13,7 +11,6 @@ end
 
 print = print
 
-v = ugdk_math.Vector2D(1,2)
 str = "AMAGAD LUA STRING"
 bool = true
 integer = 42

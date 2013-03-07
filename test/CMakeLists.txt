@@ -82,5 +82,12 @@ foreach( OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES} )
     set( CMAKE_RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} "" )
 endforeach( OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES )
 
-cxx_executable(ouroboros_test src "gtest_main;libouroboros")
+cxx_executable (ouroboros_test src "gtest_main;libouroboros")
+add_executable (oldscript_test EXCLUDE_FROM_ALL script_test.cxx )
+target_link_libraries (
+  oldscript_test
+  libouroboros
+  libouroboros-lua
+  libouroboros-python
+)
 

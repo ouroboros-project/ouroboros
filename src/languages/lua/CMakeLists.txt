@@ -29,9 +29,13 @@ message ("-- Lua module added.")
 
 add_library (libouroboros-lua ${OUROBOROS_LUA_SRC})
 
-target_link_libraries (libouroboros-lua  ${LUA_LIBRARIES})
+target_link_libraries (libouroboros-lua ${LUA_LIBRARIES})
 
 target_link_libraries (libouroboros-lua LINK_INTERFACE_LIBRARIES ${LUA_LIBRARIES})
+
+target_link_libraries (libouroboros-lua libouroboros)
+
+target_link_libraries (libouroboros-lua LINK_INTERFACE_LIBRARIES libouroboros)
 
 set_target_properties (libouroboros-lua PROPERTIES 
     LINK_FLAGS "${LDFLAGS}"
