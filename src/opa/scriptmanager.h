@@ -22,7 +22,7 @@ public:
     }
     ~ScriptManager() { ref_ = nullptr; }
 
-	std::string scripts_path() const { return scripts_path_; }
+    std::string scripts_path() const { return scripts_path_; }
 
     bool Initialize(const std::string& scripts_path);
     void Finalize();
@@ -45,7 +45,7 @@ private:
     static ScriptManager* ref_;
     ScriptManager();
 
-	std::string scripts_path_;
+    std::string scripts_path_;
     typedef std::map<std::string, LangWrapper*> WrapperMap;
     WrapperMap wrappers_;
 };
