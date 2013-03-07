@@ -20,8 +20,7 @@ identifier                  ({non_digit}({non_digit}|{digit})*)
 
 integer_literal             ({digit}+[ULul]?)
 
-character_lit               (L?\'([^\'\\\n]|\\.)*)
-character_literal           ({character_lit}\')
+character_literal           (L?\'(([^\'\\\n])|(\\.))\')
 
 string_literal              (L?\"(([^\"\\\n])|(\\.))*\")
 
@@ -35,6 +34,10 @@ pp_number                   (\.?{digit}({digit}|{non_digit}|[eE][-+]|\.)*)
 
 {string_literal} {
   return MDParserBase::STRING_LITERAL;
+}
+
+{character_literal} {
+  return MDParserBase::CHARACTER_LITERAL;
 }
 
 {integer_literal} {
