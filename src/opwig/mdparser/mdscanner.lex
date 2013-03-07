@@ -23,9 +23,7 @@ integer_literal             ({digit}+[ULul]?)
 character_lit               (L?\'([^\'\\\n]|\\.)*)
 character_literal           ({character_lit}\')
 
-string_begin                (L?\")
-string_content              (([^\"\\\n])|(\\.))
-string_end                  (\")
+string_literal              (L?\"(([^\"\\\n])|(\\.))*\")
 
 pp_number                   (\.?{digit}({digit}|{non_digit}|[eE][-+]|\.)*)
 
@@ -33,22 +31,10 @@ pp_number                   (\.?{digit}({digit}|{non_digit}|[eE][-+]|\.)*)
 
 %%
 
-{string_begin} {
-  begin(StartCondition__::string);
-  more();
-}
+{ws} {}
 
-<string> {
-
-  {string_end} {
-    begin(StartCondition__::INITIAL);
-    return MDParserBase::STRING_LITERAL;
-  }
-
-  {string_content} {
-    more();
-  }
-
+{string_literal} {
+  return MDParserBase::STRING_LITERAL;
 }
 
 {integer_literal} {
