@@ -18,8 +18,8 @@ namespace opwig {
 class MDParser: public MDParserBase {
 
   public:
-    MDParser () {}
-    explicit MDParser (std::istream& in) : d_scanner(in) {}
+    MDParser () : d_scanner(std::cin, std::cerr) {}
+    explicit MDParser (std::istream& in) : d_scanner(in, std::cerr) {}
 
     int parse();
 

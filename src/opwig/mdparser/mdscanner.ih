@@ -5,6 +5,8 @@
 
 #include <opwig/mdparser/mdparserbase.h>
 
+#include <iostream>
+
 // $insert namespace-use
     // UN-comment the next using-declaration if you want to use
     // symbols from the namespace opwig without prefixing opwig::
