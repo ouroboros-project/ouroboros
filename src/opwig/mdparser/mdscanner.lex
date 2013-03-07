@@ -6,7 +6,7 @@
 %lex-source             "mdscanner-lex.cxx"
 %namespace              "opwig"
 
-ws                          [ \f\v\t]
+ws                          [ \f\v\t\n]
 digit                       [0-9]
 hex                         [0-9A-Fa-f]
 letter                      [A-Z_a-z]
