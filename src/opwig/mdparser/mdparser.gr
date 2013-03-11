@@ -4,6 +4,7 @@
 %namespace            opwig
 
 %token IDENTIFIER
+%token KEYWORD
 %token STRING_LITERAL
 %token CHARACTER_LITERAL
 %token INTEGER_LITERAL
@@ -17,6 +18,8 @@ input:
   /* empty */
 |
   input IDENTIFIER { std::cout << "Identifier" << std::endl; }
+|
+  input KEYWORD { std::cout << "Keyword" << std::endl; }
 |
   input STRING_LITERAL { std::cout << "String" << std::endl; }
 |
