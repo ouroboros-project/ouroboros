@@ -21,7 +21,7 @@ escape_sequence             ({simple_escape_sequence}|{octal_escape_sequence}|{h
 
 identifier                  ({non_digit}({non_digit}|{digit})*)
 
-integer_literal             ({nonzero}{digit}*[ULul]?)
+integer_literal             (((0)|({nonzero}{digit}*))[ULul]?)
 hexadecimal_literal         (0[Xx]{hex}+)
 octal_literal               (0[0-7]+)
 float_literal               ({digit}*\.{digit}+([Ee][+-]{digit}+)?)

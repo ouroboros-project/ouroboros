@@ -35,7 +35,7 @@ declaration:
 //=========================// BLOCK DECLARAIONS //
 
 block_declaration:
-  simple_declaration
+  simple_declaration { std::cout << "Simple declaration" << std::endl; }
 ;
 
 simple_declaration:
@@ -96,8 +96,6 @@ ptr_operator:
 
 initializer:
   brace_or_equal_initializer
-//|
-//  '(' initializer_list ')'
 ;
 
 brace_or_equal_initializer:
@@ -107,10 +105,6 @@ brace_or_equal_initializer:
 initializer_clause:
   expression
 ;
-
-//  identifier {
-//    std::cout << "Simple declaration" << std::endl;
-//  }
 
 //=========================// FUNCTION DECLARATIONS //
 //
@@ -155,7 +149,7 @@ type_name:
 //=========================// IDENTIFIERS //
 
 expression:
-  identifier
+  INTEGER_LITERAL
 ;
 
 //=========================// IDENTIFIERS //
