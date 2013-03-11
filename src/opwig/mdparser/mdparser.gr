@@ -146,11 +146,40 @@ type_name:
   identifier
 ;
 
-//=========================// IDENTIFIERS //
+//=========================// EXPRESSIONS //
 
 expression:
-  INTEGER_LITERAL
+  term
+|
+  expression term
 ;
+
+term:
+  literal
+|
+  identifier
+|
+  operand
+|
+  '(' expression ')'
+;
+
+literal:
+  STRING_LITERAL
+|
+  CHARACTER_LITERAL
+|
+  INTEGER_LITERAL
+|
+  HEXADECIMAL_LITERAL
+|
+  OCTAL_LITERAL
+|
+  FLOAT_LITERAL
+;
+
+operand:
+  '+' | '-' | '*' | '/' | '%' | '^' | '?' | ':' ;
 
 //=========================// IDENTIFIERS //
 
