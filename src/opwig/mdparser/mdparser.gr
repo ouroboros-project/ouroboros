@@ -15,22 +15,78 @@
 %%
 
 input:
+  declaration_seq {}
+;
+
+declaration_seq:
   /* empty */
 |
-  input IDENTIFIER { std::cout << "Identifier" << std::endl; }
-|
-  input KEYWORD { std::cout << "Keyword" << std::endl; }
-|
-  input STRING_LITERAL { std::cout << "String" << std::endl; }
-|
-  input CHARACTER_LITERAL { std::cout << "Character" << std::endl; }
-|
-  input INTEGER_LITERAL { std::cout << "Integer" << std::endl; }
-|
-  input HEXADECIMAL_LITERAL { std::cout << "Hexadecimal" << std::endl; }
-|
-  input OCTAL_LITERAL { std::cout << "Octal" << std::endl; }
-|
-  input FLOAT_LITERAL { std::cout << "Float" << std::endl; }
+  declaration_seq declaration {}
 ;
+
+declaration:
+  block_declaration
+|
+  function_declaration
+;
+
+block_declaration:
+  simple_declaration
+;
+
+simple_declaration:
+  ';' {
+    std::cout << "Simple declaration" << std::endl;
+  }
+|
+  type_id identifier ';' {
+    std::cout << "Simple declaration" << std::endl;
+  }
+;
+
+function_declaration:
+  type_id identifier '(' param_list ')' ';' {
+    std::cout << "Function declaration" << std::endl;
+  }
+;
+
+param_list:
+  /* empty */
+|
+  param_spec
+|
+  param_spec ',' param_list
+;
+
+param_spec:
+  type_id
+|
+  type_id identifier
+;
+
+type_id:
+  identifier
+;
+
+identifier:
+  IDENTIFIER
+;
+  
+//stuff:
+//  IDENTIFIER { std::cout << "Identifier" << std::endl; }
+//|
+//  KEYWORD { std::cout << "Keyword" << std::endl; }
+//|
+//  STRING_LITERAL { std::cout << "String" << std::endl; }
+//|
+//  CHARACTER_LITERAL { std::cout << "Character" << std::endl; }
+//|
+//  INTEGER_LITERAL { std::cout << "Integer" << std::endl; }
+//|
+//  HEXADECIMAL_LITERAL { std::cout << "Hexadecimal" << std::endl; }
+//|
+//  OCTAL_LITERAL { std::cout << "Octal" << std::endl; }
+//|
+//  FLOAT_LITERAL { std::cout << "Float" << std::endl; }
+//;
 
