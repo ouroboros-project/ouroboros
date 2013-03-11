@@ -8,6 +8,7 @@
 
 ws                          [ \f\v\t\n]
 digit                       [0-9]
+nonzero                     [1-9]
 hex                         [0-9A-Fa-f]
 letter                      [A-Z_a-z]
 universal_character_name    (\\u{hex}{hex}{hex}{hex}|\\U{hex}{hex}{hex}{hex}{hex}{hex}{hex}{hex})
@@ -20,7 +21,9 @@ escape_sequence             ({simple_escape_sequence}|{octal_escape_sequence}|{h
 
 identifier                  ({non_digit}({non_digit}|{digit})*)
 
-integer_literal             ({digit}+[ULul]?)
+integer_literal             ({nonzero}{digit}*[ULul]?)
+hexadecimal_literal         (0[Xx]{hex}+)
+octal_literal               (0[0-7]+)
 float_literal               ({digit}*\.{digit}+([Ee][+-]{digit}+)?)
 character_literal           (L?\'(([^\'\\\n])|(\\.))\')
 string_literal              (L?\"(([^\"\\\n])|(\\.))*\")
@@ -33,13 +36,17 @@ pp_number                   (\.?{digit}({digit}|{non_digit}|[eE][-+]|\.)*)
 
 {ws}                /* do nothing */;
 
-{string_literal}    return MDParserBase::STRING_LITERAL;
+{string_literal}      return MDParserBase::STRING_LITERAL;
 
-{character_literal} return MDParserBase::CHARACTER_LITERAL;
+{character_literal}   return MDParserBase::CHARACTER_LITERAL;
 
-{integer_literal}   return MDParserBase::INTEGER_LITERAL;
+{integer_literal}     return MDParserBase::INTEGER_LITERAL;
 
-{float_literal}     return MDParserBase::FLOAT_LITERAL;
+{hexadecimal_literal} return MDParserBase::HEXADECIMAL_LITERAL;
 
-{identifier}        return MDParserBase::IDENTIFIER;
+{octal_literal}       return MDParserBase::OCTAL_LITERAL;
+
+{float_literal}       return MDParserBase::FLOAT_LITERAL;
+
+{identifier}          return MDParserBase::IDENTIFIER;
 
