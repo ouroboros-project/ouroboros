@@ -21,6 +21,7 @@ escape_sequence             ({simple_escape_sequence}|{octal_escape_sequence}|{h
 identifier                  ({non_digit}({non_digit}|{digit})*)
 
 integer_literal             ({digit}+[ULul]?)
+float_literal               ({digit}*\.{digit}+([Ee][+-]{digit}+)?)
 character_literal           (L?\'(([^\'\\\n])|(\\.))\')
 string_literal              (L?\"(([^\"\\\n])|(\\.))*\")
 
@@ -37,6 +38,8 @@ pp_number                   (\.?{digit}({digit}|{non_digit}|[eE][-+]|\.)*)
 {character_literal} return MDParserBase::CHARACTER_LITERAL;
 
 {integer_literal}   return MDParserBase::INTEGER_LITERAL;
+
+{float_literal}     return MDParserBase::FLOAT_LITERAL;
 
 {identifier}        return MDParserBase::IDENTIFIER;
 

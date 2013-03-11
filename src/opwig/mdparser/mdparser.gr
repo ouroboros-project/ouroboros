@@ -7,6 +7,7 @@
 %token STRING_LITERAL
 %token CHARACTER_LITERAL
 %token INTEGER_LITERAL
+%token FLOAT_LITERAL
 
 %%
 
@@ -20,5 +21,7 @@ input:
   input CHARACTER_LITERAL { std::cout << "Character" << std::endl; }
 |
   input INTEGER_LITERAL { std::cout << "Integer" << std::endl; }
+|
+  input FLOAT_LITERAL { std::cout << "Float" << std::endl; }
 ;
 
