@@ -14,6 +14,8 @@
 
 %%
 
+//=========================// TOP-LEVEL //
+
 input:
   declaration_seq {}
 ;
@@ -26,47 +28,137 @@ declaration_seq:
 
 declaration:
   block_declaration
-|
-  function_declaration
+//|
+//  function_declaration
 ;
+
+//=========================// BLOCK DECLARAIONS //
 
 block_declaration:
   simple_declaration
 ;
 
 simple_declaration:
-  ';' {
-    std::cout << "Simple declaration" << std::endl;
-  }
-|
-  type_id identifier ';' {
-    std::cout << "Simple declaration" << std::endl;
-  }
+  decl_specifier_seq_opt init_declarator_list_opt ';'
 ;
 
-function_declaration:
-  type_id identifier '(' param_list ')' ';' {
-    std::cout << "Function declaration" << std::endl;
-  }
-;
-
-param_list:
+decl_specifier_seq_opt:
   /* empty */
 |
-  param_spec
-|
-  param_spec ',' param_list
+  decl_specifier_seq
 ;
 
-param_spec:
-  type_id
+decl_specifier_seq:
+  decl_specifier
 |
-  type_id identifier
+  decl_specifier decl_specifier_seq
 ;
 
-type_id:
+decl_specifier:
+  type_specifier
+;
+
+//=========================// INIT DECLARATOR //
+
+init_declarator_list_opt:
+  /* empty */
+|
+  init_declarator_list
+;
+
+init_declarator_list:
+  init_declarator
+|
+  init_declarator_list ',' init_declarator
+;
+
+init_declarator:
+  declarator
+|
+  declarator initializer
+;
+
+declarator:
+  noptr_declarator
+|
+  ptr_operator declarator
+;
+
+noptr_declarator:
+  identifier
+|
+  '(' declarator ')'
+;
+
+ptr_operator:
+  '*'
+;
+
+initializer:
+  brace_or_equal_initializer
+//|
+//  '(' initializer_list ')'
+;
+
+brace_or_equal_initializer:
+  '=' initializer_clause
+;
+
+initializer_clause:
+  expression
+;
+
+//  identifier {
+//    std::cout << "Simple declaration" << std::endl;
+//  }
+
+//=========================// FUNCTION DECLARATIONS //
+//
+//function_declaration:
+//  type_specifier identifier '(' param_list ')' ';' {
+//    std::cout << "Function declaration" << std::endl;
+//  }
+//;
+//
+//param_list:
+//  /* empty */
+//|
+//  param_spec
+//|
+//  param_spec ',' param_list
+//;
+//
+//param_spec:
+//  type_specifier
+//|
+//  type_specifier identifier
+//;
+//
+//=========================// TYPE SPECIFICATION //
+
+type_specifier:
+  trailing_type_specifier
+;
+
+trailing_type_specifier:
+  simple_type_specifier
+;
+
+simple_type_specifier:
+  type_name
+;
+
+type_name:
   identifier
 ;
+
+//=========================// IDENTIFIERS //
+
+expression:
+  identifier
+;
+
+//=========================// IDENTIFIERS //
 
 identifier:
   IDENTIFIER
