@@ -39,13 +39,13 @@ block_declaration:
 ;
 
 simple_declaration:
-  decl_specifier_seq_opt init_declarator_list_opt ';'
-;
-
-decl_specifier_seq_opt:
-  /* empty */
+  ';'
 |
-  decl_specifier_seq
+  decl_specifier_seq init_declarator_list ';'
+|
+  decl_specifier_seq ';'
+|
+  init_declarator_list ';'
 ;
 
 decl_specifier_seq:
@@ -60,12 +60,6 @@ decl_specifier:
 
 //=========================// INIT DECLARATOR //
 
-init_declarator_list_opt:
-  /* empty */
-|
-  init_declarator_list
-;
-
 init_declarator_list:
   init_declarator
 |
@@ -79,19 +73,31 @@ init_declarator:
 ;
 
 declarator:
+  ptr_declarator
+;
+
+ptr_declarator:
   noptr_declarator
 |
   ptr_operator declarator
 ;
 
 noptr_declarator:
-  identifier
+  declarator_id
 |
-  '(' declarator ')'
+  noptr_declarator '[' expression ']'
+|
+  '(' ptr_declarator ')'
 ;
 
 ptr_operator:
   '*'
+|
+  '&'
+;
+
+declarator_id:
+  identifier
 ;
 
 initializer:
