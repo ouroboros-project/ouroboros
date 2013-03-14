@@ -3,6 +3,12 @@
 %baseclass-preinclude iostream
 %namespace            opwig
 
+%token BOGUS
+
+%right '*'
+%right '&'
+%right '='
+
 %token IDENTIFIER
 %token PRIMITIVE
 %token CATCH
@@ -63,6 +69,8 @@ declaration_seq:
 
 declaration:
   block_declaration
+|
+  namespace_definition { std::cout << "Namespace definition" << std::endl; }
 //|
 //  function_declaration
 ;
@@ -84,13 +92,15 @@ simple_declaration:
 ;
 
 decl_specifier_seq:
-  decl_specifier
+  type_specifier
 |
   decl_specifier decl_specifier_seq
 ;
 
 decl_specifier:
-  type_specifier
+  FRIEND
+|
+  TYPEDEF
 ;
 
 //=========================// INIT DECLARATOR //
@@ -169,6 +179,27 @@ initializer_clause:
 //  type_specifier identifier
 //;
 //
+
+//=========================// NAMESPACE DEFINITION //
+
+namespace_definition:
+  named_namespace_definition
+|
+  unnamed_namespace_definition
+;
+
+named_namespace_definition:
+  NAMESPACE identifier '{' declaration_seq '}'
+|
+  INLINE NAMESPACE identifier '{' declaration_seq '}'
+;
+
+unnamed_namespace_definition:
+  NAMESPACE '{' declaration_seq '}'
+|
+  INLINE NAMESPACE '{' declaration_seq '}'
+;
+
 //=========================// TYPE SPECIFICATION //
 
 type_specifier:

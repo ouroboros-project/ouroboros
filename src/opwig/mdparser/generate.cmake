@@ -23,6 +23,7 @@ add_custom_command (
                         --baseclass-header=mdparserbase.h
                         --class-header=mdparser.h
                         --implementation-header=mdparser.ih
+                        #-V
                         mdparser.gr
   DEPENDS ${OPWIG_MDPARER_GRAMMAR_SRC}
   WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}

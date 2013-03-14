@@ -89,7 +89,7 @@ pp_number                   (\.?{digit}({digit}|{non_digit}|[eE][-+]|\.)*)
 "using"             { return MDParserBase::USING; }
 "virtual"           { return MDParserBase::VIRTUAL; }
 "void"              { return MDParserBase::VOID; }
-"volatile"          { return MDParserBase::VOLATILE}
+"volatile"          { return MDParserBase::VOLATILE; }
 "wchar_t"           { return MDParserBase::PRIMITIVE; }
 
 {identifier}          return MDParserBase::IDENTIFIER;
