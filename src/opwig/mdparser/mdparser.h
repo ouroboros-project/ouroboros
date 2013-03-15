@@ -11,7 +11,6 @@
 
 #include <iostream>
 #include <string>
-#include <memory>
 
 // $insert namespace-open
 namespace opwig {
@@ -22,14 +21,14 @@ class MDParser: public MDParserBase {
   public:
     MDParser () :
       d_scanner(std::cin, std::cerr),
-      global_namespace_(new MDNamespace) {}
+      global_namespace_(MDNamespace::Create()) {}
     explicit MDParser (std::istream& in) : d_scanner(in, std::cerr) {}
 
     int parse();
 
   private:
-    MDScanner                     d_scanner;
-    std::shared_ptr<MDNamespace>  global_namespace_;
+    MDScanner         d_scanner;
+    MDNamespace::Ptr  global_namespace_;
 
     void error(char const *msg);    // called on (syntax) errors
     int lex();                      // returns the next token from the
