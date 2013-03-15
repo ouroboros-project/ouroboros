@@ -3,12 +3,6 @@
 %baseclass-preinclude iostream
 %namespace            opwig
 
-%token BOGUS
-
-%right '*'
-%right '&'
-%right '='
-
 %token IDENTIFIER
 %token PRIMITIVE
 %token CATCH
