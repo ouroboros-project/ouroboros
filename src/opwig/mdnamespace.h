@@ -20,6 +20,9 @@ class MDNamespace {
     /// constructor.
     static Ptr Create ();
 
+    /// Tells how many nested namespaces exist in this namespace.
+    size_t NestedNamespacesNum () const;
+
   private:
 
     std::map<std::string, Ptr> nested_namespaces_;
@@ -30,6 +33,10 @@ class MDNamespace {
 
 inline MDNamespace::Ptr MDNamespace::Create () {
   return Ptr(new MDNamespace);
+}
+
+inline size_t MDNamespace::NestedNamespacesNum () const {
+  return nested_namespaces_.size();
 }
 
 } // namespace opwig
