@@ -83,6 +83,7 @@ foreach( OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES} )
 endforeach( OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES )
 
 cxx_executable (ouroboros_test src "gtest_main;libouroboros")
+
 add_executable (oldscript_test EXCLUDE_FROM_ALL script_test.cxx )
 target_link_libraries (
   oldscript_test
@@ -90,4 +91,7 @@ target_link_libraries (
   libouroboros-lua
   libouroboros-python
 )
+
+cxx_executable (opwig_test src gtest_main ${OPWIG_SRC})
+
 
