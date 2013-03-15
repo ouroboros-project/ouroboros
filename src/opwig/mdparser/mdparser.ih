@@ -8,8 +8,7 @@
 #include <iostream>
 
 // $insert namespace-open
-namespace opwig
-{
+namespace opwig {
 
 inline void MDParser::error(char const *msg)
 {

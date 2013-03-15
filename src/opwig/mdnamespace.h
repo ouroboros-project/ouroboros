@@ -16,6 +16,9 @@ class MDNamespace {
     /// Garbage-collecting smart-pointer type for this class.
     typedef std::shared_ptr<MDNamespace> Ptr;
 
+    /// Const Garbage-collecting smart-pointer type for this class.
+    typedef std::shared_ptr<const MDNamespace> ConstPtr;
+
     /// Creates a new MDNamespace object. Must be used in place of the
     /// constructor.
     static Ptr Create ();

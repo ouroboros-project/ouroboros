@@ -22,9 +22,13 @@ class MDParser: public MDParserBase {
     MDParser () :
       d_scanner(std::cin, std::cerr),
       global_namespace_(MDNamespace::Create()) {}
-    explicit MDParser (std::istream& in) : d_scanner(in, std::cerr) {}
+    explicit MDParser (std::istream& in) :
+      d_scanner(in, std::cerr),
+      global_namespace_(MDNamespace::Create()) {}
 
     int parse();
+
+    MDNamespace::ConstPtr global_namespace () const;
 
   private:
     MDScanner         d_scanner;
@@ -42,6 +46,10 @@ class MDParser: public MDParserBase {
     void nextToken();
     void print__();
 };
+
+inline MDNamespace::ConstPtr MDParser::global_namespace () const {
+  return global_namespace_;
+}
 
 // $insert namespace-close
 }
