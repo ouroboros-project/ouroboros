@@ -5,6 +5,8 @@
 // $insert class.h
 #include <opwig/mdparser/mdparser.h>
 
+#include <iostream>
+
 // $insert namespace-open
 namespace opwig
 {

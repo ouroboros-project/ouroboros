@@ -1,7 +1,9 @@
 
 %class-name           MDParser
-%baseclass-preinclude iostream
+%baseclass-preinclude <opwig/mdparser/mdparser-preincludes.h>
 %namespace            opwig
+%polymorphic
+  Namespace: std::shared_ptr<MDNamespace>;
 
 %token IDENTIFIER
 %token PRIMITIVE
