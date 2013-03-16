@@ -5,6 +5,7 @@ include (mdparser/generate.cmake)
 
 set (
   OPWIG_SRC
+  ${CMAKE_CURRENT_BINARY_DIR}/mdnamespace.cxx
   ${CMAKE_CURRENT_BINARY_DIR}/mdnamespace.h
   ${OPWIG_MDPARSER_SRC}
   ${OPWIG_MDSCANNER_SRC}

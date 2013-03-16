@@ -26,6 +26,9 @@ class MDNamespace {
     /// Tells how many nested namespaces exist in this namespace.
     size_t NestedNamespacesNum () const;
 
+    /// Adds a nested namespace.
+    bool AddNestedNamespace (const std::string& name, const Ptr& nested);
+
   private:
 
     std::map<std::string, Ptr> nested_namespaces_;

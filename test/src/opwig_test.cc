@@ -25,3 +25,27 @@ TEST (MDParserTest, EmptyFile) {
   EXPECT_EQ(parser.global_namespace()->NestedNamespacesNum(), 0u);
 }
 
+namespace {
+  string test00 =
+    "namespace abc {}";
+  string test01 =
+    "namespace abc {}"
+    "namespace def {}";
+}
+
+TEST (MDParserTest, SingleEmptyNamespace) {
+  istringstream input(test00);
+  MDParser parser(input);
+  EXPECT_EQ(parser.parse(), 0);
+  EXPECT_EQ(parser.global_namespace()->NestedNamespacesNum(), 1u);
+  // TODO check namespace by name
+}
+
+TEST (MDParserTest, TwoEmptyNamespaces) {
+  istringstream input(test01);
+  MDParser parser(input);
+  EXPECT_EQ(parser.parse(), 0);
+  EXPECT_EQ(parser.global_namespace()->NestedNamespacesNum(), 2u);
+  // TODO check namespace by name
+}
+
