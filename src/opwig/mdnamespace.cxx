@@ -13,5 +13,19 @@ bool MDNamespace::AddNestedNamespace (const string& name, const Ptr& nested) {
   return true;
 }
 
+MDNamespace::ConstPtr MDNamespace::NestedNamespace (const string& name) const {
+  auto get = nested_namespaces_.find(name);
+  return get != nested_namespaces_.end()
+    ? get->second
+    : ConstPtr();
+}
+
+MDNamespace::Ptr MDNamespace::NestedNamespace (const string& name) {
+  auto get = nested_namespaces_.find(name);
+  return get != nested_namespaces_.end()
+    ? get->second
+    : Ptr();
+}
+
 } // namespace opwig
 

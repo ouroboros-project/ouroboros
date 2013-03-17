@@ -29,6 +29,12 @@ class MDNamespace {
     /// Adds a nested namespace.
     bool AddNestedNamespace (const std::string& name, const Ptr& nested);
 
+    /// Gives the nested namespace identified by the given name (const version).
+    ConstPtr NestedNamespace (const std::string& name) const;
+    
+    /// Gives the nested namespace identified by the given name.
+    Ptr NestedNamespace (const std::string& name);
+
   private:
 
     std::map<std::string, Ptr> nested_namespaces_;
