@@ -8,7 +8,12 @@
 #include <list>
 #include <functional>
 
-typedef std::function<bool (opwig::MDNamespace::Ptr)> NamespaceAction;
+namespace opwig {
+
+typedef std::function<bool (MDNamespace::Ptr)>  NamespaceAction;
+typedef std::list<NamespaceAction>              NamespaceActionList;
+
+} // namespace opwig
 
 #endif // OPWIG_MDPARSER_PREINCLUDES_H_
 
