@@ -10,6 +10,7 @@ script:
   - cmake . $OPTIONS
   - make ouroboros_test
   - ./test/ouroboros_test
+  - make oldscript_test
   - cd ./test
   - ./oldscript_test
   - cd ..
