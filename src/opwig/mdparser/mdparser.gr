@@ -3,7 +3,6 @@
 %baseclass-preinclude <opwig/mdparser/mdparser-preincludes.h>
 %namespace            opwig
 %polymorphic
-  Namespace: MDNamespace::Ptr;
   Declaration: NamespaceAction;
   DeclarationSeq: std::shared_ptr<NamespaceActionList>;
   String: std::string;
