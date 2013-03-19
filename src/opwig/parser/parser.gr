@@ -1,6 +1,6 @@
 
 %class-name           MDParser
-%baseclass-preinclude <opwig/mdparser/mdparser-preincludes.h>
+%baseclass-preinclude <opwig/parser/parser-preincludes.h>
 %namespace            opwig
 %polymorphic
   Declaration: NamespaceAction;
@@ -209,18 +209,18 @@ namespace_definition:
   }
 |
   unnamed_namespace_definition {
-    $$ = [] (MDNamespace::Ptr current_namespace) -> bool { return true; };
+    $$ = [] (md::Namespace::Ptr current_namespace) -> bool { return true; };
   }
 ;
 
 named_namespace_definition:
   NAMESPACE identifier '{' declaration_seq '}' {
-    MDNamespace::Ptr new_namespace = MDNamespace::Create();
+    md::Namespace::Ptr new_namespace = md::Namespace::Create();
     std::string name = $2;
     for (auto it: *$4)
       if (!(it) (new_namespace))
         std::cout << "Namespace action failed (new)";
-    $$ = [name,new_namespace] (MDNamespace::Ptr current_namespace) -> bool {
+    $$ = [name,new_namespace] (md::Namespace::Ptr current_namespace) -> bool {
       return current_namespace->AddNestedNamespace(name, new_namespace);
     };
   }

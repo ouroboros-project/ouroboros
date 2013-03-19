@@ -2,29 +2,29 @@
 # Parser stuff
 set (
   OPWIG_MDPARER_GRAMMAR_SRC
-  ${CMAKE_CURRENT_LIST_DIR}/mdparser.gr
+  ${CMAKE_CURRENT_LIST_DIR}/parser.gr
 )
 
 set (
   OPWIG_MDPARSER_PERSISTENT_SRC
-  ${CMAKE_CURRENT_LIST_DIR}/mdparser.h
-  ${CMAKE_CURRENT_LIST_DIR}/mdparser.ih
+  ${CMAKE_CURRENT_LIST_DIR}/parser.h
+  ${CMAKE_CURRENT_LIST_DIR}/parser.ih
 )
 
 set (
   OPWIG_MDPARSER_GENERATED_SRC
-  ${CMAKE_CURRENT_LIST_DIR}/mdparserbase.h
-  ${CMAKE_CURRENT_LIST_DIR}/mdparser-parse.cxx
+  ${CMAKE_CURRENT_LIST_DIR}/parserbase.h
+  ${CMAKE_CURRENT_LIST_DIR}/parser-parse.cxx
 )
 
 add_custom_command (
   OUTPUT  ${OPWIG_MDPARSER_GENERATED_SRC}
-  COMMAND bisonc++ ARGS --parsefun-source=mdparser-parse.cxx
-                        --baseclass-header=mdparserbase.h
-                        --class-header=mdparser.h
-                        --implementation-header=mdparser.ih
+  COMMAND bisonc++ ARGS --parsefun-source=parser-parse.cxx
+                        --baseclass-header=parserbase.h
+                        --class-header=parser.h
+                        --implementation-header=parser.ih
                         #-V
-                        mdparser.gr
+                        parser.gr
   DEPENDS ${OPWIG_MDPARER_GRAMMAR_SRC}
   WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
 )
@@ -44,24 +44,24 @@ set (
 # Lex stuff
 set (
   OPWIG_MDSCANNER_LEX_SRC
-  ${CMAKE_CURRENT_LIST_DIR}/mdscanner.lex
+  ${CMAKE_CURRENT_LIST_DIR}/scanner.lex
 )
 
 set (
   OPWIG_MDSCANNER_PERSISTENT_SRC
-  ${CMAKE_CURRENT_LIST_DIR}/mdscanner.h
-  ${CMAKE_CURRENT_LIST_DIR}/mdscanner.ih
+  ${CMAKE_CURRENT_LIST_DIR}/scanner.h
+  ${CMAKE_CURRENT_LIST_DIR}/scanner.ih
 )
 
 set (
   OPWIG_MDSCANNER_GENERATED_SRC
-  ${CMAKE_CURRENT_LIST_DIR}/mdscannerbase.h
-  ${CMAKE_CURRENT_LIST_DIR}/mdscanner-lex.cxx
+  ${CMAKE_CURRENT_LIST_DIR}/scannerbase.h
+  ${CMAKE_CURRENT_LIST_DIR}/scanner-lex.cxx
 )
 
 add_custom_command (
   OUTPUT  ${OPWIG_MDSCANNER_GENERATED_SRC}
-  COMMAND flexc++ ARGS mdscanner.lex
+  COMMAND flexc++ ARGS scanner.lex
   DEPENDS ${OPWIG_MDSCANNER_LEX_SRC} ${OPWIG_MDPARSER_GENERATED_SRC}
   WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
 )

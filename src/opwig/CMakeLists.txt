@@ -1,12 +1,12 @@
 
 cmake_minimum_required (VERSION 2.8)
 
-include (mdparser/generate.cmake)
+include (parser/generate.cmake)
 
 set (
   OPWIG_SRC
-  ${CMAKE_CURRENT_BINARY_DIR}/mdnamespace.cxx
-  ${CMAKE_CURRENT_BINARY_DIR}/mdnamespace.h
+  ${CMAKE_CURRENT_BINARY_DIR}/md/namespace.cxx
+  ${CMAKE_CURRENT_BINARY_DIR}/md/namespace.h
   ${OPWIG_MDPARSER_SRC}
   ${OPWIG_MDSCANNER_SRC}
 )

@@ -1,6 +1,5 @@
 
-#include <opwig/mdparser/mdparser.h>
-#include <opwig/mdnamespace.h>
+#include <opwig/parser/parser.h>
 
 #include <cstdlib>
 

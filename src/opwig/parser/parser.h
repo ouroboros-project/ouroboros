@@ -4,10 +4,10 @@
 #define MDParser_h_included
 
 // $insert baseclass
-#include <opwig/mdparser/mdparserbase.h>
+#include <opwig/parser/parserbase.h>
 
-#include <opwig/mdparser/mdscanner.h>
-#include <opwig/mdnamespace.h>
+#include <opwig/parser/scanner.h>
+#include <opwig/md/namespace.h>
 
 #include <iostream>
 #include <string>
@@ -21,18 +21,18 @@ class MDParser: public MDParserBase {
   public:
     MDParser () :
       d_scanner(std::cin, std::cerr),
-      global_namespace_(MDNamespace::Create()) {}
+      global_namespace_(md::Namespace::Create()) {}
     explicit MDParser (std::istream& in) :
       d_scanner(in, std::cerr),
-      global_namespace_(MDNamespace::Create()) {}
+      global_namespace_(md::Namespace::Create()) {}
 
     int parse();
 
-    MDNamespace::ConstPtr global_namespace () const;
+    md::Namespace::ConstPtr global_namespace () const;
 
   private:
-    MDScanner         d_scanner;
-    MDNamespace::Ptr  global_namespace_;
+    MDScanner           d_scanner;
+    md::Namespace::Ptr  global_namespace_;
 
     void error(char const *msg);    // called on (syntax) errors
     int lex();                      // returns the next token from the
@@ -47,7 +47,7 @@ class MDParser: public MDParserBase {
     void print__();
 };
 
-inline MDNamespace::ConstPtr MDParser::global_namespace () const {
+inline md::Namespace::ConstPtr MDParser::global_namespace () const {
   return global_namespace_;
 }
 

@@ -3,7 +3,7 @@
     // Include this file in the sources of the class MDParser.
 
 // $insert class.h
-#include <opwig/mdparser/mdparser.h>
+#include <opwig/parser/parser.h>
 
 #include <iostream>
 

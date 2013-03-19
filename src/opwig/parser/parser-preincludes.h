@@ -2,7 +2,7 @@
 #ifndef OPWIG_MDPARSER_PREINCLUDES_H_
 #define OPWIG_MDPARSER_PREINCLUDES_H_
 
-#include <opwig/mdnamespace.h>
+#include <opwig/md/namespace.h>
 
 #include <memory>
 #include <list>
@@ -10,8 +10,8 @@
 
 namespace opwig {
 
-typedef std::function<bool (MDNamespace::Ptr)>  NamespaceAction;
-typedef std::list<NamespaceAction>              NamespaceActionList;
+typedef std::function<bool (md::Namespace::Ptr)>  NamespaceAction;
+typedef std::list<NamespaceAction>                NamespaceActionList;
 
 } // namespace opwig
 

@@ -7,19 +7,20 @@
 #include <memory>
 
 namespace opwig {
+namespace md {
 
 /// Metadata class for C++ namespaces.
-class MDNamespace {
+class Namespace {
 
   public:
 
     /// Garbage-collecting smart-pointer type for this class.
-    typedef std::shared_ptr<MDNamespace> Ptr;
+    typedef std::shared_ptr<Namespace> Ptr;
 
     /// Const Garbage-collecting smart-pointer type for this class.
-    typedef std::shared_ptr<const MDNamespace> ConstPtr;
+    typedef std::shared_ptr<const Namespace> ConstPtr;
 
-    /// Creates a new MDNamespace object. Must be used in place of the
+    /// Creates a new Namespace object. Must be used in place of the
     /// constructor.
     static Ptr Create ();
 
@@ -39,18 +40,19 @@ class MDNamespace {
 
     std::map<std::string, Ptr> nested_namespaces_;
 
-    MDNamespace () {}
+    Namespace () {}
 
 };
 
-inline MDNamespace::Ptr MDNamespace::Create () {
-  return Ptr(new MDNamespace);
+inline Namespace::Ptr Namespace::Create () {
+  return Ptr(new Namespace);
 }
 
-inline size_t MDNamespace::NestedNamespacesNum () const {
+inline size_t Namespace::NestedNamespacesNum () const {
   return nested_namespaces_.size();
 }
 
+} // namespace md
 } // namespace opwig
 
 #endif // OPWIG_MDNAMESPACE_H_
