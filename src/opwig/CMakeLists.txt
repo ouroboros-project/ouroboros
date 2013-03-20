@@ -7,6 +7,7 @@ set (
   OPWIG_SRC
   ${CMAKE_CURRENT_BINARY_DIR}/md/namespace.cxx
   ${CMAKE_CURRENT_BINARY_DIR}/md/namespace.h
+  ${CMAKE_CURRENT_BINARY_DIR}/md/variable.h
   ${OPWIG_MDPARSER_SRC}
   ${OPWIG_MDSCANNER_SRC}
 )
