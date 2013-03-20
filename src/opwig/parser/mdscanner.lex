@@ -1,9 +1,9 @@
 
 %class-name             "MDScanner"
-%class-header           "scanner.h"
-%baseclass-header       "scannerbase.h"
-%implementation-header  "scanner.ih"
-%lex-source             "scanner-lex.cxx"
+%class-header           "mdscanner.h"
+%baseclass-header       "mdscannerbase.h"
+%implementation-header  "mdscanner.ih"
+%lex-source             "mdscanner-lex.cxx"
 %namespace              "opwig"
 
 ws                          [ \f\v\t\n]

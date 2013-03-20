@@ -4,9 +4,9 @@
 #define MDParser_h_included
 
 // $insert baseclass
-#include <opwig/parser/parserbase.h>
+#include <opwig/parser/mdparserbase.h>
 
-#include <opwig/parser/scanner.h>
+#include <opwig/parser/mdscanner.h>
 #include <opwig/md/namespace.h>
 
 #include <iostream>

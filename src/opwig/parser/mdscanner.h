@@ -4,7 +4,7 @@
 #define MDScanner_H_INCLUDED_
 
 // $insert baseclass_h
-#include <opwig/parser/scannerbase.h>
+#include <opwig/parser/mdscannerbase.h>
 
 // $insert namespace-open
 namespace opwig

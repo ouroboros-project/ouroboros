@@ -1,5 +1,5 @@
 
-#include <opwig/parser/parser.h>
+#include <opwig/parser/mdparser.h>
 
 #include <cstdlib>
 

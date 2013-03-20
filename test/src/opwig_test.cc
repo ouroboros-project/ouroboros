@@ -1,6 +1,6 @@
 
 #include <opwig/md/namespace.h>
-#include <opwig/parser/parser.h>
+#include <opwig/parser/mdparser.h>
 
 #include <gtest/gtest.h>
 

@@ -1,6 +1,6 @@
 
 %class-name           MDParser
-%baseclass-preinclude <opwig/parser/parser-preincludes.h>
+%baseclass-preinclude <opwig/parser/mdparser-preincludes.h>
 %namespace            opwig
 %polymorphic
   Declaration: NamespaceAction;
