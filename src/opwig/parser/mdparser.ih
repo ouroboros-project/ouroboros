@@ -26,6 +26,10 @@ inline void MDParser::print()
     print__();           // displays tokens if --print was specified
 }
 
+inline void MDParser::exceptionHandler__(std::exception const &exc) {
+    throw exc;
+}
+
 // $insert namespace-close
 }
 

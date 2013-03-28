@@ -45,6 +45,7 @@ class MDParser: public MDParserBase {
     int lookup(bool recovery);
     void nextToken();
     void print__();
+    void exceptionHandler__(std::exception const &exc);
 };
 
 inline md::Ptr<const md::Namespace> MDParser::global_namespace () const {
