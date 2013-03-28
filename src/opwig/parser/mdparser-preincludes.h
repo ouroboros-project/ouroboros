@@ -14,6 +14,8 @@ namespace opwig {
 typedef std::function<bool (md::Ptr<md::Namespace>)>  NamespaceAction;
 typedef std::list<NamespaceAction>                NamespaceActionList;
 
+typedef std::list<std::string>                    StringList;
+
 } // namespace opwig
 
 #endif // OPWIG_MDPARSER_PREINCLUDES_H_

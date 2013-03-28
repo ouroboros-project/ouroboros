@@ -6,6 +6,7 @@
   Declaration: NamespaceAction;
   DeclarationSeq: std::shared_ptr<NamespaceActionList>;
   String: std::string;
+  StringSeq: std::shared_ptr<StringList>;
 
 %token IDENTIFIER
 %token PRIMITIVE
@@ -67,12 +68,13 @@
 %type<String>         simple_type_specifier
 %type<String>         type_name:
 %type<String>         decl_specifier_seq
-
 %type<String>         init_declarator
 %type<String>         declarator
 %type<String>         ptr_declarator
 %type<String>         noptr_declarator
 %type<String>         declarator_id
+
+%type<StringSeq>     init_declarator_list
 
 %%
 
@@ -120,6 +122,7 @@ simple_declaration:
 |
   decl_specifier_seq init_declarator_list ';' {
     std::cout << "OHNOES" << std::endl;
+    
   }
 |
   decl_specifier_seq ';'
@@ -142,15 +145,21 @@ decl_specifier:
 //=========================// INIT DECLARATOR //
 
 init_declarator_list:
-  init_declarator
+  init_declarator {
+    $$ = std::shared_ptr<StringList>(new StringList);
+    ($$)->push_back($1);
+  }
 |
-  init_declarator_list ',' init_declarator
+  init_declarator_list ',' init_declarator {
+    ($1)->push_back($3);
+    $$ = $1
+  }
 ;
 
 init_declarator:
-  declarator 
+  declarator { $$ = $1; }
 |
-  declarator initializer
+  declarator initializer { $$ = $1; }
 ;
 
 declarator:
