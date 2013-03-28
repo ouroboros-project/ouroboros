@@ -1,6 +1,6 @@
 
-#ifndef OPWIG_MDNAMESPACE_H_
-#define OPWIG_MDNAMESPACE_H_
+#ifndef OPWIG_MD_NAMESPACE_H_
+#define OPWIG_MD_NAMESPACE_H_
 
 #include <opwig/md/scope.h>
 #include <opwig/md/ptr.h>
@@ -62,5 +62,5 @@ inline size_t Namespace::NestedNamespacesNum () const {
 } // namespace md
 } // namespace opwig
 
-#endif // OPWIG_MDNAMESPACE_H_
+#endif // OPWIG_MD_NAMESPACE_H_
 

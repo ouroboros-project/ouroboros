@@ -1,6 +1,6 @@
 
-#ifndef OPWIG_MDVARIABLE_H_
-#define OPWIG_MDVARIABLE_H_
+#ifndef OPWIG_MD_VARIABLE_H_
+#define OPWIG_MD_VARIABLE_H_
 
 #include <opwig/md/ptr.h>
 
@@ -37,5 +37,5 @@ inline Ptr<Variable> Variable::Create (std::string name, std::string type) {
 } // namespace md
 } // namespace opwig
 
-#endif // OPWIG_MDVARIABLE_H_
+#endif // OPWIG_MD_VARIABLE_H_
 
