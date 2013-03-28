@@ -34,18 +34,18 @@ class Namespace final : public Scope {
     Ptr<Namespace> NestedNamespace (const std::string& name) override;
 
     /// Adds a global variable to this namespace.
-    bool AddGlobalVariable ( const Variable::Ptr& variable);
+    bool AddGlobalVariable ( Ptr<Variable> variable);
 
     /// Gives the global variable identified by the given name (const version).
-    Variable::ConstPtr GlobalVariable (const std::string& name) const;
+    Ptr<const Variable> GlobalVariable (const std::string& name) const;
     
     /// Gives the global variable identified by the given name.
-    Variable::Ptr GlobalVariable (const std::string& name);
+    Ptr<Variable> GlobalVariable (const std::string& name);
 
   private:
 
     std::map<std::string, Ptr<Namespace>> nested_namespaces_;
-    std::map<std::string, Variable::Ptr> global_variables_;
+    std::map<std::string, Ptr<Variable>> global_variables_;
 
     Namespace () {}
 

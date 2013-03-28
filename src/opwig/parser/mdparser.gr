@@ -123,12 +123,11 @@ simple_declaration:
   ';'
 |
   decl_specifier_seq init_declarator_list ';' {
-    md::Namespace::Ptr new_namespace = md::Namespace::Create();
     std::string type = $1;
     std::shared_ptr<StringList> init_list = $2;
-    $$ = [type, init_list] (md::Namespace::Ptr current_namespace) -> bool {
+    $$ = [type, init_list] (md::Ptr<md::Namespace> current_namespace) -> bool {
       for (auto it: *init_list) {
-        md::Variable::Ptr var = md::Variable::Create(it, type);
+        md::Ptr<md::Variable> var = md::Variable::Create(it, type);
         if (!current_namespace->AddGlobalVariable(var)) {
           std::cout << "Namespace action failed: could not add variable " << it << " (type: " << type << ")" << std::endl;
         }

@@ -28,7 +28,7 @@ Ptr<Namespace> Namespace::NestedNamespace (const string& name) {
     : Ptr<Namespace>();
 }
 
-bool Namespace::AddGlobalVariable (const Variable::Ptr& variable) {
+bool Namespace::AddGlobalVariable (Ptr<Variable> variable) {
     auto check = global_variables_.find(variable->name());
     if (check != global_variables_.end())
         return false;
@@ -36,18 +36,18 @@ bool Namespace::AddGlobalVariable (const Variable::Ptr& variable) {
     return true;
 }
 
-Variable::ConstPtr Namespace::GlobalVariable (const std::string& name) const {
+Ptr<const Variable> Namespace::GlobalVariable (const std::string& name) const {
     auto get = global_variables_.find(name);
     return get != global_variables_.end()
         ? get->second
-        : Variable::ConstPtr();
+        : Ptr<const Variable>();
 }
 
-Variable::Ptr Namespace::GlobalVariable (const std::string& name) {
+Ptr<Variable> Namespace::GlobalVariable (const std::string& name) {
     auto get = global_variables_.find(name);
     return get != global_variables_.end()
         ? get->second
-        : Variable::Ptr();
+        : Ptr<Variable>();
 }
 
 } // namespace md

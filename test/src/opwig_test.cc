@@ -98,7 +98,7 @@ TEST (MDParserTest, SingleNestedNamespace) {
 }
 
 TEST (VariableTest, Create) {
-  Variable::Ptr var = Variable::Create("varname", "vartype");
+  Ptr<Variable> var = Variable::Create("varname", "vartype");
   EXPECT_TRUE(static_cast<bool>(var));
   EXPECT_EQ(var->name(), "varname");
   EXPECT_EQ(var->type(), "vartype");
@@ -125,10 +125,10 @@ TEST (MDParserTest, SingleVariable) {
     istringstream input(test11);
     MDParser parser(input);
     ASSERT_EQ(parser.parse(), 0);
-    Namespace::ConstPtr global = parser.global_namespace();
+    Ptr<const Namespace> global = parser.global_namespace();
     EXPECT_TRUE(static_cast<bool>(global));
 
-    Variable::ConstPtr var = global->GlobalVariable("var");
+    Ptr<const Variable> var = global->GlobalVariable("var");
     EXPECT_TRUE(static_cast<bool>(var));
     EXPECT_EQ(var->name(), "var");
     EXPECT_EQ(var->type(), "type");
@@ -138,13 +138,13 @@ TEST (MDParserTest, MultiVariable) {
     istringstream input(test12);
     MDParser parser(input);
     ASSERT_EQ(parser.parse(), 0);
-    Namespace::ConstPtr global = parser.global_namespace();
+    Ptr<const Namespace> global = parser.global_namespace();
     EXPECT_TRUE(static_cast<bool>(global));
-    Variable::ConstPtr var1 = global->GlobalVariable("var1");
+    Ptr<const Variable> var1 = global->GlobalVariable("var1");
     EXPECT_TRUE(static_cast<bool>(var1));
     EXPECT_EQ(var1->name(), "var1");
     EXPECT_EQ(var1->type(), "type1");
-    Variable::ConstPtr var2 = global->GlobalVariable("var2");
+    Ptr<const Variable> var2 = global->GlobalVariable("var2");
     EXPECT_TRUE(static_cast<bool>(var2));
     EXPECT_EQ(var2->name(), "var2");
     EXPECT_EQ(var2->type(), "type2");
@@ -154,10 +154,10 @@ TEST (MDParserTest, VariableConflict) {
     istringstream input(test13);
     MDParser parser(input);
     ASSERT_EQ(parser.parse(), 0);
-    Namespace::ConstPtr global = parser.global_namespace();
+    Ptr<const Namespace> global = parser.global_namespace();
     EXPECT_TRUE(static_cast<bool>(global));
 
-    Variable::ConstPtr var = global->GlobalVariable("var");
+    Ptr<const Variable> var = global->GlobalVariable("var");
     EXPECT_TRUE(static_cast<bool>(var));
     EXPECT_EQ(var->name(), "var");
     EXPECT_EQ(var->type(), "type");
@@ -167,17 +167,17 @@ TEST (MDParserTest, VariableSequence) {
     istringstream input(test14);
     MDParser parser(input);
     ASSERT_EQ(parser.parse(), 0);
-    Namespace::ConstPtr global = parser.global_namespace();
+    Ptr<const Namespace> global = parser.global_namespace();
     EXPECT_TRUE(static_cast<bool>(global));
-    Variable::ConstPtr var1 = global->GlobalVariable("var1");
+    Ptr<const Variable> var1 = global->GlobalVariable("var1");
     EXPECT_TRUE(static_cast<bool>(var1));
     EXPECT_EQ(var1->name(), "var1");
     EXPECT_EQ(var1->type(), "type");
-    Variable::ConstPtr var2 = global->GlobalVariable("var2");
+    Ptr<const Variable> var2 = global->GlobalVariable("var2");
     EXPECT_TRUE(static_cast<bool>(var2));
     EXPECT_EQ(var2->name(), "var2");
     EXPECT_EQ(var2->type(), "type");
-    Variable::ConstPtr var3 = global->GlobalVariable("var3");
+    Ptr<const Variable> var3 = global->GlobalVariable("var3");
     EXPECT_TRUE(static_cast<bool>(var3));
     EXPECT_EQ(var3->name(), "var3");
     EXPECT_EQ(var3->type(), "type");
@@ -187,11 +187,11 @@ TEST (MDParserTest, VariableInNamespace) {
     istringstream input(test15);
     MDParser parser(input);
     ASSERT_EQ(parser.parse(), 0);
-    Namespace::ConstPtr global = parser.global_namespace();
+    Ptr<const Namespace> global = parser.global_namespace();
     EXPECT_TRUE(static_cast<bool>(global));
-    Namespace::ConstPtr abc = global->NestedNamespace("abc");
+    Ptr<const Namespace> abc = global->NestedNamespace("abc");
     EXPECT_TRUE(static_cast<bool>(abc));
-    Variable::ConstPtr var = abc->GlobalVariable("var");
+    Ptr<const Variable> var = abc->GlobalVariable("var");
     EXPECT_TRUE(static_cast<bool>(var));
     EXPECT_EQ(var->name(), "var");
     EXPECT_EQ(var->type(), "type");
