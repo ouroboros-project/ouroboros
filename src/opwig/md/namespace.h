@@ -33,13 +33,19 @@ class Namespace final : public Scope {
     /// @see opwig::md::Scope::NestedNamespace
     Ptr<Namespace> NestedNamespace (const std::string& name) override;
 
-    /// Adds a variable to this namespace.
-    bool AddVariable ( const Variable::Ptr& variable);
+    /// Adds a global variable to this namespace.
+    bool AddGlobalVariable ( const Variable::Ptr& variable);
+
+    /// Gives the global variable identified by the given name (const version).
+    Variable::ConstPtr GlobalVariable (const std::string& name) const;
+    
+    /// Gives the global variable identified by the given name.
+    Variable::Ptr GlobalVariable (const std::string& name);
 
   private:
 
     std::map<std::string, Ptr<Namespace>> nested_namespaces_;
-    std::map<std::string, Variable::Ptr> variables_;
+    std::map<std::string, Variable::Ptr> global_variables_;
 
     Namespace () {}
 

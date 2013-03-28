@@ -1,4 +1,4 @@
-
+#include <opwig/md/variable.h>
 #include <opwig/md/namespace.h>
 #include <opwig/parser/mdparser.h>
 
@@ -12,6 +12,7 @@ using std::string;
 using std::istringstream;
 
 using opwig::md::Ptr;
+using opwig::md::Variable;
 using opwig::md::Namespace;
 using opwig::MDParser;
 
