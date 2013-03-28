@@ -2,6 +2,8 @@
 #ifndef OPWIG_MDNAMESPACE_H_
 #define OPWIG_MDNAMESPACE_H_
 
+#include <opwig/md/scope.h>
+
 #include <string>
 #include <map>
 #include <memory>
