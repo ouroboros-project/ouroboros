@@ -12,7 +12,7 @@ namespace opwig {
 namespace md {
 
 /// Metadata class for C++ namespaces.
-class Namespace {
+class Namespace : public Scope {
 
   public:
 
@@ -20,17 +20,17 @@ class Namespace {
     /// constructor.
     static Ptr<Namespace> Create ();
 
-    /// Tells how many nested namespaces exist in this namespace.
-    size_t NestedNamespacesNum () const;
+    /// @see opwig::md::Scope::NestedNamespaceNum
+    size_t NestedNamespacesNum () const override;
 
-    /// Adds a nested namespace.
-    bool AddNestedNamespace (const std::string& name, Ptr<Namespace> nested);
+    /// @see opwig::md::Scope::AddNestedNamespace
+    bool AddNestedNamespace (const std::string& name, Ptr<Namespace> nested) override;
 
-    /// Gives the nested namespace identified by the given name (const version).
-    Ptr<const Namespace> NestedNamespace (const std::string& name) const;
-    
-    /// Gives the nested namespace identified by the given name.
-    Ptr<Namespace> NestedNamespace (const std::string& name);
+    /// @see opwig::md::Scope::NestedNamespace
+    Ptr<const Namespace> NestedNamespace (const std::string& name) const override;
+
+    /// @see opwig::md::Scope::NestedNamespace
+    Ptr<Namespace> NestedNamespace (const std::string& name) override;
 
   private:
 
