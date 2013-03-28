@@ -24,12 +24,10 @@ class Scope {
     virtual size_t NestedNamespacesNum () const = 0;
 
     /// Adds a nested namespace.
-    virtual bool AddNestedNamespace (const std::string& name,
-                                     Ptr<Namespace> nested) = 0;
+    virtual bool AddNestedNamespace (const std::string& name, Ptr<Namespace> nested) = 0;
 
     /// Gives the nested namespace identified by the given name (const version).
-    virtual Ptr<const Namespace>
-    NestedNamespace (const std::string& name) const = 0;
+    virtual Ptr<const Namespace> NestedNamespace (const std::string& name) const = 0;
     
     /// Gives the nested namespace identified by the given name.
     virtual Ptr<Namespace> NestedNamespace (const std::string& name) = 0;

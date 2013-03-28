@@ -12,7 +12,7 @@ namespace opwig {
 namespace md {
 
 /// Metadata class for C++ namespaces.
-class Namespace : public Scope {
+class Namespace final : public Scope {
 
   public:
 
