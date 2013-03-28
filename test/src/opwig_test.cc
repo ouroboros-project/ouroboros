@@ -11,17 +11,18 @@
 using std::string;
 using std::istringstream;
 
+using opwig::md::Ptr;
 using opwig::md::Namespace;
 using opwig::MDParser;
 
 TEST (NamespaceTest, Create) {
-  Namespace::Ptr mdnamespace = Namespace::Create();
+  Ptr<Namespace> mdnamespace = Namespace::Create();
   EXPECT_TRUE(static_cast<bool>(mdnamespace));
   EXPECT_EQ(mdnamespace->NestedNamespacesNum(), 0u);
 }
 
 TEST (NamespaceTest, NestSingle) {
-  Namespace::Ptr  mdnamespace = Namespace::Create(),
+  Ptr<Namespace>  mdnamespace = Namespace::Create(),
                     nested = Namespace::Create();
   EXPECT_TRUE(static_cast<bool>(mdnamespace));
   EXPECT_TRUE(mdnamespace->AddNestedNamespace("nested", nested));
@@ -36,7 +37,7 @@ TEST (MDParserTest, EmptyFile) {
   istringstream input("");
   MDParser parser(input);
   EXPECT_EQ(parser.parse(), 0);
-  Namespace::ConstPtr global = parser.global_namespace();
+  Ptr<const Namespace> global = parser.global_namespace();
   EXPECT_TRUE(static_cast<bool>(global));
   EXPECT_EQ(global->NestedNamespacesNum(), 0u);
 }
@@ -57,10 +58,10 @@ TEST (MDParserTest, SingleEmptyNamespace) {
   istringstream input(test00);
   MDParser parser(input);
   ASSERT_EQ(parser.parse(), 0);
-  Namespace::ConstPtr global = parser.global_namespace();
+  Ptr<const Namespace> global = parser.global_namespace();
   EXPECT_TRUE(static_cast<bool>(global));
   EXPECT_EQ(global->NestedNamespacesNum(), 1u);
-  Namespace::ConstPtr nested = global->NestedNamespace("abc");
+  Ptr<const Namespace> nested = global->NestedNamespace("abc");
   EXPECT_TRUE(static_cast<bool>(nested));
   EXPECT_EQ(nested->NestedNamespacesNum(), 0u);
 }
@@ -69,13 +70,13 @@ TEST (MDParserTest, TwoEmptyNamespaces) {
   istringstream input(test01);
   MDParser parser(input);
   ASSERT_EQ(parser.parse(), 0);
-  Namespace::ConstPtr global = parser.global_namespace();
+  Ptr<const Namespace> global = parser.global_namespace();
   EXPECT_TRUE(static_cast<bool>(global));
   EXPECT_EQ(global->NestedNamespacesNum(), 2u);
-  Namespace::ConstPtr nested1 = global->NestedNamespace("abc");
+  Ptr<const Namespace> nested1 = global->NestedNamespace("abc");
   EXPECT_TRUE(static_cast<bool>(nested1));
   EXPECT_EQ(nested1->NestedNamespacesNum(), 0u);
-  Namespace::ConstPtr nested2 = global->NestedNamespace("def");
+  Ptr<const Namespace> nested2 = global->NestedNamespace("def");
   EXPECT_TRUE(static_cast<bool>(nested2));
   EXPECT_EQ(nested2->NestedNamespacesNum(), 0u);
 }
@@ -84,13 +85,13 @@ TEST (MDParserTest, SingleNestedNamespace) {
   istringstream input(test02);
   MDParser parser(input);
   ASSERT_EQ(parser.parse(), 0);
-  Namespace::ConstPtr global = parser.global_namespace();
+  Ptr<const Namespace> global = parser.global_namespace();
   EXPECT_TRUE(static_cast<bool>(global));
   EXPECT_EQ(global->NestedNamespacesNum(), 1u);
-  Namespace::ConstPtr outer = global->NestedNamespace("abc");
+  Ptr<const Namespace> outer = global->NestedNamespace("abc");
   EXPECT_TRUE(static_cast<bool>(outer));
   EXPECT_EQ(outer->NestedNamespacesNum(), 1u);
-  Namespace::ConstPtr inner = outer->NestedNamespace("def");
+  Ptr<const Namespace> inner = outer->NestedNamespace("def");
   EXPECT_TRUE(static_cast<bool>(inner));
   EXPECT_EQ(inner->NestedNamespacesNum(), 0u);
 }

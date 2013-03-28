@@ -28,11 +28,11 @@ class MDParser: public MDParserBase {
 
     int parse();
 
-    md::Namespace::ConstPtr global_namespace () const;
+    md::Ptr<const md::Namespace> global_namespace () const;
 
   private:
-    MDScanner           d_scanner;
-    md::Namespace::Ptr  global_namespace_;
+    MDScanner               d_scanner;
+    md::Ptr<md::Namespace>  global_namespace_;
 
     void error(char const *msg);    // called on (syntax) errors
     int lex();                      // returns the next token from the
@@ -47,7 +47,7 @@ class MDParser: public MDParserBase {
     void print__();
 };
 
-inline md::Namespace::ConstPtr MDParser::global_namespace () const {
+inline md::Ptr<const md::Namespace> MDParser::global_namespace () const {
   return global_namespace_;
 }
 

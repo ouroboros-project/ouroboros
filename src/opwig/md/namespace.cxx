@@ -6,7 +6,7 @@ namespace md {
 
 using std::string;
 
-bool Namespace::AddNestedNamespace (const string& name, const Ptr& nested) {
+bool Namespace::AddNestedNamespace (const string& name, Ptr<Namespace> nested) {
   auto check = nested_namespaces_.find(name);
   if (check != nested_namespaces_.end())
     return false;
@@ -14,18 +14,18 @@ bool Namespace::AddNestedNamespace (const string& name, const Ptr& nested) {
   return true;
 }
 
-Namespace::ConstPtr Namespace::NestedNamespace (const string& name) const {
+Ptr<const Namespace> Namespace::NestedNamespace (const string& name) const {
   auto get = nested_namespaces_.find(name);
   return get != nested_namespaces_.end()
     ? get->second
-    : ConstPtr();
+    : Ptr<const Namespace>();
 }
 
-Namespace::Ptr Namespace::NestedNamespace (const string& name) {
+Ptr<Namespace> Namespace::NestedNamespace (const string& name) {
   auto get = nested_namespaces_.find(name);
   return get != nested_namespaces_.end()
     ? get->second
-    : Ptr();
+    : Ptr<Namespace>();
 }
 
 } // namespace md

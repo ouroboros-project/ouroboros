@@ -2,8 +2,9 @@
 #ifndef OPWIG_MD_SCOPE_H_
 #define OPWIG_MD_SCOPE_H_
 
+#include <opwig/md/ptr.h>
+
 #include <string>
-#include <memory>
 
 namespace opwig {
 namespace md {
@@ -16,12 +17,6 @@ class Scope {
 
   public:
 
-    /// Garbage-collecting smart-pointer type for this class.
-    typedef std::shared_ptr<Namespace> Ptr;
-
-    /// Const Garbage-collecting smart-pointer type for this class.
-    typedef std::shared_ptr<const Namespace> ConstPtr;
-
     /// Virtual destructor.
     ~Scope () {}
 
@@ -29,17 +24,21 @@ class Scope {
     virtual size_t NestedNamespacesNum () const = 0;
 
     /// Adds a nested namespace.
-    virtual bool AddNestedNamespace (const std::string& name, const Ptr& nested) = 0;
+    virtual bool AddNestedNamespace (const std::string& name,
+                                     Ptr<Namespace> nested) = 0;
 
     /// Gives the nested namespace identified by the given name (const version).
-    virtual ConstPtr NestedNamespace (const std::string& name) const = 0;
+    virtual Ptr<const Namespace>
+    NestedNamespace (const std::string& name) const = 0;
     
     /// Gives the nested namespace identified by the given name.
-    virtual Ptr NestedNamespace (const std::string& name) = 0;
+    virtual Ptr<Namespace> NestedNamespace (const std::string& name) = 0;
 
   protected:
 
     Scope () {}
+
+  private:
 
 };
 
