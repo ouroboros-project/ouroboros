@@ -129,8 +129,9 @@ simple_declaration:
     $$ = [type, init_list] (md::Namespace::Ptr current_namespace) -> bool {
       for (auto it: *init_list) {
         md::Variable::Ptr var = md::Variable::Create(it, type);
-        if (!current_namespace->AddGlobalVariable(var))
+        if (!current_namespace->AddGlobalVariable(var)) {
           std::cout << "Namespace action failed: could not add variable " << it << " (type: " << type << ")" << std::endl;
+        }
       }
       return true;
     };
