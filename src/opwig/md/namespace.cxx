@@ -28,6 +28,14 @@ Ptr<Namespace> Namespace::NestedNamespace (const string& name) {
     : Ptr<Namespace>();
 }
 
+bool Namespace::AddVariable (const Variable::Ptr& variable) {
+  auto check = variables_.find(variable->name());
+  if (check != variables_.end())
+    return false;
+  variables_[variable->name()] = variable;
+  return true;
+}
+
 } // namespace md
 } // namespace opwig
 

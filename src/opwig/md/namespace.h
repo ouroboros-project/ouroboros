@@ -4,6 +4,7 @@
 
 #include <opwig/md/scope.h>
 #include <opwig/md/ptr.h>
+#include <opwig/md/variable.h>
 
 #include <string>
 #include <map>
@@ -32,9 +33,13 @@ class Namespace final : public Scope {
     /// @see opwig::md::Scope::NestedNamespace
     Ptr<Namespace> NestedNamespace (const std::string& name) override;
 
+    /// Adds a variable to this namespace.
+    bool AddVariable ( const Variable::Ptr& variable);
+
   private:
 
     std::map<std::string, Ptr<Namespace>> nested_namespaces_;
+    std::map<std::string, Variable::Ptr> variables_;
 
     Namespace () {}
 

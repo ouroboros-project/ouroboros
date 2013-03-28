@@ -14,10 +14,10 @@ class Variable {
   public:
 
     /// Garbage-collecting smart-pointer type for this class.
-    typedef std::shared_ptr<Namespace> Ptr;
+    typedef std::shared_ptr<Variable> Ptr;
 
     /// Const Garbage-collecting smart-pointer type for this class.
-    typedef std::shared_ptr<const Namespace> ConstPtr;
+    typedef std::shared_ptr<const Variable> ConstPtr;
 
     /// Creates a new Variable object. Must be used in place of the
     /// constructor.

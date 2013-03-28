@@ -58,6 +58,8 @@
 
 %type<DeclarationSeq> declaration_seq
 %type<Declaration>    declaration
+%type<Declaration>    block_declaration
+%type<Declaration>    simple_declaration
 %type<Declaration>    namespace_definition
 %type<Declaration>    named_namespace_definition
 %type<Declaration>    unnamed_namespace_definition
@@ -66,7 +68,7 @@
 %type<String>         type_specifier
 %type<String>         trailing_type_specifier
 %type<String>         simple_type_specifier
-%type<String>         type_name:
+%type<String>         type_name
 %type<String>         decl_specifier_seq
 %type<String>         init_declarator
 %type<String>         declarator
@@ -122,7 +124,18 @@ simple_declaration:
 |
   decl_specifier_seq init_declarator_list ';' {
     std::cout << "OHNOES" << std::endl;
-    
+    md::Namespace::Ptr new_namespace = md::Namespace::Create();
+    std::string type = $1;
+    std::shared_ptr<StringList> init_list = $2;
+    $$ = [type, init_list] (md::Namespace::Ptr current_namespace) -> bool {
+      for (auto it: *init_list) {
+        md::Variable::Ptr var = md::Variable::Create(it, type);
+        std::cout << "added variable" << it << type << std::endl;
+        if (!current_namespace->AddVariable(var))
+          std::cout << "Namespace action failed: could not add variable " << it << " (type: " << type << ")" << std::endl;
+      }
+      return true;
+    };
   }
 |
   decl_specifier_seq ';'
@@ -152,7 +165,7 @@ init_declarator_list:
 |
   init_declarator_list ',' init_declarator {
     ($1)->push_back($3);
-    $$ = $1
+    $$ = $1;
   }
 ;
 
@@ -263,19 +276,19 @@ unnamed_namespace_definition:
 //=========================// TYPE SPECIFICATION //
 
 type_specifier:
-  trailing_type_specifier { $$ = $1 }
+  trailing_type_specifier { $$ = $1; }
 ;
 
 trailing_type_specifier:
-  simple_type_specifier { $$ = $1 }
+  simple_type_specifier { $$ = $1; }
 ;
 
 simple_type_specifier:
-  type_name { $$ = $1 }
+  type_name { $$ = $1; }
 ;
 
 type_name:
-  identifier { $$ = $1 }
+  identifier { $$ = $1; }
 ;
 
 //=========================// EXPRESSIONS //
