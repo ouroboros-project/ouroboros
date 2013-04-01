@@ -33,13 +33,13 @@ class Namespace final : public Scope {
     /// @see opwig::md::Scope::NestedNamespace
     Ptr<Namespace> NestedNamespace (const std::string& name) override;
 
-    /// Adds a global variable to this namespace.
+    /// @see opwig::md::Scope::AddGlobalVariable
     bool AddGlobalVariable ( Ptr<Variable> variable);
 
-    /// Gives the global variable identified by the given name (const version).
+    /// @see opwig::md::Scope::GlobalVariable
     Ptr<const Variable> GlobalVariable (const std::string& name) const;
     
-    /// Gives the global variable identified by the given name.
+    /// @see opwig::md::Scope::GlobalVariable
     Ptr<Variable> GlobalVariable (const std::string& name);
 
   private:
