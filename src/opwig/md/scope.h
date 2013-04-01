@@ -20,7 +20,7 @@ class Scope {
   public:
 
     /// Virtual destructor.
-    ~Scope () {}
+    virtual ~Scope () {}
 
 /*** NAMESPACE METHODS ***/
     
