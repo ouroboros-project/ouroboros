@@ -15,7 +15,7 @@ class Variable {
   public:
     /// Creates a new Variable object. Must be used in place of the
     /// constructor.
-    static Ptr<Variable> Create (std::string name, std::string type);
+    static Ptr<Variable> Create (const std::string& name, const std::string& type);
 
     const std::string& name() const { return name_; }
     const std::string& type() const { return type_; }
@@ -25,11 +25,11 @@ class Variable {
     std::string name_;
     std::string type_;
 
-    Variable (std::string name, std::string type) : name_(name), type_(type) {}
+    Variable (const std::string& name, const std::string& type) : name_(name), type_(type) {}
 
 };
 
-inline Ptr<Variable> Variable::Create (std::string name, std::string type) {
+inline Ptr<Variable> Variable::Create (const std::string& name, const std::string& type) {
   return Ptr<Variable>(new Variable(name, type) );
 }
 
