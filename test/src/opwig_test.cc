@@ -1,21 +1,27 @@
+
 #include <opwig/md/variable.h>
+#include <opwig/md/function.h>
 #include <opwig/md/namespace.h>
 #include <opwig/md/class.h>
 #include <opwig/parser/mdparser.h>
 
 #include <gtest/gtest.h>
 
+#include <vector>
+
 #include <string>
 #include <istream>
 #include <sstream>
 #include <list>
 
+using std::vector;
 using std::string;
 using std::istringstream;
 using std::list;
 
 using opwig::md::Ptr;
 using opwig::md::Variable;
+using opwig::md::Function;
 using opwig::md::Namespace;
 using opwig::md::Class;
 using opwig::parser::BaseSpecifier;
@@ -24,20 +30,37 @@ using opwig::MDParser;
 
 TEST (NamespaceTest, Create) {
   Ptr<Namespace> mdnamespace = Namespace::Create();
-  EXPECT_TRUE(static_cast<bool>(mdnamespace));
+  ASSERT_TRUE(static_cast<bool>(mdnamespace));
   EXPECT_EQ(mdnamespace->NestedNamespacesNum(), 0u);
 }
 
 TEST (NamespaceTest, NestSingle) {
   Ptr<Namespace>  mdnamespace = Namespace::Create(),
                     nested = Namespace::Create();
-  EXPECT_TRUE(static_cast<bool>(mdnamespace));
+  ASSERT_TRUE(static_cast<bool>(mdnamespace));
   EXPECT_TRUE(mdnamespace->AddNestedNamespace("nested", nested));
   EXPECT_EQ(mdnamespace->NestedNamespacesNum(), 1u);
   EXPECT_FALSE(mdnamespace->AddNestedNamespace("nested", nested));
   EXPECT_FALSE(mdnamespace->AddNestedNamespace("nested", Namespace::Create()));
   EXPECT_EQ(mdnamespace->NestedNamespace("nested"), nested);
   EXPECT_NE(mdnamespace->NestedNamespace("macaco"), nested);
+}
+
+TEST (VariableTest, Create) {
+  Ptr<Variable> var = Variable::Create("varname", "vartype");
+  ASSERT_TRUE(static_cast<bool>(var));
+  EXPECT_EQ(var->name(), "varname");
+  EXPECT_EQ(var->type(), "vartype");
+}
+
+TEST (FunctionTest, Create) {
+  vector<string> argtypelist = {"argtype0", "argtype1"};
+  Ptr<Function> var = Function::Create("funcname", "returntype", argtypelist);
+  ASSERT_TRUE(static_cast<bool>(var));
+  EXPECT_EQ(var->name(), "funcname");
+  EXPECT_EQ(var->return_type(), "returntype");
+  EXPECT_EQ(var->arg_type(0), "argtype0");
+  EXPECT_EQ(var->arg_type(1), "argtype1");
 }
 
 TEST (MDParserTest, EmptyFile) {
@@ -101,13 +124,6 @@ TEST (MDParserTest, SingleNestedNamespace) {
   Ptr<const Namespace> inner = outer->NestedNamespace("def");
   EXPECT_TRUE(static_cast<bool>(inner));
   EXPECT_EQ(inner->NestedNamespacesNum(), 0u);
-}
-
-TEST (VariableTest, Create) {
-  Ptr<Variable> var = Variable::Create("varname", "vartype");
-  EXPECT_TRUE(static_cast<bool>(var));
-  EXPECT_EQ(var->name(), "varname");
-  EXPECT_EQ(var->type(), "vartype");
 }
 
 namespace {
