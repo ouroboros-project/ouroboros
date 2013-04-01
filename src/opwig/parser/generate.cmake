@@ -24,6 +24,8 @@ add_custom_command (
                         --class-header=mdparser.h
                         --implementation-header=mdparser.ih
                         #-V
+                        #-t
+                        #--error-verbose
                         mdparser.gr
   DEPENDS ${OPWIG_MDPARER_GRAMMAR_SRC}
   WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
