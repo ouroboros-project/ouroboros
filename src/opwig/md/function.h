@@ -42,25 +42,25 @@ class Function {
 
 };
 
-Function::Function(const std::string& name, const std::string& return_type,
-                   const std::vector<std::string>& arg_type_list)
-  : name_(name), return_type_(return_type), arg_type_list_(arg_type_list) {}
+inline Function::Function(const std::string& name, const std::string& return_type,
+                          const std::vector<std::string>& arg_type_list)
+    : name_(name), return_type_(return_type), arg_type_list_(arg_type_list) {}
 
-Ptr<Function> Function::Create(const std::string& name, const std::string& return_type,
-                               const std::vector<std::string>& arg_type_list) {
-  return Ptr<Function>(new Function(name, return_type, arg_type_list));
+inline Ptr<Function> Function::Create(const std::string& name, const std::string& return_type,
+                                      const std::vector<std::string>& arg_type_list) {
+    return Ptr<Function>(new Function(name, return_type, arg_type_list));
 }
 
-std::string Function::name() const {
-  return name_;
+inline std::string Function::name() const {
+    return name_;
 }
 
-std::string Function::return_type() const {
-  return return_type_;
+inline std::string Function::return_type() const {
+    return return_type_;
 }
 
-std::string Function::arg_type(size_t n) const {
-  return arg_type_list_[n];
+inline std::string Function::arg_type(size_t n) const {
+    return arg_type_list_.at(n); // throw handle exception?
 }
 
 } // namespace md

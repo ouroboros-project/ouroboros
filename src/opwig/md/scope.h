@@ -9,10 +9,11 @@
 namespace opwig {
 namespace md {
 
-// Forward declaration.
+// Forward declarations.
 class Namespace;
 class Class;
 class Variable;
+class Function;
 
 /// Metadata interface for C++ scopes.
 class Scope {
@@ -22,7 +23,7 @@ class Scope {
     /// Virtual destructor.
     virtual ~Scope () {}
 
-/*** NAMESPACE METHODS ***/
+    /*** NAMESPACE METHODS ***/
     
     /// Tells how many nested namespaces exist in this scope.
     virtual size_t NestedNamespacesNum () const = 0;
@@ -36,7 +37,7 @@ class Scope {
     /// Gives the nested namespace identified by the given name.
     virtual Ptr<Namespace> NestedNamespace (const std::string& name) = 0;
 
-/*** VARIABLE METHODS ***/
+    /*** VARIABLE METHODS ***/
     
      /// Adds a global variable to this scope.
     virtual bool AddGlobalVariable ( Ptr<Variable> variable) = 0;
@@ -47,7 +48,7 @@ class Scope {
     /// Gives the global variable identified by the given name.
     virtual Ptr<Variable> GlobalVariable (const std::string& name) = 0;
     
-/*** CLASS METHODS ***/
+    /*** CLASS METHODS ***/
     
     /// Tells how many nested classes exist in this scope.
     virtual size_t NestedClassesNum () const = 0;
@@ -60,7 +61,18 @@ class Scope {
     
     /// Gives the nested class identified by the given name.
     virtual Ptr<Class> NestedClass (const std::string& name) = 0;
+
+    /*** FUNCTION METHODS ***/
     
+    /// Tells how many functions exist in this scope.
+    virtual size_t NestedFunctionsNum () const = 0;
+
+    /// Adds a function to the scope. In classes, it will be a method.
+    virtual bool AddNestedFunction (Ptr<Function> nested) = 0;
+
+    /// Gives the function identified by the given name.
+    virtual Ptr<const Function> NestedFunction (const std::string& name) const = 0;
+
   protected:
 
     Scope () {}

@@ -13,6 +13,7 @@
 #include <istream>
 #include <sstream>
 #include <list>
+#include <exception>
 
 using std::vector;
 using std::string;
@@ -28,6 +29,9 @@ using opwig::parser::BaseSpecifier;
 using opwig::parser::AccessSpecifier;
 using opwig::MDParser;
 
+//#define EXPECT_THROW(code, exception) \
+//  try { code; EXPECT_TRUE(false); } catch (exception e) {}
+
 TEST (NamespaceTest, Create) {
   Ptr<Namespace> mdnamespace = Namespace::Create();
   ASSERT_TRUE(static_cast<bool>(mdnamespace));
@@ -36,7 +40,7 @@ TEST (NamespaceTest, Create) {
 
 TEST (NamespaceTest, NestSingle) {
   Ptr<Namespace>  mdnamespace = Namespace::Create(),
-                    nested = Namespace::Create();
+                  nested = Namespace::Create();
   ASSERT_TRUE(static_cast<bool>(mdnamespace));
   EXPECT_TRUE(mdnamespace->AddNestedNamespace("nested", nested));
   EXPECT_EQ(mdnamespace->NestedNamespacesNum(), 1u);
@@ -44,6 +48,29 @@ TEST (NamespaceTest, NestSingle) {
   EXPECT_FALSE(mdnamespace->AddNestedNamespace("nested", Namespace::Create()));
   EXPECT_EQ(mdnamespace->NestedNamespace("nested"), nested);
   EXPECT_NE(mdnamespace->NestedNamespace("macaco"), nested);
+}
+
+TEST (NamespaceTest, AddSingleFunction) {
+  Ptr<Namespace>  space = Namespace::Create();
+  Ptr<Function>   foo   = Function::Create("foo", "void", {});
+  EXPECT_TRUE(space->AddNestedFunction(foo));
+  EXPECT_EQ(space->NestedFunctionsNum(), 1u);
+  EXPECT_EQ(space->NestedFunction("foo"), foo);
+  EXPECT_FALSE(static_cast<bool>(space->NestedFunction("bar")));
+}
+
+TEST (NamespaceTest, AddManyFunctions) {
+  Ptr<Namespace>  space = Namespace::Create();
+  Ptr<Function>   foo1  = Function::Create("foo1", "void", {});
+  Ptr<Function>   foo2  = Function::Create("foo1", "void", {});
+  Ptr<Function>   foo3  = Function::Create("foo2", "void", {});
+  EXPECT_TRUE(space->AddNestedFunction(foo1));
+  EXPECT_FALSE(space->AddNestedFunction(foo2));
+  EXPECT_TRUE(space->AddNestedFunction(foo3));
+  EXPECT_EQ(space->NestedFunctionsNum(), 2u);
+  EXPECT_EQ(space->NestedFunction("foo1"), foo1);
+  EXPECT_EQ(space->NestedFunction("foo2"), foo3);
+  EXPECT_FALSE(static_cast<bool>(space->NestedFunction("foo3")));
 }
 
 TEST (VariableTest, Create) {
@@ -54,13 +81,13 @@ TEST (VariableTest, Create) {
 }
 
 TEST (FunctionTest, Create) {
-  vector<string> argtypelist = {"argtype0", "argtype1"};
-  Ptr<Function> var = Function::Create("funcname", "returntype", argtypelist);
+  Ptr<Function> var = Function::Create("funcname", "returntype", {"argtype0", "argtype1"});
   ASSERT_TRUE(static_cast<bool>(var));
   EXPECT_EQ(var->name(), "funcname");
   EXPECT_EQ(var->return_type(), "returntype");
   EXPECT_EQ(var->arg_type(0), "argtype0");
   EXPECT_EQ(var->arg_type(1), "argtype1");
+  EXPECT_THROW(var->arg_type(2), std::out_of_range);
 }
 
 TEST (MDParserTest, EmptyFile) {
@@ -373,3 +400,4 @@ TEST (MDParserTest, ClassInAndOutOfNamespace) {
     EXPECT_EQ(c2->name(), "name");
     EXPECT_EQ(c2->base_specifiers().size(), 0);
 }
+
