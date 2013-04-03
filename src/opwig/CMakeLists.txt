@@ -9,6 +9,9 @@ set (
   ${CMAKE_CURRENT_BINARY_DIR}/md/namespace.cxx
   ${CMAKE_CURRENT_BINARY_DIR}/md/namespace.h
   ${CMAKE_CURRENT_BINARY_DIR}/md/variable.h
+  ${CMAKE_CURRENT_BINARY_DIR}/md/class.cxx
+  ${CMAKE_CURRENT_BINARY_DIR}/md/class.h
+  ${CMAKE_CURRENT_BINARY_DIR}/md/semanticerror.h
   ${OPWIG_MDPARSER_SRC}
   ${OPWIG_MDSCANNER_SRC}
 )

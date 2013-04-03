@@ -1,11 +1,11 @@
 
-#ifndef OPWIG_MD_NAMESPACE_H_
-#define OPWIG_MD_NAMESPACE_H_
+#ifndef OPWIG_MD_CLASS_H_
+#define OPWIG_MD_CLASS_H_
 
 #include <opwig/md/scope.h>
 #include <opwig/md/ptr.h>
 #include <opwig/md/variable.h>
-#include <opwig/md/class.h>
+#include <opwig/md/semanticerror.h>
 
 #include <string>
 #include <map>
@@ -13,14 +13,14 @@
 namespace opwig {
 namespace md {
 
-/// Metadata class for C++ namespaces.
-class Namespace final : public Scope {
+/// Metadata class for C++ classes.
+class Class final : public Scope {
 
   public:
 
-    /// Creates a new Namespace object. Must be used in place of the
+    /// Creates a new Class object. Must be used in place of the
     /// constructor.
-    static Ptr<Namespace> Create ();
+    static Ptr<Class> Create ();
 
 /*** NAMESPACE METHODS ***/
     
@@ -63,28 +63,27 @@ class Namespace final : public Scope {
 
   private:
 
-    std::map<std::string, Ptr<Namespace>> nested_namespaces_;
     std::map<std::string, Ptr<Class>> nested_classes_;
     std::map<std::string, Ptr<Variable>> global_variables_;
 
-    Namespace () {}
+    Class () {}
 
 };
 
-inline Ptr<Namespace> Namespace::Create () {
-  return Ptr<Namespace>(new Namespace);
+inline Ptr<Class> Class::Create () {
+  return Ptr<Class>(new Class);
 }
 
-inline size_t Namespace::NestedNamespacesNum () const {
-  return nested_namespaces_.size();
+inline size_t Class::NestedNamespacesNum () const {
+    throw SemanticError("Classes do not have nested namespaces!");
 }
 
-inline size_t Namespace::NestedClassesNum () const {
+inline size_t Class::NestedClassesNum () const {
   return nested_classes_.size();
 }
 
 } // namespace md
 } // namespace opwig
 
-#endif // OPWIG_MD_NAMESPACE_H_
+#endif // OPWIG_MD_CLASS_H_
 

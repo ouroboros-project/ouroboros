@@ -11,6 +11,7 @@ namespace md {
 
 // Forward declaration.
 class Namespace;
+class Class;
 class Variable;
 
 /// Metadata interface for C++ scopes.
@@ -21,7 +22,7 @@ class Scope {
     /// Virtual destructor.
     ~Scope () {}
 
-    /* NAMESPACE METHODS */
+/*** NAMESPACE METHODS ***/
     
     /// Tells how many nested namespaces exist in this scope.
     virtual size_t NestedNamespacesNum () const = 0;
@@ -35,7 +36,7 @@ class Scope {
     /// Gives the nested namespace identified by the given name.
     virtual Ptr<Namespace> NestedNamespace (const std::string& name) = 0;
 
-    /* VARIABLE METHODS */
+/*** VARIABLE METHODS ***/
     
      /// Adds a global variable to this scope.
     virtual bool AddGlobalVariable ( Ptr<Variable> variable) = 0;
@@ -46,7 +47,19 @@ class Scope {
     /// Gives the global variable identified by the given name.
     virtual Ptr<Variable> GlobalVariable (const std::string& name) = 0;
     
-    /* CLASS METHODS */
+/*** CLASS METHODS ***/
+    
+    /// Tells how many nested classes exist in this scope.
+    virtual size_t NestedClassesNum () const = 0;
+
+    /// Adds a nested class.
+    virtual bool AddNestedClass (const std::string& name, Ptr<Class> nested) = 0;
+
+    /// Gives the nested class identified by the given name (const version).
+    virtual Ptr<const Class> NestedClass (const std::string& name) const = 0;
+    
+    /// Gives the nested class identified by the given name.
+    virtual Ptr<Class> NestedClass (const std::string& name) = 0;
     
   protected:
 
