@@ -4,6 +4,7 @@
 #include <opwig/md/namespace.h>
 #include <opwig/md/class.h>
 #include <opwig/parser/mdparser.h>
+#include <opwig/parser/declarator.h>
 
 #include <gtest/gtest.h>
 
@@ -28,9 +29,17 @@ using opwig::md::Class;
 using opwig::parser::BaseSpecifier;
 using opwig::parser::AccessSpecifier;
 using opwig::MDParser;
+using opwig::parser::Declarator;
 
 //#define EXPECT_THROW(code, exception) \
 //  try { code; EXPECT_TRUE(false); } catch (exception e) {}
+
+TEST (DeclaratorTest, ConstructorGetSet) {
+  Declarator declarator("name");
+  ASSERT_EQ(declarator.name(), "name");
+  declarator.set_name("another_name");
+  ASSERT_EQ(declarator.name(), "another_name");
+}
 
 TEST (NamespaceTest, Create) {
   Ptr<Namespace> mdnamespace = Namespace::Create();
