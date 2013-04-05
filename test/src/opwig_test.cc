@@ -401,3 +401,33 @@ TEST (MDParserTest, ClassInAndOutOfNamespace) {
     EXPECT_EQ(c2->base_specifiers().size(), 0);
 }
 
+namespace {
+    string test21 = 
+        "rtype name();";
+    string test22 = 
+        "rtype name(type);";
+    string test33 =
+        "rtype name (type, type);";
+    string test44 =
+        "rtype name (type, type, type);";
+    string test55 =
+        "rtype name(type, type);"
+        "namespace abc {"
+        "  rtype name(type, type);"
+        "}";
+}
+
+TEST (MDParsetTest, GlobalNoArgFunction) {
+  istringstream input(test21);
+  MDParser parser(input);
+  ASSERT_EQ(parser.parse(), 0);
+  Ptr<const Namespace> global = parser.global_namespace();
+  ASSERT_TRUE(static_cast<bool>(global));
+  ASSERT_EQ(1u, global->NestedFunctionsNum());
+  Ptr<const Function> func = global->NestedFunction("name");
+  ASSERT_TRUE(static_cast<bool>(func));
+  EXPECT_EQ(func->name(), "name");
+  EXPECT_EQ(func->return_type(), "rtype");
+  EXPECT_THROW(func->arg_type(0), std::out_of_range);
+}
+
