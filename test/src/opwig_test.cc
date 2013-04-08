@@ -14,6 +14,7 @@
 #include <istream>
 #include <sstream>
 #include <list>
+#include <algorithm>
 #include <exception>
 
 using std::vector;
@@ -30,33 +31,64 @@ using opwig::parser::BaseSpecifier;
 using opwig::parser::AccessSpecifier;
 using opwig::MDParser;
 using opwig::parser::Declarator;
+using opwig::parser::ParameterList;
 
 //#define EXPECT_THROW(code, exception) \
 //  try { code; EXPECT_TRUE(false); } catch (exception e) {}
 
-TEST (DeclaratorTest, ConstructorGetSet) {
-  Declarator declarator("name");
-  ASSERT_EQ(declarator.name(), "name");
-  declarator.set_name("another_name");
-  ASSERT_EQ(declarator.name(), "another_name");
+TEST (DeclaratorTest, ConstructorGetSetName) {
+    Declarator declarator("name");
+    ASSERT_EQ("name", declarator.name());
+    declarator.set_name("another_name");
+    ASSERT_EQ("another_name", declarator.name());
+}
+
+TEST (DeclaratorTest, ParametersInformation) {
+    using std::equal;
+    Declarator declarator("name");
+    EXPECT_FALSE(declarator.has_parameters());
+    /* Empty parameter list */ {
+        ParameterList parameters = {};
+        declarator.set_parameters(parameters);
+        EXPECT_FALSE(declarator.has_parameters());
+        const ParameterList parameters_check = declarator.parameters();
+        EXPECT_EQ(parameters.size(), parameters_check.size());
+        EXPECT_TRUE(equal(parameters_check.begin(), parameters_check.end(), parameters.begin()));
+    }
+    /* Single parameter list */ {
+        ParameterList parameters = {{"type1", "name1"}};
+        declarator.set_parameters(parameters);
+        EXPECT_TRUE(declarator.has_parameters());
+        const ParameterList parameters_check = declarator.parameters();
+        EXPECT_EQ(parameters.size(), parameters_check.size());
+        EXPECT_TRUE(equal(parameters_check.begin(), parameters_check.end(), parameters.begin()));
+    }
+    /* Multiple parameter list */ {
+        ParameterList parameters = {{"type1", "name1"}, {"type2", "name2"}, {"type3", "name3"}};
+        declarator.set_parameters(parameters);
+        EXPECT_TRUE(declarator.has_parameters());
+        const ParameterList parameters_check = declarator.parameters();
+        EXPECT_EQ(parameters.size(), parameters_check.size());
+        EXPECT_TRUE(equal(parameters_check.begin(), parameters_check.end(), parameters.begin()));
+    }
 }
 
 TEST (NamespaceTest, Create) {
-  Ptr<Namespace> mdnamespace = Namespace::Create();
-  ASSERT_TRUE(static_cast<bool>(mdnamespace));
-  EXPECT_EQ(mdnamespace->NestedNamespacesNum(), 0u);
-}
+    Ptr<Namespace> mdnamespace = Namespace::Create();
+    ASSERT_TRUE(static_cast<bool>(mdnamespace));
+    EXPECT_EQ(mdnamespace->NestedNamespacesNum(), 0u);
+}  
 
 TEST (NamespaceTest, NestSingle) {
-  Ptr<Namespace>  mdnamespace = Namespace::Create(),
-                  nested = Namespace::Create();
-  ASSERT_TRUE(static_cast<bool>(mdnamespace));
-  EXPECT_TRUE(mdnamespace->AddNestedNamespace("nested", nested));
-  EXPECT_EQ(mdnamespace->NestedNamespacesNum(), 1u);
-  EXPECT_FALSE(mdnamespace->AddNestedNamespace("nested", nested));
-  EXPECT_FALSE(mdnamespace->AddNestedNamespace("nested", Namespace::Create()));
-  EXPECT_EQ(mdnamespace->NestedNamespace("nested"), nested);
-  EXPECT_NE(mdnamespace->NestedNamespace("macaco"), nested);
+    Ptr<Namespace>  mdnamespace = Namespace::Create(),
+                    nested = Namespace::Create();
+    ASSERT_TRUE(static_cast<bool>(mdnamespace));
+    EXPECT_TRUE(mdnamespace->AddNestedNamespace("nested", nested));
+    EXPECT_EQ(mdnamespace->NestedNamespacesNum(), 1u);
+    EXPECT_FALSE(mdnamespace->AddNestedNamespace("nested", nested));
+    EXPECT_FALSE(mdnamespace->AddNestedNamespace("nested", Namespace::Create()));
+    EXPECT_EQ(mdnamespace->NestedNamespace("nested"), nested);
+    EXPECT_NE(mdnamespace->NestedNamespace("macaco"), nested);
 }
 
 TEST (NamespaceTest, AddSingleFunction) {
