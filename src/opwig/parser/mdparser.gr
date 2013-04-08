@@ -239,12 +239,12 @@ noptr_declarator:
 
 parameters_and_qualifiers:
   '(' parameter_declaration_clause ')' { $$ = $2; }
-|
-  '(' parameter_declaration_clause ')' cv_qualifier_seq { $$ = $2; }
-|
-  '(' parameter_declaration_clause ')' exception_especification { $$ = $2; }
-|
-  '(' parameter_declaration_clause ')' cv_qualifier_seq exception_especification { $$ = $2; }
+//|
+//  '(' parameter_declaration_clause ')' cv_qualifier_seq { $$ = $2; }
+//|
+//  '(' parameter_declaration_clause ')' exception_especification { $$ = $2; }
+//|
+//  '(' parameter_declaration_clause ')' cv_qualifier_seq exception_especification { $$ = $2; }
 ;
 
 parameter_declaration_clause:
@@ -270,9 +270,9 @@ parameter_declaration_list:
 ;
 
 parameter_declaration:
-  identifier identifier { $$ = md::Parameter({$1, $2}); }
+  decl_specifier_seq { $$ = md::Parameter({$1, ""}); }
 |
-  identifier { $$ = md::Parameter({$1, ""}); }
+  decl_specifier_seq identifier { $$ = md::Parameter({$1, $2}); }
 ;
 
 cv_qualifier_seq:

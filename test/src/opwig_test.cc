@@ -449,11 +449,11 @@ namespace {
         "rtype name();";
     string test22 = 
         "rtype name(type);";
-    string test33 =
-        "rtype name (type, type);";
-    string test44 =
-        "rtype name (type, type, type);";
-    string test55 =
+    string test23 =
+        "rtype name(type0, type1);";
+    string test24 =
+        "rtype name(type, type, type);";
+    string test25 =
         "rtype name(type, type);"
         "namespace abc {"
         "  rtype name(type, type);"
@@ -488,5 +488,22 @@ TEST (MDParsetTest, GlobalSingleArgFunction) {
   EXPECT_EQ(func->return_type(), "rtype");
   EXPECT_EQ("type", func->parameter_type(0));
   EXPECT_EQ("", func->parameter_name(0));
+}
+
+TEST (MDParsetTest, GlobalDoubleArgFunction) {
+  istringstream input(test23);
+  MDParser parser(input);
+  ASSERT_EQ(parser.parse(), 0);
+  Ptr<const Namespace> global = parser.global_namespace();
+  ASSERT_TRUE(static_cast<bool>(global));
+  ASSERT_EQ(1u, global->NestedFunctionsNum());
+  Ptr<const Function> func = global->NestedFunction("name");
+  ASSERT_TRUE(static_cast<bool>(func));
+  EXPECT_EQ(func->name(), "name");
+  EXPECT_EQ(func->return_type(), "rtype");
+  EXPECT_EQ("type0", func->parameter_type(0));
+  EXPECT_EQ("", func->parameter_name(0));
+  EXPECT_EQ("type1", func->parameter_type(1));
+  EXPECT_EQ("", func->parameter_name(1));
 }
 
