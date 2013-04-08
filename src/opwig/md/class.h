@@ -101,6 +101,10 @@ inline size_t Class::NestedClassesNum () const {
   return nested_classes_.size();
 }
 
+inline size_t Class::NestedFunctionsNum () const {
+  return 0u;
+}
+
 } // namespace md
 } // namespace opwig
 

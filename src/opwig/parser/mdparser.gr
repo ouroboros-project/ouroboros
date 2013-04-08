@@ -272,9 +272,9 @@ parameter_declaration_list:
 ;
 
 parameter_declaration:
-  decl_specifier_seq { $$ = md::Parameter({$1, ""}); }
+  decl_specifier_seq { $$ = md::Parameter(($1)(md::Ptr<md::Scope>()), ""); }
 |
-  decl_specifier_seq declarator { $$ = md::Parameter({$1, ($2).name()}); }
+  decl_specifier_seq declarator { $$ = md::Parameter(($1)(md::Ptr<md::Scope>()), ($2).name()); }
 ;
 
 cv_qualifier_seq:

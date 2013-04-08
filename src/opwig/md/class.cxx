@@ -70,6 +70,14 @@ Ptr<Class> Class::NestedClass (const std::string& name) {
 
 /*** FUNCTION METHODS ***/
 
+bool Class::AddNestedFunction (Ptr<Function> nested) {
+  return false;
+}
+
+Ptr<const Function> Class::NestedFunction (const string& name) const {
+  return Ptr<const Function>();
+}
+
 } // namespace md
 } // namespace opwig
 
