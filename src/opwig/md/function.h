@@ -20,8 +20,8 @@ class Function {
     virtual ~Function() {}
 
     /// Creates a new Function object. Must be used in place of the constructor.
-    static Ptr<Function> Create(const std::string& name, const std::string& return_type,
-                                const ParameterList& parameter_list);
+    static Ptr<Function> Create(const std::string& the_name, const std::string& the_return_type,
+                                const ParameterList& the_parameter_list);
 
     /// Tells the function's name.
     std::string name() const;
@@ -41,18 +41,19 @@ class Function {
     std::string   return_type_;
     ParameterList parameter_list_;
 
-    Function(const std::string& name, const std::string& return_type,
-             const ParameterList& arg_type_list);
+    Function(const std::string& the_name, const std::string& the_return_type,
+             const ParameterList& the_parameter_list);
 
 };
 
-inline Function::Function(const std::string& name, const std::string& return_type,
+inline Function::Function(const std::string& the_name, const std::string& the_return_type,
                           const ParameterList& the_parameter_list)
-    : name_(name), return_type_(return_type), parameter_list_(the_parameter_list) {}
+    : name_(the_name), return_type_(the_return_type), parameter_list_(the_parameter_list) {}
 
-inline Ptr<Function> Function::Create(const std::string& name, const std::string& return_type,
-                                      const ParameterList& parameter_list) {
-    return Ptr<Function>(new Function(name, return_type, parameter_list));
+inline Ptr<Function> Function::Create(const std::string& the_name,
+                                      const std::string& the_return_type,
+                                      const ParameterList& the_parameter_list) {
+    return Ptr<Function>(new Function(the_name, the_return_type, the_parameter_list));
 }
 
 inline std::string Function::name() const {
