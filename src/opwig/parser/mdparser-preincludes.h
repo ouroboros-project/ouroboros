@@ -26,6 +26,12 @@ typedef std::list<std::string>                          StringList;
 
 typedef std::list<parser::BaseSpecifier>                BaseSpecifierList;
 
+namespace parser {
+
+using DeclaratorList = std::list<Declarator>;
+
+} // namespace parser
+
 } // namespace opwig
 
 #endif // OPWIG_MDPARSER_PREINCLUDES_H_

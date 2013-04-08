@@ -10,6 +10,8 @@
   BaseSpecifier:    parser::BaseSpecifier;
   BaseSpecifierSeq: std::shared_ptr<BaseSpecifierList>;
   AccessSpecifier:  parser::AccessSpecifier;
+  Declarator:       parser::Declarator;
+  DeclaratorList:   parser::DeclaratorList;
   String:           std::string;
   StringSeq:        std::shared_ptr<StringList>;
 
