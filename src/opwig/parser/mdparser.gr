@@ -272,7 +272,7 @@ parameter_declaration_list:
 parameter_declaration:
   decl_specifier_seq { $$ = md::Parameter({$1, ""}); }
 |
-  decl_specifier_seq identifier { $$ = md::Parameter({$1, $2}); }
+  decl_specifier_seq declarator { $$ = md::Parameter({$1, ($2).name()}); }
 ;
 
 cv_qualifier_seq:
