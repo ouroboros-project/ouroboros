@@ -39,8 +39,8 @@ class Scope {
 
     /*** VARIABLE METHODS ***/
     
-     /// Adds a global variable to this scope.
-    virtual bool AddGlobalVariable ( Ptr<Variable> variable) = 0;
+    /// Adds a global variable to this scope.
+    virtual bool AddGlobalVariable (Ptr<Variable> variable) = 0;
 
     /// Gives the global variable identified by the given name (const version).
     virtual Ptr<const Variable> GlobalVariable (const std::string& name) const = 0;
