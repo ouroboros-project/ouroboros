@@ -58,15 +58,15 @@ inline void Declarator::set_name(const std::string& the_name) {
 }
 
 inline bool Declarator::has_parameters() const {
-  return !parameters_.empty();
+    return !parameters_.empty();
 }
 
 inline const ParameterList& Declarator::parameters() const {
-  return parameters_;
+    return parameters_;
 }
 
 inline void Declarator::set_parameters(const ParameterList& the_parameters) {
-  parameters_ = the_parameters;
+    parameters_ = the_parameters;
 }
 
 } // namespace parser

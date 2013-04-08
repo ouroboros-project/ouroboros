@@ -12,6 +12,8 @@
   AccessSpecifier:  parser::AccessSpecifier;
   Declarator:       parser::Declarator;
   DeclaratorSeq:    std::shared_ptr<parser::DeclaratorList>;
+  Parameter:        parser::Parameter;
+  ParameterSeq:     std::shared_ptr<parser::ParameterList>;
   String:           std::string;
   StringSeq:        std::shared_ptr<StringList>;
 
@@ -98,6 +100,9 @@
 %type<Declarator>     declarator
 %type<Declarator>     ptr_declarator
 %type<Declarator>     noptr_declarator
+
+%type<ParameterSeq>   parameters_and_qualifiers
+%type<ParameterSeq>   parameter_declaration_clause
 
 %%
 
@@ -214,7 +219,10 @@ ptr_declarator:
 noptr_declarator:
   declarator_id { $$ = parser::Declarator($1); }
 |
-  noptr_declarator parameters_and_qualifiers { $$ = $1; }
+  noptr_declarator parameters_and_qualifiers {
+    $$ = $1;
+    ($$).set_parameters(*$2);
+  }
 |
   noptr_declarator '[' expression ']' { $$ = $1; }
 |
@@ -222,17 +230,19 @@ noptr_declarator:
 ;
 
 parameters_and_qualifiers:
-  '(' parameter_declaration_clause ')' {}
+  '(' parameter_declaration_clause ')' { $$ = $2; }
 |
-  '(' parameter_declaration_clause ')' cv_qualifier_seq {}
+  '(' parameter_declaration_clause ')' cv_qualifier_seq { $$ = $2; }
 |
-  '(' parameter_declaration_clause ')' exception_especification {}
+  '(' parameter_declaration_clause ')' exception_especification { $$ = $2; }
 |
-  '(' parameter_declaration_clause ')' cv_qualifier_seq exception_especification {}
+  '(' parameter_declaration_clause ')' cv_qualifier_seq exception_especification { $$ = $2; }
 ;
 
 parameter_declaration_clause:
-  /* empty */ {}
+  /* empty */ {
+    $$ = std::shared_ptr<parser::ParameterList>(new parser::ParameterList);
+  }
 ;
 
 cv_qualifier_seq:
