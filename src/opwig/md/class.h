@@ -28,7 +28,7 @@ class Class final : public Scope {
     const std::string& name() const { return name_; }
     const std::list<parser::BaseSpecifier>& base_specifiers() const { return base_specifiers_; }
 
-/*** NAMESPACE METHODS ***/
+    /*** NAMESPACE METHODS ***/
     
     /// @see opwig::md::Scope::NestedNamespacesNum
     size_t NestedNamespacesNum () const override;
@@ -42,7 +42,7 @@ class Class final : public Scope {
     /// @see opwig::md::Scope::NestedNamespace
     Ptr<Namespace> NestedNamespace (const std::string& name) override;
 
-/*** VARIABLE METHODS ***/
+    /*** VARIABLE METHODS ***/
     
     /// @see opwig::md::Scope::AddGlobalVariable
     bool AddGlobalVariable ( Ptr<Variable> variable) override;
@@ -53,7 +53,7 @@ class Class final : public Scope {
     /// @see opwig::md::Scope::GlobalVariable
     Ptr<Variable> GlobalVariable (const std::string& name) override;
     
-/*** CLASS METHODS ***/
+    /*** CLASS METHODS ***/
     
     /// @see opwig::md::Scope::NestedClassesNum
     size_t NestedClassesNum () const override;
@@ -66,6 +66,17 @@ class Class final : public Scope {
     
     /// @see opwig::md::Scope::NestedClass
     Ptr<Class> NestedClass (const std::string& name) override;
+
+    /*** FUNCTION METHODS ***/
+    
+    /// @see opwig::md::Scope::NestedFunctionsNum
+    size_t NestedFunctionsNum () const override;
+
+    /// @see opwig::md::Scope::AddNestedFunction
+    bool AddNestedFunction (Ptr<Function> nested) override;
+
+    /// @see opwig::md::Scope::NestedFunction
+    Ptr<const Function> NestedFunction (const std::string& name) const override;
 
   private:
     std::string name_;

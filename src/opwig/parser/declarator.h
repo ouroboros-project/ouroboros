@@ -23,7 +23,7 @@ class Declarator final {
 
   public:
 
-    Declarator(const std::string& the_name);
+    explicit Declarator(const std::string& the_name = "");
 
     std::string name() const;
 

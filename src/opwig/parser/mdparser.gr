@@ -11,7 +11,7 @@
   BaseSpecifierSeq: std::shared_ptr<BaseSpecifierList>;
   AccessSpecifier:  parser::AccessSpecifier;
   Declarator:       parser::Declarator;
-  DeclaratorList:   parser::DeclaratorList;
+  DeclaratorSeq:    std::shared_ptr<parser::DeclaratorList>;
   String:           std::string;
   StringSeq:        std::shared_ptr<StringList>;
 
@@ -88,16 +88,16 @@
 
 %type<String>         identifier
 %type<String>         type_name
-%type<String>         init_declarator
-%type<String>         declarator
-%type<String>         ptr_declarator
-%type<String>         noptr_declarator
 %type<String>         declarator_id
 %type<String>         class_head_name
 %type<String>         base_type_specifier
 %type<String>         class_name
 
-%type<StringSeq>     init_declarator_list
+%type<DeclaratorSeq>  init_declarator_list
+%type<Declarator>     init_declarator
+%type<Declarator>     declarator
+%type<Declarator>     ptr_declarator
+%type<Declarator>     noptr_declarator
 
 %%
 
@@ -145,13 +145,13 @@ simple_declaration:
 |
   decl_specifier_seq init_declarator_list ';' {
     TypeAction type_action = $1;
-    std::shared_ptr<StringList> init_list = $2;
+    std::shared_ptr<parser::DeclaratorList> init_list = $2;
     $$ = [type_action, init_list] (md::Ptr<md::Scope> current_namespace) -> bool {
-      for (auto it: *init_list) {
+      for (auto declarator: *init_list) {
         std::string type = type_action(current_namespace);
-        md::Ptr<md::Variable> var = md::Variable::Create(it, type);
+        md::Ptr<md::Variable> var = md::Variable::Create(declarator.name(), type);
         if (!current_namespace->AddGlobalVariable(var)) {
-          //std::cout << "Namespace action failed: could not add variable " << it << " (type: " << type << ")" << std::endl;
+          //std::cout << "Namespace action failed: could not add variable " << declarator << " (type: " << type << ")" << std::endl;
         }
       }
       return true;
@@ -185,7 +185,7 @@ decl_specifier:
 
 init_declarator_list:
   init_declarator {
-    $$ = std::shared_ptr<StringList>(new StringList);
+    $$ = std::shared_ptr<parser::DeclaratorList>(new parser::DeclaratorList);
     ($$)->push_back($1);
   }
 |
@@ -212,7 +212,7 @@ ptr_declarator:
 ;
 
 noptr_declarator:
-  declarator_id { $$ = $1; }
+  declarator_id { $$ = parser::Declarator($1); }
 |
   noptr_declarator parameters_and_qualifiers { $$ = $1; }
 |

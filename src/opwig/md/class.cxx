@@ -68,6 +68,8 @@ Ptr<Class> Class::NestedClass (const std::string& name) {
         : Ptr<Class>();
 }
 
+/*** FUNCTION METHODS ***/
+
 } // namespace md
 } // namespace opwig
 
