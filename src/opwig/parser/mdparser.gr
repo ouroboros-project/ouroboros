@@ -157,10 +157,7 @@ simple_declaration:
             if (declarator.has_parameters()) {
                 md::Ptr<md::Function> func =
                     md::Function::Create(declarator.name(), type, declarator.parameters());
-                if (!current_namespace->AddNestedFunction(func))
-                  std::cout << "FAIL\n";
-                else
-                  std::cout << "SUCCESS\n";
+                if (!current_namespace->AddNestedFunction(func));
             } else {
                 md::Ptr<md::Variable> var = md::Variable::Create(declarator.name(), type);
                 if (!current_namespace->AddGlobalVariable(var)) {

@@ -50,7 +50,7 @@ TEST (DeclaratorTest, ParametersInformation) {
     /* Empty parameter list */ {
         ParameterList parameters = {};
         declarator.set_parameters(parameters);
-        EXPECT_FALSE(declarator.has_parameters());
+        EXPECT_TRUE(declarator.has_parameters());
         const ParameterList parameters_check = declarator.parameters();
         EXPECT_EQ(parameters.size(), parameters_check.size());
         EXPECT_TRUE(equal(parameters_check.begin(), parameters_check.end(), parameters.begin()));
