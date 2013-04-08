@@ -227,7 +227,7 @@ noptr_declarator:
 |
   noptr_declarator parameters_and_qualifiers {
     $$ = $1;
-    ($$).set_parameters(*$2);
+    ($$).set_parameters($2);
   }
 |
   noptr_declarator '[' expression ']' { $$ = $1; }

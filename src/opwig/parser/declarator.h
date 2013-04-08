@@ -27,6 +27,8 @@ class Declarator final {
 
     void set_parameters(const md::ParameterList& the_parameters);
 
+    void set_parameters(md::Ptr<md::ParameterList> the_parameters);
+
   private:
 
     std::string                 name_;
@@ -55,6 +57,10 @@ inline const md::ParameterList& Declarator::parameters() const {
 
 inline void Declarator::set_parameters(const md::ParameterList& the_parameters) {
     parameters_.reset(new md::ParameterList(the_parameters));
+}
+
+inline void Declarator::set_parameters(md::Ptr<md::ParameterList> the_parameters) {
+  parameters_ = the_parameters;
 }
 
 } // namespace parser
