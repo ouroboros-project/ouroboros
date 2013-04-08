@@ -457,7 +457,7 @@ namespace {
         "rtype0 name0(ptype0, ptype1);"
         "rtype1 name1(ptype0 pname0, ptype1);"
         "rtype2 name2(ptype0 pname0, ptype1 pname1);"
-        //"rtype3 name3(ptype0 **pname0[]);"
+        "rtype3 name3(ptype0 **pname0[]);"
         "namespace abc {"
         "  rtype name0(ptype0, ptype1 pnameX);"
         "}";
@@ -535,7 +535,7 @@ TEST (MDParsetTest, ManyDifferentFunctions) {
   ASSERT_EQ(parser.parse(), 0);
   Ptr<const Namespace> global = parser.global_namespace();
   ASSERT_TRUE(static_cast<bool>(global));
-  ASSERT_EQ(3u, global->NestedFunctionsNum());
+  ASSERT_EQ(4u, global->NestedFunctionsNum());
   /* first */ {
       Ptr<const Function> func = global->NestedFunction("name0");
       ASSERT_TRUE(static_cast<bool>(func));

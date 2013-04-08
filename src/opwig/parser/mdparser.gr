@@ -234,6 +234,8 @@ noptr_declarator:
 |
   noptr_declarator '[' expression ']' { $$ = $1; }
 |
+  noptr_declarator '[' ']' { $$ = $1; }
+|
   '(' ptr_declarator ')' { $$ = $2; }
 ;
 
