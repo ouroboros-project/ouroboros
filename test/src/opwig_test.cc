@@ -1,5 +1,6 @@
 #include <opwig/md/variable.h>
 #include <opwig/md/namespace.h>
+#include <opwig/md/class.h>
 #include <opwig/parser/mdparser.h>
 
 #include <gtest/gtest.h>
@@ -7,13 +8,18 @@
 #include <string>
 #include <istream>
 #include <sstream>
+#include <list>
 
 using std::string;
 using std::istringstream;
+using std::list;
 
 using opwig::md::Ptr;
 using opwig::md::Variable;
 using opwig::md::Namespace;
+using opwig::md::Class;
+using opwig::parser::BaseSpecifier;
+using opwig::parser::AccessSpecifier;
 using opwig::MDParser;
 
 TEST (NamespaceTest, Create) {
@@ -195,4 +201,37 @@ TEST (MDParserTest, VariableInNamespace) {
     EXPECT_TRUE(static_cast<bool>(var));
     EXPECT_EQ(var->name(), "var");
     EXPECT_EQ(var->type(), "type");
+}
+
+/*
+parseando:
+-class { }
+-class Nome { }
+-class : Base {}
+-class : public Base {}
+-class Nome : protected Base {}
+-class Nome : protected virtual Base {}
+-class Nome : virtual Base {}
+-class Nome : virtual Base1, public Base2, virtual protected Base3 {}
+-namespace {  class Nome {} }
+-class Nome {}
+ namespace Abc { class Nome2 {} }
+*/
+
+TEST (BaseSpecifierTest, Create) {
+    BaseSpecifier bspec ("name", true, AccessSpecifier::PUBLIC);
+    EXPECT_EQ(bspec.name(), "name");
+    EXPECT_TRUE(bspec.is_virtual());
+    EXPECT_EQ(bspec.access_specifier(), AccessSpecifier::PUBLIC);
+}
+
+TEST (ClassTest, Create) {
+    list<BaseSpecifier> bspecs;
+    bspecs.push_back( BaseSpecifier ("name", true, AccessSpecifier::PUBLIC) );
+    Ptr<Class> c = Class::Create("cname", bspecs);
+    EXPECT_TRUE(static_cast<bool>(c));
+    EXPECT_EQ(c->name(), "cname");
+    EXPECT_EQ(c->base_specifiers().front().name(), "name");
+    EXPECT_TRUE(c->base_specifiers().front().is_virtual());
+    EXPECT_EQ(c->base_specifiers().front().access_specifier(), AccessSpecifier::PUBLIC);   
 }

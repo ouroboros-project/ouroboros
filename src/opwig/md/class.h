@@ -26,7 +26,7 @@ class Class final : public Scope {
     static Ptr<Class> Create (const std::string& name, const std::list<parser::BaseSpecifier>& base_specifiers);
     
     const std::string& name() const { return name_; }
-    
+    const std::list<parser::BaseSpecifier>& base_specifiers() const { return base_specifiers_; }
 
 /*** NAMESPACE METHODS ***/
     

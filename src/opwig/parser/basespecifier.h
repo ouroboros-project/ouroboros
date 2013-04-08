@@ -9,7 +9,7 @@ namespace parser {
 enum class AccessSpecifier { PRIVATE, PROTECTED, PUBLIC };
 
 ///Auxiliar class for passing base_specifier informating thoughout code parsing.
-class BaseSpecifier {
+class BaseSpecifier final {
 public:
     BaseSpecifier(const std::string& name="") : name_(name), virtual_(false), access_(AccessSpecifier::PRIVATE) {}
     BaseSpecifier(const std::string& name, bool isVirtual) : name_(name), virtual_(isVirtual), access_(AccessSpecifier::PRIVATE) {}
