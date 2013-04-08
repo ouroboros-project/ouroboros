@@ -206,10 +206,9 @@ TEST (MDParserTest, VariableInNamespace) {
 /*
 parseando:
 -class { }
--class Nome { }
 -class : Base {}
 -class : public Base {}
--class Nome : protected Base {}
+
 -class Nome : protected virtual Base {}
 -class Nome : virtual Base {}
 -class Nome : virtual Base1, public Base2, virtual protected Base3 {}
@@ -234,4 +233,32 @@ TEST (ClassTest, Create) {
     EXPECT_EQ(c->base_specifiers().front().name(), "name");
     EXPECT_TRUE(c->base_specifiers().front().is_virtual());
     EXPECT_EQ(c->base_specifiers().front().access_specifier(), AccessSpecifier::PUBLIC);   
+}
+
+TEST (MDParserTest, NamedClass) {
+    istringstream input("class name {};");
+    MDParser parser(input);
+    ASSERT_EQ(parser.parse(), 0);
+    Ptr<const Namespace> global = parser.global_namespace();
+    EXPECT_TRUE(static_cast<bool>(global));
+    Ptr<const Class> c = global->NestedClass("name");
+    EXPECT_TRUE(static_cast<bool>(c));
+    EXPECT_EQ(c->name(), "name");
+    EXPECT_EQ(c->base_specifiers().size(), 0);
+}
+
+TEST (MDParserTest, DerivedNamedClass) {
+    istringstream input("class name : protected base {};");
+    MDParser parser(input);
+    ASSERT_EQ(parser.parse(), 0);
+    Ptr<const Namespace> global = parser.global_namespace();
+    EXPECT_TRUE(static_cast<bool>(global));
+    Ptr<const Class> c = global->NestedClass("name");
+    EXPECT_TRUE(static_cast<bool>(c));
+    EXPECT_EQ(c->name(), "name");
+    EXPECT_EQ(c->base_specifiers().size(), 1);
+    
+    EXPECT_EQ(c->base_specifiers().front().name(), "base");
+    EXPECT_FALSE(c->base_specifiers().front().is_virtual());
+    EXPECT_EQ(c->base_specifiers().front().access_specifier(), AccessSpecifier::PROTECTED);   
 }

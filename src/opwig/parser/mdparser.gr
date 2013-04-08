@@ -159,8 +159,8 @@ simple_declaration:
   decl_specifier_seq ';' {
     TypeAction type_action = $1;
     $$ = [type_action] (md::Ptr<md::Scope> current_namespace) -> bool {
-        if (!type_action(current_namespace).empty())    return true;
-        return false;
+        type_action(current_namespace);
+        return true;
     };
   }
 |
@@ -330,7 +330,7 @@ class_specifier:
     $$ = [classObj] (md::Ptr<md::Scope> current_namespace) -> std::string {
         if (current_namespace->AddNestedClass(classObj->name(), classObj))
             return classObj->name();
-        return "";
+        throw md::SemanticError("Non-anonymous class cannot have empty name!");
     };
   }
 ;
