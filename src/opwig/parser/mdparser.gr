@@ -3,8 +3,8 @@
 %baseclass-preinclude <opwig/parser/mdparser-preincludes.h>
 %namespace            opwig
 %polymorphic
-  Declaration:      NamespaceAction;
-  DeclarationSeq:   std::shared_ptr<NamespaceActionList>;
+  Declaration:      ScopeAction;
+  DeclarationSeq:   std::shared_ptr<ScopeActionList>;
   Type:             TypeAction;
   Class:            md::Ptr<md::Class>;
   BaseSpecifier:    parser::BaseSpecifier;
@@ -111,7 +111,7 @@ input:
 
 declaration_seq:
   /* empty */ {
-    $$ = std::shared_ptr<NamespaceActionList>(new NamespaceActionList);
+    $$ = std::shared_ptr<ScopeActionList>(new ScopeActionList);
   }
 |
   declaration_seq declaration {
@@ -144,7 +144,7 @@ simple_declaration:
   decl_specifier_seq init_declarator_list ';' {
     TypeAction type_action = $1;
     std::shared_ptr<StringList> init_list = $2;
-    $$ = [type_action, init_list] (md::Ptr<md::Namespace> current_namespace) -> bool {
+    $$ = [type_action, init_list] (md::Ptr<md::Scope> current_namespace) -> bool {
       for (auto it: *init_list) {
         std::string type = type_action(current_namespace);
         md::Ptr<md::Variable> var = md::Variable::Create(it, type);
@@ -158,7 +158,7 @@ simple_declaration:
 |
   decl_specifier_seq ';' {
     TypeAction type_action = $1;
-    $$ = [type_action] (md::Ptr<md::Namespace> current_namespace) -> bool {
+    $$ = [type_action] (md::Ptr<md::Scope> current_namespace) -> bool {
         if (!type_action(current_namespace).empty())    return true;
         return false;
     };
@@ -270,7 +270,7 @@ namespace_definition:
   }
 |
   unnamed_namespace_definition {
-    $$ = [] (md::Ptr<md::Namespace> current_namespace) -> bool { return true; };
+    $$ = [] (md::Ptr<md::Scope> current_namespace) -> bool { return true; };
   }
 ;
 
@@ -283,7 +283,7 @@ named_namespace_definition:
     for (auto it: *$4)
       if (!(it) (new_namespace))
         std::cout << "Namespace action failed (new)";
-    $$ = [name,new_namespace] (Ptr<Namespace> current_namespace) -> bool {
+    $$ = [name,new_namespace] (Ptr<md::Scope> current_namespace) -> bool {
       return current_namespace->AddNestedNamespace(name, new_namespace);
     };
   }
@@ -312,7 +312,7 @@ trailing_type_specifier:
 simple_type_specifier:
   type_name { 
     std::string name = $1;
-    $$ = [name] (md::Ptr<md::Namespace> current_namespace) -> std::string {
+    $$ = [name] (md::Ptr<md::Scope> current_namespace) -> std::string {
         return name;
     }; 
   }
@@ -327,7 +327,7 @@ type_name:
 class_specifier:
   class_head '{' '}' {
     md::Ptr<md::Class> classObj = $1;
-    $$ = [classObj] (md::Ptr<md::Namespace> current_namespace) -> std::string {
+    $$ = [classObj] (md::Ptr<md::Scope> current_namespace) -> std::string {
         if (current_namespace->AddNestedClass(classObj->name(), classObj))
             return classObj->name();
         return "";

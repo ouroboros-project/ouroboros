@@ -3,11 +3,12 @@
 #define OPWIG_MDPARSER_BASESPECIFIER_H_
 
 namespace opwig {
-
 namespace parser {
 
+///Enum depicting access specifier types for use in code parsing.
 enum class AccessSpecifier { PRIVATE, PROTECTED, PUBLIC };
 
+///Auxiliar class for passing base_specifier informating thoughout code parsing.
 class BaseSpecifier {
 public:
     BaseSpecifier(const std::string& name="") : name_(name), virtual_(false), access_(AccessSpecifier::PRIVATE) {}

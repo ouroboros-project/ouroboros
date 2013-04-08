@@ -13,12 +13,12 @@
 
 namespace opwig {
 
-typedef std::function<bool (md::Ptr<md::Namespace>)>  NamespaceAction;
-typedef std::list<NamespaceAction>                NamespaceActionList;
+typedef std::function<bool (md::Ptr<md::Scope>)>  ScopeAction;
+typedef std::list<ScopeAction>                    ScopeActionList;
 
 /*TypeAction is just like a NamespaceAction, adding a type/class to a namespace, 
   but instead of returning a bool it returns a string with the type name.*/
-typedef std::function<std::string (md::Ptr<md::Namespace>)> TypeAction;
+typedef std::function<std::string (md::Ptr<md::Scope>)> TypeAction;
 
 typedef std::list<std::string>                    StringList;
 
