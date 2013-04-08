@@ -3,10 +3,15 @@
 %baseclass-preinclude <opwig/parser/mdparser-preincludes.h>
 %namespace            opwig
 %polymorphic
-  Declaration: NamespaceAction;
-  DeclarationSeq: std::shared_ptr<NamespaceActionList>;
-  String: std::string;
-  StringSeq: std::shared_ptr<StringList>;
+  Declaration:      NamespaceAction;
+  DeclarationSeq:   std::shared_ptr<NamespaceActionList>;
+  Type:             TypeAction;
+  Class:            md::Ptr<md::Class>;
+  BaseSpecifier:    parser::BaseSpecifier;
+  BaseSpecifierSeq: std::shared_ptr<BaseSpecifierList>;
+  AccessSpecifier:  parser::AccessSpecifier;
+  String:           std::string;
+  StringSeq:        std::shared_ptr<StringList>;
 
 %token IDENTIFIER
 %token PRIMITIVE
@@ -56,25 +61,39 @@
 %token OCTAL_LITERAL
 %token FLOAT_LITERAL
 
-%type<DeclarationSeq> declaration_seq
-%type<Declaration>    declaration
-%type<Declaration>    block_declaration
-%type<Declaration>    simple_declaration
-%type<Declaration>    namespace_definition
-%type<Declaration>    named_namespace_definition
-%type<Declaration>    unnamed_namespace_definition
+%type<DeclarationSeq>       declaration_seq
+%type<Declaration>          declaration
+%type<Declaration>          block_declaration
+%type<Declaration>          simple_declaration
+%type<Declaration>          namespace_definition
+%type<Declaration>          named_namespace_definition
+%type<Declaration>          unnamed_namespace_definition
+
+%type<Type>                 decl_specifier_seq
+%type<Type>                 type_specifier
+%type<Type>                 trailing_type_specifier
+%type<Type>                 simple_type_specifier
+%type<Type>                 class_specifier
+
+%type<Class>                class_head
+
+%type<BaseSpecifierSeq>     base_clause
+%type<BaseSpecifierSeq>     base_specifier_list
+
+%type<BaseSpecifier>        base_specifier
+
+%type<AccessSpecifier>      access_specifier
 
 %type<String>         identifier
-%type<String>         type_specifier
-%type<String>         trailing_type_specifier
-%type<String>         simple_type_specifier
 %type<String>         type_name
-%type<String>         decl_specifier_seq
 %type<String>         init_declarator
 %type<String>         declarator
 %type<String>         ptr_declarator
 %type<String>         noptr_declarator
 %type<String>         declarator_id
+%type<String>         class_head_name
+%type<String>         base_type_specifier
+%type<String>         class_name
 
 %type<StringSeq>     init_declarator_list
 
@@ -123,10 +142,11 @@ simple_declaration:
   ';'
 |
   decl_specifier_seq init_declarator_list ';' {
-    std::string type = $1;
+    TypeAction type_action = $1;
     std::shared_ptr<StringList> init_list = $2;
-    $$ = [type, init_list] (md::Ptr<md::Namespace> current_namespace) -> bool {
+    $$ = [type_action, init_list] (md::Ptr<md::Namespace> current_namespace) -> bool {
       for (auto it: *init_list) {
+        std::string type = type_action(current_namespace);
         md::Ptr<md::Variable> var = md::Variable::Create(it, type);
         if (!current_namespace->AddGlobalVariable(var)) {
           //std::cout << "Namespace action failed: could not add variable " << it << " (type: " << type << ")" << std::endl;
@@ -136,7 +156,13 @@ simple_declaration:
     };
   }
 |
-  decl_specifier_seq ';'
+  decl_specifier_seq ';' {
+    TypeAction type_action = $1;
+    $$ = [type_action] (md::Ptr<md::Namespace> current_namespace) -> bool {
+        if (!type_action(current_namespace).empty())    return true;
+        return false;
+    };
+  }
 |
   init_declarator_list ';'
 ;
@@ -275,6 +301,8 @@ unnamed_namespace_definition:
 
 type_specifier:
   trailing_type_specifier { $$ = $1; }
+|
+  class_specifier { $$ = $1; }
 ;
 
 trailing_type_specifier:
@@ -282,11 +310,91 @@ trailing_type_specifier:
 ;
 
 simple_type_specifier:
-  type_name { $$ = $1; }
+  type_name { 
+    std::string name = $1;
+    $$ = [name] (md::Ptr<md::Namespace> current_namespace) -> std::string {
+        return name;
+    }; 
+  }
 ;
 
 type_name:
   identifier { $$ = $1; }
+;
+
+//=========================// CLASS SPECIFICATION //
+
+class_specifier:
+  class_head '{' '}' {
+    md::Ptr<md::Class> classObj = $1;
+    $$ = [classObj] (md::Ptr<md::Namespace> current_namespace) -> std::string {
+        if (current_namespace->AddNestedClass(classObj->name(), classObj))
+            return classObj->name();
+        return "";
+    };
+  }
+;
+
+class_head:
+  class_key { $$ = md::Class::Create("", BaseSpecifierList()); }
+|
+  class_key base_clause { $$ = md::Class::Create("", *$2); }
+|
+  class_key class_head_name { $$ = md::Class::Create($2, BaseSpecifierList()); }
+|
+  class_key class_head_name base_clause { $$ = md::Class::Create($2, *$3); }
+;
+
+class_head_name:
+  class_name { $$ = $1; }
+;
+
+base_clause:
+  ':' base_specifier_list { $$ = $2; }
+;
+
+base_specifier_list:
+  base_specifier {
+    $$ = std::shared_ptr<BaseSpecifierList>(new BaseSpecifierList);
+    ($$)->push_back($1);
+  }
+|
+  base_specifier_list ',' base_specifier {
+    ($1)->push_back($3);
+    $$ = $1;
+  }
+;
+
+base_specifier:
+  base_type_specifier { $$ = parser::BaseSpecifier($1); }
+|
+  VIRTUAL base_type_specifier { $$ = parser::BaseSpecifier($2, true); }
+|
+  access_specifier base_type_specifier { $$ = parser::BaseSpecifier($2, $1); }
+|
+  VIRTUAL access_specifier base_type_specifier { $$ = parser::BaseSpecifier($3, true, $2); }
+|
+  access_specifier VIRTUAL base_type_specifier { $$ = parser::BaseSpecifier($3, true, $1); }
+;
+
+base_type_specifier:
+  class_name { $$ = $1; }
+;
+
+access_specifier:
+  PRIVATE { $$ = parser::AccessSpecifier::PRIVATE; }
+| 
+  PROTECTED { $$ = parser::AccessSpecifier::PROTECTED; }
+|
+  PUBLIC { $$ = parser::AccessSpecifier::PUBLIC; }
+;
+
+class_name:
+  identifier { $$ = $1; }
+;
+
+class_key:
+  CLASS | UNION | STRUCT
 ;
 
 //=========================// EXPRESSIONS //

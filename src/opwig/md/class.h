@@ -7,8 +7,11 @@
 #include <opwig/md/variable.h>
 #include <opwig/md/semanticerror.h>
 
+#include <opwig/parser/basespecifier.h>
+
 #include <string>
 #include <map>
+#include <list>
 
 namespace opwig {
 namespace md {
@@ -20,7 +23,10 @@ class Class final : public Scope {
 
     /// Creates a new Class object. Must be used in place of the
     /// constructor.
-    static Ptr<Class> Create ();
+    static Ptr<Class> Create (const std::string& name, const std::list<parser::BaseSpecifier>& base_specifiers);
+    
+    const std::string& name() const { return name_; }
+    
 
 /*** NAMESPACE METHODS ***/
     
@@ -62,16 +68,18 @@ class Class final : public Scope {
     Ptr<Class> NestedClass (const std::string& name) override;
 
   private:
-
+    std::string name_;
+    std::list<parser::BaseSpecifier> base_specifiers_;
+    
     std::map<std::string, Ptr<Class>> nested_classes_;
     std::map<std::string, Ptr<Variable>> global_variables_;
 
-    Class () {}
+    Class (const std::string& name, const std::list<parser::BaseSpecifier>& base_specifiers) : name_(name), base_specifiers_(base_specifiers) {}
 
 };
 
-inline Ptr<Class> Class::Create () {
-  return Ptr<Class>(new Class);
+inline Ptr<Class> Class::Create (const std::string& name, const std::list<parser::BaseSpecifier>& base_specifiers) {
+  return Ptr<Class>(new Class(name, base_specifiers));
 }
 
 inline size_t Class::NestedNamespacesNum () const {
