@@ -3,6 +3,7 @@
 #define OPWIG_MD_FUNCTION_H_
 
 #include <opwig/md/ptr.h>
+#include <opwig/md/parameter.h>
 
 #include <vector>
 #include <string>
@@ -20,7 +21,7 @@ class Function {
 
     /// Creates a new Function object. Must be used in place of the constructor.
     static Ptr<Function> Create(const std::string& name, const std::string& return_type,
-                                const std::vector<std::string>& arg_type_list);
+                                const ParameterList& parameter_list);
 
     /// Tells the function's name.
     std::string name() const;
@@ -28,27 +29,30 @@ class Function {
     /// Tells the function's return type.
     std::string return_type() const;
 
-    /// Tells the function's nth argument type.
-    std::string arg_type(size_t n) const;
+    /// Tells the function's nth parameter type.
+    std::string parameter_type(size_t n) const;
+
+    /// Tells the function's nth parameter name.
+    std::string parameter_name(size_t n) const;
 
   private:
 
-    std::string               name_;
-    std::string               return_type_;
-    std::vector<std::string>  arg_type_list_;
+    std::string   name_;
+    std::string   return_type_;
+    ParameterList parameter_list_;
 
     Function(const std::string& name, const std::string& return_type,
-             const std::vector<std::string>& arg_type_list);
+             const ParameterList& arg_type_list);
 
 };
 
 inline Function::Function(const std::string& name, const std::string& return_type,
-                          const std::vector<std::string>& arg_type_list)
-    : name_(name), return_type_(return_type), arg_type_list_(arg_type_list) {}
+                          const ParameterList& the_parameter_list)
+    : name_(name), return_type_(return_type), parameter_list_(the_parameter_list) {}
 
 inline Ptr<Function> Function::Create(const std::string& name, const std::string& return_type,
-                                      const std::vector<std::string>& arg_type_list) {
-    return Ptr<Function>(new Function(name, return_type, arg_type_list));
+                                      const ParameterList& parameter_list) {
+    return Ptr<Function>(new Function(name, return_type, parameter_list));
 }
 
 inline std::string Function::name() const {
@@ -59,8 +63,12 @@ inline std::string Function::return_type() const {
     return return_type_;
 }
 
-inline std::string Function::arg_type(size_t n) const {
-    return arg_type_list_.at(n); // throw handle exception?
+inline std::string Function::parameter_type(size_t n) const {
+    return parameter_list_.at(n).type; // throw handle exception?
+}
+
+inline std::string Function::parameter_name(size_t n) const {
+    return parameter_list_.at(n).name; // throw handle exception?
 }
 
 } // namespace md

@@ -12,8 +12,8 @@
   AccessSpecifier:  parser::AccessSpecifier;
   Declarator:       parser::Declarator;
   DeclaratorSeq:    std::shared_ptr<parser::DeclaratorList>;
-  Parameter:        parser::Parameter;
-  ParameterSeq:     std::shared_ptr<parser::ParameterList>;
+  Parameter:        md::Parameter;
+  ParameterSeq:     std::shared_ptr<md::ParameterList>;
   String:           std::string;
   StringSeq:        std::shared_ptr<StringList>;
 
@@ -152,14 +152,23 @@ simple_declaration:
     TypeAction type_action = $1;
     std::shared_ptr<parser::DeclaratorList> init_list = $2;
     $$ = [type_action, init_list] (md::Ptr<md::Scope> current_namespace) -> bool {
-      for (auto declarator: *init_list) {
-        std::string type = type_action(current_namespace);
-        md::Ptr<md::Variable> var = md::Variable::Create(declarator.name(), type);
-        if (!current_namespace->AddGlobalVariable(var)) {
-          //std::cout << "Namespace action failed: could not add variable " << declarator << " (type: " << type << ")" << std::endl;
+        for (auto declarator: *init_list) {
+            std::string type = type_action(current_namespace);
+            if (declarator.has_parameters()) {
+                md::Ptr<md::Function> func =
+                    md::Function::Create(declarator.name(), type, declarator.parameters());
+                if (!current_namespace->AddNestedFunction(func))
+                  std::cout << "FAIL\n";
+                else
+                  std::cout << "SUCCESS\n";
+            } else {
+                md::Ptr<md::Variable> var = md::Variable::Create(declarator.name(), type);
+                if (!current_namespace->AddGlobalVariable(var)) {
+                  //std::cout << "Namespace action failed: could not add variable " << declarator << " (type: " << type << ")" << std::endl;
+                }
+            }
         }
-      }
-      return true;
+        return true;
     };
   }
 |
@@ -241,7 +250,7 @@ parameters_and_qualifiers:
 
 parameter_declaration_clause:
   /* empty */ {
-    $$ = std::shared_ptr<parser::ParameterList>(new parser::ParameterList);
+    $$ = std::shared_ptr<md::ParameterList>(new md::ParameterList);
   }
 ;
 

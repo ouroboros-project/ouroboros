@@ -24,6 +24,7 @@ using std::list;
 
 using opwig::md::Ptr;
 using opwig::md::Variable;
+using opwig::md::ParameterList;
 using opwig::md::Function;
 using opwig::md::Namespace;
 using opwig::md::Class;
@@ -31,7 +32,6 @@ using opwig::parser::BaseSpecifier;
 using opwig::parser::AccessSpecifier;
 using opwig::MDParser;
 using opwig::parser::Declarator;
-using opwig::parser::ParameterList;
 
 //#define EXPECT_THROW(code, exception) \
 //  try { code; EXPECT_TRUE(false); } catch (exception e) {}
@@ -122,13 +122,15 @@ TEST (VariableTest, Create) {
 }
 
 TEST (FunctionTest, Create) {
-  Ptr<Function> var = Function::Create("funcname", "returntype", {"argtype0", "argtype1"});
+  Ptr<Function> var = Function::Create("funcname", "returntype", {{"type0", "name0"}, {"type1", "name1"}});
   ASSERT_TRUE(static_cast<bool>(var));
   EXPECT_EQ(var->name(), "funcname");
   EXPECT_EQ(var->return_type(), "returntype");
-  EXPECT_EQ(var->arg_type(0), "argtype0");
-  EXPECT_EQ(var->arg_type(1), "argtype1");
-  EXPECT_THROW(var->arg_type(2), std::out_of_range);
+  EXPECT_EQ(var->parameter_type(0), "type0");
+  EXPECT_EQ(var->parameter_name(0), "name0");
+  EXPECT_EQ(var->parameter_type(1), "type1");
+  EXPECT_EQ(var->parameter_name(1), "name1");
+  EXPECT_THROW(var->parameter_type(2), std::out_of_range);
 }
 
 TEST (MDParserTest, EmptyFile) {
@@ -469,6 +471,6 @@ TEST (MDParsetTest, GlobalNoArgFunction) {
   ASSERT_TRUE(static_cast<bool>(func));
   EXPECT_EQ(func->name(), "name");
   EXPECT_EQ(func->return_type(), "rtype");
-  EXPECT_THROW(func->arg_type(0), std::out_of_range);
+  EXPECT_THROW(func->parameter_type(0), std::out_of_range);
 }
 
