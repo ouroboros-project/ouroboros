@@ -103,6 +103,8 @@
 
 %type<ParameterSeq>   parameters_and_qualifiers
 %type<ParameterSeq>   parameter_declaration_clause
+%type<ParameterSeq>   parameter_declaration_list
+%type<Parameter>      parameter_declaration
 
 %%
 
@@ -249,6 +251,28 @@ parameter_declaration_clause:
   /* empty */ {
     $$ = std::shared_ptr<md::ParameterList>(new md::ParameterList);
   }
+|
+  parameter_declaration_list {
+    $$ = $1;
+  }
+;
+
+parameter_declaration_list:
+  parameter_declaration {
+    $$ = std::shared_ptr<md::ParameterList>(new md::ParameterList);
+    ($$)->push_back($1);
+  }
+|
+  parameter_declaration_list ',' parameter_declaration {
+    $$ = $1;
+    ($$)->push_back($3);
+  }
+;
+
+parameter_declaration:
+  identifier identifier { $$ = md::Parameter({$1, $2}); }
+|
+  identifier { $$ = md::Parameter({$1, ""}); }
 ;
 
 cv_qualifier_seq:

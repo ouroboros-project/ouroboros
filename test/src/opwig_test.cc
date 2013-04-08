@@ -472,5 +472,21 @@ TEST (MDParsetTest, GlobalNoArgFunction) {
   EXPECT_EQ(func->name(), "name");
   EXPECT_EQ(func->return_type(), "rtype");
   EXPECT_THROW(func->parameter_type(0), std::out_of_range);
+  EXPECT_THROW(func->parameter_name(0), std::out_of_range);
+}
+
+TEST (MDParsetTest, GlobalSingleArgFunction) {
+  istringstream input(test22);
+  MDParser parser(input);
+  ASSERT_EQ(parser.parse(), 0);
+  Ptr<const Namespace> global = parser.global_namespace();
+  ASSERT_TRUE(static_cast<bool>(global));
+  ASSERT_EQ(1u, global->NestedFunctionsNum());
+  Ptr<const Function> func = global->NestedFunction("name");
+  ASSERT_TRUE(static_cast<bool>(func));
+  EXPECT_EQ(func->name(), "name");
+  EXPECT_EQ(func->return_type(), "rtype");
+  EXPECT_EQ("type", func->parameter_type(0));
+  EXPECT_EQ("", func->parameter_name(0));
 }
 
