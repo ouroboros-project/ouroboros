@@ -178,8 +178,8 @@ simple_declaration:
         return true;
     };
   }
-//|
-//  init_declarator_list ';'
+|
+  init_declarator_list ';'
 ;
 
 decl_specifier_seq:
