@@ -289,13 +289,6 @@ TEST (MDParserTest, VariableInNamespace) {
     EXPECT_EQ(var->type(), "type");
 }
 
-/*
-parseando:
--class { }
--class : Base {}
--class : public Base {}
-*/
-
 TEST (BaseSpecifierTest, Create) {
     BaseSpecifier bspec ("name", true, AccessSpecifier::PUBLIC);
     EXPECT_EQ(bspec.name(), "name");
@@ -418,11 +411,6 @@ TEST (MDParserTest, ClassInNamespace) {
     EXPECT_EQ(c->name(), "name");
     EXPECT_EQ(c->base_specifiers().size(), 0);
 }
-
-/*
--class Nome {}
- namespace Abc { class Nome2 {} }
- */
  
 TEST (MDParserTest, ClassInAndOutOfNamespace) {
     istringstream input("class name {}; namespace abc { class name {}; }");
@@ -443,6 +431,16 @@ TEST (MDParserTest, ClassInAndOutOfNamespace) {
     EXPECT_EQ(c2->name(), "name");
     EXPECT_EQ(c2->base_specifiers().size(), 0);
 }
+
+/*
+parseando:
+-class { }
+-class : Base {}
+-class : public Base {}
+-class : virtual base1, public base2 {}
+-class {} class {}
+-namespace { class {} }
+*/
 
 namespace {
     string test21 = 
