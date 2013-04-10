@@ -1,5 +1,9 @@
 //=========================// EXPRESSIONS //
 
+constant_expression:
+    expression
+;
+
 expression:
   term
 |

@@ -10,16 +10,16 @@ simple_declaration:
   decl_specifier_seq init_declarator_list ';' {
     TypeAction type_action = $1;
     std::shared_ptr<parser::DeclaratorList> init_list = $2;
-    $$ = [type_action, init_list] (md::Ptr<md::Scope> current_namespace) -> bool {
+    $$ = [type_action, init_list] (md::Ptr<md::Scope> current_scope) -> bool {
         for (auto declarator: *init_list) {
-            std::string type = type_action(current_namespace);
+            std::string type = type_action(current_scope);
             if (declarator.has_parameters()) {
                 md::Ptr<md::Function> func =
                     md::Function::Create(declarator.name(), type, declarator.parameters());
-                if (!current_namespace->AddNestedFunction(func));
+                if (!current_scope->AddNestedFunction(func));
             } else {
                 md::Ptr<md::Variable> var = md::Variable::Create(declarator.name(), type);
-                if (!current_namespace->AddGlobalVariable(var)) {
+                if (!current_scope->AddGlobalVariable(var)) {
                   //std::cout << "Namespace action failed: could not add variable " << declarator << " (type: " << type << ")" << std::endl;
                 }
             }
@@ -30,8 +30,8 @@ simple_declaration:
 |
   decl_specifier_seq ';' {
     TypeAction type_action = $1;
-    $$ = [type_action] (md::Ptr<md::Scope> current_namespace) -> bool {
-        type_action(current_namespace);
+    $$ = [type_action] (md::Ptr<md::Scope> current_scope) -> bool {
+        type_action(current_scope);
         return true;
     };
   }
