@@ -1,11 +1,60 @@
 //=========================// MEMBER SPECIFICATION //
 
 member_specification:
-  member_declaration 
+    member_declaration 
 |
-  member_declaration member_specification
+    member_declaration member_specification
 |
-  access_specifier ':' 
+    access_specifier ':' 
 |
-  access_specifier ':' member_specification
+    access_specifier ':' member_specification
+;
+
+member_declaration:
+    decl_specifier_seq
+|
+    member_declarator_list
+|
+    decl_specifier_seq member_declarator_list
+//incomplete
+;
+
+member_declarator_list:
+    member_declarator
+|
+    member_declarator_list ',' member_declarator
+;
+
+member_declarator:
+    declarator
+|
+    declarator virt_specifier_seq
+|
+    declarator pure_specifier
+|
+    declarator virt_specifier_seq pure_specifier
+|
+    declarator brace_or_equal_initializer
+|
+    declarator virt_specifier_seq brace_or_equal_initializer
+
+//	identifier(opt) virt-specifier-seq(opt) : constant-expression
+;
+
+virt_specifier_seq:
+    virt_specifier
+|
+    virt_specifier_seq virt_specifier
+;
+
+virt_specifier:
+    OVERRIDE
+|
+    FINAL
+|
+    NEW
+;
+
+pure_specifier:
+    '=' '0'
 ;

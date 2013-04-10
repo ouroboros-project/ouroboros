@@ -79,7 +79,6 @@
 
 %type<BaseSpecifierSeq>     base_clause
 %type<BaseSpecifierSeq>     base_specifier_list
-
 %type<BaseSpecifier>        base_specifier
 
 %type<AccessSpecifier>      access_specifier
