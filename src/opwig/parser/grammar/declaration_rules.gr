@@ -1,52 +1,31 @@
 //=========================// BLOCK DECLARAIONS //
 
 block_declaration:
-  simple_declaration { $$ = $1; }
+    simple_declaration { $$ = $1; }
 ;
 
 simple_declaration:
-  ';'
+    ';'
 |
-  decl_specifier_seq init_declarator_list ';' {
-    TypeAction type_action = $1;
-    std::shared_ptr<parser::DeclaratorList> init_list = $2;
-    $$ = [type_action, init_list] (md::Ptr<md::Scope> current_scope) -> bool {
-        for (auto declarator: *init_list) {
-            std::string type = type_action(current_scope);
-            if (declarator.has_parameters()) {
-                md::Ptr<md::Function> func =
-                    md::Function::Create(declarator.name(), type, declarator.parameters());
-                if (!current_scope->AddNestedFunction(func));
-            } else {
-                md::Ptr<md::Variable> var = md::Variable::Create(declarator.name(), type);
-                if (!current_scope->AddGlobalVariable(var)) {
-                  //std::cout << "Namespace action failed: could not add variable " << declarator << " (type: " << type << ")" << std::endl;
-                }
-            }
-        }
-        return true;
-    };
-  }
+    decl_specifier_seq init_declarator_list ';' {
+        $$ = parser::JoinDeclarations($1, $2);
+    }
 |
-  decl_specifier_seq ';' {
-    TypeAction type_action = $1;
-    $$ = [type_action] (md::Ptr<md::Scope> current_scope) -> bool {
-        type_action(current_scope);
-        return true;
-    };
-  }
+    decl_specifier_seq ';' {
+        $$ = parser::AddTypeToScope($1);
+    }
 |
-  init_declarator_list ';'
+    init_declarator_list ';'
 ;
 
 decl_specifier_seq:
-  type_specifier { $$ = $1; }
+    type_specifier { $$ = $1; }
 |
-  decl_specifier decl_specifier_seq { $$ = $2; }
+    decl_specifier decl_specifier_seq { $$ = $2; }
 ;
 
 decl_specifier:
-  FRIEND
+    FRIEND
 |
-  TYPEDEF
+    TYPEDEF
 ;

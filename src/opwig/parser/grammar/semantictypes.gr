@@ -62,7 +62,7 @@
 %token FLOAT_LITERAL
 
 %type<DeclarationSeq>       declaration_seq
-$type<DeclarationSeq>       member_specification
+%type<DeclarationSeq>       member_specification
 %type<Declaration>          declaration
 %type<Declaration>          member_declaration
 %type<Declaration>          block_declaration

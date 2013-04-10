@@ -3,6 +3,7 @@
 #include <opwig/md/function.h>
 #include <opwig/md/namespace.h>
 #include <opwig/md/class.h>
+#include <opwig/md/semanticerror.h>
 #include <opwig/parser/mdparser.h>
 #include <opwig/parser/declarator.h>
 
@@ -32,9 +33,6 @@ using opwig::parser::BaseSpecifier;
 using opwig::parser::AccessSpecifier;
 using opwig::MDParser;
 using opwig::parser::Declarator;
-
-//#define EXPECT_THROW(code, exception) \
-//  try { code; EXPECT_TRUE(false); } catch (exception e) {}
 
 TEST (DeclaratorTest, ConstructorGetSetName) {
     Declarator declarator("name");
@@ -245,14 +243,7 @@ TEST (MDParserTest, MultiVariable) {
 TEST (MDParserTest, VariableConflict) {
     istringstream input(test13);
     MDParser parser(input);
-    ASSERT_EQ(parser.parse(), 0);
-    Ptr<const Namespace> global = parser.global_namespace();
-    EXPECT_TRUE(static_cast<bool>(global));
-
-    Ptr<const Variable> var = global->GlobalVariable("var");
-    EXPECT_TRUE(static_cast<bool>(var));
-    EXPECT_EQ(var->name(), "var");
-    EXPECT_EQ(var->type(), "type");
+    EXPECT_THROW(parser.parse(), std::exception);
 }
 
 TEST (MDParserTest, VariableSequence) {
@@ -462,134 +453,134 @@ namespace {
 }
 
 TEST (MDParsetTest, GlobalNoArgFunction) {
-  istringstream input("rtype name();");
-  MDParser parser(input);
-  ASSERT_EQ(parser.parse(), 0);
-  Ptr<const Namespace> global = parser.global_namespace();
-  ASSERT_TRUE(static_cast<bool>(global));
-  ASSERT_EQ(1u, global->NestedFunctionsNum());
-  Ptr<const Function> func = global->NestedFunction("name");
-  ASSERT_TRUE(static_cast<bool>(func));
-  EXPECT_EQ(func->name(), "name");
-  EXPECT_EQ(func->return_type(), "rtype");
-  EXPECT_THROW(func->parameter_type(0), std::out_of_range);
-  EXPECT_THROW(func->parameter_name(0), std::out_of_range);
+    istringstream input("rtype name();");
+    MDParser parser(input);
+    ASSERT_EQ(parser.parse(), 0);
+    Ptr<const Namespace> global = parser.global_namespace();
+    ASSERT_TRUE(static_cast<bool>(global));
+    ASSERT_EQ(1u, global->NestedFunctionsNum());
+    Ptr<const Function> func = global->NestedFunction("name");
+    ASSERT_TRUE(static_cast<bool>(func));
+    EXPECT_EQ(func->name(), "name");
+    EXPECT_EQ(func->return_type(), "rtype");
+    EXPECT_THROW(func->parameter_type(0), std::out_of_range);
+    EXPECT_THROW(func->parameter_name(0), std::out_of_range);
 }
 
 TEST (MDParsetTest, GlobalSingleArgFunction) {
-  istringstream input("rtype name(type);");
-  MDParser parser(input);
-  ASSERT_EQ(parser.parse(), 0);
-  Ptr<const Namespace> global = parser.global_namespace();
-  ASSERT_TRUE(static_cast<bool>(global));
-  ASSERT_EQ(1u, global->NestedFunctionsNum());
-  Ptr<const Function> func = global->NestedFunction("name");
-  ASSERT_TRUE(static_cast<bool>(func));
-  EXPECT_EQ(func->name(), "name");
-  EXPECT_EQ(func->return_type(), "rtype");
-  EXPECT_EQ("type", func->parameter_type(0));
-  EXPECT_EQ("", func->parameter_name(0));
+    istringstream input("rtype name(type);");
+    MDParser parser(input);
+    ASSERT_EQ(parser.parse(), 0);
+    Ptr<const Namespace> global = parser.global_namespace();
+    ASSERT_TRUE(static_cast<bool>(global));
+    ASSERT_EQ(1u, global->NestedFunctionsNum());
+    Ptr<const Function> func = global->NestedFunction("name");
+    ASSERT_TRUE(static_cast<bool>(func));
+    EXPECT_EQ(func->name(), "name");
+    EXPECT_EQ(func->return_type(), "rtype");
+    EXPECT_EQ("type", func->parameter_type(0));
+    EXPECT_EQ("", func->parameter_name(0));
 }
 
 TEST (MDParsetTest, GlobalDoubleArgFunction) {
-  istringstream input("rtype name(type0, type1);");
-  MDParser parser(input);
-  ASSERT_EQ(parser.parse(), 0);
-  Ptr<const Namespace> global = parser.global_namespace();
-  ASSERT_TRUE(static_cast<bool>(global));
-  ASSERT_EQ(1u, global->NestedFunctionsNum());
-  Ptr<const Function> func = global->NestedFunction("name");
-  ASSERT_TRUE(static_cast<bool>(func));
-  EXPECT_EQ(func->name(), "name");
-  EXPECT_EQ(func->return_type(), "rtype");
-  EXPECT_EQ("type0", func->parameter_type(0));
-  EXPECT_EQ("", func->parameter_name(0));
-  EXPECT_EQ("type1", func->parameter_type(1));
-  EXPECT_EQ("", func->parameter_name(1));
+    istringstream input("rtype name(type0, type1);");
+    MDParser parser(input);
+    ASSERT_EQ(parser.parse(), 0);
+    Ptr<const Namespace> global = parser.global_namespace();
+    ASSERT_TRUE(static_cast<bool>(global));
+    ASSERT_EQ(1u, global->NestedFunctionsNum());
+    Ptr<const Function> func = global->NestedFunction("name");
+    ASSERT_TRUE(static_cast<bool>(func));
+    EXPECT_EQ(func->name(), "name");
+    EXPECT_EQ(func->return_type(), "rtype");
+    EXPECT_EQ("type0", func->parameter_type(0));
+    EXPECT_EQ("", func->parameter_name(0));
+    EXPECT_EQ("type1", func->parameter_type(1));
+    EXPECT_EQ("", func->parameter_name(1));
 }
 
 TEST (MDParsetTest, GlobalMultipleArgFunction) {
-  istringstream input("rtype name(type0, type1, type2);");
-  MDParser parser(input);
-  ASSERT_EQ(parser.parse(), 0);
-  Ptr<const Namespace> global = parser.global_namespace();
-  ASSERT_TRUE(static_cast<bool>(global));
-  ASSERT_EQ(1u, global->NestedFunctionsNum());
-  Ptr<const Function> func = global->NestedFunction("name");
-  ASSERT_TRUE(static_cast<bool>(func));
-  EXPECT_EQ(func->name(), "name");
-  EXPECT_EQ(func->return_type(), "rtype");
-  EXPECT_EQ("type0", func->parameter_type(0));
-  EXPECT_EQ("", func->parameter_name(0));
-  EXPECT_EQ("type1", func->parameter_type(1));
-  EXPECT_EQ("", func->parameter_name(1));
-  EXPECT_EQ("type2", func->parameter_type(2));
-  EXPECT_EQ("", func->parameter_name(2));
+    istringstream input("rtype name(type0, type1, type2);");
+    MDParser parser(input);
+    ASSERT_EQ(parser.parse(), 0);
+    Ptr<const Namespace> global = parser.global_namespace();
+    ASSERT_TRUE(static_cast<bool>(global));
+    ASSERT_EQ(1u, global->NestedFunctionsNum());
+    Ptr<const Function> func = global->NestedFunction("name");
+    ASSERT_TRUE(static_cast<bool>(func));
+    EXPECT_EQ(func->name(), "name");
+    EXPECT_EQ(func->return_type(), "rtype");
+    EXPECT_EQ("type0", func->parameter_type(0));
+    EXPECT_EQ("", func->parameter_name(0));
+    EXPECT_EQ("type1", func->parameter_type(1));
+    EXPECT_EQ("", func->parameter_name(1));
+    EXPECT_EQ("type2", func->parameter_type(2));
+    EXPECT_EQ("", func->parameter_name(2));
 }
 
 TEST (MDParsetTest, ManyDifferentFunctions) {
-  istringstream input(
-      "rtype0 name0(ptype0, ptype1);"
-      "rtype1 name1(ptype0 pname0, ptype1);"
-      "rtype2 name2(ptype0 pname0, ptype1 pname1);"
-      "rtype3 name3(ptype0 **pname0[]);"
-      "namespace abc {"
-      "  rtype2 name0(ptype0, ptype1 pnameX);"
-      "}"
-  );
-  MDParser parser(input);
-  ASSERT_EQ(parser.parse(), 0);
-  Ptr<const Namespace> global = parser.global_namespace();
-  ASSERT_TRUE(static_cast<bool>(global));
-  ASSERT_EQ(4u, global->NestedFunctionsNum());
-  /* first */ {
-      Ptr<const Function> func = global->NestedFunction("name0");
-      ASSERT_TRUE(static_cast<bool>(func));
-      EXPECT_EQ(func->name(), "name0");
-      EXPECT_EQ(func->return_type(), "rtype0");
-      EXPECT_EQ("ptype0", func->parameter_type(0));
-      EXPECT_EQ("", func->parameter_name(0));
-      EXPECT_EQ("ptype1", func->parameter_type(1));
-      EXPECT_EQ("", func->parameter_name(1));
-  }
-  /* second */ {
-      Ptr<const Function> func = global->NestedFunction("name1");
-      ASSERT_TRUE(static_cast<bool>(func));
-      EXPECT_EQ(func->name(), "name1");
-      EXPECT_EQ(func->return_type(), "rtype1");
-      EXPECT_EQ("ptype0", func->parameter_type(0));
-      EXPECT_EQ("pname0", func->parameter_name(0));
-      EXPECT_EQ("ptype1", func->parameter_type(1));
-      EXPECT_EQ("", func->parameter_name(1));
-  }
-  /* third */ {
-      Ptr<const Function> func = global->NestedFunction("name2");
-      ASSERT_TRUE(static_cast<bool>(func));
-      EXPECT_EQ(func->name(), "name2");
-      EXPECT_EQ(func->return_type(), "rtype2");
-      EXPECT_EQ("ptype0", func->parameter_type(0));
-      EXPECT_EQ("pname0", func->parameter_name(0));
-      EXPECT_EQ("ptype1", func->parameter_type(1));
-      EXPECT_EQ("pname1", func->parameter_name(1));
-  }
-  /* forth */ {
-      Ptr<const Function> func = global->NestedFunction("name3");
-      ASSERT_TRUE(static_cast<bool>(func));
-      EXPECT_EQ(func->name(), "name3");
-      EXPECT_EQ(func->return_type(), "rtype3");
-      EXPECT_EQ("ptype0", func->parameter_type(0));
-      EXPECT_EQ("pname0", func->parameter_name(0));
-  }
-  /* fifth */ {
-      Ptr<const Namespace> abc = global->NestedNamespace("abc");
-      ASSERT_TRUE(static_cast<bool>(abc));
-      Ptr<const Function> func = abc->NestedFunction("name0");
-      ASSERT_TRUE(static_cast<bool>(func));
-      EXPECT_EQ(func->name(), "name0");
-      EXPECT_EQ(func->return_type(), "rtype2");
-      EXPECT_EQ("ptype0", func->parameter_type(0));
-      EXPECT_EQ("ptype1", func->parameter_type(1));
-      EXPECT_EQ("pnameX", func->parameter_name(1));
-  }
+    istringstream input(
+        "rtype0 name0(ptype0, ptype1);"
+        "rtype1 name1(ptype0 pname0, ptype1);"
+        "rtype2 name2(ptype0 pname0, ptype1 pname1);"
+        "rtype3 name3(ptype0 **pname0[]);"
+        "namespace abc {"
+        "  rtype2 name0(ptype0, ptype1 pnameX);"
+        "}"
+    );
+    MDParser parser(input);
+    ASSERT_EQ(parser.parse(), 0);
+    Ptr<const Namespace> global = parser.global_namespace();
+    ASSERT_TRUE(static_cast<bool>(global));
+    ASSERT_EQ(4u, global->NestedFunctionsNum());
+    /* first */ {
+        Ptr<const Function> func = global->NestedFunction("name0");
+        ASSERT_TRUE(static_cast<bool>(func));
+        EXPECT_EQ(func->name(), "name0");
+        EXPECT_EQ(func->return_type(), "rtype0");
+        EXPECT_EQ("ptype0", func->parameter_type(0));
+        EXPECT_EQ("", func->parameter_name(0));
+        EXPECT_EQ("ptype1", func->parameter_type(1));
+        EXPECT_EQ("", func->parameter_name(1));
+    }
+    /* second */ {
+        Ptr<const Function> func = global->NestedFunction("name1");
+        ASSERT_TRUE(static_cast<bool>(func));
+        EXPECT_EQ(func->name(), "name1");
+        EXPECT_EQ(func->return_type(), "rtype1");
+        EXPECT_EQ("ptype0", func->parameter_type(0));
+        EXPECT_EQ("pname0", func->parameter_name(0));
+        EXPECT_EQ("ptype1", func->parameter_type(1));
+        EXPECT_EQ("", func->parameter_name(1));
+    }
+    /* third */ {
+        Ptr<const Function> func = global->NestedFunction("name2");
+        ASSERT_TRUE(static_cast<bool>(func));
+        EXPECT_EQ(func->name(), "name2");
+        EXPECT_EQ(func->return_type(), "rtype2");
+        EXPECT_EQ("ptype0", func->parameter_type(0));
+        EXPECT_EQ("pname0", func->parameter_name(0));
+        EXPECT_EQ("ptype1", func->parameter_type(1));
+        EXPECT_EQ("pname1", func->parameter_name(1));
+    }
+    /* forth */ {
+        Ptr<const Function> func = global->NestedFunction("name3");
+        ASSERT_TRUE(static_cast<bool>(func));
+        EXPECT_EQ(func->name(), "name3");
+        EXPECT_EQ(func->return_type(), "rtype3");
+        EXPECT_EQ("ptype0", func->parameter_type(0));
+        EXPECT_EQ("pname0", func->parameter_name(0));
+    }
+    /* fifth */ {
+        Ptr<const Namespace> abc = global->NestedNamespace("abc");
+        ASSERT_TRUE(static_cast<bool>(abc));
+        Ptr<const Function> func = abc->NestedFunction("name0");
+        ASSERT_TRUE(static_cast<bool>(func));
+        EXPECT_EQ(func->name(), "name0");
+        EXPECT_EQ(func->return_type(), "rtype2");
+        EXPECT_EQ("ptype0", func->parameter_type(0));
+        EXPECT_EQ("ptype1", func->parameter_type(1));
+        EXPECT_EQ("pnameX", func->parameter_name(1));
+    }
 }
 

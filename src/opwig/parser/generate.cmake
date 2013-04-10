@@ -41,7 +41,11 @@ set (
   OPWIG_MDPARSER_SRC
   ${OPWIG_MDPARSER_PERSISTENT_SRC}
   ${OPWIG_MDPARSER_GENERATED_SRC}
+  ${CMAKE_CURRENT_LIST_DIR}/semantictypes.h
   ${CMAKE_CURRENT_LIST_DIR}/declarator.h
+  ${CMAKE_CURRENT_LIST_DIR}/basespecifier.h
+  ${CMAKE_CURRENT_LIST_DIR}/utilities.h
+  ${CMAKE_CURRENT_LIST_DIR}/utilities.cxx
 )
 
 # Lex stuff
