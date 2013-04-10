@@ -1,0 +1,7 @@
+//=========================// IDENTIFIERS //
+
+identifier:
+  IDENTIFIER {
+    $$ = d_scanner.matched();
+  }
+;

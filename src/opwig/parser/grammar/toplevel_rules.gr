@@ -1,0 +1,32 @@
+//=========================// TOP-LEVEL //
+
+input:
+  declaration_seq {
+    for (auto it: *$1)
+      if (!(it) (global_namespace_))
+        std::cout << "Namespace action failed (global)";
+  }
+;
+
+declaration_seq:
+  /* empty */ {
+    $$ = std::shared_ptr<ScopeActionList>(new ScopeActionList);
+  }
+|
+  declaration_seq declaration {
+    ($1)->push_back($2);
+    $$ = $1;
+  }
+;
+
+declaration:
+  block_declaration {
+    $$ = $1;
+  }
+|
+  namespace_definition { 
+    $$ = $1;
+  }
+//|
+//  function_declaration
+;
