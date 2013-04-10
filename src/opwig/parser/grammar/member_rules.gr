@@ -1,0 +1,11 @@
+//=========================// MEMBER SPECIFICATION //
+
+member_specification:
+  member_declaration 
+|
+  member_declaration member_specification
+|
+  access_specifier ':' 
+|
+  access_specifier ':' member_specification
+;

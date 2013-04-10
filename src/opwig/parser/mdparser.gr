@@ -18,6 +18,7 @@
 %include grammar/type_rules.gr
 
 %include grammar/class_rules.gr
+%include grammar/member_rules.gr
 
 %include grammar/expression_rules.gr
 

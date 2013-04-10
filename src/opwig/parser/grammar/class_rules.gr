@@ -9,6 +9,18 @@ class_specifier:
         throw md::SemanticError("Non-anonymous class cannot have empty name!");
     };
   }
+|
+  class_head '{' member_specification '}' {
+    md::Ptr<md::Class> classObj = $1;
+    for (auto it: *$3)
+      if (!(it)(classObj))
+        throw md::SemanticError("Error executing ScopeAction - member for class");
+    $$ = [classObj] (md::Ptr<md::Scope> current_namespace) -> std::string {
+        if (current_namespace->AddNestedClass(classObj->name(), classObj))
+            return classObj->name();
+        throw md::SemanticError("Non-anonymous class cannot have empty name!");
+    };
+  }
 ;
 
 class_head:
