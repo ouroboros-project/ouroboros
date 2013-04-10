@@ -11,9 +11,11 @@ member_specification:
         $$ = $2;
     }
 |
-    access_specifier ':' 
-|
-    access_specifier ':' member_specification
+    access_specifier ':' {
+        $$ = std::shared_ptr<ScopeActionList>(new ScopeActionList);
+    }
+//|
+//    access_specifier ':' member_specification
 ;
 
 member_declaration:
@@ -21,11 +23,11 @@ member_declaration:
         $$ = parser::AddTypeToScope($1);
     }
 |
-    member_declarator_list ';'
-|
     decl_specifier_seq member_declarator_list ';' {
         $$ = parser::JoinDeclarations($1, $2);
     }
+//|
+//    member_declarator_list ';'    
 //incomplete
 ;
 
@@ -44,9 +46,12 @@ member_declarator_list:
 member_declarator:
     declarator { $$ = $1; }
 |
-    declarator pure_specifier
+    declarator pure_specifier {
+        ($1).set_pure(true);
+        $$ = $1;
+    }
 |
-    declarator brace_or_equal_initializer
+    declarator brace_or_equal_initializer { $$ = $1; }
 |
     ':' constant_expression
 |

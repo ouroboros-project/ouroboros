@@ -91,7 +91,7 @@ TEST (NamespaceTest, NestSingle) {
 
 TEST (NamespaceTest, AddSingleFunction) {
   Ptr<Namespace>  space = Namespace::Create();
-  Ptr<Function>   foo   = Function::Create("foo", "void", {});
+  Ptr<Function>   foo   = Function::Create("foo", "void", {}, false);
   EXPECT_TRUE(space->AddNestedFunction(foo));
   EXPECT_EQ(space->NestedFunctionsNum(), 1u);
   EXPECT_EQ(space->NestedFunction("foo"), foo);
@@ -100,9 +100,9 @@ TEST (NamespaceTest, AddSingleFunction) {
 
 TEST (NamespaceTest, AddManyFunctions) {
   Ptr<Namespace>  space = Namespace::Create();
-  Ptr<Function>   foo1  = Function::Create("foo1", "void", {});
-  Ptr<Function>   foo2  = Function::Create("foo1", "void", {});
-  Ptr<Function>   foo3  = Function::Create("foo2", "void", {});
+  Ptr<Function>   foo1  = Function::Create("foo1", "void", {}, false);
+  Ptr<Function>   foo2  = Function::Create("foo1", "void", {}, false);
+  Ptr<Function>   foo3  = Function::Create("foo2", "void", {}, false);
   EXPECT_TRUE(space->AddNestedFunction(foo1));
   EXPECT_FALSE(space->AddNestedFunction(foo2));
   EXPECT_TRUE(space->AddNestedFunction(foo3));
@@ -120,7 +120,7 @@ TEST (VariableTest, Create) {
 }
 
 TEST (FunctionTest, Create) {
-  Ptr<Function> var = Function::Create("funcname", "returntype", {{"type0", "name0"}, {"type1", "name1"}});
+  Ptr<Function> var = Function::Create("funcname", "returntype", {{"type0", "name0"}, {"type1", "name1"}}, false);
   ASSERT_TRUE(static_cast<bool>(var));
   EXPECT_EQ(var->name(), "funcname");
   EXPECT_EQ(var->return_type(), "returntype");
@@ -584,3 +584,8 @@ TEST (MDParsetTest, ManyDifferentFunctions) {
     }
 }
 
+/*
+-Function is pure?
+
+-members
+*/

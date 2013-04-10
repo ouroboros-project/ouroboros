@@ -16,7 +16,7 @@ ScopeAction JoinDeclarations( const TypeAction& type_action, const std::shared_p
         for (auto declarator: *init_list) {
             std::string type = type_action(current_scope);
             if (declarator.has_parameters()) {
-                md::Ptr<md::Function> func = md::Function::Create(declarator.name(), type, declarator.parameters());
+                md::Ptr<md::Function> func = md::Function::Create(declarator.name(), type, declarator.parameters(), declarator.is_pure());
                 if (!current_scope->AddNestedFunction(func)) {
                     throw md::SemanticError("Failed to add Function '"+func->name()+"' to Scope");
                 }
