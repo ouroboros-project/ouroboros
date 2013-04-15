@@ -489,7 +489,7 @@ TEST (MDParserClassMembersTest, SingleFunction) {
     istringstream input("class name { rtype func(type); };");
     MDParser parser(input);
     ASSERT_EQ(parser.parse(), 0);
-    /*Ptr<const Namespace> global = parser.global_namespace();
+    Ptr<const Namespace> global = parser.global_namespace();
     EXPECT_TRUE(static_cast<bool>(global));
     Ptr<const Class> c = global->NestedClass("name");
     EXPECT_TRUE(static_cast<bool>(c));
@@ -497,13 +497,13 @@ TEST (MDParserClassMembersTest, SingleFunction) {
     EXPECT_EQ(c->base_specifiers().size(), 0);
 
     ASSERT_EQ(1u, c->NestedFunctionsNum());
-    Ptr<const Function> func = c->NestedFunction("name");
+    Ptr<const Function> func = c->NestedFunction("func");
     ASSERT_TRUE(static_cast<bool>(func));
     EXPECT_EQ(func->name(), "func");
     EXPECT_EQ(func->return_type(), "rtype");
     EXPECT_EQ("type", func->parameter_type(0));
     EXPECT_EQ("", func->parameter_name(0));
-    EXPECT_FALSE(func->is_pure());*/
+    EXPECT_FALSE(func->is_pure());
 }
 
 TEST (MDParserClassMembersTest, SinglePureFunction) {
@@ -518,7 +518,7 @@ TEST (MDParserClassMembersTest, SinglePureFunction) {
     EXPECT_EQ(c->base_specifiers().size(), 0);
 
     ASSERT_EQ(1u, c->NestedFunctionsNum());
-    Ptr<const Function> func = c->NestedFunction("name");
+    Ptr<const Function> func = c->NestedFunction("func");
     ASSERT_TRUE(static_cast<bool>(func));
     EXPECT_EQ(func->name(), "func");
     EXPECT_EQ(func->return_type(), "rtype");
@@ -558,7 +558,7 @@ TEST (MDParserClassMembersTest, SingleVarAndFunction) {
     EXPECT_EQ(var->type(), "type");
     
     ASSERT_EQ(1u, c->NestedFunctionsNum());
-    Ptr<const Function> func = c->NestedFunction("name");
+    Ptr<const Function> func = c->NestedFunction("func");
     ASSERT_TRUE(static_cast<bool>(func));
     EXPECT_EQ(func->name(), "func");
     EXPECT_EQ(func->return_type(), "rtype");
@@ -579,7 +579,7 @@ TEST (MDParserClassMembersTest, SingleFunctionWithAccessSpecifier) {
     EXPECT_EQ(c->base_specifiers().size(), 0);
     
     ASSERT_EQ(1u, c->NestedFunctionsNum());
-    Ptr<const Function> func = c->NestedFunction("name");
+    Ptr<const Function> func = c->NestedFunction("func");
     ASSERT_TRUE(static_cast<bool>(func));
     EXPECT_EQ(func->name(), "func");
     EXPECT_EQ(func->return_type(), "rtype");
@@ -607,7 +607,7 @@ TEST (MDParserClassMembersTest, VarAndFunctionWithMultiAccessSpecifiers) {
     //dafuq?
     
     ASSERT_EQ(1u, c->NestedFunctionsNum());
-    Ptr<const Function> func = c->NestedFunction("name");
+    Ptr<const Function> func = c->NestedFunction("func");
     ASSERT_TRUE(static_cast<bool>(func));
     EXPECT_EQ(func->name(), "func");
     EXPECT_EQ(func->return_type(), "rtype");
@@ -620,7 +620,7 @@ TEST (MDParserClassMembersTest, VarAndFunctionWithMultiAccessSpecifiers) {
 TEST (MDParserClassMembersTest, NestedNamespaceError) {
     istringstream input("class name { namespace erro {} };");
     MDParser parser(input);
-    EXPECT_THROW(parser.parse(), std::exception);
+    EXPECT_EQ(parser.parse(), 1);
 }
 
 /*

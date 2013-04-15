@@ -10,15 +10,15 @@ using std::string;
 /*** NAMESPACE METHODS ***/
 
 bool Class::AddNestedNamespace (const string& name, Ptr<Namespace> nested) {
-    throw SemanticError("Namespaces cannot be added in a class!");
+    throw SemanticError("Namespaces cannot be added in a class!", __FILE__, __LINE__);
 }
 
 Ptr<const Namespace> Class::NestedNamespace (const string& name) const {
-    throw SemanticError("Classes do not have nested namespaces!");
+    throw SemanticError("Classes do not have nested namespaces!", __FILE__, __LINE__);
 }
 
 Ptr<Namespace> Class::NestedNamespace (const string& name) {
-    throw SemanticError("Classes do not have nested namespaces!");
+    throw SemanticError("Classes do not have nested namespaces!", __FILE__, __LINE__);
 }
 
 /*** VARIABLE METHODS ***/

@@ -61,6 +61,6 @@ member_declarator:
 pure_specifier:
     '=' INTEGER_LITERAL {
         if ($2 != 0)
-            throw md::SemanticError("Errouneous pure-specifier (should be '= 0' )");
+            throw md::SemanticError("Errouneous pure-specifier (should be '= 0' )", __FILE__, __LINE__);
     }
 ;

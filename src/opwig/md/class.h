@@ -98,7 +98,7 @@ inline Ptr<Class> Class::Create (const std::string& name, const std::list<parser
 }
 
 inline size_t Class::NestedNamespacesNum () const {
-    throw SemanticError("Classes do not have nested namespaces!");
+    throw SemanticError("Classes do not have nested namespaces!", __FILE__, __LINE__);
 }
 
 inline size_t Class::NestedClassesNum () const {
