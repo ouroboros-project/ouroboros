@@ -4,7 +4,7 @@ input:
   declaration_seq {
     for (auto it: *$1)
       if (!(it) (global_namespace_))
-        std::cout << "Namespace action failed (global)";
+        throw md::SemanticError("Namespace action failed (global)", __FILE__, __LINE__);
   }
 ;
 

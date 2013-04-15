@@ -30,8 +30,9 @@ inline const char* SemanticError::what() const throw() {
 }
 
 inline void SemanticError::buildMessage(const char* file, int line) {
-    std::ostringstream msg (file);
-    msg << ":" << line << ": " << message_;
+    std::string fileStr (file);
+    std::ostringstream msg (fileStr);
+    msg << fileStr << ":" << line << ": " << message_;
     message_ = msg.str();
 }
 
