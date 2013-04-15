@@ -5,6 +5,8 @@ include (parser/generate.cmake)
 
 set (
   OPWIG_SRC
+  ${CMAKE_CURRENT_BINARY_DIR}/md/accessspecifier.h
+  ${CMAKE_CURRENT_BINARY_DIR}/md/container.h
   ${CMAKE_CURRENT_BINARY_DIR}/md/scope.h
   ${CMAKE_CURRENT_BINARY_DIR}/md/namespace.cxx
   ${CMAKE_CURRENT_BINARY_DIR}/md/namespace.h
