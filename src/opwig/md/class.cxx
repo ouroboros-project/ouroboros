@@ -1,5 +1,6 @@
 
 #include <opwig/md/class.h>
+#include <opwig/md/function.h>
 
 namespace opwig {
 namespace md {
@@ -71,11 +72,18 @@ Ptr<Class> Class::NestedClass (const std::string& name) {
 /*** FUNCTION METHODS ***/
 
 bool Class::AddNestedFunction (Ptr<Function> nested) {
-  return false;
+    auto check = nested_functions_.find(nested->name());
+    if (check != nested_functions_.end())
+        return false;
+    nested_functions_[nested->name()] = nested;
+    return true;
 }
 
 Ptr<const Function> Class::NestedFunction (const string& name) const {
-  return Ptr<const Function>();
+    auto get = nested_functions_.find(name);
+    return get != nested_functions_.end()
+        ? get->second
+        : Ptr<const Function>();
 }
 
 } // namespace md

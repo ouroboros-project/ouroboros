@@ -17,10 +17,10 @@ named_namespace_definition:
     Ptr<Namespace> new_namespace = Namespace::Create();
     std::string name = $2;
     for (auto it: *$4)
-      if (!(it) (new_namespace))
-        std::cout << "Namespace action failed (new)";
+        if (!(it) (new_namespace))
+            throw md::SemanticError("Namespace action failed (new)");
     $$ = [name,new_namespace] (Ptr<md::Scope> current_namespace) -> bool {
-      return current_namespace->AddNestedNamespace(name, new_namespace);
+        return current_namespace->AddNestedNamespace(name, new_namespace);
     };
   }
 |

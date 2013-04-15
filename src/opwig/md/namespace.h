@@ -85,19 +85,19 @@ class Namespace final : public Scope {
 };
 
 inline Ptr<Namespace> Namespace::Create () {
-  return Ptr<Namespace>(new Namespace);
+    return Ptr<Namespace>(new Namespace);
 }
 
 inline size_t Namespace::NestedNamespacesNum () const {
-  return nested_namespaces_.size();
+    return nested_namespaces_.size();
 }
 
 inline size_t Namespace::NestedClassesNum () const {
-  return nested_classes_.size();
+    return nested_classes_.size();
 }
 
 inline size_t Namespace::NestedFunctionsNum() const {
-  return nested_functions_.size();
+    return nested_functions_.size();
 }
 
 } // namespace md

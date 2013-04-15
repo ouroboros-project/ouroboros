@@ -27,7 +27,7 @@ inline void MDParser::print()
 }
 
 inline void MDParser::exceptionHandler__(std::exception const &exc) {
-    throw exc;
+    throw md::SemanticError(exc.what());
 }
 
 // $insert namespace-close

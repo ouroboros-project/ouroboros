@@ -60,7 +60,7 @@ member_declarator:
 
 pure_specifier:
     '=' INTEGER_LITERAL {
-        if (d_scanner.matched() != "0")
+        if ($2 != 0)
             throw md::SemanticError("Errouneous pure-specifier (should be '= 0' )");
     }
 ;

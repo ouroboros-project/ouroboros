@@ -16,6 +16,9 @@
 namespace opwig {
 namespace md {
 
+// Forward declarations.
+class Function;
+
 /// Metadata class for C++ classes.
 class Class final : public Scope {
 
@@ -84,13 +87,14 @@ class Class final : public Scope {
     
     std::map<std::string, Ptr<Class>> nested_classes_;
     std::map<std::string, Ptr<Variable>> global_variables_;
+    std::map<std::string, Ptr<Function>>  nested_functions_;
 
     Class (const std::string& name, const std::list<parser::BaseSpecifier>& base_specifiers) : name_(name), base_specifiers_(base_specifiers) {}
 
 };
 
 inline Ptr<Class> Class::Create (const std::string& name, const std::list<parser::BaseSpecifier>& base_specifiers) {
-  return Ptr<Class>(new Class(name, base_specifiers));
+    return Ptr<Class>(new Class(name, base_specifiers));
 }
 
 inline size_t Class::NestedNamespacesNum () const {
@@ -98,11 +102,11 @@ inline size_t Class::NestedNamespacesNum () const {
 }
 
 inline size_t Class::NestedClassesNum () const {
-  return nested_classes_.size();
+    return nested_classes_.size();
 }
 
 inline size_t Class::NestedFunctionsNum () const {
-  return 0u;
+    return nested_functions_.size();
 }
 
 } // namespace md

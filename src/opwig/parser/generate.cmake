@@ -1,8 +1,18 @@
 
 # Parser stuff
 set (
-  OPWIG_MDPARER_GRAMMAR_SRC
+  OPWIG_MDPARSER_GRAMMAR_SRC
   ${CMAKE_CURRENT_LIST_DIR}/mdparser.gr
+  ${CMAKE_CURRENT_LIST_DIR}/grammar/class_rules.gr
+  ${CMAKE_CURRENT_LIST_DIR}/grammar/declaration_rules.gr
+  ${CMAKE_CURRENT_LIST_DIR}/grammar/declarator_rules.gr
+  ${CMAKE_CURRENT_LIST_DIR}/grammar/expression_rules.gr
+  ${CMAKE_CURRENT_LIST_DIR}/grammar/identifier_rules.gr
+  ${CMAKE_CURRENT_LIST_DIR}/grammar/member_rules.gr
+  ${CMAKE_CURRENT_LIST_DIR}/grammar/namespace_rules.gr
+  ${CMAKE_CURRENT_LIST_DIR}/grammar/semantictypes.gr
+  ${CMAKE_CURRENT_LIST_DIR}/grammar/toplevel_rules.gr
+  ${CMAKE_CURRENT_LIST_DIR}/grammar/type_rules.gr
 )
 
 set (
@@ -27,7 +37,7 @@ add_custom_command (
                         #-t
                         #--error-verbose
                         mdparser.gr
-  DEPENDS ${OPWIG_MDPARER_GRAMMAR_SRC}
+  DEPENDS ${OPWIG_MDPARSER_GRAMMAR_SRC}
   WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
 )
 
