@@ -87,7 +87,7 @@ class Scope {
     /*** GENERAL METHODS ***/
     
     /// Gets the current access specifier of this scope (and its containers).
-    virtual AccessSpecifier GetAccessSpecifier (const std::string& name) const;
+    virtual AccessSpecifier GetAccessSpecifier () const;
     
     /// Sets the current access specifier of this scope (and its containers) to the given access specifier
     virtual void SetAccessSpecifier(AccessSpecifier access);
@@ -101,7 +101,7 @@ class Scope {
     Scope () {}
     
     Container<Namespace>    namespaces_;
-    Container<Variable>    variables_;
+    Container<Variable>     variables_;
     Container<Class>        classes_;
     Container<Function>     functions_;
 

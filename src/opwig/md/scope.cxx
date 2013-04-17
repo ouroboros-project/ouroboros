@@ -90,7 +90,7 @@ Ptr<Function> Scope::NestedFunction (const string& name) {
 /*****************************************************/
 /*** GENERAL METHODS ***/
 
-AccessSpecifier Scope::GetAccessSpecifier (const string& name) const {
+AccessSpecifier Scope::GetAccessSpecifier () const {
     // Since we set all containers' access specifier at the same time, here we only need to grab one of them
     return namespaces_.GetCurrentAccessSpecifier();
 }
