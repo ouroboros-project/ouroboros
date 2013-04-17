@@ -1,5 +1,7 @@
 #include <opwig/parser/utilities.h>
 
+#include <opwig/md/variable.h>
+
 namespace opwig {
 namespace parser {
 

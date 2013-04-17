@@ -4,6 +4,7 @@
 
 #include <opwig/md/scope.h>
 #include <opwig/md/ptr.h>
+#include <opwig/md/class.h>
 
 namespace opwig {
 namespace md {

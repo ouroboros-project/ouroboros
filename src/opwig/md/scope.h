@@ -101,7 +101,7 @@ class Scope {
     Scope () {}
     
     Container<Namespace>    namespaces_;
-    Container<Variables>    variables_;
+    Container<Variable>    variables_;
     Container<Class>        classes_;
     Container<Function>     functions_;
 

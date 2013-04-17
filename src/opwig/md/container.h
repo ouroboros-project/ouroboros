@@ -54,18 +54,19 @@ class Container {
         Ptr<T> object_;
         AccessSpecifier access_;
         MDObjAccessPair(Ptr<T> object, AccessSpecifier access) : object_(object), access_(access) {}
+        MDObjAccessPair() {}
     };
     std::map<std::string, MDObjAccessPair> objects_;
     
 };
 
 template <class T>
-inline size_t Container::Num () const {
+inline size_t Container<T>::Num () const {
     return objects_.size();
 }
 
 template <class T>
-inline bool Container::Add (const string& name, Ptr<T> mdObj) {
+inline bool Container<T>::Add (const std::string& name, Ptr<T> mdObj) {
     auto check = objects_.find(name);
     if (check != objects_.end())
         return false;
@@ -74,31 +75,31 @@ inline bool Container::Add (const string& name, Ptr<T> mdObj) {
 }
 
 template <class T>
-inline Ptr<const T> Container::Get (const string& name) const {
+inline Ptr<const T> Container<T>::Get (const std::string& name) const {
     auto get = objects_.find(name);
-    return get != objects_.end()
-        ? get->second.object_;
+    return get != objects_.end() 
+        ? get->second.object_ 
         : Ptr<const T>();
 }
 
 template <class T>
-inline Ptr<T> Container::Get (const string& name) {
+inline Ptr<T> Container<T>::Get (const std::string& name) {
     auto get = objects_.find(name);
     return get != objects_.end()
-        ? get->second.object_;
+        ? get->second.object_
         : Ptr<T>();
 }
 
 template <class T>
-inline AccessSpecifier GetAccessSpecifier (const std::string& name) const {
+inline AccessSpecifier Container<T>::GetAccessSpecifier (const std::string& name) const {
     auto get = objects_.find(name);
     return get != objects_.end()
-        ? get->second.access_;
+        ? get->second.access_
         : AccessSpecifier::PRIVATE;
 }
 
 template <class T>
-inline bool HasName(const std::string& name) const {
+inline bool Container<T>::HasName(const std::string& name) const {
     return objects_.count(name) == 1;
 }
 

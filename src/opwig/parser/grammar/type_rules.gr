@@ -24,9 +24,9 @@ type_name:
 ;
 
 access_specifier:
-  PRIVATE { $$ = parser::AccessSpecifier::PRIVATE; }
+  PRIVATE { $$ = md::AccessSpecifier::PRIVATE; }
 | 
-  PROTECTED { $$ = parser::AccessSpecifier::PROTECTED; }
+  PROTECTED { $$ = md::AccessSpecifier::PROTECTED; }
 |
-  PUBLIC { $$ = parser::AccessSpecifier::PUBLIC; }
+  PUBLIC { $$ = md::AccessSpecifier::PUBLIC; }
 ;

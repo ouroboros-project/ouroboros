@@ -5,6 +5,7 @@
 #include <opwig/md/namespace.h>
 #include <opwig/md/function.h>
 #include <opwig/md/ptr.h>
+#include <opwig/md/semanticerror.h>
 
 #include <opwig/parser/basespecifier.h>
 

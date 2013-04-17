@@ -9,6 +9,7 @@
 #include <opwig/parser/basespecifier.h>
 
 #include <string>
+#include <list>
 
 namespace opwig {
 namespace md {
@@ -62,15 +63,15 @@ inline size_t Class::NestedNamespacesNum () const {
     throw SemanticError("Classes do not have nested namespaces!", __FILE__, __LINE__);
 }
 
-bool Class::AddNestedNamespace (const string& name, Ptr<Namespace> nested) {
+inline bool Class::AddNestedNamespace (const std::string& name, Ptr<Namespace> nested) {
     throw SemanticError("Namespaces cannot be added in a class!", __FILE__, __LINE__);
 }
 
-Ptr<const Namespace> Class::NestedNamespace (const string& name) const {
+inline Ptr<const Namespace> Class::NestedNamespace (const std::string& name) const {
     throw SemanticError("Classes do not have nested namespaces!", __FILE__, __LINE__);
 }
 
-Ptr<Namespace> Class::NestedNamespace (const string& name) {
+inline Ptr<Namespace> Class::NestedNamespace (const std::string& name) {
     throw SemanticError("Classes do not have nested namespaces!", __FILE__, __LINE__);
 }
 

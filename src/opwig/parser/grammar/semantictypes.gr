@@ -5,7 +5,7 @@
   Class:            md::Ptr<md::Class>;
   BaseSpecifier:    parser::BaseSpecifier;
   BaseSpecifierSeq: std::shared_ptr<BaseSpecifierList>;
-  AccessSpecifier:  parser::AccessSpecifier;
+  AccessSpecifier:  md::AccessSpecifier;
   Declarator:       parser::Declarator;
   DeclaratorSeq:    std::shared_ptr<parser::DeclaratorList>;
   Parameter:        md::Parameter;

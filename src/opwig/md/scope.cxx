@@ -1,6 +1,11 @@
 
 #include <opwig/md/scope.h>
 
+#include <opwig/md/namespace.h>
+#include <opwig/md/variable.h>
+#include <opwig/md/class.h>
+#include <opwig/md/function.h>
+
 namespace opwig {
 namespace md {
 
