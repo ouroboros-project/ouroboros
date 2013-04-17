@@ -23,24 +23,87 @@ class Scope {
     /// Virtual destructor.
     virtual ~Scope () {}
 
-    /// Gets the Namespace container for this scope;
-    virtual Container<Namespace>& Namespaces() = 0;
+    /*****************************************************/
+    /*** NAMESPACE METHODS ***/
     
-    /// Gets the Variable container for this scope;
-    virtual Container<Variable>& Variables() = 0;
+    /// Tells how many nested namespaces exist in this scope.
+    virtual size_t NestedNamespacesNum () const;
 
-    /// Gets the Class container for this scope;
-    virtual Container<Class>& Classes() = 0;
+    /// Adds a nested namespace.
+    virtual bool AddNestedNamespace (const std::string& name, Ptr<Namespace> nested);
+
+    /// Gives the nested namespace identified by the given name (const version).
+    virtual Ptr<const Namespace> NestedNamespace (const std::string& name) const;
     
-    /// Gets the Function container for this scope;
-    virtual Container<Function>& Functions() = 0;
+    /// Gives the nested namespace identified by the given name.
+    virtual Ptr<Namespace> NestedNamespace (const std::string& name);
+
+    /*****************************************************/
+    /*** VARIABLE METHODS ***/
+    
+    /// Tells how many variables exist in this scope.
+    virtual size_t GlobalVariablesNum ()  const;
+    
+    /// Adds a global variable to this scope.
+    virtual bool AddGlobalVariable (Ptr<Variable> variable);
+
+    /// Gives the global variable identified by the given name (const version).
+    virtual Ptr<const Variable> GlobalVariable (const std::string& name) const;
+    
+    /// Gives the global variable identified by the given name.
+    virtual Ptr<Variable> GlobalVariable (const std::string& name);
+    
+    /*****************************************************/
+    /*** CLASS METHODS ***/
+    
+    /// Tells how many nested classes exist in this scope.
+    virtual size_t NestedClassesNum () const;
+
+    /// Adds a nested class.
+    virtual bool AddNestedClass (const std::string& name, Ptr<Class> nested);
+
+    /// Gives the nested class identified by the given name (const version).
+    virtual Ptr<const Class> NestedClass (const std::string& name) const;
+    
+    /// Gives the nested class identified by the given name.
+    virtual Ptr<Class> NestedClass (const std::string& name);
+
+    /*****************************************************/
+    /*** FUNCTION METHODS ***/
+    
+    /// Tells how many functions exist in this scope.
+    virtual size_t NestedFunctionsNum () const;
+
+    /// Adds a function to the scope. In classes, it will be a method.
+    virtual bool AddNestedFunction (Ptr<Function> nested);
+
+    /// Gives the function identified by the given name (const version).
+    virtual Ptr<const Function> NestedFunction (const std::string& name) const;
+    
+    /// Gives the function identified by the given name.
+    virtual Ptr<Function> NestedFunction (const std::string& name);
+    
+    /*****************************************************/
+    /*** GENERAL METHODS ***/
+    
+    /// Gets the current access specifier of this scope (and its containers).
+    virtual AccessSpecifier GetAccessSpecifier (const std::string& name) const;
     
     /// Sets the current access specifier of this scope (and its containers) to the given access specifier
-    virtual void SetAccessSpecifier(AccessSpecifier access) = 0;
+    virtual void SetAccessSpecifier(AccessSpecifier access);
+    
+    /// Checks if the given name exists within this scope.
+    virtual bool HasName(const std::string& name) const;
+    
 
   protected:
 
     Scope () {}
+    
+    Container<Namespace>    namespaces_;
+    Container<Variables>    variables_;
+    Container<Class>        classes_;
+    Container<Function>     functions_;
 
   private:
 

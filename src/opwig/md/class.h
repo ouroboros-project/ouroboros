@@ -4,20 +4,14 @@
 
 #include <opwig/md/scope.h>
 #include <opwig/md/ptr.h>
-#include <opwig/md/variable.h>
 #include <opwig/md/semanticerror.h>
 
 #include <opwig/parser/basespecifier.h>
 
 #include <string>
-#include <map>
-#include <list>
 
 namespace opwig {
 namespace md {
-
-// Forward declarations.
-class Function;
 
 /// Metadata class for C++ classes.
 class Class final : public Scope {
@@ -45,51 +39,18 @@ class Class final : public Scope {
     /// @see opwig::md::Scope::NestedNamespace
     Ptr<Namespace> NestedNamespace (const std::string& name) override;
 
-    /*** VARIABLE METHODS ***/
-    
-    /// @see opwig::md::Scope::AddGlobalVariable
-    bool AddGlobalVariable ( Ptr<Variable> variable) override;
-
-    /// @see opwig::md::Scope::GlobalVariable
-    Ptr<const Variable> GlobalVariable (const std::string& name) const override;
-    
-    /// @see opwig::md::Scope::GlobalVariable
-    Ptr<Variable> GlobalVariable (const std::string& name) override;
-    
-    /*** CLASS METHODS ***/
-    
-    /// @see opwig::md::Scope::NestedClassesNum
-    size_t NestedClassesNum () const override;
-
-    /// @see opwig::md::Scope::AddNestedClass
-    bool AddNestedClass (const std::string& name, Ptr<Class> nested) override;
-
-    /// @see opwig::md::Scope::NestedClass
-    Ptr<const Class> NestedClass (const std::string& name) const override;
-    
-    /// @see opwig::md::Scope::NestedClass
-    Ptr<Class> NestedClass (const std::string& name) override;
-
-    /*** FUNCTION METHODS ***/
-    
-    /// @see opwig::md::Scope::NestedFunctionsNum
-    size_t NestedFunctionsNum () const override;
-
-    /// @see opwig::md::Scope::AddNestedFunction
-    bool AddNestedFunction (Ptr<Function> nested) override;
-
-    /// @see opwig::md::Scope::NestedFunction
-    Ptr<const Function> NestedFunction (const std::string& name) const override;
-
   private:
     std::string name_;
     std::list<parser::BaseSpecifier> base_specifiers_;
     
-    std::map<std::string, Ptr<Class>> nested_classes_;
-    std::map<std::string, Ptr<Variable>> global_variables_;
-    std::map<std::string, Ptr<Function>>  nested_functions_;
+    Container<Class> classes_;
+    Container<Variable> variables_;
+    Container<Function>  functions_;
 
-    Class (const std::string& name, const std::list<parser::BaseSpecifier>& base_specifiers) : name_(name), base_specifiers_(base_specifiers) {}
+    Class (const std::string& name, const std::list<parser::BaseSpecifier>& base_specifiers) : 
+        name_(name), base_specifiers_(base_specifiers) {
+            SetAccessSpecifier(AccessSpecifier::PRIVATE);
+        }
 
 };
 
@@ -101,13 +62,18 @@ inline size_t Class::NestedNamespacesNum () const {
     throw SemanticError("Classes do not have nested namespaces!", __FILE__, __LINE__);
 }
 
-inline size_t Class::NestedClassesNum () const {
-    return nested_classes_.size();
+bool Class::AddNestedNamespace (const string& name, Ptr<Namespace> nested) {
+    throw SemanticError("Namespaces cannot be added in a class!", __FILE__, __LINE__);
 }
 
-inline size_t Class::NestedFunctionsNum () const {
-    return nested_functions_.size();
+Ptr<const Namespace> Class::NestedNamespace (const string& name) const {
+    throw SemanticError("Classes do not have nested namespaces!", __FILE__, __LINE__);
 }
+
+Ptr<Namespace> Class::NestedNamespace (const string& name) {
+    throw SemanticError("Classes do not have nested namespaces!", __FILE__, __LINE__);
+}
+
 
 } // namespace md
 } // namespace opwig

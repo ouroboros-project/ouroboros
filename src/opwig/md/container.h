@@ -38,8 +38,11 @@ class Container {
     /// Gives the access specifier of the metadata object identified by the given name.
     AccessSpecifier GetAccessSpecifier (const std::string& name) const;
     
+    /// Gets the current access specifier for this container.
+    AccessSpecifier GetCurrentAccessSpecifier () const { return access_; }
+    
     /// Sets the current access specifier for this container.
-    void SetAccessSpecifier (AccessSpecifier access) { access_ = access; }
+    void SetCurrentAccessSpecifier (AccessSpecifier access) { access_ = access; }
     
     /// Checks if the given name exists within this container.
     bool HasName(const std::string& name) const;
