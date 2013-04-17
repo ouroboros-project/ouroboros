@@ -8,13 +8,14 @@ set (
   ${CMAKE_CURRENT_BINARY_DIR}/md/accessspecifier.h
   ${CMAKE_CURRENT_BINARY_DIR}/md/container.h
   ${CMAKE_CURRENT_BINARY_DIR}/md/scope.h
-  ${CMAKE_CURRENT_BINARY_DIR}/md/namespace.cxx
+  ${CMAKE_CURRENT_BINARY_DIR}/md/scope.cxx
+  ${CMAKE_CURRENT_BINARY_DIR}/md/ptr.h
   ${CMAKE_CURRENT_BINARY_DIR}/md/namespace.h
   ${CMAKE_CURRENT_BINARY_DIR}/md/variable.h
-  ${CMAKE_CURRENT_BINARY_DIR}/md/class.cxx
   ${CMAKE_CURRENT_BINARY_DIR}/md/class.h
   ${CMAKE_CURRENT_BINARY_DIR}/md/semanticerror.h
-  ${CMAKE_CURRENT_BINARY_DIR}/md/function.h
+  ${CMAKE_CURRENT_BINARY_DIR}/md/function.h  
+  ${CMAKE_CURRENT_BINARY_DIR}/md/parameter.h
   ${OPWIG_MDPARSER_SRC}
   ${OPWIG_MDSCANNER_SRC}
 )
