@@ -13,9 +13,23 @@ member_specification:
 |
     access_specifier ':' {
         $$ = std::shared_ptr<ScopeActionList>(new ScopeActionList);
+        md::AccessSpecifier access = $1;
+        ScopeAction action = [access] (md::Ptr<md::Scope> current_scope) -> bool {
+            current_scope->SetAccessSpecifier(access);
+            return true;
+        };
+        ($$)->push_back(action);
     }
-//|
-//    access_specifier ':' member_specification
+|
+    access_specifier ':' member_specification {
+        md::AccessSpecifier access = $1;
+        ScopeAction action = [access] (md::Ptr<md::Scope> current_scope) -> bool {
+            current_scope->SetAccessSpecifier(access);
+            return true;
+        };
+        ($3)->push_front(action);
+        $$ = $3;
+    }
 ;
 
 member_declaration:
