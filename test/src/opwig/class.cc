@@ -120,6 +120,7 @@ TEST (MDParserTest, ClassInNamespace) {
     EXPECT_TRUE(static_cast<bool>(c));
     EXPECT_EQ(c->name(), "name");
     EXPECT_EQ(c->base_specifiers().size(), 0);
+    EXPECT_EQ(abc->GetAccessSpecifierForName(c->name()), AccessSpecifier::PUBLIC);
 }
  
 TEST (MDParserTest, ClassInAndOutOfNamespace) {
@@ -140,6 +141,7 @@ TEST (MDParserTest, ClassInAndOutOfNamespace) {
     EXPECT_TRUE(static_cast<bool>(c2));
     EXPECT_EQ(c2->name(), "name");
     EXPECT_EQ(c2->base_specifiers().size(), 0);
+    EXPECT_EQ(abc->GetAccessSpecifierForName(c2->name()), AccessSpecifier::PUBLIC);
 }
 
 /*
