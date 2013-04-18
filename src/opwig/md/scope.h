@@ -95,6 +95,8 @@ class Scope {
     /// Checks if the given name exists within this scope.
     virtual bool HasName(const std::string& name) const;
     
+    /// Gets the access specifier for the given name in this scope.
+    virtual AccessSpecifier GetAccessSpecifierForName (const std::string& name) const;
 
   protected:
 

@@ -2,6 +2,8 @@
 
 #include <opwig/md/variable.h>
 
+#include <iostream>
+
 namespace opwig {
 namespace parser {
 

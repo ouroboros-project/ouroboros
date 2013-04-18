@@ -20,8 +20,8 @@ TEST (NamespaceTest, NestSingle) {
     ASSERT_TRUE(static_cast<bool>(mdnamespace));
     EXPECT_TRUE(mdnamespace->AddNestedNamespace("nested", nested));
     EXPECT_EQ(mdnamespace->NestedNamespacesNum(), 1u);
-    EXPECT_FALSE(mdnamespace->AddNestedNamespace("nested", nested));
-    EXPECT_FALSE(mdnamespace->AddNestedNamespace("nested", Namespace::Create()));
+    EXPECT_THROW(mdnamespace->AddNestedNamespace("nested", nested), std::exception);
+    EXPECT_THROW(mdnamespace->AddNestedNamespace("nested", Namespace::Create()), std::exception);
     EXPECT_EQ(mdnamespace->NestedNamespace("nested"), nested);
     EXPECT_NE(mdnamespace->NestedNamespace("macaco"), nested);
 }
@@ -41,7 +41,7 @@ TEST (NamespaceTest, AddManyFunctions) {
   Ptr<Function>   foo2  = Function::Create("foo1", "void", {}, false);
   Ptr<Function>   foo3  = Function::Create("foo2", "void", {}, false);
   EXPECT_TRUE(space->AddNestedFunction(foo1));
-  EXPECT_FALSE(space->AddNestedFunction(foo2));
+  EXPECT_THROW(space->AddNestedFunction(foo2), std::exception);
   EXPECT_TRUE(space->AddNestedFunction(foo3));
   EXPECT_EQ(space->NestedFunctionsNum(), 2u);
   EXPECT_EQ(space->NestedFunction("foo1"), foo1);

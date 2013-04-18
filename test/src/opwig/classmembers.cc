@@ -14,6 +14,7 @@ TEST (MDParserClassMembersTest, SingleVariable) {
     EXPECT_TRUE(static_cast<bool>(var));
     EXPECT_EQ(var->name(), "var");
     EXPECT_EQ(var->type(), "type");
+    EXPECT_EQ(c->GetAccessSpecifierForName(var->name()), AccessSpecifier::PRIVATE);
 }
 
 TEST (MDParserClassMembersTest, SingleVariableDerivedClass) {
@@ -35,6 +36,7 @@ TEST (MDParserClassMembersTest, SingleVariableDerivedClass) {
     EXPECT_TRUE(static_cast<bool>(var));
     EXPECT_EQ(var->name(), "var");
     EXPECT_EQ(var->type(), "type");
+    EXPECT_EQ(c->GetAccessSpecifierForName(var->name()), AccessSpecifier::PRIVATE);
 }
 
 TEST (MDParserClassMembersTest, MultiVariable) {
@@ -52,10 +54,12 @@ TEST (MDParserClassMembersTest, MultiVariable) {
     EXPECT_TRUE(static_cast<bool>(var));
     EXPECT_EQ(var->name(), "var");
     EXPECT_EQ(var->type(), "type");
+    EXPECT_EQ(c->GetAccessSpecifierForName(var->name()), AccessSpecifier::PRIVATE);
     Ptr<const Variable> var2 = c->GlobalVariable("var2");
     EXPECT_TRUE(static_cast<bool>(var2));
     EXPECT_EQ(var2->name(), "var2");
     EXPECT_EQ(var2->type(), "type");
+    EXPECT_EQ(c->GetAccessSpecifierForName(var2->name()), AccessSpecifier::PRIVATE);
 }
 
 TEST (MDParserClassMembersTest, SingleFunction) {
@@ -77,6 +81,7 @@ TEST (MDParserClassMembersTest, SingleFunction) {
     EXPECT_EQ("type", func->parameter_type(0));
     EXPECT_EQ("", func->parameter_name(0));
     EXPECT_FALSE(func->is_pure());
+    EXPECT_EQ(c->GetAccessSpecifierForName(func->name()), AccessSpecifier::PRIVATE);
 }
 
 TEST (MDParserClassMembersTest, SinglePureFunction) {
@@ -98,6 +103,7 @@ TEST (MDParserClassMembersTest, SinglePureFunction) {
     EXPECT_EQ("type", func->parameter_type(0));
     EXPECT_EQ("", func->parameter_name(0));
     EXPECT_TRUE(func->is_pure());
+    EXPECT_EQ(c->GetAccessSpecifierForName(func->name()), AccessSpecifier::PRIVATE);
 }
 
 TEST (MDParserClassMembersTest, ClassWithAccessSpecifier) {
@@ -111,7 +117,7 @@ TEST (MDParserClassMembersTest, ClassWithAccessSpecifier) {
     EXPECT_EQ(c->name(), "name");
     EXPECT_EQ(c->base_specifiers().size(), 0);
 
-    //dafuq?
+    EXPECT_EQ(c->GetAccessSpecifier(), AccessSpecifier::PROTECTED);
 }
 
 TEST (MDParserClassMembersTest, SingleVarAndFunction) {
@@ -129,6 +135,7 @@ TEST (MDParserClassMembersTest, SingleVarAndFunction) {
     EXPECT_TRUE(static_cast<bool>(var));
     EXPECT_EQ(var->name(), "var");
     EXPECT_EQ(var->type(), "type");
+    EXPECT_EQ(c->GetAccessSpecifierForName(var->name()), AccessSpecifier::PRIVATE);
     
     ASSERT_EQ(1u, c->NestedFunctionsNum());
     Ptr<const Function> func = c->NestedFunction("func");
@@ -138,6 +145,7 @@ TEST (MDParserClassMembersTest, SingleVarAndFunction) {
     EXPECT_EQ("type", func->parameter_type(0));
     EXPECT_EQ("", func->parameter_name(0));
     EXPECT_FALSE(func->is_pure());
+    EXPECT_EQ(c->GetAccessSpecifierForName(func->name()), AccessSpecifier::PRIVATE);
 }
 
 TEST (MDParserClassMembersTest, SingleFunctionWithAccessSpecifier) {
@@ -159,7 +167,7 @@ TEST (MDParserClassMembersTest, SingleFunctionWithAccessSpecifier) {
     EXPECT_EQ("type", func->parameter_type(0));
     EXPECT_EQ("", func->parameter_name(0));
     EXPECT_FALSE(func->is_pure());
-    //dafuq?
+    EXPECT_EQ(c->GetAccessSpecifierForName(func->name()), AccessSpecifier::PUBLIC);
 }
 
 TEST (MDParserClassMembersTest, VarAndFunctionWithMultiAccessSpecifiers) {
@@ -177,7 +185,7 @@ TEST (MDParserClassMembersTest, VarAndFunctionWithMultiAccessSpecifiers) {
     EXPECT_TRUE(static_cast<bool>(var));
     EXPECT_EQ(var->name(), "var");
     EXPECT_EQ(var->type(), "type");
-    //dafuq?
+    EXPECT_EQ(c->GetAccessSpecifierForName(var->name()), AccessSpecifier::PROTECTED);
     
     ASSERT_EQ(1u, c->NestedFunctionsNum());
     Ptr<const Function> func = c->NestedFunction("func");
@@ -187,11 +195,17 @@ TEST (MDParserClassMembersTest, VarAndFunctionWithMultiAccessSpecifiers) {
     EXPECT_EQ("type", func->parameter_type(0));
     EXPECT_EQ("", func->parameter_name(0));
     EXPECT_FALSE(func->is_pure());
-    //dafuq?
+    EXPECT_EQ(c->GetAccessSpecifierForName(func->name()), AccessSpecifier::PUBLIC); ///WRONG
 }
 
 TEST (MDParserClassMembersTest, NestedNamespaceError) {
     istringstream input("class name { namespace erro {} };");
     MDParser parser(input);
     EXPECT_EQ(parser.parse(), 1);
+}
+
+TEST (MDParserClassMembersTest, NamesConflict) {
+    istringstream input("class name { type var; rtype var(type); };");
+    MDParser parser(input);
+    EXPECT_THROW(parser.parse(), std::exception);
 }

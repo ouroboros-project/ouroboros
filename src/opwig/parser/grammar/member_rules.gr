@@ -7,7 +7,7 @@ member_specification:
     }
 |
     member_declaration member_specification {
-        ($2)->push_back($1);
+        ($2)->push_front($1);
         $$ = $2;
     }
 |

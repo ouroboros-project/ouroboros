@@ -19,6 +19,8 @@ size_t Scope::NestedNamespacesNum () const {
 }
 
 bool Scope::AddNestedNamespace (const string& name, Ptr<Namespace> nested) {
+    if (HasName(name)) 
+        throw SemanticError("Can't add namespace '"+name+"' to scope, it already exists.", __FILE__, __LINE__);
     return namespaces_.Add(name, nested);
 }
 
@@ -38,6 +40,8 @@ size_t Scope::GlobalVariablesNum ()  const {
 }
 
 bool Scope::AddGlobalVariable (Ptr<Variable> variable) {
+    if (HasName(variable->name())) 
+        throw SemanticError("Can't add variable '"+variable->name()+"' to scope, it already exists.", __FILE__, __LINE__);
     return variables_.Add(variable->name(), variable);
 }
 
@@ -57,6 +61,8 @@ size_t Scope::NestedClassesNum () const {
 }
 
 bool Scope::AddNestedClass (const string& name, Ptr<Class> nested) {
+    if (HasName(name)) 
+        throw SemanticError("Can't add class '"+name+"' to scope, it already exists.", __FILE__, __LINE__);
     return classes_.Add(name, nested);
 }
 
@@ -76,6 +82,8 @@ size_t Scope::NestedFunctionsNum () const {
 }
 
 bool Scope::AddNestedFunction (Ptr<Function> nested) {
+    if (HasName(nested->name())) 
+        throw SemanticError("Can't add function '"+nested->name()+"' to scope, it already exists.", __FILE__, __LINE__);
     return functions_.Add(nested->name(), nested);
 }
 
@@ -108,6 +116,19 @@ bool Scope::HasName(const string& name) const {
            classes_.HasName(name) ||
            functions_.HasName(name);
 }
+
+AccessSpecifier Scope::GetAccessSpecifierForName (const std::string& name) const {
+    if (namespaces_.HasName(name))
+        return namespaces_.GetAccessSpecifier(name);
+    if (variables_.HasName(name))
+        return variables_.GetAccessSpecifier(name);
+    if (classes_.HasName(name))
+        return classes_.GetAccessSpecifier(name);
+    if (functions_.HasName(name))
+        return functions_.GetAccessSpecifier(name);
+    return GetAccessSpecifier();
+}
+
 
 } // namespace md
 } // namespace opwig
