@@ -2,6 +2,7 @@
 #ifndef OPWIG_MD_SCOPE_H_
 #define OPWIG_MD_SCOPE_H_
 
+#include <opwig/md/metadataobject.h>
 #include <opwig/md/container.h>
 
 #include <string>
@@ -16,7 +17,7 @@ class Variable;
 class Function;
 
 /// Metadata interface for C++ scopes.
-class Scope {
+class Scope : public MetadataObject {
 
   public:
 
@@ -95,9 +96,6 @@ class Scope {
     /// Checks if the given name exists within this scope.
     virtual bool HasName(const std::string& name) const;
     
-    /// Gets the access specifier for the given name in this scope.
-    virtual AccessSpecifier GetAccessSpecifierForName (const std::string& name) const;
-
   protected:
 
     Scope () {}

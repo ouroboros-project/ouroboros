@@ -2,6 +2,7 @@
 #ifndef OPWIG_MD_VARIABLE_H_
 #define OPWIG_MD_VARIABLE_H_
 
+#include <opwig/md/metadataobject.h>
 #include <opwig/md/ptr.h>
 
 #include <string>
@@ -10,7 +11,7 @@ namespace opwig {
 namespace md {
 
 /// Metadata class for C++ variables.
-class Variable {
+class Variable : public MetadataObject {
 
   public:
     /// Creates a new Variable object. Must be used in place of the

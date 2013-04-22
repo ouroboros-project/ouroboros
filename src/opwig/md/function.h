@@ -2,6 +2,7 @@
 #ifndef OPWIG_MD_FUNCTION_H_
 #define OPWIG_MD_FUNCTION_H_
 
+#include <opwig/md/metadataobject.h>
 #include <opwig/md/ptr.h>
 #include <opwig/md/parameter.h>
 
@@ -12,7 +13,7 @@ namespace opwig {
 namespace md {
 
 /// Metadata interface for C++ functions.
-class Function {
+class Function : public MetadataObject {
   
   public:
 

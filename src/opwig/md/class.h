@@ -23,8 +23,18 @@ class Class final : public Scope {
     /// constructor.
     static Ptr<Class> Create (const std::string& name, const std::list<parser::BaseSpecifier>& base_specifiers);
     
+    /// Gets the class name.
     const std::string& name() const { return name_; }
+    
+    /// Gets the list of BaseSpecifiers (parser struct depicting a base class) of this class.
     const std::list<parser::BaseSpecifier>& base_specifiers() const { return base_specifiers_; }
+    
+    /// Gets the list of constructors of this class.
+    const std::list<Ptr<Function>> constructors() const { return constructors_; }
+    
+    /// Gets the destructor of this class.
+    const Ptr<Function> destructor() const { return destructor_; }
+    
 
     /*** NAMESPACE METHODS ***/
     
@@ -39,10 +49,14 @@ class Class final : public Scope {
 
     /// @see opwig::md::Scope::NestedNamespace
     Ptr<Namespace> NestedNamespace (const std::string& name) override;
+   
 
   private:
     std::string name_;
     std::list<parser::BaseSpecifier> base_specifiers_;
+    
+    std::list<Ptr<Function>> constructors_;
+    Ptr<Function> destructor_;
     
     Container<Class> classes_;
     Container<Variable> variables_;

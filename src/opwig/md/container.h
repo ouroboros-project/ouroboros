@@ -35,9 +35,6 @@ class Container {
     /// Gives the metadata object identified by the given name.
     Ptr<T> Get (const std::string& name);
 
-    /// Gives the access specifier of the metadata object identified by the given name.
-    AccessSpecifier GetAccessSpecifier (const std::string& name) const;
-    
     /// Gets the current access specifier for this container.
     AccessSpecifier GetCurrentAccessSpecifier () const { return access_; }
     
@@ -50,13 +47,7 @@ class Container {
   protected:
   
     AccessSpecifier access_;
-    struct MDObjAccessPair final {
-        Ptr<T> object_;
-        AccessSpecifier access_;
-        MDObjAccessPair(Ptr<T> object, AccessSpecifier access) : object_(object), access_(access) {}
-        MDObjAccessPair() {}
-    };
-    std::map<std::string, MDObjAccessPair> objects_;
+    std::map<std::string, Ptr<T>> objects_;
     
 };
 
@@ -70,7 +61,8 @@ inline bool Container<T>::Add (const std::string& name, Ptr<T> mdObj) {
     auto check = objects_.find(name);
     if (check != objects_.end())
         return false;
-    objects_[name] = MDObjAccessPair(mdObj, access_);
+    mdObj->set_access(access_);
+    objects_[name] = mdObj;
     return true;
 }
 
@@ -78,7 +70,7 @@ template <class T>
 inline Ptr<const T> Container<T>::Get (const std::string& name) const {
     auto get = objects_.find(name);
     return get != objects_.end() 
-        ? get->second.object_ 
+        ? get->second 
         : Ptr<const T>();
 }
 
@@ -86,16 +78,8 @@ template <class T>
 inline Ptr<T> Container<T>::Get (const std::string& name) {
     auto get = objects_.find(name);
     return get != objects_.end()
-        ? get->second.object_
+        ? get->second
         : Ptr<T>();
-}
-
-template <class T>
-inline AccessSpecifier Container<T>::GetAccessSpecifier (const std::string& name) const {
-    auto get = objects_.find(name);
-    return get != objects_.end()
-        ? get->second.access_
-        : AccessSpecifier::PRIVATE;
 }
 
 template <class T>

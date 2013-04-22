@@ -117,18 +117,6 @@ bool Scope::HasName(const string& name) const {
            functions_.HasName(name);
 }
 
-AccessSpecifier Scope::GetAccessSpecifierForName (const std::string& name) const {
-    if (namespaces_.HasName(name))
-        return namespaces_.GetAccessSpecifier(name);
-    if (variables_.HasName(name))
-        return variables_.GetAccessSpecifier(name);
-    if (classes_.HasName(name))
-        return classes_.GetAccessSpecifier(name);
-    if (functions_.HasName(name))
-        return functions_.GetAccessSpecifier(name);
-    return GetAccessSpecifier();
-}
-
 
 } // namespace md
 } // namespace opwig
