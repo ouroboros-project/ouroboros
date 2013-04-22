@@ -211,15 +211,6 @@ TEST (MDParserClassMembersTest, NamesConflict) {
 }
 
 
-/*
-class name { name(); name(type); };
-class name { public: name(type); protected: name(); };
-class name { ~name(); };
-class name { virtual ~name(); };
-class name { name(type); ~name(); };
-class name { public: ~name(); protected: name(type); };
-class name { public: name(); ~name(); rtype func(type); protected: rtype var; };
-*/
 TEST (MDParserClassMembersTest, SingleConstructor) {
     istringstream input("class name { name(type); };");
     MDParser parser(input);
@@ -244,6 +235,222 @@ TEST (MDParserClassMembersTest, SingleConstructor) {
     EXPECT_EQ(func->return_type(), "name");
     EXPECT_EQ("type", func->parameter_type(0));
     EXPECT_EQ("", func->parameter_name(0));
+    EXPECT_FALSE(func->is_pure());
+    EXPECT_EQ(func->access(), AccessSpecifier::PUBLIC);
+}
+
+
+TEST (MDParserClassMembersTest, MultiConstructor) {
+    istringstream input("class name { name(); name(type); };");
+    MDParser parser(input);
+    ASSERT_EQ(parser.parse(), 0);
+    Ptr<const Namespace> global = parser.global_namespace();
+    EXPECT_TRUE(static_cast<bool>(global));
+    Ptr<const Class> c = global->NestedClass("name");
+    EXPECT_TRUE(static_cast<bool>(c));
+    EXPECT_EQ(c->name(), "name");
+    EXPECT_EQ(c->base_specifiers().size(), 0);
+    
+    ASSERT_EQ(0u, c->NestedFunctionsNum());
+    ASSERT_EQ(0u, c->NestedClassesNum());
+    ASSERT_EQ(0u, c->GlobalVariablesNum());
+    
+    ASSERT_FALSE(static_cast<bool>(c->destructor()));
+    
+    ASSERT_EQ(2u, c->constructors().size());
+    Ptr<const Function> func = c->constructors().front();
+    ASSERT_TRUE(static_cast<bool>(func));
+    EXPECT_EQ(func->name(), "name");
+    EXPECT_EQ(func->return_type(), "name");
+    EXPECT_THROW(func->parameter_type(0), std::out_of_range);
+    EXPECT_THROW(func->parameter_name(0), std::out_of_range);
+    EXPECT_FALSE(func->is_pure());
+    EXPECT_EQ(func->access(), AccessSpecifier::PUBLIC);
+    
+    func = c->constructors().back();
+    ASSERT_TRUE(static_cast<bool>(func));
+    EXPECT_EQ(func->name(), "name");
+    EXPECT_EQ(func->return_type(), "name");
+    EXPECT_EQ("type", func->parameter_type(0));
+    EXPECT_EQ("", func->parameter_name(0));
+    EXPECT_FALSE(func->is_pure());
+    EXPECT_EQ(func->access(), AccessSpecifier::PUBLIC);
+}
+
+TEST (MDParserClassMembersTest, MultiConstructorWithAccess) {
+    istringstream input("class name { public: name(type); protected: name(); };");
+    MDParser parser(input);
+    ASSERT_EQ(parser.parse(), 0);
+    Ptr<const Namespace> global = parser.global_namespace();
+    EXPECT_TRUE(static_cast<bool>(global));
+    Ptr<const Class> c = global->NestedClass("name");
+    EXPECT_TRUE(static_cast<bool>(c));
+    EXPECT_EQ(c->name(), "name");
+    EXPECT_EQ(c->base_specifiers().size(), 0);
+    
+    ASSERT_EQ(0u, c->NestedFunctionsNum());
+    ASSERT_EQ(0u, c->NestedClassesNum());
+    ASSERT_EQ(0u, c->GlobalVariablesNum());
+    
+    ASSERT_FALSE(static_cast<bool>(c->destructor()));
+    
+    ASSERT_EQ(2u, c->constructors().size());
+    Ptr<const Function> func = c->constructors().front();
+    ASSERT_TRUE(static_cast<bool>(func));
+    EXPECT_EQ(func->name(), "name");
+    EXPECT_EQ(func->return_type(), "name");
+    EXPECT_EQ("type", func->parameter_type(0));
+    EXPECT_EQ("", func->parameter_name(0));
+    EXPECT_FALSE(func->is_pure());
+    EXPECT_EQ(func->access(), AccessSpecifier::PUBLIC);
+    
+    func = c->constructors().back();
+    ASSERT_TRUE(static_cast<bool>(func));
+    EXPECT_EQ(func->name(), "name");
+    EXPECT_EQ(func->return_type(), "name");
+    EXPECT_THROW(func->parameter_type(0), std::out_of_range);
+    EXPECT_THROW(func->parameter_name(0), std::out_of_range);
+    EXPECT_FALSE(func->is_pure());
+    EXPECT_EQ(func->access(), AccessSpecifier::PROTECTED);
+}
+
+
+TEST (MDParserClassMembersTest, SingleDestructor) {
+    istringstream input("class name { ~name(); };");
+    MDParser parser(input);
+    ASSERT_EQ(parser.parse(), 0);
+    Ptr<const Namespace> global = parser.global_namespace();
+    EXPECT_TRUE(static_cast<bool>(global));
+    Ptr<const Class> c = global->NestedClass("name");
+    EXPECT_TRUE(static_cast<bool>(c));
+    EXPECT_EQ(c->name(), "name");
+    EXPECT_EQ(c->base_specifiers().size(), 0);
+    
+    ASSERT_EQ(0u, c->NestedFunctionsNum());
+    ASSERT_EQ(0u, c->NestedClassesNum());
+    ASSERT_EQ(0u, c->GlobalVariablesNum());
+    
+    Ptr<const Function> func = c->destructor();
+    ASSERT_TRUE(static_cast<bool>(func));
+    EXPECT_EQ(func->name(), "name");
+    EXPECT_EQ(func->return_type(), "");
+    EXPECT_THROW(func->parameter_type(0), std::out_of_range);
+    EXPECT_THROW(func->parameter_name(0), std::out_of_range);
+    EXPECT_FALSE(func->is_pure());
+    EXPECT_EQ(func->access(), AccessSpecifier::PUBLIC);
+    
+    ASSERT_EQ(0u, c->constructors().size());
+}
+
+
+TEST (MDParserClassMembersTest, VirtualDestructor) {
+    istringstream input("class name { virtual ~name(); };");
+    MDParser parser(input);
+    ASSERT_EQ(parser.parse(), 0);
+    Ptr<const Namespace> global = parser.global_namespace();
+    EXPECT_TRUE(static_cast<bool>(global));
+    Ptr<const Class> c = global->NestedClass("name");
+    EXPECT_TRUE(static_cast<bool>(c));
+    EXPECT_EQ(c->name(), "name");
+    EXPECT_EQ(c->base_specifiers().size(), 0);
+    
+    ASSERT_EQ(0u, c->NestedFunctionsNum());
+    ASSERT_EQ(0u, c->NestedClassesNum());
+    ASSERT_EQ(0u, c->GlobalVariablesNum());
+    
+    Ptr<const Function> func = c->destructor();
+    ASSERT_TRUE(static_cast<bool>(func));
+    EXPECT_EQ(func->name(), "name");
+    EXPECT_EQ(func->return_type(), "");
+    EXPECT_THROW(func->parameter_type(0), std::out_of_range);
+    EXPECT_THROW(func->parameter_name(0), std::out_of_range);
+    EXPECT_FALSE(func->is_pure());
+    EXPECT_EQ(func->access(), AccessSpecifier::PUBLIC);
+    
+    ASSERT_EQ(0u, c->constructors().size());
+}
+
+TEST (MDParserClassMembersTest, ConstructorAndDestructorWithAccess) {
+    istringstream input("class name { public: ~name(); protected: name(type); };");
+    MDParser parser(input);
+    ASSERT_EQ(parser.parse(), 0);
+    Ptr<const Namespace> global = parser.global_namespace();
+    EXPECT_TRUE(static_cast<bool>(global));
+    Ptr<const Class> c = global->NestedClass("name");
+    EXPECT_TRUE(static_cast<bool>(c));
+    EXPECT_EQ(c->name(), "name");
+    EXPECT_EQ(c->base_specifiers().size(), 0);
+    
+    ASSERT_EQ(0u, c->NestedFunctionsNum());
+    ASSERT_EQ(0u, c->NestedClassesNum());
+    ASSERT_EQ(0u, c->GlobalVariablesNum());
+    
+    Ptr<const Function> func = c->destructor();
+    ASSERT_TRUE(static_cast<bool>(func));
+    EXPECT_EQ(func->name(), "name");
+    EXPECT_EQ(func->return_type(), "");
+    EXPECT_THROW(func->parameter_type(0), std::out_of_range);
+    EXPECT_THROW(func->parameter_name(0), std::out_of_range);
+    EXPECT_FALSE(func->is_pure());
+    EXPECT_EQ(func->access(), AccessSpecifier::PUBLIC);
+    
+    ASSERT_EQ(1u, c->constructors().size());
+    func = c->constructors().front();
+    ASSERT_TRUE(static_cast<bool>(func));
+    EXPECT_EQ(func->name(), "name");
+    EXPECT_EQ(func->return_type(), "name");
+    EXPECT_EQ("type", func->parameter_type(0));
+    EXPECT_EQ("", func->parameter_name(0));
+    EXPECT_FALSE(func->is_pure());
+    EXPECT_EQ(func->access(), AccessSpecifier::PROTECTED);
+}
+
+TEST (MDParserClassMembersTest, SimpleClass) {
+    istringstream input("class name { public: name(); ~name(); rtype func(type); protected: rtype var; };");
+    MDParser parser(input);
+    ASSERT_EQ(parser.parse(), 0);
+    Ptr<const Namespace> global = parser.global_namespace();
+    EXPECT_TRUE(static_cast<bool>(global));
+    Ptr<const Class> c = global->NestedClass("name");
+    EXPECT_TRUE(static_cast<bool>(c));
+    EXPECT_EQ(c->name(), "name");
+    EXPECT_EQ(c->base_specifiers().size(), 0);
+    
+    ASSERT_EQ(1u, c->NestedFunctionsNum());
+    Ptr<const Function> func = c->NestedFunction("func");
+    ASSERT_TRUE(static_cast<bool>(func));
+    EXPECT_EQ(func->name(), "func");
+    EXPECT_EQ(func->return_type(), "rtype");
+    EXPECT_EQ("type", func->parameter_type(0));
+    EXPECT_EQ("", func->parameter_name(0));
+    EXPECT_FALSE(func->is_pure());
+    EXPECT_EQ(func->access(), AccessSpecifier::PUBLIC);
+    
+    ASSERT_EQ(0u, c->NestedClassesNum());
+    
+    ASSERT_EQ(1u, c->GlobalVariablesNum());
+    Ptr<const Variable> var = c->GlobalVariable("var");
+    EXPECT_TRUE(static_cast<bool>(var));
+    EXPECT_EQ(var->name(), "var");
+    EXPECT_EQ(var->type(), "rtype");
+    EXPECT_EQ(var->access(), AccessSpecifier::PROTECTED);
+    
+    func = c->destructor();
+    ASSERT_TRUE(static_cast<bool>(func));
+    EXPECT_EQ(func->name(), "name");
+    EXPECT_EQ(func->return_type(), "");
+    EXPECT_THROW(func->parameter_type(0), std::out_of_range);
+    EXPECT_THROW(func->parameter_name(0), std::out_of_range);
+    EXPECT_FALSE(func->is_pure());
+    EXPECT_EQ(func->access(), AccessSpecifier::PUBLIC);
+    
+    ASSERT_EQ(1u, c->constructors().size());
+    func = c->constructors().front();
+    ASSERT_TRUE(static_cast<bool>(func));
+    EXPECT_EQ(func->name(), "name");
+    EXPECT_EQ(func->return_type(), "name");
+    EXPECT_THROW(func->parameter_type(0), std::out_of_range);
+    EXPECT_THROW(func->parameter_name(0), std::out_of_range);
     EXPECT_FALSE(func->is_pure());
     EXPECT_EQ(func->access(), AccessSpecifier::PUBLIC);
 }
