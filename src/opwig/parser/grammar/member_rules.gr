@@ -33,15 +33,21 @@ member_specification:
 ;
 
 member_declaration:
+    member_declarator_list ';' {
+        std::cout << "Joining declarations" << std::endl;
+        TypeAction action = [] (md::Ptr<md::Scope> current_scope) -> std::string { return ""; };
+        $$ = parser::JoinDeclarations(action, $1);
+    }
+|
     decl_specifier_seq ';' {
+        std::cout << "Adding type to scope" << std::endl;
         $$ = parser::AddTypeToScope($1);
     }
 |
     decl_specifier_seq member_declarator_list ';' {
+        std::cout << "Joining declarations with return" << std::endl;
         $$ = parser::JoinDeclarations($1, $2);
     }
-//|
-//    member_declarator_list ';'    
 //incomplete
 ;
 

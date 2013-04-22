@@ -96,7 +96,9 @@ ptr_operator:
 ;
 
 declarator_id:
-  identifier { $$ = $1; }
+    identifier { $$ = $1; }
+|
+    '~' identifier { $$ = "~"+$2; }
 ;
 
 initializer:

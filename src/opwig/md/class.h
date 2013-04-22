@@ -50,6 +50,10 @@ class Class final : public Scope {
     /// @see opwig::md::Scope::NestedNamespace
     Ptr<Namespace> NestedNamespace (const std::string& name) override;
    
+    /*** FUNCTION METHODS ***/
+    
+    /// @see opwig::md::Scope::AddNestedFunction
+    bool AddNestedFunction (Ptr<Function> nested) override;
 
   private:
     std::string name_;

@@ -232,11 +232,11 @@ TEST (MDParserClassMembersTest, SingleConstructor) {
     Ptr<const Function> func = c->constructors().front();
     ASSERT_TRUE(static_cast<bool>(func));
     EXPECT_EQ(func->name(), "name");
-    EXPECT_EQ(func->return_type(), "name");
+    EXPECT_EQ(func->return_type(), "");
     EXPECT_EQ("type", func->parameter_type(0));
     EXPECT_EQ("", func->parameter_name(0));
     EXPECT_FALSE(func->is_pure());
-    EXPECT_EQ(func->access(), AccessSpecifier::PUBLIC);
+    EXPECT_EQ(func->access(), AccessSpecifier::PRIVATE);
 }
 
 
@@ -261,20 +261,20 @@ TEST (MDParserClassMembersTest, MultiConstructor) {
     Ptr<const Function> func = c->constructors().front();
     ASSERT_TRUE(static_cast<bool>(func));
     EXPECT_EQ(func->name(), "name");
-    EXPECT_EQ(func->return_type(), "name");
+    EXPECT_EQ(func->return_type(), "");
     EXPECT_THROW(func->parameter_type(0), std::out_of_range);
     EXPECT_THROW(func->parameter_name(0), std::out_of_range);
     EXPECT_FALSE(func->is_pure());
-    EXPECT_EQ(func->access(), AccessSpecifier::PUBLIC);
+    EXPECT_EQ(func->access(), AccessSpecifier::PRIVATE);
     
     func = c->constructors().back();
     ASSERT_TRUE(static_cast<bool>(func));
     EXPECT_EQ(func->name(), "name");
-    EXPECT_EQ(func->return_type(), "name");
+    EXPECT_EQ(func->return_type(), "");
     EXPECT_EQ("type", func->parameter_type(0));
     EXPECT_EQ("", func->parameter_name(0));
     EXPECT_FALSE(func->is_pure());
-    EXPECT_EQ(func->access(), AccessSpecifier::PUBLIC);
+    EXPECT_EQ(func->access(), AccessSpecifier::PRIVATE);
 }
 
 TEST (MDParserClassMembersTest, MultiConstructorWithAccess) {
@@ -298,7 +298,7 @@ TEST (MDParserClassMembersTest, MultiConstructorWithAccess) {
     Ptr<const Function> func = c->constructors().front();
     ASSERT_TRUE(static_cast<bool>(func));
     EXPECT_EQ(func->name(), "name");
-    EXPECT_EQ(func->return_type(), "name");
+    EXPECT_EQ(func->return_type(), "");
     EXPECT_EQ("type", func->parameter_type(0));
     EXPECT_EQ("", func->parameter_name(0));
     EXPECT_FALSE(func->is_pure());
@@ -307,7 +307,7 @@ TEST (MDParserClassMembersTest, MultiConstructorWithAccess) {
     func = c->constructors().back();
     ASSERT_TRUE(static_cast<bool>(func));
     EXPECT_EQ(func->name(), "name");
-    EXPECT_EQ(func->return_type(), "name");
+    EXPECT_EQ(func->return_type(), "");
     EXPECT_THROW(func->parameter_type(0), std::out_of_range);
     EXPECT_THROW(func->parameter_name(0), std::out_of_range);
     EXPECT_FALSE(func->is_pure());
@@ -332,12 +332,12 @@ TEST (MDParserClassMembersTest, SingleDestructor) {
     
     Ptr<const Function> func = c->destructor();
     ASSERT_TRUE(static_cast<bool>(func));
-    EXPECT_EQ(func->name(), "name");
+    EXPECT_EQ(func->name(), "~name");
     EXPECT_EQ(func->return_type(), "");
     EXPECT_THROW(func->parameter_type(0), std::out_of_range);
     EXPECT_THROW(func->parameter_name(0), std::out_of_range);
     EXPECT_FALSE(func->is_pure());
-    EXPECT_EQ(func->access(), AccessSpecifier::PUBLIC);
+    EXPECT_EQ(func->access(), AccessSpecifier::PRIVATE);
     
     ASSERT_EQ(0u, c->constructors().size());
 }
@@ -360,12 +360,12 @@ TEST (MDParserClassMembersTest, VirtualDestructor) {
     
     Ptr<const Function> func = c->destructor();
     ASSERT_TRUE(static_cast<bool>(func));
-    EXPECT_EQ(func->name(), "name");
+    EXPECT_EQ(func->name(), "~name");
     EXPECT_EQ(func->return_type(), "");
     EXPECT_THROW(func->parameter_type(0), std::out_of_range);
     EXPECT_THROW(func->parameter_name(0), std::out_of_range);
     EXPECT_FALSE(func->is_pure());
-    EXPECT_EQ(func->access(), AccessSpecifier::PUBLIC);
+    EXPECT_EQ(func->access(), AccessSpecifier::PRIVATE);
     
     ASSERT_EQ(0u, c->constructors().size());
 }
@@ -387,7 +387,7 @@ TEST (MDParserClassMembersTest, ConstructorAndDestructorWithAccess) {
     
     Ptr<const Function> func = c->destructor();
     ASSERT_TRUE(static_cast<bool>(func));
-    EXPECT_EQ(func->name(), "name");
+    EXPECT_EQ(func->name(), "~name");
     EXPECT_EQ(func->return_type(), "");
     EXPECT_THROW(func->parameter_type(0), std::out_of_range);
     EXPECT_THROW(func->parameter_name(0), std::out_of_range);
@@ -398,7 +398,7 @@ TEST (MDParserClassMembersTest, ConstructorAndDestructorWithAccess) {
     func = c->constructors().front();
     ASSERT_TRUE(static_cast<bool>(func));
     EXPECT_EQ(func->name(), "name");
-    EXPECT_EQ(func->return_type(), "name");
+    EXPECT_EQ(func->return_type(), "");
     EXPECT_EQ("type", func->parameter_type(0));
     EXPECT_EQ("", func->parameter_name(0));
     EXPECT_FALSE(func->is_pure());
@@ -437,7 +437,7 @@ TEST (MDParserClassMembersTest, SimpleClass) {
     
     func = c->destructor();
     ASSERT_TRUE(static_cast<bool>(func));
-    EXPECT_EQ(func->name(), "name");
+    EXPECT_EQ(func->name(), "~name");
     EXPECT_EQ(func->return_type(), "");
     EXPECT_THROW(func->parameter_type(0), std::out_of_range);
     EXPECT_THROW(func->parameter_name(0), std::out_of_range);
@@ -448,7 +448,7 @@ TEST (MDParserClassMembersTest, SimpleClass) {
     func = c->constructors().front();
     ASSERT_TRUE(static_cast<bool>(func));
     EXPECT_EQ(func->name(), "name");
-    EXPECT_EQ(func->return_type(), "name");
+    EXPECT_EQ(func->return_type(), "");
     EXPECT_THROW(func->parameter_type(0), std::out_of_range);
     EXPECT_THROW(func->parameter_name(0), std::out_of_range);
     EXPECT_FALSE(func->is_pure());
