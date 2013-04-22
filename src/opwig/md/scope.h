@@ -98,7 +98,7 @@ class Scope : public MetadataObject {
     
   protected:
 
-    Scope () {}
+    Scope (const std::string& name) : MetadataObject(name) { }
     
     Container<Namespace>    namespaces_;
     Container<Variable>     variables_;

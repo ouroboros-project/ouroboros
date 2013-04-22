@@ -14,8 +14,8 @@ named_namespace_definition:
   NAMESPACE identifier '{' declaration_seq '}' {
     using md::Namespace;
     using md::Ptr;
-    Ptr<Namespace> new_namespace = Namespace::Create();
     std::string name = $2;
+    Ptr<Namespace> new_namespace = Namespace::Create(name);
     for (auto it: *$4)
         if (!(it) (new_namespace))
             throw md::SemanticError("Namespace action failed (new)", __FILE__, __LINE__);

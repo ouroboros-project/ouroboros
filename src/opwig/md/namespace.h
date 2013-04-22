@@ -16,16 +16,16 @@ class Namespace final : public Scope {
 
     /// Creates a new Namespace object. Must be used in place of the
     /// constructor.
-    static Ptr<Namespace> Create ();
+    static Ptr<Namespace> Create (const std::string& the_name);
 
   private:
 
-    Namespace () { SetAccessSpecifier(AccessSpecifier::PUBLIC); }
+    Namespace (const std::string& the_name) : Scope::Scope(the_name) { SetAccessSpecifier(AccessSpecifier::PUBLIC); }
 
 };
 
-inline Ptr<Namespace> Namespace::Create () {
-    return Ptr<Namespace>(new Namespace);
+inline Ptr<Namespace> Namespace::Create (const std::string& the_name) {
+    return Ptr<Namespace>(new Namespace(the_name));
 }
 
 } // namespace md

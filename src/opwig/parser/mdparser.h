@@ -21,10 +21,10 @@ class MDParser: public MDParserBase {
   public:
     MDParser () :
       d_scanner(std::cin, std::cerr),
-      global_namespace_(md::Namespace::Create()) {}
+      global_namespace_(md::Namespace::Create("")) {}
     explicit MDParser (std::istream& in) :
       d_scanner(in, std::cerr),
-      global_namespace_(md::Namespace::Create()) {}
+      global_namespace_(md::Namespace::Create("")) {}
 
     int parse();
 

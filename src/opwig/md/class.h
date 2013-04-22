@@ -23,9 +23,6 @@ class Class final : public Scope {
     /// constructor.
     static Ptr<Class> Create (const std::string& name, const std::list<parser::BaseSpecifier>& base_specifiers);
     
-    /// Gets the class name.
-    const std::string& name() const { return name_; }
-    
     /// Gets the list of BaseSpecifiers (parser struct depicting a base class) of this class.
     const std::list<parser::BaseSpecifier>& base_specifiers() const { return base_specifiers_; }
     
@@ -56,7 +53,6 @@ class Class final : public Scope {
     bool AddNestedFunction (Ptr<Function> nested) override;
 
   private:
-    std::string name_;
     std::list<parser::BaseSpecifier> base_specifiers_;
     
     std::list<Ptr<Function>> constructors_;
@@ -67,7 +63,7 @@ class Class final : public Scope {
     Container<Function>  functions_;
 
     Class (const std::string& name, const std::list<parser::BaseSpecifier>& base_specifiers) : 
-        name_(name), base_specifiers_(base_specifiers) {
+        Scope::Scope(name), base_specifiers_(base_specifiers) {
             SetAccessSpecifier(AccessSpecifier::PRIVATE);
         }
 

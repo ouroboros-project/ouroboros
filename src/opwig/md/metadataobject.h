@@ -4,6 +4,8 @@
 
 #include <opwig/md/accessspecifier.h>
 
+#include <string>
+
 namespace opwig {
 namespace md {
 
@@ -13,6 +15,9 @@ class MetadataObject {
   public:
     /// Virtual destructor.
     virtual ~MetadataObject () {}
+    
+    /// Gets the metadata object name.
+    const std::string& name() const { return name_; }
 
     /// Gives the access specifier of this metadata object.
     virtual AccessSpecifier access () const { return access_; }
@@ -22,8 +27,9 @@ class MetadataObject {
     
   protected:
   
-    MetadataObject() {};
+    MetadataObject(const std::string& name) : name_(name) {};
     
+    std::string name_;
     AccessSpecifier access_;
 };
 

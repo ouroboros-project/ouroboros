@@ -18,15 +18,13 @@ class Variable : public MetadataObject {
     /// constructor.
     static Ptr<Variable> Create (const std::string& name, const std::string& type);
 
-    const std::string& name() const { return name_; }
     const std::string& type() const { return type_; }
 
   private:
 
-    std::string name_;
     std::string type_;
 
-    Variable (const std::string& name, const std::string& type) : name_(name), type_(type) {}
+    Variable (const std::string& name, const std::string& type) : MetadataObject(name), type_(type) { }
 
 };
 

@@ -24,9 +24,6 @@ class Function : public MetadataObject {
     static Ptr<Function> Create(const std::string& the_name, const std::string& the_return_type,
                                 const ParameterList& the_parameter_list, const bool pure);
 
-    /// Tells the function's name.
-    std::string name() const;
-
     /// Tells the function's return type.
     std::string return_type() const;
 
@@ -41,7 +38,6 @@ class Function : public MetadataObject {
     
   private:
 
-    std::string   name_;
     std::string   return_type_;
     ParameterList parameter_list_;
     bool          pure_;
@@ -53,17 +49,13 @@ class Function : public MetadataObject {
 
 inline Function::Function(const std::string& the_name, const std::string& the_return_type,
                           const ParameterList& the_parameter_list, const bool pure)
-    : name_(the_name), return_type_(the_return_type), parameter_list_(the_parameter_list), pure_(pure) {}
+    : MetadataObject(the_name), return_type_(the_return_type), parameter_list_(the_parameter_list), pure_(pure) { }
 
 inline Ptr<Function> Function::Create(const std::string& the_name,
                                       const std::string& the_return_type,
                                       const ParameterList& the_parameter_list,
                                       const bool pure) {
     return Ptr<Function>(new Function(the_name, the_return_type, the_parameter_list, pure));
-}
-
-inline std::string Function::name() const {
-    return name_;
 }
 
 inline std::string Function::return_type() const {
