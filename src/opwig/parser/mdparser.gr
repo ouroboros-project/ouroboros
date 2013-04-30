@@ -3,6 +3,9 @@
 %baseclass-preinclude <opwig/parser/mdparser-preincludes.h>
 %namespace            opwig
 
+%debug
+%error-verbose
+
 %include grammar/semantictypes.gr
 
 %%
