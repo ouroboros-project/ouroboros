@@ -13,10 +13,7 @@ class_specifier:
     };
   }
 |
-  class_head '{' member_specification {
-    d_scanner.ChangeScope(nullptr);
-    std::cout << "Reseted scanner scope" << std::endl;
-  } '}' {
+  class_head '{' member_specification { d_scanner.ChangeScope(nullptr); } '}' {
     md::Ptr<md::Class> classObj = $1;
     for (auto it: *$3)
       if (!(it)(classObj))
@@ -33,7 +30,6 @@ class_head:
   class_key {
     $$ = md::Class::Create("", BaseSpecifierList());
     d_scanner.ChangeScope($$);
-    std::cout << "Changed scanner scope to: " << ($$)->name() << std::endl;
   }
 |
   class_key base_clause { $$ = md::Class::Create("", *$2); }
@@ -41,13 +37,11 @@ class_head:
   class_key class_head_name {
     $$ = md::Class::Create($2, BaseSpecifierList());
     d_scanner.ChangeScope($$);
-    std::cout << "Changed scanner scope to: " << ($$)->name() << std::endl;
   }
 |
   class_key class_head_name base_clause {
     $$ = md::Class::Create($2, *$3);
     d_scanner.ChangeScope($$);
-    std::cout << "Changed scanner scope to: " << ($$)->name() << std::endl;
   }
 ;
 

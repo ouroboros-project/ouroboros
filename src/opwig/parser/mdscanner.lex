@@ -93,10 +93,7 @@ pp_number                   (\.?{digit}({digit}|{non_digit}|[eE][-+]|\.)*)
 "wchar_t"           { return MDParserBase::PRIMITIVE; }
 
 {identifier} {
-  if (static_cast<bool>(current_scope_)) {
-    std::cout << "constructor name? " << current_scope_->name() << ":" << matched() << std::endl;
-    std::cout.flush();
-    if (current_scope_->name() == matched())
+  if (static_cast<bool>(current_scope_) && current_scope_->name() == matched()) {
       return MDParserBase::CONSTRUCTOR_NAME;
   }
   return MDParserBase::IDENTIFIER;
