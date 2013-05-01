@@ -31,6 +31,8 @@ ptr_declarator:
 noptr_declarator:
   declarator_id { $$ = parser::Declarator($1); }
 |
+  constructor_name { $$ = parser::Declarator($1); }
+|
   noptr_declarator parameters_and_qualifiers {
     $$ = $1;
     ($$).set_parameters($2);

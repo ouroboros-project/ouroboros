@@ -6,29 +6,35 @@
 // $insert baseclass_h
 #include <opwig/parser/mdscannerbase.h>
 
+#include <opwig/md/ptr.h>
+#include <opwig/md/scope.h>
+
 // $insert namespace-open
 namespace opwig
 {
 
 // $insert classHead
-class MDScanner: public MDScannerBase
-{
-    public:
-        explicit MDScanner(std::istream &in = std::cin,
-                                std::ostream &out = std::cout);
+class MDScanner: public MDScannerBase {
+  public:
+    explicit MDScanner(std::istream &in = std::cin,
+                       std::ostream &out = std::cout);
 
-        MDScanner(std::string const &infile, std::string const &outfile);
-        
-        // $insert lexFunctionDecl
-        int lex();
+    MDScanner(std::string const &infile, std::string const &outfile);
+    
+    void ChangeScope(const md::Ptr<md::Scope>& the_current_scope);
+    
+    // $insert lexFunctionDecl
+    int lex();
 
-    private:
-        int lex__();
-        int executeAction__(size_t ruleNr);
+  private:
+    md::Ptr<md::Scope> current_scope_;
 
-        void print();
-        void preCode();     // re-implement this function for code that must 
-                            // be exec'ed before the patternmatching starts
+    int lex__();
+    int executeAction__(size_t ruleNr);
+
+    void print();
+    void preCode();     // re-implement this function for code that must 
+                        // be exec'ed before the patternmatching starts
 };
 
 // $insert scannerConstructors
@@ -56,6 +62,13 @@ inline void MDScanner::preCode()
 inline void MDScanner::print() 
 {
     print__();
+}
+
+inline void MDScanner::ChangeScope(const md::Ptr<md::Scope>& the_current_scope) {
+  if (the_current_scope == nullptr)
+    current_scope_.reset();
+  else
+    current_scope_ = the_current_scope;
 }
 
 // $insert namespace-close

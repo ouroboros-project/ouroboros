@@ -5,3 +5,10 @@ identifier:
     $$ = d_scanner.matched();
   }
 ;
+
+constructor_name:
+  CONSTRUCTOR_NAME {
+    $$ = d_scanner.matched();
+  }
+;
+

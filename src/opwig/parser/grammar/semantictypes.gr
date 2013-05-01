@@ -14,6 +14,7 @@
   StringSeq:        std::shared_ptr<StringList>;
 
 %token IDENTIFIER
+%token CONSTRUCTOR_NAME
 %token PRIMITIVE
 
 // Keywords
@@ -86,6 +87,7 @@
 %type<AccessSpecifier>      access_specifier
 
 %type<String>         identifier
+%type<String>         constructor_name
 %type<String>         type_name
 %type<String>         declarator_id
 %type<String>         class_head_name

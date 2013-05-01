@@ -92,7 +92,15 @@ pp_number                   (\.?{digit}({digit}|{non_digit}|[eE][-+]|\.)*)
 "volatile"          { return MDParserBase::VOLATILE; }
 "wchar_t"           { return MDParserBase::PRIMITIVE; }
 
-{identifier}          return MDParserBase::IDENTIFIER;
+{identifier} {
+  if (static_cast<bool>(current_scope_)) {
+    std::cout << "constructor name? " << current_scope_->name() << ":" << matched() << std::endl;
+    std::cout.flush();
+    if (current_scope_->name() == matched())
+      return MDParserBase::CONSTRUCTOR_NAME;
+  }
+  return MDParserBase::IDENTIFIER;
+}
 
 .                     return matched().front();
 

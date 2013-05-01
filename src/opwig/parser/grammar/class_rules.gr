@@ -1,7 +1,10 @@
 //=========================// CLASS SPECIFICATION //
 
 class_specifier:
-  class_head '{' '}' {
+  class_head '{' {
+    d_scanner.ChangeScope(nullptr);
+    std::cout << "Reseted scanner scope" << std::endl;
+  } '}' {
     md::Ptr<md::Class> classObj = $1;
     $$ = [classObj] (md::Ptr<md::Scope> current_scope) -> std::string {
         if (current_scope->AddNestedClass(classObj->name(), classObj))
@@ -10,7 +13,10 @@ class_specifier:
     };
   }
 |
-  class_head '{' member_specification '}' {
+  class_head '{' member_specification {
+    d_scanner.ChangeScope(nullptr);
+    std::cout << "Reseted scanner scope" << std::endl;
+  } '}' {
     md::Ptr<md::Class> classObj = $1;
     for (auto it: *$3)
       if (!(it)(classObj))
@@ -24,13 +30,25 @@ class_specifier:
 ;
 
 class_head:
-  class_key { $$ = md::Class::Create("", BaseSpecifierList()); }
+  class_key {
+    $$ = md::Class::Create("", BaseSpecifierList());
+    d_scanner.ChangeScope($$);
+    std::cout << "Changed scanner scope to: " << ($$)->name() << std::endl;
+  }
 |
   class_key base_clause { $$ = md::Class::Create("", *$2); }
 |
-  class_key class_head_name { $$ = md::Class::Create($2, BaseSpecifierList()); }
+  class_key class_head_name {
+    $$ = md::Class::Create($2, BaseSpecifierList());
+    d_scanner.ChangeScope($$);
+    std::cout << "Changed scanner scope to: " << ($$)->name() << std::endl;
+  }
 |
-  class_key class_head_name base_clause { $$ = md::Class::Create($2, *$3); }
+  class_key class_head_name base_clause {
+    $$ = md::Class::Create($2, *$3);
+    d_scanner.ChangeScope($$);
+    std::cout << "Changed scanner scope to: " << ($$)->name() << std::endl;
+  }
 ;
 
 class_head_name:
