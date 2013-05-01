@@ -100,7 +100,7 @@ ptr_operator:
 declarator_id:
     identifier { $$ = $1; }
 |
-    '~' identifier { $$ = "~"+$2; }
+      '~' constructor_name { $$ = "~"+$2; }
 ;
 
 initializer:

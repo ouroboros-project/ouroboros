@@ -21,11 +21,22 @@ simple_declaration:
 decl_specifier_seq:
     type_specifier { $$ = $1; }
 |
-    decl_specifier decl_specifier_seq { $$ = $2; }
+    decl_specifier decl_specifier_seq_opt { $$ = $2; }
+;
+
+decl_specifier_seq_opt:
+  // TODO this is temporary
+  /* empty */ {
+    $$ = [] (md::Ptr<md::Scope> current_namespace) -> std::string { return ""; };
+  }
+|
+  decl_specifier_seq { $$ = $1; }
 ;
 
 decl_specifier:
     FRIEND
 |
     TYPEDEF
+|
+    VIRTUAL
 ;

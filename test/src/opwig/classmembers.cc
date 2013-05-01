@@ -365,6 +365,7 @@ TEST (MDParserClassMembersTest, VirtualDestructor) {
     EXPECT_THROW(func->parameter_type(0), std::out_of_range);
     EXPECT_THROW(func->parameter_name(0), std::out_of_range);
     EXPECT_FALSE(func->is_pure());
+    // TODO check if it is virtual?
     EXPECT_EQ(func->access(), AccessSpecifier::PRIVATE);
     
     ASSERT_EQ(0u, c->constructors().size());
