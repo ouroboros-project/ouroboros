@@ -23,11 +23,11 @@ class MetadataObject {
     virtual AccessSpecifier access () const { return access_; }
     
     /// Sets the current access specifier for this container.
-    void set_access (AccessSpecifier access) { access_ = access; }
+    void set_access (AccessSpecifier new_access) { access_ = new_access; }
     
   protected:
   
-    MetadataObject(const std::string& name) : name_(name) {};
+    MetadataObject(const std::string& obj_name) : name_(obj_name) {};
     
     std::string name_;
     AccessSpecifier access_;

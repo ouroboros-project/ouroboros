@@ -18,18 +18,18 @@ size_t Scope::NestedNamespacesNum () const {
     return namespaces_.Num();
 }
 
-bool Scope::AddNestedNamespace (const string& name, Ptr<Namespace> nested) {
-    if (HasName(name)) 
-        throw SemanticError("Can't add namespace '"+name+"' to scope, it already exists.", __FILE__, __LINE__);
-    return namespaces_.Add(name, nested);
+bool Scope::AddNestedNamespace (const string& nmspace_name, Ptr<Namespace> nested) {
+    if (HasName(nmspace_name)) 
+        throw SemanticError("Can't add namespace '"+nmspace_name+"' to scope, it already exists.", __FILE__, __LINE__);
+    return namespaces_.Add(nmspace_name, nested);
 }
 
-Ptr<const Namespace> Scope::NestedNamespace (const string& name) const {
-    return namespaces_.Get(name);
+Ptr<const Namespace> Scope::NestedNamespace (const string& nmspace_name) const {
+    return namespaces_.Get(nmspace_name);
 }
 
-Ptr<Namespace> Scope::NestedNamespace (const string& name) {
-    return namespaces_.Get(name);
+Ptr<Namespace> Scope::NestedNamespace (const string& nmspace_name) {
+    return namespaces_.Get(nmspace_name);
 }
 
 /*****************************************************/
@@ -45,12 +45,12 @@ bool Scope::AddGlobalVariable (Ptr<Variable> variable) {
     return variables_.Add(variable->name(), variable);
 }
 
-Ptr<const Variable> Scope::GlobalVariable (const string& name) const {
-    return variables_.Get(name);
+Ptr<const Variable> Scope::GlobalVariable (const string& var_name) const {
+    return variables_.Get(var_name);
 }
 
-Ptr<Variable> Scope::GlobalVariable (const string& name) {
-    return variables_.Get(name);
+Ptr<Variable> Scope::GlobalVariable (const string& var_name) {
+    return variables_.Get(var_name);
 }
 
 /*****************************************************/
@@ -60,18 +60,18 @@ size_t Scope::NestedClassesNum () const {
     return classes_.Num();
 }
 
-bool Scope::AddNestedClass (const string& name, Ptr<Class> nested) {
-    if (HasName(name)) 
-        throw SemanticError("Can't add class '"+name+"' to scope, it already exists.", __FILE__, __LINE__);
-    return classes_.Add(name, nested);
+bool Scope::AddNestedClass (const string& class_name, Ptr<Class> nested) {
+    if (HasName(class_name)) 
+        throw SemanticError("Can't add class '"+class_name+"' to scope, it already exists.", __FILE__, __LINE__);
+    return classes_.Add(class_name, nested);
 }
 
-Ptr<const Class> Scope::NestedClass (const string& name) const {
-    return classes_.Get(name);
+Ptr<const Class> Scope::NestedClass (const string& class_name) const {
+    return classes_.Get(class_name);
 }
 
-Ptr<Class> Scope::NestedClass (const string& name) {
-    return classes_.Get(name);
+Ptr<Class> Scope::NestedClass (const string& class_name) {
+    return classes_.Get(class_name);
 }
 
 /*****************************************************/
@@ -87,12 +87,12 @@ bool Scope::AddNestedFunction (Ptr<Function> nested) {
     return functions_.Add(nested->name(), nested);
 }
 
-Ptr<const Function> Scope::NestedFunction (const string& name) const {
-    return functions_.Get(name);
+Ptr<const Function> Scope::NestedFunction (const string& func_name) const {
+    return functions_.Get(func_name);
 }
 
-Ptr<Function> Scope::NestedFunction (const string& name) {
-    return functions_.Get(name);
+Ptr<Function> Scope::NestedFunction (const string& func_name) {
+    return functions_.Get(func_name);
 }
 
 /*****************************************************/
@@ -103,18 +103,18 @@ AccessSpecifier Scope::GetAccessSpecifier () const {
     return namespaces_.GetCurrentAccessSpecifier();
 }
 
-void Scope::SetAccessSpecifier(AccessSpecifier access) {
-    namespaces_.SetCurrentAccessSpecifier(access);
-    variables_.SetCurrentAccessSpecifier(access);
-    classes_.SetCurrentAccessSpecifier(access);
-    functions_.SetCurrentAccessSpecifier(access);
+void Scope::SetAccessSpecifier(AccessSpecifier new_access) {
+    namespaces_.SetCurrentAccessSpecifier(new_access);
+    variables_.SetCurrentAccessSpecifier(new_access);
+    classes_.SetCurrentAccessSpecifier(new_access);
+    functions_.SetCurrentAccessSpecifier(new_access);
 }
 
-bool Scope::HasName(const string& name) const {
-    return namespaces_.HasName(name) || 
-           variables_.HasName(name) ||
-           classes_.HasName(name) ||
-           functions_.HasName(name);
+bool Scope::HasName(const string& obj_name) const {
+    return namespaces_.HasName(obj_name) || 
+           variables_.HasName(obj_name) ||
+           classes_.HasName(obj_name) ||
+           functions_.HasName(obj_name);
 }
 
 

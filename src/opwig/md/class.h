@@ -21,7 +21,7 @@ class Class final : public Scope {
 
     /// Creates a new Class object. Must be used in place of the
     /// constructor.
-    static Ptr<Class> Create (const std::string& name, const std::list<parser::BaseSpecifier>& base_specifiers);
+    static Ptr<Class> Create (const std::string& class_name, const std::list<parser::BaseSpecifier>& the_base_specifiers);
     
     /// Gets the list of BaseSpecifiers (parser struct depicting a base class) of this class.
     const std::list<parser::BaseSpecifier>& base_specifiers() const { return base_specifiers_; }
@@ -39,13 +39,13 @@ class Class final : public Scope {
     size_t NestedNamespacesNum () const override;
 
     /// @see opwig::md::Scope::AddNestedNamespace
-    bool AddNestedNamespace (const std::string& name, Ptr<Namespace> nested) override;
+    bool AddNestedNamespace (const std::string& nmspace_name, Ptr<Namespace> nested) override;
 
     /// @see opwig::md::Scope::NestedNamespace
-    Ptr<const Namespace> NestedNamespace (const std::string& name) const override;
+    Ptr<const Namespace> NestedNamespace (const std::string& nmspace_name) const override;
 
     /// @see opwig::md::Scope::NestedNamespace
-    Ptr<Namespace> NestedNamespace (const std::string& name) override;
+    Ptr<Namespace> NestedNamespace (const std::string& nmspace_name) override;
    
     /*** FUNCTION METHODS ***/
     
@@ -58,30 +58,30 @@ class Class final : public Scope {
     std::list<Ptr<Function>> constructors_;
     Ptr<Function> destructor_;
 
-    Class (const std::string& name, const std::list<parser::BaseSpecifier>& base_specifiers) : 
-        Scope::Scope(name), base_specifiers_(base_specifiers) {
+    Class (const std::string& class_name, const std::list<parser::BaseSpecifier>& the_base_specifiers) : 
+        Scope::Scope(class_name), base_specifiers_(the_base_specifiers) {
             SetAccessSpecifier(AccessSpecifier::PRIVATE);
         }
 
 };
 
-inline Ptr<Class> Class::Create (const std::string& name, const std::list<parser::BaseSpecifier>& base_specifiers) {
-    return Ptr<Class>(new Class(name, base_specifiers));
+inline Ptr<Class> Class::Create (const std::string& class_name, const std::list<parser::BaseSpecifier>& the_base_specifiers) {
+    return Ptr<Class>(new Class(class_name, the_base_specifiers));
 }
 
 inline size_t Class::NestedNamespacesNum () const {
     throw SemanticError("Classes do not have nested namespaces!", __FILE__, __LINE__);
 }
 
-inline bool Class::AddNestedNamespace (const std::string& name, Ptr<Namespace> nested) {
+inline bool Class::AddNestedNamespace (const std::string& nmspace_name, Ptr<Namespace> nested) {
     throw SemanticError("Namespaces cannot be added in a class!", __FILE__, __LINE__);
 }
 
-inline Ptr<const Namespace> Class::NestedNamespace (const std::string& name) const {
+inline Ptr<const Namespace> Class::NestedNamespace (const std::string& nmspace_name) const {
     throw SemanticError("Classes do not have nested namespaces!", __FILE__, __LINE__);
 }
 
-inline Ptr<Namespace> Class::NestedNamespace (const std::string& name) {
+inline Ptr<Namespace> Class::NestedNamespace (const std::string& nmspace_name) {
     throw SemanticError("Classes do not have nested namespaces!", __FILE__, __LINE__);
 }
 

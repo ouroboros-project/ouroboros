@@ -10,10 +10,10 @@ namespace parser {
 ///Auxiliar class for passing base_specifier informating thoughout code parsing.
 class BaseSpecifier final {
 public:
-    BaseSpecifier(const std::string& name="") : name_(name), virtual_(false), access_(md::AccessSpecifier::PRIVATE) {}
-    BaseSpecifier(const std::string& name, bool isVirtual) : name_(name), virtual_(isVirtual), access_(md::AccessSpecifier::PRIVATE) {}
-    BaseSpecifier(const std::string& name, md::AccessSpecifier access) : name_(name), virtual_(false), access_(access) {}
-    BaseSpecifier(const std::string& name, bool isVirtual, md::AccessSpecifier access) : name_(name), virtual_(isVirtual), access_(access) {}
+    BaseSpecifier(const std::string& base_name="") : name_(base_name), virtual_(false), access_(md::AccessSpecifier::PRIVATE) {}
+    BaseSpecifier(const std::string& base_name, bool isVirtual) : name_(base_name), virtual_(isVirtual), access_(md::AccessSpecifier::PRIVATE) {}
+    BaseSpecifier(const std::string& base_name, md::AccessSpecifier base_access) : name_(base_name), virtual_(false), access_(base_access) {}
+    BaseSpecifier(const std::string& base_name, bool isVirtual, md::AccessSpecifier base_access) : name_(base_name), virtual_(isVirtual), access_(base_access) {}
 
     const std::string& name() const { return name_; } 
     bool is_virtual() const { return virtual_; }

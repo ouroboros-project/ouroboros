@@ -31,13 +31,13 @@ class Scope : public MetadataObject {
     virtual size_t NestedNamespacesNum () const;
 
     /// Adds a nested namespace.
-    virtual bool AddNestedNamespace (const std::string& name, Ptr<Namespace> nested);
+    virtual bool AddNestedNamespace (const std::string& nmspace_name, Ptr<Namespace> nested);
 
     /// Gives the nested namespace identified by the given name (const version).
-    virtual Ptr<const Namespace> NestedNamespace (const std::string& name) const;
+    virtual Ptr<const Namespace> NestedNamespace (const std::string& nmspace_name) const;
     
     /// Gives the nested namespace identified by the given name.
-    virtual Ptr<Namespace> NestedNamespace (const std::string& name);
+    virtual Ptr<Namespace> NestedNamespace (const std::string& nmspace_name);
 
     /*****************************************************/
     /*** VARIABLE METHODS ***/
@@ -49,10 +49,10 @@ class Scope : public MetadataObject {
     virtual bool AddGlobalVariable (Ptr<Variable> variable);
 
     /// Gives the global variable identified by the given name (const version).
-    virtual Ptr<const Variable> GlobalVariable (const std::string& name) const;
+    virtual Ptr<const Variable> GlobalVariable (const std::string& var_name) const;
     
     /// Gives the global variable identified by the given name.
-    virtual Ptr<Variable> GlobalVariable (const std::string& name);
+    virtual Ptr<Variable> GlobalVariable (const std::string& var_name);
     
     /*****************************************************/
     /*** CLASS METHODS ***/
@@ -61,13 +61,13 @@ class Scope : public MetadataObject {
     virtual size_t NestedClassesNum () const;
 
     /// Adds a nested class.
-    virtual bool AddNestedClass (const std::string& name, Ptr<Class> nested);
+    virtual bool AddNestedClass (const std::string& class_name, Ptr<Class> nested);
 
     /// Gives the nested class identified by the given name (const version).
-    virtual Ptr<const Class> NestedClass (const std::string& name) const;
+    virtual Ptr<const Class> NestedClass (const std::string& class_name) const;
     
     /// Gives the nested class identified by the given name.
-    virtual Ptr<Class> NestedClass (const std::string& name);
+    virtual Ptr<Class> NestedClass (const std::string& class_name);
 
     /*****************************************************/
     /*** FUNCTION METHODS ***/
@@ -79,10 +79,10 @@ class Scope : public MetadataObject {
     virtual bool AddNestedFunction (Ptr<Function> nested);
 
     /// Gives the function identified by the given name (const version).
-    virtual Ptr<const Function> NestedFunction (const std::string& name) const;
+    virtual Ptr<const Function> NestedFunction (const std::string& func_name) const;
     
     /// Gives the function identified by the given name.
-    virtual Ptr<Function> NestedFunction (const std::string& name);
+    virtual Ptr<Function> NestedFunction (const std::string& func_name);
     
     /*****************************************************/
     /*** GENERAL METHODS ***/
@@ -91,14 +91,14 @@ class Scope : public MetadataObject {
     virtual AccessSpecifier GetAccessSpecifier () const;
     
     /// Sets the current access specifier of this scope (and its containers) to the given access specifier
-    virtual void SetAccessSpecifier(AccessSpecifier access);
+    virtual void SetAccessSpecifier(AccessSpecifier new_access);
     
     /// Checks if the given name exists within this scope.
-    virtual bool HasName(const std::string& name) const;
+    virtual bool HasName(const std::string& obj_name) const;
     
   protected:
 
-    Scope (const std::string& name) : MetadataObject(name) { }
+    Scope (const std::string& scope_name) : MetadataObject(scope_name) { }
     
     Container<Namespace>    namespaces_;
     Container<Variable>     variables_;
