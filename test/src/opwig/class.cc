@@ -26,7 +26,7 @@ TEST (MDParserTest, NamedClass) {
     Ptr<const Class> c = global->NestedClass("name");
     EXPECT_TRUE(static_cast<bool>(c));
     EXPECT_EQ(c->name(), "name");
-    EXPECT_EQ(c->base_specifiers().size(), 0);
+    EXPECT_EQ(c->base_specifiers().size(), 0u);
 }
 
 TEST (MDParserTest, DerivedNamedClass) {
@@ -38,7 +38,7 @@ TEST (MDParserTest, DerivedNamedClass) {
     Ptr<const Class> c = global->NestedClass("name");
     EXPECT_TRUE(static_cast<bool>(c));
     EXPECT_EQ(c->name(), "name");
-    EXPECT_EQ(c->base_specifiers().size(), 1);
+    EXPECT_EQ(c->base_specifiers().size(), 1u);
     
     EXPECT_EQ(c->base_specifiers().front().name(), "base");
     EXPECT_FALSE(c->base_specifiers().front().is_virtual());
@@ -54,7 +54,7 @@ TEST (MDParserTest, DerivedVirtualNamedClass) {
     Ptr<const Class> c = global->NestedClass("name");
     EXPECT_TRUE(static_cast<bool>(c));
     EXPECT_EQ(c->name(), "name");
-    EXPECT_EQ(c->base_specifiers().size(), 1);
+    EXPECT_EQ(c->base_specifiers().size(), 1u);
     
     EXPECT_EQ(c->base_specifiers().front().name(), "base");
     EXPECT_TRUE(c->base_specifiers().front().is_virtual());
@@ -70,7 +70,7 @@ TEST (MDParserTest, DerivedVirtualNamedClass2) {
     Ptr<const Class> c = global->NestedClass("name");
     EXPECT_TRUE(static_cast<bool>(c));
     EXPECT_EQ(c->name(), "name");
-    EXPECT_EQ(c->base_specifiers().size(), 1);
+    EXPECT_EQ(c->base_specifiers().size(), 1u);
     
     EXPECT_EQ(c->base_specifiers().front().name(), "base");
     EXPECT_TRUE(c->base_specifiers().front().is_virtual());
@@ -86,7 +86,7 @@ TEST (MDParserTest, MultipleDerivedNamedClass) {
     Ptr<const Class> c = global->NestedClass("name");
     EXPECT_TRUE(static_cast<bool>(c));
     EXPECT_EQ(c->name(), "name");
-    EXPECT_EQ(c->base_specifiers().size(), 4);
+    EXPECT_EQ(c->base_specifiers().size(), 4u);
     
     auto bspec = c->base_specifiers().begin();
     
@@ -119,7 +119,7 @@ TEST (MDParserTest, ClassInNamespace) {
     Ptr<const Class> c = abc->NestedClass("name");
     EXPECT_TRUE(static_cast<bool>(c));
     EXPECT_EQ(c->name(), "name");
-    EXPECT_EQ(c->base_specifiers().size(), 0);
+    EXPECT_EQ(c->base_specifiers().size(), 0u);
     EXPECT_EQ(c->access(), AccessSpecifier::PUBLIC);
 }
  
@@ -133,14 +133,14 @@ TEST (MDParserTest, ClassInAndOutOfNamespace) {
     Ptr<const Class> c = global->NestedClass("name");
     EXPECT_TRUE(static_cast<bool>(c));
     EXPECT_EQ(c->name(), "name");
-    EXPECT_EQ(c->base_specifiers().size(), 0);
+    EXPECT_EQ(c->base_specifiers().size(), 0u);
     
     Ptr<const Namespace> abc = global->NestedNamespace("abc");
     EXPECT_TRUE(static_cast<bool>(abc));
     Ptr<const Class> c2 = abc->NestedClass("name");
     EXPECT_TRUE(static_cast<bool>(c2));
     EXPECT_EQ(c2->name(), "name");
-    EXPECT_EQ(c2->base_specifiers().size(), 0);
+    EXPECT_EQ(c2->base_specifiers().size(), 0u);
     EXPECT_EQ(c2->access(), AccessSpecifier::PUBLIC);
 }
 

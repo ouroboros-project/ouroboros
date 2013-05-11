@@ -8,7 +8,7 @@ TEST (MDParserClassMembersTest, SingleVariable) {
     Ptr<const Class> c = global->NestedClass("name");
     EXPECT_TRUE(static_cast<bool>(c));
     EXPECT_EQ(c->name(), "name");
-    EXPECT_EQ(c->base_specifiers().size(), 0);
+    EXPECT_EQ(c->base_specifiers().size(), 0u);
     
     Ptr<const Variable> var = c->GlobalVariable("var");
     EXPECT_TRUE(static_cast<bool>(var));
@@ -26,7 +26,7 @@ TEST (MDParserClassMembersTest, SingleVariableDerivedClass) {
     Ptr<const Class> c = global->NestedClass("name");
     EXPECT_TRUE(static_cast<bool>(c));
     EXPECT_EQ(c->name(), "name");
-    EXPECT_EQ(c->base_specifiers().size(), 1);
+    EXPECT_EQ(c->base_specifiers().size(), 1u);
     
     EXPECT_EQ(c->base_specifiers().front().name(), "base");
     EXPECT_FALSE(c->base_specifiers().front().is_virtual());
@@ -48,7 +48,7 @@ TEST (MDParserClassMembersTest, MultiVariable) {
     Ptr<const Class> c = global->NestedClass("name");
     EXPECT_TRUE(static_cast<bool>(c));
     EXPECT_EQ(c->name(), "name");
-    EXPECT_EQ(c->base_specifiers().size(), 0);
+    EXPECT_EQ(c->base_specifiers().size(), 0u);
 
     Ptr<const Variable> var = c->GlobalVariable("var");
     EXPECT_TRUE(static_cast<bool>(var));
@@ -71,7 +71,7 @@ TEST (MDParserClassMembersTest, SingleFunction) {
     Ptr<const Class> c = global->NestedClass("name");
     EXPECT_TRUE(static_cast<bool>(c));
     EXPECT_EQ(c->name(), "name");
-    EXPECT_EQ(c->base_specifiers().size(), 0);
+    EXPECT_EQ(c->base_specifiers().size(), 0u);
 
     ASSERT_EQ(1u, c->NestedFunctionsNum());
     Ptr<const Function> func = c->NestedFunction("func");
@@ -93,7 +93,7 @@ TEST (MDParserClassMembersTest, SinglePureFunction) {
     Ptr<const Class> c = global->NestedClass("name");
     EXPECT_TRUE(static_cast<bool>(c));
     EXPECT_EQ(c->name(), "name");
-    EXPECT_EQ(c->base_specifiers().size(), 0);
+    EXPECT_EQ(c->base_specifiers().size(), 0u);
 
     ASSERT_EQ(1u, c->NestedFunctionsNum());
     Ptr<const Function> func = c->NestedFunction("func");
@@ -115,7 +115,7 @@ TEST (MDParserClassMembersTest, ClassWithAccessSpecifier) {
     Ptr<const Class> c = global->NestedClass("name");
     EXPECT_TRUE(static_cast<bool>(c));
     EXPECT_EQ(c->name(), "name");
-    EXPECT_EQ(c->base_specifiers().size(), 0);
+    EXPECT_EQ(c->base_specifiers().size(), 0u);
 
     EXPECT_EQ(c->GetAccessSpecifier(), AccessSpecifier::PROTECTED);
 }
@@ -129,7 +129,7 @@ TEST (MDParserClassMembersTest, SingleVarAndFunction) {
     Ptr<const Class> c = global->NestedClass("name");
     EXPECT_TRUE(static_cast<bool>(c));
     EXPECT_EQ(c->name(), "name");
-    EXPECT_EQ(c->base_specifiers().size(), 0);
+    EXPECT_EQ(c->base_specifiers().size(), 0u);
 
     Ptr<const Variable> var = c->GlobalVariable("var");
     EXPECT_TRUE(static_cast<bool>(var));
@@ -157,7 +157,7 @@ TEST (MDParserClassMembersTest, SingleFunctionWithAccessSpecifier) {
     Ptr<const Class> c = global->NestedClass("name");
     EXPECT_TRUE(static_cast<bool>(c));
     EXPECT_EQ(c->name(), "name");
-    EXPECT_EQ(c->base_specifiers().size(), 0);
+    EXPECT_EQ(c->base_specifiers().size(), 0u);
     
     ASSERT_EQ(1u, c->NestedFunctionsNum());
     Ptr<const Function> func = c->NestedFunction("func");
@@ -179,7 +179,7 @@ TEST (MDParserClassMembersTest, VarAndFunctionWithMultiAccessSpecifiers) {
     Ptr<const Class> c = global->NestedClass("name");
     EXPECT_TRUE(static_cast<bool>(c));
     EXPECT_EQ(c->name(), "name");
-    EXPECT_EQ(c->base_specifiers().size(), 0);
+    EXPECT_EQ(c->base_specifiers().size(), 0u);
     
     Ptr<const Variable> var = c->GlobalVariable("var");
     EXPECT_TRUE(static_cast<bool>(var));
@@ -220,7 +220,7 @@ TEST (MDParserClassMembersTest, SingleConstructor) {
     Ptr<const Class> c = global->NestedClass("name");
     EXPECT_TRUE(static_cast<bool>(c));
     EXPECT_EQ(c->name(), "name");
-    EXPECT_EQ(c->base_specifiers().size(), 0);
+    EXPECT_EQ(c->base_specifiers().size(), 0u);
     
     ASSERT_EQ(0u, c->NestedFunctionsNum());
     ASSERT_EQ(0u, c->NestedClassesNum());
@@ -249,7 +249,7 @@ TEST (MDParserClassMembersTest, MultiConstructor) {
     Ptr<const Class> c = global->NestedClass("name");
     EXPECT_TRUE(static_cast<bool>(c));
     EXPECT_EQ(c->name(), "name");
-    EXPECT_EQ(c->base_specifiers().size(), 0);
+    EXPECT_EQ(c->base_specifiers().size(), 0u);
     
     ASSERT_EQ(0u, c->NestedFunctionsNum());
     ASSERT_EQ(0u, c->NestedClassesNum());
@@ -286,7 +286,7 @@ TEST (MDParserClassMembersTest, MultiConstructorWithAccess) {
     Ptr<const Class> c = global->NestedClass("name");
     EXPECT_TRUE(static_cast<bool>(c));
     EXPECT_EQ(c->name(), "name");
-    EXPECT_EQ(c->base_specifiers().size(), 0);
+    EXPECT_EQ(c->base_specifiers().size(), 0u);
     
     ASSERT_EQ(0u, c->NestedFunctionsNum());
     ASSERT_EQ(0u, c->NestedClassesNum());
@@ -324,7 +324,7 @@ TEST (MDParserClassMembersTest, SingleDestructor) {
     Ptr<const Class> c = global->NestedClass("name");
     EXPECT_TRUE(static_cast<bool>(c));
     EXPECT_EQ(c->name(), "name");
-    EXPECT_EQ(c->base_specifiers().size(), 0);
+    EXPECT_EQ(c->base_specifiers().size(), 0u);
     
     ASSERT_EQ(0u, c->NestedFunctionsNum());
     ASSERT_EQ(0u, c->NestedClassesNum());
@@ -352,7 +352,7 @@ TEST (MDParserClassMembersTest, VirtualDestructor) {
     Ptr<const Class> c = global->NestedClass("name");
     EXPECT_TRUE(static_cast<bool>(c));
     EXPECT_EQ(c->name(), "name");
-    EXPECT_EQ(c->base_specifiers().size(), 0);
+    EXPECT_EQ(c->base_specifiers().size(), 0u);
     
     ASSERT_EQ(0u, c->NestedFunctionsNum());
     ASSERT_EQ(0u, c->NestedClassesNum());
@@ -380,7 +380,7 @@ TEST (MDParserClassMembersTest, ConstructorAndDestructorWithAccess) {
     Ptr<const Class> c = global->NestedClass("name");
     EXPECT_TRUE(static_cast<bool>(c));
     EXPECT_EQ(c->name(), "name");
-    EXPECT_EQ(c->base_specifiers().size(), 0);
+    EXPECT_EQ(c->base_specifiers().size(), 0u);
     
     ASSERT_EQ(0u, c->NestedFunctionsNum());
     ASSERT_EQ(0u, c->NestedClassesNum());
@@ -415,7 +415,7 @@ TEST (MDParserClassMembersTest, SimpleClass) {
     Ptr<const Class> c = global->NestedClass("name");
     EXPECT_TRUE(static_cast<bool>(c));
     EXPECT_EQ(c->name(), "name");
-    EXPECT_EQ(c->base_specifiers().size(), 0);
+    EXPECT_EQ(c->base_specifiers().size(), 0u);
     
     ASSERT_EQ(1u, c->NestedFunctionsNum());
     Ptr<const Function> func = c->NestedFunction("func");
