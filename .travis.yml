@@ -3,17 +3,26 @@ env:
  - OPTIONS="-DCMAKE_BUILD_TYPE=Debug"
 
 before_script:
+  - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test > /dev/null
   - sudo apt-get update > /dev/null
   - sudo apt-get install cmake swig2.0 liblua5.1-0-dev python-dev  > /dev/null
+  - sudo apt-get install gcc-4.7 g++-4.7 > /dev/null
+  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.6 60 --slave /usr/bin/g++ g++ /usr/bin/g++-4.6 > /dev/null
+  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.7 40 --slave /usr/bin/g++ g++ /usr/bin/g++-4.7 > /dev/null
+  - sudo update-alternatives --set gcc /usr/bin/gcc-4.7 > /dev/null
 
 script:
   - cmake . $OPTIONS
+  - make
   - make ouroboros_test
   - ./test/ouroboros_test
   - make oldscript_test
   - cd ./test
   - ./oldscript_test
   - cd ..
+  - make opwig_test
+  - ./test/opwig_test
+
 
 notifications:
   email:

@@ -1,0 +1,32 @@
+//=========================// TYPE SPECIFICATION //
+
+type_specifier:
+  trailing_type_specifier { $$ = $1; }
+|
+  class_specifier { $$ = $1; }
+;
+
+trailing_type_specifier:
+  simple_type_specifier { $$ = $1; }
+;
+
+simple_type_specifier:
+  type_name { 
+    std::string name = $1;
+    $$ = [name] (md::Ptr<md::Scope> current_namespace) -> std::string {
+        return name;
+    }; 
+  }
+;
+
+type_name:
+  identifier { $$ = $1; }
+;
+
+access_specifier:
+  PRIVATE { $$ = md::AccessSpecifier::PRIVATE; }
+| 
+  PROTECTED { $$ = md::AccessSpecifier::PROTECTED; }
+|
+  PUBLIC { $$ = md::AccessSpecifier::PUBLIC; }
+;

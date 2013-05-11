@@ -1,0 +1,89 @@
+//=========================// CLASS SPECIFICATION //
+
+class_specifier:
+  class_head '{' {
+    d_scanner.ChangeScope(nullptr);
+  } '}' {
+    md::Ptr<md::Class> classObj = $1;
+    $$ = [classObj] (md::Ptr<md::Scope> current_scope) -> std::string {
+        if (current_scope->AddNestedClass(classObj->name(), classObj))
+            return classObj->name();
+        throw md::SemanticError("Non-anonymous class cannot have empty name!", __FILE__, __LINE__);
+    };
+  }
+|
+  class_head '{' member_specification { d_scanner.ChangeScope(nullptr); } '}' {
+    md::Ptr<md::Class> classObj = $1;
+    for (auto it: *$3)
+      if (!(it)(classObj))
+        throw md::SemanticError("Error executing ScopeAction - member for class", __FILE__, __LINE__);
+    $$ = [classObj] (md::Ptr<md::Scope> current_scope) -> std::string {
+        if (current_scope->AddNestedClass(classObj->name(), classObj))
+            return classObj->name();
+        throw md::SemanticError("Non-anonymous class cannot have empty name!", __FILE__, __LINE__);
+    };
+  }
+;
+
+class_head:
+  class_key {
+    $$ = md::Class::Create("", BaseSpecifierList());
+    d_scanner.ChangeScope($$);
+  }
+|
+  class_key base_clause { $$ = md::Class::Create("", *$2); }
+|
+  class_key class_head_name {
+    $$ = md::Class::Create($2, BaseSpecifierList());
+    d_scanner.ChangeScope($$);
+  }
+|
+  class_key class_head_name base_clause {
+    $$ = md::Class::Create($2, *$3);
+    d_scanner.ChangeScope($$);
+  }
+;
+
+class_head_name:
+  class_name { $$ = $1; }
+;
+
+base_clause:
+  ':' base_specifier_list { $$ = $2; }
+;
+
+base_specifier_list:
+  base_specifier {
+    $$ = std::shared_ptr<BaseSpecifierList>(new BaseSpecifierList);
+    ($$)->push_back($1);
+  }
+|
+  base_specifier_list ',' base_specifier {
+    ($1)->push_back($3);
+    $$ = $1;
+  }
+;
+
+base_specifier:
+  base_type_specifier { $$ = parser::BaseSpecifier($1); }
+|
+  VIRTUAL base_type_specifier { $$ = parser::BaseSpecifier($2, true); }
+|
+  access_specifier base_type_specifier { $$ = parser::BaseSpecifier($2, $1); }
+|
+  VIRTUAL access_specifier base_type_specifier { $$ = parser::BaseSpecifier($3, true, $2); }
+|
+  access_specifier VIRTUAL base_type_specifier { $$ = parser::BaseSpecifier($3, true, $1); }
+;
+
+base_type_specifier:
+  class_name { $$ = $1; }
+;
+
+class_name:
+  identifier { $$ = $1; }
+;
+
+class_key:
+  CLASS | UNION | STRUCT
+;

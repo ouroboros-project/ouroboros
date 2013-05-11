@@ -1,0 +1,83 @@
+//=========================// MEMBER SPECIFICATION //
+
+member_specification:
+    member_declaration {
+        $$ = std::shared_ptr<ScopeActionList>(new ScopeActionList);
+        ($$)->push_back($1);
+    }
+|
+    member_declaration member_specification {
+        ($2)->push_front($1);
+        $$ = $2;
+    }
+|
+    access_specifier ':' {
+        $$ = std::shared_ptr<ScopeActionList>(new ScopeActionList);
+        md::AccessSpecifier access = $1;
+        ScopeAction action = [access] (md::Ptr<md::Scope> current_scope) -> bool {
+            current_scope->SetAccessSpecifier(access);
+            return true;
+        };
+        ($$)->push_back(action);
+    }
+|
+    access_specifier ':' member_specification {
+        md::AccessSpecifier access = $1;
+        ScopeAction action = [access] (md::Ptr<md::Scope> current_scope) -> bool {
+            current_scope->SetAccessSpecifier(access);
+            return true;
+        };
+        ($3)->push_front(action);
+        $$ = $3;
+    }
+;
+
+member_declaration:
+    member_declarator_list ';' {
+        TypeAction action = [] (md::Ptr<md::Scope> current_scope) -> std::string { return ""; };
+        $$ = parser::JoinDeclarations(action, $1);
+    }
+|
+    decl_specifier_seq ';' {
+        $$ = parser::AddTypeToScope($1);
+    }
+|
+    decl_specifier_seq member_declarator_list ';' {
+        $$ = parser::JoinDeclarations($1, $2);
+    }
+//incomplete
+;
+
+member_declarator_list:
+    member_declarator {
+        $$ = std::shared_ptr<parser::DeclaratorList>(new parser::DeclaratorList);
+        ($$)->push_back($1);
+    }
+|
+    member_declarator_list ',' member_declarator {
+        ($1)->push_back($3);
+        $$ = $1;
+    }
+;
+
+member_declarator:
+    declarator { $$ = $1; }
+|
+    declarator pure_specifier {
+        ($1).set_pure(true);
+        $$ = $1;
+    }
+|
+    declarator brace_or_equal_initializer { $$ = $1; }
+|
+    ':' constant_expression
+|
+	identifier ':' constant_expression
+;
+
+pure_specifier:
+    '=' INTEGER_LITERAL {
+        if ($2 != 0)
+            throw md::SemanticError("Errouneous pure-specifier (should be '= 0' )", __FILE__, __LINE__);
+    }
+;

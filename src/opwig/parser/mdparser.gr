@@ -1,0 +1,29 @@
+
+%class-name           MDParser
+%baseclass-preinclude <opwig/parser/mdparser-preincludes.h>
+%namespace            opwig
+
+//%debug
+//%error-verbose
+
+%include grammar/semantictypes.gr
+
+%%
+
+%include grammar/toplevel_rules.gr
+
+%include grammar/declaration_rules.gr
+
+%include grammar/declarator_rules.gr
+
+%include grammar/namespace_rules.gr
+
+%include grammar/type_rules.gr
+
+%include grammar/class_rules.gr
+%include grammar/member_rules.gr
+
+%include grammar/expression_rules.gr
+
+%include grammar/identifier_rules.gr
+

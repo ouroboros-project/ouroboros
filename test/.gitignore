@@ -2,6 +2,5 @@
 lib/
 *.pdb
 *.ilk
-/ouroboros_test
+/*_test
 /*.dll
-ouroboros_script_test

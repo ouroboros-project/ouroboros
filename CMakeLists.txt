@@ -37,6 +37,7 @@ ENDIF ()
 # Important build locations.
 set (SRC_DIR src)
 set (LIB_DIR lib)
+set (BIN_DIR bin)
 
 set(FRAMEWORK_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/${SRC_DIR})
 
@@ -107,7 +108,7 @@ include (CPack)
 # Code found on http://stackoverflow.com/questions/7747857/in-cmake-how-do-i-work-around-the-debug-and-release-directories-visual-studio-2
 
 # First for the generic no-config case (e.g. with mingw)
-set( CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${LIB_DIR} )
+set( CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${BIN_DIR} )
 set( CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${LIB_DIR} )
 set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${LIB_DIR} )
 # Second, for multi-config builds (e.g. msvc)
@@ -124,6 +125,7 @@ if (OUROBOROS_CREATE_BINDINGS)
     add_subdirectory( src/languages )
 endif (OUROBOROS_CREATE_BINDINGS)
 
+add_subdirectory (src/opwig)
 
 add_library (libouroboros ${OUROBOROS_SRC} ${GENERATED_SRC})
 
