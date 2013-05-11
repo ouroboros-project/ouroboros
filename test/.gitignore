@@ -4,3 +4,4 @@ lib/
 *.ilk
 /*_test
 /*.dll
+/oldscript_test
