@@ -57,10 +57,6 @@ class Class final : public Scope {
     
     std::list<Ptr<Function>> constructors_;
     Ptr<Function> destructor_;
-    
-    Container<Class> classes_;
-    Container<Variable> variables_;
-    Container<Function>  functions_;
 
     Class (const std::string& name, const std::list<parser::BaseSpecifier>& base_specifiers) : 
         Scope::Scope(name), base_specifiers_(base_specifiers) {

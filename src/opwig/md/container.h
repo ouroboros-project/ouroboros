@@ -18,7 +18,7 @@ class Container {
 
   public:
 
-    Container() : access_(AccessSpecifier::PRIVATE) {}
+    Container() : current_access_(AccessSpecifier::PRIVATE) {}
     
     /// Virtual destructor.
     virtual ~Container () {}
@@ -36,17 +36,17 @@ class Container {
     Ptr<T> Get (const std::string& name);
 
     /// Gets the current access specifier for this container.
-    AccessSpecifier GetCurrentAccessSpecifier () const { return access_; }
+    AccessSpecifier GetCurrentAccessSpecifier () const { return current_access_; }
     
     /// Sets the current access specifier for this container.
-    void SetCurrentAccessSpecifier (AccessSpecifier access) { access_ = access; }
+    void SetCurrentAccessSpecifier (AccessSpecifier current_access) { current_access_ = current_access; }
     
     /// Checks if the given name exists within this container.
     bool HasName(const std::string& name) const;
 
   protected:
   
-    AccessSpecifier access_;
+    AccessSpecifier current_access_;
     std::map<std::string, Ptr<T>> objects_;
     
 };
@@ -61,7 +61,7 @@ inline bool Container<T>::Add (const std::string& name, Ptr<T> mdObj) {
     auto check = objects_.find(name);
     if (check != objects_.end())
         return false;
-    mdObj->set_access(access_);
+    mdObj->set_access(current_access_);
     objects_[name] = mdObj;
     return true;
 }

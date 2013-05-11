@@ -19,7 +19,6 @@ ScopeAction JoinDeclarations( const TypeAction& type_action, const std::shared_p
     ScopeAction action = [type_action, init_list] (md::Ptr<md::Scope> current_scope) -> bool {
         for (auto declarator: *init_list) {
             std::string type = type_action(current_scope);
-            std::cout << "Joining declarator: (" << type << ") " << declarator.name() << std::endl;
             if (declarator.has_parameters()) {
                 md::Ptr<md::Function> func = md::Function::Create(declarator.name(), type, declarator.parameters(), declarator.is_pure());
                 if (!current_scope->AddNestedFunction(func)) {

@@ -302,7 +302,7 @@ TEST (MDParserClassMembersTest, MultiConstructorWithAccess) {
     EXPECT_EQ("type", func->parameter_type(0));
     EXPECT_EQ("", func->parameter_name(0));
     EXPECT_FALSE(func->is_pure());
-    EXPECT_EQ(func->access(), AccessSpecifier::PUBLIC);
+    EXPECT_EQ(AccessSpecifier::PUBLIC, func->access());
     
     func = c->constructors().back();
     ASSERT_TRUE(static_cast<bool>(func));
@@ -311,7 +311,7 @@ TEST (MDParserClassMembersTest, MultiConstructorWithAccess) {
     EXPECT_THROW(func->parameter_type(0), std::out_of_range);
     EXPECT_THROW(func->parameter_name(0), std::out_of_range);
     EXPECT_FALSE(func->is_pure());
-    EXPECT_EQ(func->access(), AccessSpecifier::PROTECTED);
+    EXPECT_EQ(AccessSpecifier::PROTECTED, func->access());
 }
 
 

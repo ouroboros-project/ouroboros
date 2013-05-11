@@ -3,7 +3,6 @@
 class_specifier:
   class_head '{' {
     d_scanner.ChangeScope(nullptr);
-    std::cout << "Reseted scanner scope" << std::endl;
   } '}' {
     md::Ptr<md::Class> classObj = $1;
     $$ = [classObj] (md::Ptr<md::Scope> current_scope) -> std::string {
