@@ -8,8 +8,8 @@ namespace gen {
 using md::Ptr;
   using md::Scope;
 
-void ProxyGenerator::Generate(const Ptr<Scope>& the_scope) {
-
+size_t ProxyGenerator::Generate(const Ptr<Scope>& the_scope) {
+    return 0u;
 }
 
 } // namespace gen
