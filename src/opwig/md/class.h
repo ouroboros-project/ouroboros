@@ -22,7 +22,8 @@ class Class final : public Scope {
 
     /// Creates a new Class object. Must be used in place of the
     /// constructor.
-    static Ptr<Class> Create (const std::string& class_name, const std::list<parser::BaseSpecifier>& the_base_specifiers);
+    static Ptr<Class> Create (const std::string& class_name,
+                              const std::list<parser::BaseSpecifier>& the_base_specifiers);
     
     /// Gets the list of BaseSpecifiers (parser struct depicting a base class) of this class.
     const std::list<parser::BaseSpecifier>& base_specifiers() const { return base_specifiers_; }

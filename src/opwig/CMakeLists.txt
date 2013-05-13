@@ -21,6 +21,8 @@ set (
   ${CMAKE_CURRENT_BINARY_DIR}/md/parameter.h
   ${CMAKE_CURRENT_BINARY_DIR}/md/nestednamespecifier.h
   ${CMAKE_CURRENT_BINARY_DIR}/md/nestednamespecifier.cxx
+  ${CMAKE_CURRENT_BINARY_DIR}/gen/proxygenerator.h
+  ${CMAKE_CURRENT_BINARY_DIR}/gen/proxygenerator.cxx
   ${OPWIG_MDPARSER_SRC}
   ${OPWIG_MDSCANNER_SRC}
 )

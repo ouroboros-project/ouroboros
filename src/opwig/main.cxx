@@ -1,5 +1,6 @@
 
 #include <opwig/parser/mdparser.h>
+#include <opwig/gen/proxygenerator.h>
 
 #include <cstdlib>
 
