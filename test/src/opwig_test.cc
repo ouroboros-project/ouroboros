@@ -27,6 +27,7 @@ using opwig::md::Ptr;
 using opwig::md::Variable;
 using opwig::md::ParameterList;
 using opwig::md::Function;
+using opwig::md::Scope;
 using opwig::md::Namespace;
 using opwig::md::Class;
 using opwig::md::AccessSpecifier;
