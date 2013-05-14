@@ -22,12 +22,12 @@ class Container {
 
     class Iterable {
       public:
-        typename Table::const_iterator begin() const { return objects_.begin(); }
-        typename Table::const_iterator end() const { return objects_.end(); }
+        typename Table::const_iterator begin () const { return objects_.begin(); }
+        typename Table::const_iterator end () const { return objects_.end(); }
       private:
         friend class Container;
         const Table& objects_;
-        Iterable(const Table& the_objects)
+        Iterable (const Table& the_objects)
             : objects_(the_objects) {}
     };
 

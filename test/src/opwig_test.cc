@@ -17,6 +17,7 @@
 #include <gtest/gtest.h>
 
 #include <vector>
+#include <list>
 
 #include <string>
 #include <istream>
@@ -189,6 +190,7 @@ protected:
 using opwig::gen::ProxyGenerator;
 
 #include <opwig/nestednamespecifier.cc>
+#include <opwig/container.cc>
 #include <opwig/declarator.cc>
 #include <opwig/class.cc>
 #include <opwig/classmembers.cc>

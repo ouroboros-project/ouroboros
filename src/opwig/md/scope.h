@@ -70,7 +70,7 @@ class Scope : public MetadataObject, public std::enable_shared_from_this<Scope> 
     /// Gives the nested class identified by the given name.
     virtual Ptr<Class> NestedClass (const std::string& class_id);
 
-    virtual Container<Class>::Iterable IterateClasses() const;
+    virtual Container<Class>::Iterable IterateClasses () const;
 
     /*****************************************************/
     /*** FUNCTION METHODS ***/
