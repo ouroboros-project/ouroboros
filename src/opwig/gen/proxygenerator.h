@@ -9,16 +9,17 @@
 namespace opwig {
 
 namespace md {
-
 class Scope;
-
 }
 
 namespace gen {
 
 class ProxyGenerator final {
+
   public:
+
     ProxyGenerator (const std::string& the_output_dir) {}
+
     /// Generates proxies from the classes in the given scope.
     //  @param the_scope Scope whose classes will be proxied.
     //  @return The number of proxied classes.
