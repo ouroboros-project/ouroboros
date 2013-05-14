@@ -1,6 +1,10 @@
 
 #include <fstream>
 
+namespace opwig {
+namespace gen {
+namespace testing {
+
 using std::ios_base;
 using std::ifstream;
 
@@ -70,4 +74,8 @@ TEST_F (ProxyGeneratorTest, SingleVirtualClass) {
     EXPECT_TRUE(GenerateCodeMatches("virtualclass_proxy.h", expected_code))
         << "Generated proxy source did not match the expected code.";
 }
+
+} // namespace testing
+} // namespace gen
+} // namespace opwig
 

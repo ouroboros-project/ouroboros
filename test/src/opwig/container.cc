@@ -22,9 +22,9 @@ class ContainerTest : public ::testing::Test {
     ContainerTest () {}
 
     void SetUp () {
-        container1_.Add("a",    Ptr<MDMock>(new MDMock(1)));
-        container2_.Add("b",    Ptr<MDMock>(new MDMock(2)));
-        container2_.Add("c",  Ptr<MDMock>(new MDMock(3)));
+        container1_.Add("a", Ptr<MDMock>(new MDMock(1)));
+        container2_.Add("b", Ptr<MDMock>(new MDMock(2)));
+        container2_.Add("c", Ptr<MDMock>(new MDMock(3)));
     }
 
 };
