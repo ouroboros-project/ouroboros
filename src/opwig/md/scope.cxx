@@ -68,7 +68,9 @@ size_t Scope::NestedClassesNum () const {
 
 bool Scope::AddNestedClass (Ptr<Class> nested) {
     if (HasObject(nested)) 
-        throw SemanticError("Can't add class '"+nested->id()+"' to scope, it already exists.", __FILE__, __LINE__);
+        throw SemanticError(
+            "Can't add class '"+nested->id()+"' to scope, it already exists.", __FILE__, __LINE__
+        );
     bool ok = classes_.Add(nested);
     if (ok) nested->set_parent( shared_from_this() );
     return ok;
@@ -80,6 +82,10 @@ Ptr<const Class> Scope::NestedClass (const string& class_id) const {
 
 Ptr<Class> Scope::NestedClass (const string& class_id) {
     return classes_.Get(class_id);
+}
+
+Container<Class>::Iterable Scope::IterateClasses() const {
+    return classes_.Iterate();
 }
 
 /*****************************************************/

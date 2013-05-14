@@ -18,6 +18,19 @@ class Container {
 
   public:
 
+    typedef std::map<std::string, Ptr<T>> Table;
+
+    class Iterable {
+      public:
+        typename Table::const_iterator begin() const { return objects_.begin(); }
+        typename Table::const_iterator end() const { return objects_.end(); }
+      private:
+        friend class Container;
+        const Table& objects_;
+        Iterable(const Table& the_objects)
+            : objects_(the_objects) {}
+    };
+
     Container() : current_access_(AccessSpecifier::PRIVATE) {}
     
     /// Virtual destructor.
@@ -35,11 +48,16 @@ class Container {
     /// Gives the metadata object identified by the given name.
     Ptr<T> Get (const std::string& id);
 
+    /// Returns STL-iterable interface.
+    Iterable Iterate () const { return Iterable(objects_); }
+
     /// Gets the current access specifier for this container.
     AccessSpecifier GetCurrentAccessSpecifier () const { return current_access_; }
     
     /// Sets the current access specifier for this container.
-    void SetCurrentAccessSpecifier (AccessSpecifier current_access) { current_access_ = current_access; }
+    void SetCurrentAccessSpecifier (AccessSpecifier current_access) {
+        current_access_ = current_access;
+    }
     
     /// Checks if the given id exists within this container.
     bool HasID(const std::string& id) const;
@@ -50,8 +68,13 @@ class Container {
   protected:
   
     AccessSpecifier current_access_;
+<<<<<<< HEAD
     std::map<std::string, Ptr<T>> objects_;
     std::map<std::string, std::string> name_to_ids_;
+=======
+    Table           objects_;
+    
+>>>>>>> [opwig] Added Scpoe::IterateClasses().
 };
 
 template <class T>
