@@ -6,7 +6,7 @@ namespace opwig {
 namespace gen {
 
 using md::Ptr;
-  using md::Scope;
+using md::Scope;
 
 size_t ProxyGenerator::Generate(const Ptr<Scope>& the_scope) {
     return 0u;
