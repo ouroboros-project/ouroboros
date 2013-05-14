@@ -18,6 +18,10 @@ class ProxyGeneratorTest : public ::testing::Test {
 
     virtual void SetUp() {}
 
+    size_t Generate() {
+        return generator_.Generate(given_scope_);
+    }
+
     void AddNonVirtualClass() {
         string class_name = "NonVirtualClass";
         given_scope_->AddNestedClass(class_name, Class::Create(class_name, {}));
@@ -37,6 +41,10 @@ class ProxyGeneratorTest : public ::testing::Test {
 };
 
 TEST_F(ProxyGeneratorTest, NoClassesAtAll) {
-    EXPECT_EQ(0u, generator_.Generate(given_scope_));
+    EXPECT_EQ(0u, Generate());
+}
+
+TEST_F(ProxyGeneratorTest, SingleNonVirtualClass) {
+    EXPECT_EQ(0u, Generate());
 }
 
