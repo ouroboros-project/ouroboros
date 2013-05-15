@@ -1,21 +1,26 @@
 
-TEST (MDParserTest, EmptyFile) {
-    istringstream input("");
-    MDParser parser(input);
-    EXPECT_EQ(parser.parse(), 0);
-    Ptr<const Namespace> global = parser.global_namespace();
-    EXPECT_TRUE(static_cast<bool>(global));
-    EXPECT_EQ(global->NestedNamespacesNum(), 0u);
+class MDNamespaceTest : public MDBaseTest {
+protected:
+    Ptr<Namespace> CheckNamespace(const string& name, unsigned int numNamespaces) {
+        Ptr<Namespace> mdnamespace = Namespace::Create(name);
+        EXPECT_TRUE(static_cast<bool>(mdnamespace));
+        TestScopeChildNums(mdnamespace, 0u, 0u, 0u, numNamespaces);
+        EXPECT_EQ(name, mdnamespace->name());
+        return mdnamespace;
+    }
+};
+
+
+TEST_F (MDNamespaceTest, EmptyFile) {
+    EXPECT_EQ(RunParse(""), 0);
+    TestScopeChildNums(global_, 0u, 0u, 0u, 0u);
 }
 
-TEST (NamespaceTest, Create) {
-    Ptr<Namespace> mdnamespace = Namespace::Create("abc");
-    ASSERT_TRUE(static_cast<bool>(mdnamespace));
-    EXPECT_EQ(mdnamespace->NestedNamespacesNum(), 0u);
-    EXPECT_EQ("abc", mdnamespace->name());
+TEST_F (MDNamespaceTest, Create) {
+    CheckNamespace("abc", 0u);
 }  
 
-TEST (NamespaceTest, NestSingle) {
+TEST_F (MDNamespaceTest, NestSingle) {
     Ptr<Namespace>  mdnamespace = Namespace::Create("abc"),
                     nested = Namespace::Create("nested");
     ASSERT_TRUE(static_cast<bool>(mdnamespace));
@@ -29,7 +34,7 @@ TEST (NamespaceTest, NestSingle) {
     EXPECT_EQ("nested", nested->name());
 }
 
-TEST (NamespaceTest, AddSingleFunction) {
+TEST_F (MDNamespaceTest, AddSingleFunction) {
     Ptr<Namespace>  space = Namespace::Create("abc");
     Ptr<Function>   foo   = Function::Create("foo", "void", {}, false);
     EXPECT_TRUE(space->AddNestedFunction(foo));
@@ -38,7 +43,7 @@ TEST (NamespaceTest, AddSingleFunction) {
     EXPECT_FALSE(static_cast<bool>(space->NestedFunction("bar")));
 }
 
-TEST (NamespaceTest, AddManyFunctions) {
+TEST_F (MDNamespaceTest, AddManyFunctions) {
     Ptr<Namespace>  space = Namespace::Create("abc");
     Ptr<Function>   foo1  = Function::Create("foo1", "void", {}, false);
     Ptr<Function>   foo2  = Function::Create("foo1", "void", {}, false);
@@ -52,62 +57,30 @@ TEST (NamespaceTest, AddManyFunctions) {
     EXPECT_FALSE(static_cast<bool>(space->NestedFunction("foo3")));
 }
 
-namespace {
-    string test00 =
-        "namespace abc {}";
-    string test01 =
-        "namespace abc {}"
-        "namespace def {}";
-    string test02 =
-        "namespace abc {"
-        "  namespace def {}"
-        "}";
+
+TEST_F (MDNamespaceTest, SingleEmptyNamespace) {
+    string test00 = "namespace abc {}";
+    ASSERT_EQ(RunParse(test00), 0);
+    TestScopeChildNums(global_, 0u, 0u, 0u, 1u);
+    
+    TestNamespace("abc", AccessSpecifier::PUBLIC, 0u, 0u, 0u, 0u);
 }
 
-TEST (MDParserTest, SingleEmptyNamespace) {
-    istringstream input(test00);
-    MDParser parser(input);
-    ASSERT_EQ(parser.parse(), 0);
-    Ptr<const Namespace> global = parser.global_namespace();
-    EXPECT_TRUE(static_cast<bool>(global));
-    EXPECT_EQ(global->NestedNamespacesNum(), 1u);
-    Ptr<const Namespace> nested = global->NestedNamespace("abc");
-    EXPECT_TRUE(static_cast<bool>(nested));
-    EXPECT_EQ(nested->NestedNamespacesNum(), 0u);
-    EXPECT_EQ("abc", nested->name());
+TEST_F (MDNamespaceTest, TwoEmptyNamespaces) {
+    string test01 = "namespace abc {} namespace def {}";
+    ASSERT_EQ(RunParse(test01), 0);
+    TestScopeChildNums(global_, 0u, 0u, 0u, 2u);
+    
+    TestNamespace("abc", AccessSpecifier::PUBLIC, 0u, 0u, 0u, 0u);
+    TestNamespace("def", AccessSpecifier::PUBLIC, 0u, 0u, 0u, 0u);
 }
 
-TEST (MDParserTest, TwoEmptyNamespaces) {
-    istringstream input(test01);
-    MDParser parser(input);
-    ASSERT_EQ(parser.parse(), 0);
-    Ptr<const Namespace> global = parser.global_namespace();
-    EXPECT_TRUE(static_cast<bool>(global));
-    EXPECT_EQ(global->NestedNamespacesNum(), 2u);
-    Ptr<const Namespace> nested1 = global->NestedNamespace("abc");
-    EXPECT_TRUE(static_cast<bool>(nested1));
-    EXPECT_EQ(nested1->NestedNamespacesNum(), 0u);
-    EXPECT_EQ("abc", nested1->name());
-    Ptr<const Namespace> nested2 = global->NestedNamespace("def");
-    EXPECT_TRUE(static_cast<bool>(nested2));
-    EXPECT_EQ(nested2->NestedNamespacesNum(), 0u);
-    EXPECT_EQ("def", nested2->name());
-}
-
-TEST (MDParserTest, SingleNestedNamespace) {
-    istringstream input(test02);
-    MDParser parser(input);
-    ASSERT_EQ(parser.parse(), 0);
-    Ptr<const Namespace> global = parser.global_namespace();
-    EXPECT_TRUE(static_cast<bool>(global));
-    EXPECT_EQ(global->NestedNamespacesNum(), 1u);
-    Ptr<const Namespace> outer = global->NestedNamespace("abc");
-    EXPECT_TRUE(static_cast<bool>(outer));
-    EXPECT_EQ(outer->NestedNamespacesNum(), 1u);
-    EXPECT_EQ("abc", outer->name());
-    Ptr<const Namespace> inner = outer->NestedNamespace("def");
-    EXPECT_TRUE(static_cast<bool>(inner));
-    EXPECT_EQ(inner->NestedNamespacesNum(), 0u);
-    EXPECT_EQ("def", inner->name());
+TEST_F (MDNamespaceTest, SingleNestedNamespace) {
+    string test02 = "namespace abc { namespace def {} }";
+    ASSERT_EQ(RunParse(test02), 0);
+    TestScopeChildNums(global_, 0u, 0u, 0u, 1u);
+    
+    auto abc = TestNamespace("abc", AccessSpecifier::PUBLIC, 0u, 0u, 0u, 1u);
+    TestNamespace(abc, "def", AccessSpecifier::PUBLIC, 0u, 0u, 0u, 0u);
 }
 
