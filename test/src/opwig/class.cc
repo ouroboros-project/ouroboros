@@ -1,6 +1,5 @@
 class MDClassTest : public MDBaseTest {
 protected:
-    
 };
 
 TEST_F (MDClassTest, CreateBaseSpecifier) {
