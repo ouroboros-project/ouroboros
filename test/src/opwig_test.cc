@@ -66,6 +66,28 @@ protected:
         return var;
     }
     
+    /////////// functions
+    Ptr<const Function> TestFunction(const string& name, const string& return_type, AccessSpecifier access, bool isPure) {
+        return TestFunction(global_, name, return_type, access, isPure);
+    }
+    Ptr<const Function> TestFunction(Ptr<const Scope> scope, const string& name, const string& return_type, AccessSpecifier access, bool isPure) {
+        Ptr<const Function> func = scope->NestedFunction(name);
+        EXPECT_TRUE(static_cast<bool>(func));
+        EXPECT_EQ(name, func->name());
+        EXPECT_EQ(return_type, func->return_type());
+        EXPECT_EQ(access, func->access());
+        EXPECT_EQ(isPure, func->is_pure());
+        return func;
+    }
+    void TestFunctionNoParameters(Ptr<const Function> func) {
+        EXPECT_THROW(func->parameter_type(0), std::out_of_range);
+        EXPECT_THROW(func->parameter_name(0), std::out_of_range);
+    }
+    void TestFunctionParameter(Ptr<const Function> func, int paramIndex, const string& param_name, const string& param_type) {
+        EXPECT_EQ(param_name, func->parameter_name(paramIndex));
+        EXPECT_EQ(param_type, func->parameter_type(paramIndex));
+    }
+    
     /////////// namespace
     Ptr<const Namespace> TestNamespace(const string& name, AccessSpecifier access, size_t numVariables, 
                                        size_t numFunctions, size_t numClasses, size_t numNamespaces) {
