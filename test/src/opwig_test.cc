@@ -67,13 +67,13 @@ protected:
     }
     
     /////////// namespace
-    Ptr<const Namespace> TestNamespace(const string& name, AccessSpecifier access, unsigned int numVariables, 
-                                       unsigned int numFunctions, unsigned int numClasses, unsigned int numNamespaces) {
+    Ptr<const Namespace> TestNamespace(const string& name, AccessSpecifier access, size_t numVariables, 
+                                       size_t numFunctions, size_t numClasses, size_t numNamespaces) {
         return TestNamespace(global_, name, access, numVariables, numFunctions, numClasses, numNamespaces);
     }
     Ptr<const Namespace> TestNamespace(Ptr<const Scope> scope, const string& name, AccessSpecifier access, 
-                                       unsigned int numVariables, unsigned int numFunctions,
-                                       unsigned int numClasses, unsigned int numNamespaces) {
+                                       size_t numVariables, size_t numFunctions,
+                                       size_t numClasses, size_t numNamespaces) {
         Ptr<const Namespace> var = scope->NestedNamespace(name);
         EXPECT_TRUE(static_cast<bool>(var));
         EXPECT_EQ(name, var->name());
@@ -82,12 +82,39 @@ protected:
         return var;
     }
     
-    void TestScopeChildNums(Ptr<const Scope> scope, unsigned int numVariables, unsigned int numFunctions,
-                            unsigned int numClasses, unsigned int numNamespaces) {
+    void TestScopeChildNums(Ptr<const Scope> scope, size_t numVariables, size_t numFunctions,
+                            size_t numClasses, size_t numNamespaces) {
         EXPECT_EQ(numVariables, scope->GlobalVariablesNum());
         EXPECT_EQ(numFunctions, scope->NestedFunctionsNum());
         EXPECT_EQ(numClasses, scope->NestedClassesNum());
         EXPECT_EQ(numNamespaces, scope->NestedNamespacesNum());
+    }
+    
+    ////////////// class
+    Ptr<const Class> TestClass(const string& name, AccessSpecifier access, size_t numVariables, 
+                                       size_t numFunctions, size_t numClasses) {
+        return TestClass(global_, name, access, numVariables, numFunctions, numClasses);
+    }
+    Ptr<const Class> TestClass(Ptr<const Scope> scope, const string& name, AccessSpecifier access, size_t numVariables, 
+                                       size_t numFunctions, size_t numClasses) {
+        Ptr<const Class> var = scope->NestedClass(name);
+        EXPECT_TRUE(static_cast<bool>(var));
+        EXPECT_EQ(name, var->name());
+        EXPECT_EQ(access, var->access());
+        TestScopeChildNums(var, numVariables, numFunctions, numClasses, 0u);
+        return var;
+    }
+    
+    void TestClassBaseNum(Ptr<const Class> c, size_t numBases) {
+        EXPECT_EQ(numBases, c->base_specifiers().size());
+    }
+    void TestClassBaseByIndex(Ptr<const Class> c, int baseIndex, const string& name, bool isVirtual, AccessSpecifier access) {
+        auto bspec = c->base_specifiers().begin();
+        for (int i = 0; i < baseIndex; i++, bspec++);
+        
+        EXPECT_EQ(name, bspec->name());
+        EXPECT_EQ(isVirtual, bspec->is_virtual());
+        EXPECT_EQ(access, bspec->access_specifier());   
     }
 };
 

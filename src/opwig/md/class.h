@@ -70,7 +70,7 @@ inline Ptr<Class> Class::Create (const std::string& class_name, const std::list<
 }
 
 inline size_t Class::NestedNamespacesNum () const {
-    throw SemanticError("Classes do not have nested namespaces!", __FILE__, __LINE__);
+    return 0;
 }
 
 inline bool Class::AddNestedNamespace (const std::string& nmspace_name, Ptr<Namespace> nested) {
