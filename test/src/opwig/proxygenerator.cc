@@ -12,9 +12,11 @@ class ProxyGeneratorTest : public ::testing::Test {
 
   protected:
 
-    ProxyGenerator  generator_;
-    Ptr<Scope>      given_scope_;
-    ifstream        generated_code_;
+    ProxyGenerator      generator_;
+    Ptr<Scope>          given_scope_;
+    ifstream            generated_code_;
+
+    const static string COMMENT;
 
     ProxyGeneratorTest () : 
         generator_(OUROBOROS_TEST_DUMP_DIR),
@@ -26,15 +28,22 @@ class ProxyGeneratorTest : public ::testing::Test {
         return generator_.Generate(given_scope_);
     }
 
-    void AddNonVirtualClass () {
+    void AddEmptyNonVirtualClass () {
         string class_name = "NonVirtualClass";
         given_scope_->AddNestedClass(class_name, Class::Create(class_name, {}));
     }
 
-    void AddVirtualClass (const string& class_name) {
+    void AddNonEmptyNonVirtualClass (const string& class_name) {
         Ptr<Class> the_class = Class::Create(class_name, {});
         given_scope_->AddNestedClass(class_name, the_class);
         the_class->AddNestedFunction(Function::Create("~"+class_name, "", {}, false));
+    }
+
+    void AddEmptyVirtualClass (const string& class_name) {
+        Ptr<Class> the_class = Class::Create(class_name, {});
+        given_scope_->AddNestedClass(class_name, the_class);
+        the_class->AddNestedFunction(Function::Create("~"+class_name, "", {}, false));
+        // TODO make detructor virtual
     }
 
     bool Open (const string& filepath) {
@@ -52,18 +61,25 @@ class ProxyGeneratorTest : public ::testing::Test {
 
 };
 
+const string ProxyGeneratorTest::COMMENT = " Comment: ";
+
 TEST_F (ProxyGeneratorTest, NoClassesAtAll) {
-    EXPECT_EQ(0u, Generate()) << "There is no class.";
+    EXPECT_EQ(0u, Generate()) << COMMENT << "Should not have detected any inheritable classes.";
 }
 
-TEST_F (ProxyGeneratorTest, SingleNonVirtualClass) {
-    AddNonVirtualClass();
-    EXPECT_EQ(0u, Generate()) << "That class does not have a virtual destructor.";
+TEST_F (ProxyGeneratorTest, SingleEmptyNonVirtualClass) {
+    AddEmptyNonVirtualClass();
+    EXPECT_EQ(0u, Generate()) << COMMENT << "Should not have detected any inheritable classes.";
 }
 
-TEST_F (ProxyGeneratorTest, SingleVirtualClass) {
-    AddVirtualClass("VirtualClass");
-    EXPECT_EQ(1u, Generate()) << "Did not found class with virtual destructor, or found too many";
+TEST_F (ProxyGeneratorTest, SingleNonEmptyNonVirtualClass) {
+    AddNonEmptyNonVirtualClass("NonInheritableClass");
+    EXPECT_EQ(0u, Generate()) << COMMENT << "Should not have detected any inheritable classes.";
+}
+
+TEST_F (ProxyGeneratorTest, SingleEmptyVirtualClass) {
+    AddEmptyVirtualClass("VirtualClass");
+    EXPECT_EQ(1u, Generate()) << COMMENT << "Should have found exactly one ineritable class.";
     string expected_code =
         "#ifndef OUROBOROS_GENERATED_VirtualClass_H_\n"
         "#define OUROBOROS_GENERATED_VirtualClass_H_\n"
@@ -72,7 +88,7 @@ TEST_F (ProxyGeneratorTest, SingleVirtualClass) {
         "} // namespace generated\n"
         "#endif\n";
     EXPECT_TRUE(GenerateCodeMatches("virtualclass_proxy.h", expected_code))
-        << "Generated proxy source did not match the expected code.";
+        << COMMENT << "Generated proxy source should have matched the expected code.";
 }
 
 } // namespace testing
