@@ -14,6 +14,7 @@
 #include <string>
 #include <istream>
 #include <sstream>
+#include <iostream>
 #include <list>
 #include <algorithm>
 #include <exception>
@@ -72,13 +73,17 @@ protected:
     }
     Ptr<const Function> TestFunction(Ptr<const Scope> scope, const string& name, const string& return_type, AccessSpecifier access, bool isPure) {
         Ptr<const Function> func = scope->NestedFunction(name);
-        EXPECT_TRUE(static_cast<bool>(func));
+        internalCheckFunction(func, name, return_type, access, isPure);
+        return func;
+    }
+    void internalCheckFunction(const Ptr<const Function>& func, const string& name, const string& return_type, AccessSpecifier access, bool isPure) {
+        ASSERT_TRUE(static_cast<bool>(func));
         EXPECT_EQ(name, func->name());
         EXPECT_EQ(return_type, func->return_type());
         EXPECT_EQ(access, func->access());
         EXPECT_EQ(isPure, func->is_pure());
-        return func;
     }
+    
     void TestFunctionNoParameters(Ptr<const Function> func) {
         EXPECT_THROW(func->parameter_type(0), std::out_of_range);
         EXPECT_THROW(func->parameter_name(0), std::out_of_range);
@@ -137,6 +142,25 @@ protected:
         EXPECT_EQ(name, bspec->name());
         EXPECT_EQ(isVirtual, bspec->is_virtual());
         EXPECT_EQ(access, bspec->access_specifier());   
+    }
+    
+    void TestClassDestructorNotDefined(Ptr<const Class> c) {
+        ASSERT_FALSE(static_cast<bool>(c->destructor()));
+    }
+    void TestClassDestructor(Ptr<const Class> c, bool isVirtual, AccessSpecifier access) {
+        Ptr<const Function> func = c->destructor();
+        internalCheckFunction(func, "~"+c->name(), "", access, false);
+        //TODO: CHECK IF IS VIRTUAL
+        TestFunctionNoParameters(func);
+    }
+    
+    void TestClassConstructorNum(Ptr<const Class> c, size_t numConstructors) {
+        EXPECT_EQ(numConstructors, c->constructors().size());
+    }
+    Ptr<const Function> TestClassConstructorByIndex(Ptr<const Class> c, int ctorIndex, AccessSpecifier access) {
+        Ptr<const Function> func = c->constructors()[ctorIndex];
+        internalCheckFunction(func, c->name(), "", access, false);
+        return func;
     }
 };
 

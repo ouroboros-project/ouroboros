@@ -10,6 +10,7 @@
 
 #include <string>
 #include <list>
+#include <vector>
 
 namespace opwig {
 namespace md {
@@ -27,7 +28,7 @@ class Class final : public Scope {
     const std::list<parser::BaseSpecifier>& base_specifiers() const { return base_specifiers_; }
     
     /// Gets the list of constructors of this class.
-    const std::list<Ptr<Function>> constructors() const { return constructors_; }
+    const std::vector<Ptr<Function>> constructors() const { return constructors_; }
     
     /// Gets the destructor of this class.
     const Ptr<Function> destructor() const { return destructor_; }
@@ -55,7 +56,7 @@ class Class final : public Scope {
   private:
     std::list<parser::BaseSpecifier> base_specifiers_;
     
-    std::list<Ptr<Function>> constructors_;
+    std::vector<Ptr<Function>> constructors_;
     Ptr<Function> destructor_;
 
     Class (const std::string& class_name, const std::list<parser::BaseSpecifier>& the_base_specifiers) : 
