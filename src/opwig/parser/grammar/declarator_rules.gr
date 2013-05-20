@@ -97,10 +97,18 @@ ptr_operator:
   '&'
 ;
 
-declarator_id:
-    identifier { $$ = $1; }
+declarator_id: //TODO ACTION
+    id_expression { $$ = $1; }
 |
-      '~' constructor_name { $$ = "~"+$2; }
+    '~' constructor_name { $$ = "~"+$2; }
+|
+    constructor_name
+|
+    SCOPE_OPERATOR constructor_name
+|
+    nested_name_specifier constructor_name
+|
+    SCOPE_OPERATOR nested_name_specifier constructor_name
 ;
 
 initializer:

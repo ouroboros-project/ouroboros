@@ -6,9 +6,50 @@ identifier:
   }
 ;
 
+/*this rule, constructor_name, is equivalent to the class_name rule, 
+  however we created it as a means of figuring out the context */
 constructor_name:
   CONSTRUCTOR_NAME {
     $$ = d_scanner.matched();
   }
 ;
 
+
+
+id_expression: //TODO ACTION
+    unqualified_id
+|
+    qualified_id
+;
+
+unqualified_id: //TODO ACTION
+    identifier
+|
+    '~' constructor_name
+//operator_function_id
+//conversion_function_id
+//template_id
+;
+
+qualified_id://TODO ACTION
+    unqualified_id
+|
+    SCOPE_OPERATOR unqualified_id
+|
+    nested_name_specifier unqualified_id
+|
+    SCOPE_OPERATOR nested_name_specifier unqualified_id
+|
+    SCOPE_OPERATOR identifier
+//SCOPE_OPERATOR operator_function_id
+//SCOPE_OPERATOR template_id
+;
+
+nested_name_specifier://TODO ACTION
+    type_name SCOPE_OPERATOR
+|
+    namespace_name SCOPE_OPERATOR
+|
+    nested_name_specifier identifier SCOPE_OPERATOR
+//e um com template
+;

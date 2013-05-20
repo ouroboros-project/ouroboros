@@ -53,6 +53,7 @@
 %token VIRTUAL
 %token VOID
 %token VOLATILE
+%token SCOPE_OPERATOR
 
 // Literals
 %token STRING_LITERAL

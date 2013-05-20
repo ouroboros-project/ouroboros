@@ -1,34 +1,38 @@
 //=========================// NAMESPACE DEFINITION //
 
 namespace_definition:
-  named_namespace_definition {
-    $$ = $1;
-  }
+    named_namespace_definition {
+        $$ = $1;
+    }
 |
-  unnamed_namespace_definition {
+    unnamed_namespace_definition {
     $$ = [] (md::Ptr<md::Scope> current_namespace) -> bool { return true; };
-  }
+    }
 ;
 
 named_namespace_definition:
-  NAMESPACE identifier '{' declaration_seq '}' {
-    using md::Namespace;
-    using md::Ptr;
-    std::string name = $2;
-    Ptr<Namespace> new_namespace = Namespace::Create(name);
-    for (auto it: *$4)
-        if (!(it) (new_namespace))
-            throw md::SemanticError("Namespace action failed (new)", __FILE__, __LINE__);
-    $$ = [name,new_namespace] (Ptr<md::Scope> current_namespace) -> bool {
-        return current_namespace->AddNestedNamespace(name, new_namespace);
-    };
-  }
+    NAMESPACE identifier '{' declaration_seq '}' {
+        using md::Namespace;
+        using md::Ptr;
+        std::string name = $2;
+        Ptr<Namespace> new_namespace = Namespace::Create(name);
+        for (auto it: *$4)
+            if (!(it) (new_namespace))
+                throw md::SemanticError("Namespace action failed (new)", __FILE__, __LINE__);
+        $$ = [name,new_namespace] (Ptr<md::Scope> current_namespace) -> bool {
+            return current_namespace->AddNestedNamespace(name, new_namespace);
+        };
+    }
 |
-  INLINE NAMESPACE identifier '{' declaration_seq '}'
+    INLINE NAMESPACE identifier '{' declaration_seq '}'
 ;
 
 unnamed_namespace_definition:
-  NAMESPACE '{' declaration_seq '}'
+    NAMESPACE '{' declaration_seq '}'
 |
-  INLINE NAMESPACE '{' declaration_seq '}'
+    INLINE NAMESPACE '{' declaration_seq '}'
+;
+
+namespace_name:
+    identifier //TODO ACTION
 ;

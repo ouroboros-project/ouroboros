@@ -91,6 +91,7 @@ pp_number                   (\.?{digit}({digit}|{non_digit}|[eE][-+]|\.)*)
 "void"              { return MDParserBase::VOID; }
 "volatile"          { return MDParserBase::VOLATILE; }
 "wchar_t"           { return MDParserBase::PRIMITIVE; }
+"::"                { return MDParserBase::SCOPE_OPERATOR; }
 
 {identifier} {
   if (static_cast<bool>(current_scope_) && current_scope_->name() == matched()) {
