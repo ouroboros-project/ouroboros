@@ -1,12 +1,15 @@
+class MDClassTest : public MDBaseTest {
+protected:
+};
 
-TEST (BaseSpecifierTest, Create) {
+TEST_F (MDClassTest, CreateBaseSpecifier) {
     BaseSpecifier bspec ("name", true, AccessSpecifier::PUBLIC);
     EXPECT_EQ(bspec.name(), "name");
     EXPECT_TRUE(bspec.is_virtual());
     EXPECT_EQ(bspec.access_specifier(), AccessSpecifier::PUBLIC);
 }
 
-TEST (ClassTest, Create) {
+TEST_F (MDClassTest, CreateClass) {
     list<BaseSpecifier> bspecs;
     bspecs.push_back( BaseSpecifier ("name", true, AccessSpecifier::PUBLIC) );
     Ptr<Class> c = Class::Create("cname", bspecs);
@@ -17,131 +20,67 @@ TEST (ClassTest, Create) {
     EXPECT_EQ(c->base_specifiers().front().access_specifier(), AccessSpecifier::PUBLIC);   
 }
 
-TEST (MDParserTest, NamedClass) {
-    istringstream input("class name {};");
-    MDParser parser(input);
-    ASSERT_EQ(parser.parse(), 0);
-    Ptr<const Namespace> global = parser.global_namespace();
-    EXPECT_TRUE(static_cast<bool>(global));
-    Ptr<const Class> c = global->NestedClass("name");
-    EXPECT_TRUE(static_cast<bool>(c));
-    EXPECT_EQ(c->name(), "name");
-    EXPECT_EQ(c->base_specifiers().size(), 0u);
+TEST_F (MDClassTest, NamedClass) {
+    ASSERT_EQ(RunParse("class name {};"), 0);
+    
+    auto c = TestClass("name", AccessSpecifier::PUBLIC, 0u, 0u, 0u);
+    TestClassBaseNum(c, 0u);
 }
 
-TEST (MDParserTest, DerivedNamedClass) {
-    istringstream input("class name : protected base {};");
-    MDParser parser(input);
-    ASSERT_EQ(parser.parse(), 0);
-    Ptr<const Namespace> global = parser.global_namespace();
-    EXPECT_TRUE(static_cast<bool>(global));
-    Ptr<const Class> c = global->NestedClass("name");
-    EXPECT_TRUE(static_cast<bool>(c));
-    EXPECT_EQ(c->name(), "name");
-    EXPECT_EQ(c->base_specifiers().size(), 1u);
+TEST_F (MDClassTest, DerivedNamedClass) {
+    ASSERT_EQ(RunParse("class name : protected base {};"), 0);
     
-    EXPECT_EQ(c->base_specifiers().front().name(), "base");
-    EXPECT_FALSE(c->base_specifiers().front().is_virtual());
-    EXPECT_EQ(c->base_specifiers().front().access_specifier(), AccessSpecifier::PROTECTED);   
+    auto c = TestClass("name", AccessSpecifier::PUBLIC, 0u, 0u, 0u);
+    TestClassBaseNum(c, 1u);
+    TestClassBaseByIndex(c, 0, "base", false, AccessSpecifier::PROTECTED);
 }
 
-TEST (MDParserTest, DerivedVirtualNamedClass) {
-    istringstream input("class name : protected virtual base {};");
-    MDParser parser(input);
-    ASSERT_EQ(parser.parse(), 0);
-    Ptr<const Namespace> global = parser.global_namespace();
-    EXPECT_TRUE(static_cast<bool>(global));
-    Ptr<const Class> c = global->NestedClass("name");
-    EXPECT_TRUE(static_cast<bool>(c));
-    EXPECT_EQ(c->name(), "name");
-    EXPECT_EQ(c->base_specifiers().size(), 1u);
+TEST_F (MDClassTest, DerivedVirtualNamedClass) {
+    ASSERT_EQ(RunParse("class name : protected virtual base {};"), 0);
     
-    EXPECT_EQ(c->base_specifiers().front().name(), "base");
-    EXPECT_TRUE(c->base_specifiers().front().is_virtual());
-    EXPECT_EQ(c->base_specifiers().front().access_specifier(), AccessSpecifier::PROTECTED);   
+    auto c = TestClass("name", AccessSpecifier::PUBLIC, 0u, 0u, 0u);
+    TestClassBaseNum(c, 1u);
+    TestClassBaseByIndex(c, 0, "base", true, AccessSpecifier::PROTECTED);
 }
 
-TEST (MDParserTest, DerivedVirtualNamedClass2) {
-    istringstream input("class name : virtual base {};");
-    MDParser parser(input);
-    ASSERT_EQ(parser.parse(), 0);
-    Ptr<const Namespace> global = parser.global_namespace();
-    EXPECT_TRUE(static_cast<bool>(global));
-    Ptr<const Class> c = global->NestedClass("name");
-    EXPECT_TRUE(static_cast<bool>(c));
-    EXPECT_EQ(c->name(), "name");
-    EXPECT_EQ(c->base_specifiers().size(), 1u);
+TEST_F (MDClassTest, DerivedVirtualNamedClass2) {
+    ASSERT_EQ(RunParse("class name : virtual base {};"), 0);
     
-    EXPECT_EQ(c->base_specifiers().front().name(), "base");
-    EXPECT_TRUE(c->base_specifiers().front().is_virtual());
-    EXPECT_EQ(c->base_specifiers().front().access_specifier(), AccessSpecifier::PRIVATE);   
+    auto c = TestClass("name", AccessSpecifier::PUBLIC, 0u, 0u, 0u);
+    TestClassBaseNum(c, 1u);
+    TestClassBaseByIndex(c, 0, "base", true, AccessSpecifier::PRIVATE);
 }
 
-TEST (MDParserTest, MultipleDerivedNamedClass) {
-    istringstream input("class name : virtual base1, public base2, protected virtual base3, virtual public base4 {};");
-    MDParser parser(input);
-    ASSERT_EQ(parser.parse(), 0);
-    Ptr<const Namespace> global = parser.global_namespace();
-    EXPECT_TRUE(static_cast<bool>(global));
-    Ptr<const Class> c = global->NestedClass("name");
-    EXPECT_TRUE(static_cast<bool>(c));
-    EXPECT_EQ(c->name(), "name");
-    EXPECT_EQ(c->base_specifiers().size(), 4u);
+TEST_F (MDClassTest, MultipleDerivedNamedClass) {
+    ASSERT_EQ(RunParse("class name : virtual base1, public base2, protected virtual base3, virtual public base4 {};"), 0);
     
-    auto bspec = c->base_specifiers().begin();
-    
-    EXPECT_EQ(bspec->name(), "base1");
-    EXPECT_TRUE(bspec->is_virtual());
-    EXPECT_EQ(bspec->access_specifier(), AccessSpecifier::PRIVATE);   
-    bspec++;
-    EXPECT_EQ(bspec->name(), "base2");
-    EXPECT_FALSE(bspec->is_virtual());
-    EXPECT_EQ(bspec->access_specifier(), AccessSpecifier::PUBLIC);   
-    bspec++;
-    EXPECT_EQ(bspec->name(), "base3");
-    EXPECT_TRUE(bspec->is_virtual());
-    EXPECT_EQ(bspec->access_specifier(), AccessSpecifier::PROTECTED);   
-    bspec++;
-    EXPECT_EQ(bspec->name(), "base4");
-    EXPECT_TRUE(bspec->is_virtual());
-    EXPECT_EQ(bspec->access_specifier(), AccessSpecifier::PUBLIC);   
-    bspec++;
+    auto c = TestClass("name", AccessSpecifier::PUBLIC, 0u, 0u, 0u);
+    TestClassBaseNum(c, 4u);
+
+    TestClassBaseByIndex(c, 0, "base1", true, AccessSpecifier::PRIVATE);
+    TestClassBaseByIndex(c, 1, "base2", false, AccessSpecifier::PUBLIC);
+    TestClassBaseByIndex(c, 2, "base3", true, AccessSpecifier::PROTECTED);
+    TestClassBaseByIndex(c, 3, "base4", true, AccessSpecifier::PUBLIC);
 }
  
-TEST (MDParserTest, ClassInNamespace) {
-    istringstream input("namespace abc { class name {}; }");
-    MDParser parser(input);
-    ASSERT_EQ(parser.parse(), 0);
-    Ptr<const Namespace> global = parser.global_namespace();
-    EXPECT_TRUE(static_cast<bool>(global));
-    Ptr<const Namespace> abc = global->NestedNamespace("abc");
-    EXPECT_TRUE(static_cast<bool>(abc));
-    Ptr<const Class> c = abc->NestedClass("name");
-    EXPECT_TRUE(static_cast<bool>(c));
-    EXPECT_EQ(c->name(), "name");
-    EXPECT_EQ(c->base_specifiers().size(), 0u);
-    EXPECT_EQ(c->access(), AccessSpecifier::PUBLIC);
+TEST_F (MDClassTest, ClassInNamespace) {
+    ASSERT_EQ(RunParse("namespace abc { class name {}; }"), 0);
+    
+    auto abc = TestNamespace("abc", AccessSpecifier::PUBLIC, 0u, 0u, 1u, 0u);
+    
+    auto c = TestClass(abc, "name", AccessSpecifier::PUBLIC, 0u, 0u, 0u);
+    TestClassBaseNum(c, 0u);
 }
  
-TEST (MDParserTest, ClassInAndOutOfNamespace) {
-    istringstream input("class name {}; namespace abc { class name {}; }");
-    MDParser parser(input);
-    ASSERT_EQ(parser.parse(), 0);
-    Ptr<const Namespace> global = parser.global_namespace();
-    EXPECT_TRUE(static_cast<bool>(global));
+TEST_F (MDClassTest, ClassInAndOutOfNamespace) {
+    ASSERT_EQ(RunParse("class name {}; namespace abc { class name {}; }"), 0);
  
-    Ptr<const Class> c = global->NestedClass("name");
-    EXPECT_TRUE(static_cast<bool>(c));
-    EXPECT_EQ(c->name(), "name");
-    EXPECT_EQ(c->base_specifiers().size(), 0u);
+    auto c = TestClass("name", AccessSpecifier::PUBLIC, 0u, 0u, 0u);
+    TestClassBaseNum(c, 0u);
     
-    Ptr<const Namespace> abc = global->NestedNamespace("abc");
-    EXPECT_TRUE(static_cast<bool>(abc));
-    Ptr<const Class> c2 = abc->NestedClass("name");
-    EXPECT_TRUE(static_cast<bool>(c2));
-    EXPECT_EQ(c2->name(), "name");
-    EXPECT_EQ(c2->base_specifiers().size(), 0u);
-    EXPECT_EQ(c2->access(), AccessSpecifier::PUBLIC);
+    auto abc = TestNamespace("abc", AccessSpecifier::PUBLIC, 0u, 0u, 1u, 0u);
+    auto c2 = TestClass(abc, "name", AccessSpecifier::PUBLIC, 0u, 0u, 0u);
+    TestClassBaseNum(c2, 0u);
 }
 
 /*
