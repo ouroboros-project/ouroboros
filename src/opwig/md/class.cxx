@@ -8,6 +8,7 @@ bool Class::AddNestedFunction (Ptr<Function> nested) {
     if (nested->name() == name_ && nested->return_type() == "") {
         nested->set_access(functions_.GetCurrentAccessSpecifier());
         constructors_.push_back(nested);
+        nested->set_parent( Ptr<Class>(this) );
         return true;
     }
     else if (nested->name() == ("~"+name_) && nested->return_type() == "") {
@@ -15,6 +16,7 @@ bool Class::AddNestedFunction (Ptr<Function> nested) {
             throw SemanticError("Classes may have only one destructor!", __FILE__, __LINE__);
         nested->set_access(functions_.GetCurrentAccessSpecifier());
         destructor_ = nested;
+        nested->set_parent( Ptr<Class>(this) );
         return true;
     }
     return Scope::AddNestedFunction(nested);

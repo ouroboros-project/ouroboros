@@ -10,7 +10,7 @@
 namespace opwig {
 namespace md {
 
-class Scope
+class Scope;
 
 /// Base class for metadata objects.
 class MetadataObject {
