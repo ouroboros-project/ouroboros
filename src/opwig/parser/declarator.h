@@ -4,6 +4,7 @@
 
 #include <opwig/md/ptr.h>
 #include <opwig/md/parameter.h>
+#include <opwig/md/nestednamespecifier.h>
 
 #include <string>
 
@@ -15,11 +16,11 @@ class Declarator final {
 
   public:
 
-    explicit Declarator(const std::string& the_name = "");
+    explicit Declarator(const md::NestedNameSpecifier& the_nested_name);
 
-    std::string name() const;
+    md::NestedNameSpecifier nested_name() const;
 
-    void set_name(const std::string& the_name);
+    void set_nested_name(const md::NestedNameSpecifier& the_nested_name);
 
     bool has_parameters() const;
 
@@ -35,20 +36,20 @@ class Declarator final {
 
   private:
 
-    std::string                 name_;
+    md::NestedNameSpecifier     nested_name_;
     md::Ptr<md::ParameterList>  parameters_;
     bool pure_;
 };
 
-inline Declarator::Declarator(const std::string& the_name)
+inline Declarator::Declarator(const md::NestedNameSpecifier& the_nested_name)
     : name_(the_name), pure_(false) {}
 
-inline std::string Declarator::name() const {
-    return name_;
+inline md::NestedNameSpecifier Declarator::nested_name() const {
+    return nested_name_;
 }
 
-inline void Declarator::set_name(const std::string& the_name) {
-    name_ = the_name;
+inline void Declarator::set_nested_name(const md::NestedNameSpecifier& the_nested_name) {
+    nested_name_ = the_nested_name;
 }
 
 inline bool Declarator::has_parameters() const {

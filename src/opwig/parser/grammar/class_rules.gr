@@ -4,42 +4,41 @@ class_specifier:
     class_head '{' {
         d_scanner.ChangeScope(nullptr);
     } '}' {
-        md::Ptr<md::Class> classObj = $1;
-        $$ = [classObj] (md::Ptr<md::Scope> current_scope) -> std::string {
-            if (current_scope->AddNestedClass(classObj->name(), classObj))
-                return classObj->name();
-            throw md::SemanticError("Non-anonymous class cannot have empty name!", __FILE__, __LINE__);
-        };
+        md::Ptr<md::Class> classObj = ($1).first;
+        md::NestedNameSpecifier nestedName = ($1).second;
+        $$ = parser::AddClassToScope(classObj, nestedName);
     }
 |
     class_head '{' member_specification { d_scanner.ChangeScope(nullptr); } '}' {
-        md::Ptr<md::Class> classObj = $1;
+        md::Ptr<md::Class> classObj = ($1).first;
+        md::NestedNameSpecifier nestedName = ($1).second;
         for (auto it: *$3)
             if (!(it)(classObj))
                 throw md::SemanticError("Error executing ScopeAction - member for class", __FILE__, __LINE__);
-        $$ = [classObj] (md::Ptr<md::Scope> current_scope) -> std::string {
-            if (current_scope->AddNestedClass(classObj->name(), classObj))
-                return classObj->name();
-            throw md::SemanticError("Non-anonymous class cannot have empty name!", __FILE__, __LINE__);
-        };
+        $$ = parser::AddClassToScope(classObj, nestedName);
     }
 ;
 
-class_head: //TODO: UPDATE ACTION (class_head_name changed)
+class_head:
     class_key {
-        $$ = md::Class::Create("", BaseSpecifierList());
+        $$ = parser::ClassHeadPair(md::Class::Create("", BaseSpecifierList()),
+                                   md::NestedNameSpecifier(""));
         d_scanner.ChangeScope($$);
     }
 |
-    class_key base_clause { $$ = md::Class::Create("", *$2); }
+    class_key base_clause { 
+        $$ = parser::ClassHeadPair(md::Class::Create("", *$2),
+                                   md::NestedNameSpecifier(""));
+        d_scanner.ChangeScope($$);
+    }
 |
     class_key class_head_name {
-        $$ = md::Class::Create($2, BaseSpecifierList());
+        $$ = parser::ClassHeadPair(md::Class::Create(($2).name(), BaseSpecifierList()), $2);
         d_scanner.ChangeScope($$);
     }
 |
     class_key class_head_name base_clause {
-        $$ = md::Class::Create($2, *$3);
+        $$ = parser::ClassHeadPair(md::Class::Create(($2).name(), *$3), $2);
         d_scanner.ChangeScope($$);
     }
 ;
@@ -68,7 +67,7 @@ base_specifier_list:
     }
 ;
 
-base_specifier: //TODO: UPDATE ACTION (base_type_specifier changed)
+base_specifier:
     base_type_specifier { $$ = parser::BaseSpecifier($1); }
 |
     VIRTUAL base_type_specifier { $$ = parser::BaseSpecifier($2, true); }

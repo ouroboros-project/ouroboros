@@ -28,10 +28,10 @@ ptr_declarator:
   ptr_operator ptr_declarator { $$ = $2; }
 ;
 
-noptr_declarator: //TODO: UPDATE ACTION (declarator_id changed)
+noptr_declarator:
   declarator_id { $$ = parser::Declarator($1); }
 |
-  constructor_name { $$ = parser::Declarator($1); }
+  constructor_name { $$ = parser::Declarator( md::NestedNameSpecifier($1) ); }
 |
   noptr_declarator parameters_and_qualifiers {
     $$ = $1;

@@ -9,24 +9,32 @@ void NestedNameSpecifier::AddPath(const std::string& path) {
     paths_.push_back(path);
 }
 
-Ptr<Scope> Evaluate(Ptr<Scope> initial_scope) {
+Ptr<Scope> NestedNameSpecifier::Evaluate(Ptr<Scope> initial_scope) const {
     Ptr<Scope> scope = initial_scope;
     
     if (global_) {
         while (scope->parent())
             scope = scope->parent();
     }
-    
-    auto it = paths_.begin();
-    for (; it != paths_.end(); ++it) {
-        if (scope->NestedNamespace(*it))
-            scope = scope->NestedNamespace(*it);
-        else if (scope->NestedClass(*it))
-            scope = scope->NestedClass(*it);
+
+    for (const std::string& it : paths_) {
+        if (scope->NestedNamespace(it))
+            scope = scope->NestedNamespace(it);
+        else if (scope->NestedClass(it))
+            scope = scope->NestedClass(it);
         else
-            throw SemanticError("Invalid path '"+(*it)+"' in NestedNameSpecifier.", __FILE__, __LINE__);
+            throw SemanticError("Invalid path '"+(it)+"' in NestedNameSpecifier("+ToString()+").", __FILE__, __LINE__);
     }
     return scope;
+}
+
+std::string NestedNameSpecifier::ToString() const {
+    std::string result = "";
+    if (global_) result += "::";
+    
+    for (const std::string& it : paths_)
+        result += it + "::";
+    return result + name_;
 }
 
 }

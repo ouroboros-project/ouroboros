@@ -2,7 +2,7 @@
   Declaration:      ScopeAction;
   DeclarationSeq:   std::shared_ptr<ScopeActionList>;
   Type:             TypeAction;
-  Class:            md::Ptr<md::Class>;
+  ClassHead:        parser::ClassHeadPair;
   BaseSpecifier:    parser::BaseSpecifier;
   BaseSpecifierSeq: std::shared_ptr<BaseSpecifierList>;
   AccessSpecifier:  md::AccessSpecifier;
@@ -78,10 +78,9 @@
 %type<Type>                 decl_specifier_seq_opt
 %type<Type>                 type_specifier
 %type<Type>                 trailing_type_specifier
-%type<Type>                 simple_type_specifier
 %type<Type>                 class_specifier
 
-%type<Class>                class_head
+%type<ClassHead>            class_head
 
 %type<BaseSpecifierSeq>     base_clause
 %type<BaseSpecifierSeq>     base_specifier_list
@@ -115,3 +114,4 @@
 %type<NestedNameSpec>   declarator_id
 %type<NestedNameSpec>   class_head_name
 %type<NestedNameSpec>   base_type_specifier
+%type<NestedNameSpec>   simple_type_specifier

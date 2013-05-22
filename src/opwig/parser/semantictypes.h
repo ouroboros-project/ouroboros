@@ -14,6 +14,7 @@
 #include <memory>
 #include <list>
 #include <functional>
+#include <utility>
 
 namespace opwig {
 
@@ -31,6 +32,8 @@ typedef std::list<parser::BaseSpecifier>                BaseSpecifierList;
 namespace parser {
 
 using DeclaratorList = std::list<Declarator>;
+
+typedef std::pair<md::Ptr<md::Class>, md::NestedNameSpecifier>  ClassHeadPair;
 
 } // namespace parser
 

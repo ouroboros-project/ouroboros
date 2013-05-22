@@ -19,22 +19,31 @@ class NestedNameSpecifier {
     /// Virtual destructor.
     virtual ~NestedNameSpecifier () {}
     
+    /// Returns if this NestedNameSpecifier should start from the global namespace.
     bool is_global() const { return global_; }
+    /// Sets if this NestedNameSpecifier should start from the global namespace (true).
     void set_global(bool global) { global_ = global; }
 
+    /// Adds a scope name to the nested-name-specifier path.
     void AddPath(const std::string& path); { paths_.push_back(path); }
 
+    /// Gets the name of the nested-name-specifier.
     const std::string& name() const { return name_; }
+    /// Sets the name of the nested-name-specifier.
     void set_name(const std::string& the_name) { name_ = the_name; }
 
-    Ptr<Scope> Evaluate(Ptr<Scope> initial_scope);
+    /// Evaluates the nested-name-specifier, starting from the given initial scope, and returns the scope
+    /// in which the 'name' belongs.
+    Ptr<Scope> Evaluate(Ptr<Scope> initial_scope) const;
+    
+    /// Returns the textual representation of this nested-name-specifier.
+    std::string ToString() const;
     
   protected:
     bool global_;
     std::vector<std::string> paths_;
     std::string name_;
 };
-
 
 
 

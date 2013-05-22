@@ -6,8 +6,8 @@ identifier:
   }
 ;
 
-/*this rule, constructor_name, is equivalent to the class_name rule, 
-  however we created it as a means of figuring out the context */
+//this rule, constructor_name, is equivalent to the class_name rule, 
+//however we created it as a means of figuring out the context
 constructor_name:
   CONSTRUCTOR_NAME {
     $$ = d_scanner.matched();
