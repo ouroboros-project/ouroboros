@@ -37,7 +37,7 @@ class NestedNameSpecifier {
 
     /// Evaluates the nested-name-specifier, starting from the given initial scope, and returns the scope
     /// in which the 'name' belongs.
-    Ptr<Scope> Evaluate(Ptr<Scope> initial_scope) const;
+    Ptr<Scope> FindNearestNestingScope(Ptr<Scope> initial_scope) const;
     
     /// Returns the textual representation of this nested-name-specifier.
     std::string ToString() const;

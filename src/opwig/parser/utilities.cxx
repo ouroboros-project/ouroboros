@@ -28,7 +28,7 @@ ScopeAction JoinDeclarations( const TypeAction& type_action, const std::shared_p
         for (auto declarator: *init_list) {
             std::string type = type_action(current_scope);
             NestedNameSpecifier nestedName = declarator.nested_name();
-            Ptr<Scope> targetScope = nestedName.Evaluate(current_scope);
+            Ptr<Scope> targetScope = nestedName.FindNearestNestingScope(current_scope);
             if (declarator.has_parameters()) {
                 Ptr<Function> func = Function::Create(nestedName.name(), type, declarator.parameters(), declarator.is_pure());
                 if (!targetScope->AddNestedFunction(func)) {
@@ -49,7 +49,7 @@ ScopeAction JoinDeclarations( const TypeAction& type_action, const std::shared_p
 
 TypeAction AddClassToScope( Ptr<Class> classObj, const NestedNameSpecifier& nestedName) {
     TypeAction action = [classObj, nestedName] (md::Ptr<md::Scope> current_scope) -> std::string {
-        Ptr<Scope> targetScope = nestedName.Evaluate(current_scope);
+        Ptr<Scope> targetScope = nestedName.FindNearestNestingScope(current_scope);
         if (!targetScope)
             throw SemanticError("Invalid NestedNameSpecifier("+nestedName.ToString()+")", __FILE__, __LINE__);
         if (targetScope->AddNestedClass(classObj->name(), classObj))

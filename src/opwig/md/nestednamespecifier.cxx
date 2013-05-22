@@ -11,7 +11,7 @@ void NestedNameSpecifier::AddPath(const std::string& path) {
     paths_.push_back(path);
 }
 
-Ptr<Scope> NestedNameSpecifier::Evaluate(Ptr<Scope> initial_scope) const {
+Ptr<Scope> NestedNameSpecifier::FindNearestNestingScope(Ptr<Scope> initial_scope) const {
     Ptr<Scope> scope = initial_scope;
     
     if (global_) {
