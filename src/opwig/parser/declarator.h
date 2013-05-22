@@ -16,7 +16,7 @@ class Declarator final {
 
   public:
 
-    explicit Declarator(const md::NestedNameSpecifier& the_nested_name);
+    explicit Declarator(const md::NestedNameSpecifier& the_nested_name = md::NestedNameSpecifier(""));
 
     md::NestedNameSpecifier nested_name() const;
 
@@ -42,7 +42,7 @@ class Declarator final {
 };
 
 inline Declarator::Declarator(const md::NestedNameSpecifier& the_nested_name)
-    : name_(the_name), pure_(false) {}
+    : nested_name_(the_nested_name), pure_(false) {}
 
 inline md::NestedNameSpecifier Declarator::nested_name() const {
     return nested_name_;

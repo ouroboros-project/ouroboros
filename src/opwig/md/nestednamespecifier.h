@@ -2,11 +2,14 @@
 #ifndef OPWIG_MD_NESTEDNAMESPECIFIER_H_
 #define OPWIG_MD_NESTEDNAMESPECIFIER_H_
 
+#include <opwig/md/ptr.h>
 #include <string>
 #include <vector>
 
 namespace opwig {
 namespace md {
+
+class Scope;
 
 /// Base class for metadata objects.
 class NestedNameSpecifier {
@@ -25,7 +28,7 @@ class NestedNameSpecifier {
     void set_global(bool global) { global_ = global; }
 
     /// Adds a scope name to the nested-name-specifier path.
-    void AddPath(const std::string& path); { paths_.push_back(path); }
+    void AddPath(const std::string& path);
 
     /// Gets the name of the nested-name-specifier.
     const std::string& name() const { return name_; }

@@ -17,7 +17,7 @@ constructor_name:
 
 
 id_expression:
-    unqualified_id { $$ = md::NestedNamespaceSpecifier($1); }
+    unqualified_id { $$ = md::NestedNameSpecifier($1); }
 |
     qualified_id { $$ = $1; }
 ;
@@ -32,9 +32,9 @@ unqualified_id:
 ;
 
 qualified_id:
-    unqualified_id { $$ = md::NestedNamespaceSpecifier($1); }
+    unqualified_id { $$ = md::NestedNameSpecifier($1); }
 |
-    SCOPE_OPERATOR unqualified_id { $$ = md::NestedNamespaceSpecifier($2, true); }
+    SCOPE_OPERATOR unqualified_id { $$ = md::NestedNameSpecifier($2, true); }
 |
     nested_name_specifier unqualified_id {
         $$ = $1;
@@ -45,20 +45,21 @@ qualified_id:
         $$ = $2;
         ($$).set_name($3);
         ($$).set_global(true);
+    }
 |
-    SCOPE_OPERATOR identifier { $$ = md::NestedNamespaceSpecifier($1); }
+    SCOPE_OPERATOR identifier { $$ = md::NestedNameSpecifier($2); }
 //SCOPE_OPERATOR operator_function_id
 //SCOPE_OPERATOR template_id
 ;
 
 nested_name_specifier:
     type_name SCOPE_OPERATOR { 
-        $$ = md::NestedNamespaceSpecifier();
+        $$ = md::NestedNameSpecifier();
         ($$).AddPath($1);
     }
 |
     namespace_name SCOPE_OPERATOR { 
-        $$ = md::NestedNamespaceSpecifier();
+        $$ = md::NestedNameSpecifier();
         ($$).AddPath($1);
     }
 |

@@ -80,7 +80,7 @@ parameter_declaration_list:
 parameter_declaration:
   decl_specifier_seq { $$ = md::Parameter(($1)(md::Ptr<md::Scope>()), ""); }
 |
-  decl_specifier_seq declarator { $$ = md::Parameter(($1)(md::Ptr<md::Scope>()), ($2).name()); }
+  decl_specifier_seq declarator { $$ = md::Parameter(($1)(md::Ptr<md::Scope>()), ($2).nested_name().name()); }
 ;
 
 cv_qualifier_seq:
@@ -101,15 +101,15 @@ declarator_id:
     id_expression { $$ = $1; }
 |
     '~' constructor_name { 
-        $$ = md:NestedNameSpecifier("~"+$2);
+        $$ = md::NestedNameSpecifier("~"+$2);
     }
 |
     constructor_name { 
-        $$ = md:NestedNameSpecifier($1);
+        $$ = md::NestedNameSpecifier($1);
     }
 |
     SCOPE_OPERATOR constructor_name { 
-        $$ = md:NestedNameSpecifier($2, true);
+        $$ = md::NestedNameSpecifier($2, true);
     }
 |
     nested_name_specifier constructor_name {

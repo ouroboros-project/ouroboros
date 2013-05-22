@@ -1,5 +1,7 @@
 #include <opwig/md/nestednamespecifier.h>
 #include <opwig/md/scope.h>
+#include <opwig/md/namespace.h>
+#include <opwig/md/class.h>
 #include <opwig/md/semanticerror.h>
 
 namespace opwig {
