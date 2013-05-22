@@ -25,7 +25,7 @@ class_specifier:
     }
 ;
 
-class_head:
+class_head: //TODO: UPDATE ACTION (class_head_name changed)
     class_key {
         $$ = md::Class::Create("", BaseSpecifierList());
         d_scanner.ChangeScope($$);
@@ -44,10 +44,12 @@ class_head:
     }
 ;
 
-class_head_name: //TODO ACTION
-    class_name { $$ = $1; }
+class_head_name:
+    class_name { $$ = md::NestedNameSpecifier($1); }
 |
-    nested_name_specifier class_name
+    nested_name_specifier class_name { $$ = $1;
+        ($$).set_name($2);
+    }
 ;
 
 base_clause:
@@ -66,7 +68,7 @@ base_specifier_list:
     }
 ;
 
-base_specifier:
+base_specifier: //TODO: UPDATE ACTION (base_type_specifier changed)
     base_type_specifier { $$ = parser::BaseSpecifier($1); }
 |
     VIRTUAL base_type_specifier { $$ = parser::BaseSpecifier($2, true); }
@@ -78,14 +80,19 @@ base_specifier:
     access_specifier VIRTUAL base_type_specifier { $$ = parser::BaseSpecifier($3, true, $1); }
 ;
 
-base_type_specifier: //TODO ACTION
-    class_name { $$ = $1; }
+base_type_specifier:
+    class_name { $$ = md::NestedNameSpecifier($1); }
 |
-    SCOPE_OPERATOR class_name
+    SCOPE_OPERATOR class_name { $$ = md::NestedNameSpecifier($2, true); }
 |
-    nested_name_specifier class_name
+    nested_name_specifier class_name { $$ = $1;
+        ($$).set_name($2);
+    }
 |
-    SCOPE_OPERATOR nested_name_specifier class_name
+    SCOPE_OPERATOR nested_name_specifier class_name { $$ = $2;
+        ($$).set_name($3);
+        ($$).set_global(true);
+    }
 ;
 
 class_name:

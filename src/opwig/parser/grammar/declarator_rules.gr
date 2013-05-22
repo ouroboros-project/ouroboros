@@ -28,7 +28,7 @@ ptr_declarator:
   ptr_operator ptr_declarator { $$ = $2; }
 ;
 
-noptr_declarator:
+noptr_declarator: //TODO: UPDATE ACTION (declarator_id changed)
   declarator_id { $$ = parser::Declarator($1); }
 |
   constructor_name { $$ = parser::Declarator($1); }
@@ -97,18 +97,31 @@ ptr_operator:
   '&'
 ;
 
-declarator_id: //TODO ACTION
+declarator_id:
     id_expression { $$ = $1; }
 |
-    '~' constructor_name { $$ = "~"+$2; }
+    '~' constructor_name { 
+        $$ = md:NestedNameSpecifier("~"+$2);
+    }
 |
-    constructor_name
+    constructor_name { 
+        $$ = md:NestedNameSpecifier($1);
+    }
 |
-    SCOPE_OPERATOR constructor_name
+    SCOPE_OPERATOR constructor_name { 
+        $$ = md:NestedNameSpecifier($2, true);
+    }
 |
-    nested_name_specifier constructor_name
+    nested_name_specifier constructor_name {
+        $$ = $1;
+        ($$).set_name($2);
+    }
 |
-    SCOPE_OPERATOR nested_name_specifier constructor_name
+    SCOPE_OPERATOR nested_name_specifier constructor_name {
+        $$ = $2;
+        ($$).set_name($3);
+        ($$).set_global(true);
+    }
 ;
 
 initializer:

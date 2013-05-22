@@ -16,40 +16,55 @@ constructor_name:
 
 
 
-id_expression: //TODO ACTION
-    unqualified_id
+id_expression:
+    unqualified_id { $$ = md::NestedNamespaceSpecifier($1); }
 |
-    qualified_id
+    qualified_id { $$ = $1; }
 ;
 
-unqualified_id: //TODO ACTION
-    identifier
+unqualified_id:
+    identifier { $$ = $1; }
 |
-    '~' constructor_name
+    '~' constructor_name { $$ = "~"+$2; }
 //operator_function_id
 //conversion_function_id
 //template_id
 ;
 
-qualified_id://TODO ACTION
-    unqualified_id
+qualified_id:
+    unqualified_id { $$ = md::NestedNamespaceSpecifier($1); }
 |
-    SCOPE_OPERATOR unqualified_id
+    SCOPE_OPERATOR unqualified_id { $$ = md::NestedNamespaceSpecifier($2, true); }
 |
-    nested_name_specifier unqualified_id
+    nested_name_specifier unqualified_id {
+        $$ = $1;
+        ($$).set_name($2);
+    }
 |
-    SCOPE_OPERATOR nested_name_specifier unqualified_id
+    SCOPE_OPERATOR nested_name_specifier unqualified_id {
+        $$ = $2;
+        ($$).set_name($3);
+        ($$).set_global(true);
 |
-    SCOPE_OPERATOR identifier
+    SCOPE_OPERATOR identifier { $$ = md::NestedNamespaceSpecifier($1); }
 //SCOPE_OPERATOR operator_function_id
 //SCOPE_OPERATOR template_id
 ;
 
-nested_name_specifier://TODO ACTION
-    type_name SCOPE_OPERATOR
+nested_name_specifier:
+    type_name SCOPE_OPERATOR { 
+        $$ = md::NestedNamespaceSpecifier();
+        ($$).AddPath($1);
+    }
 |
-    namespace_name SCOPE_OPERATOR
+    namespace_name SCOPE_OPERATOR { 
+        $$ = md::NestedNamespaceSpecifier();
+        ($$).AddPath($1);
+    }
 |
-    nested_name_specifier identifier SCOPE_OPERATOR
+    nested_name_specifier identifier SCOPE_OPERATOR { 
+        $$ = $1;
+        ($$).AddPath($2);
+    }
 //e um com template
 ;

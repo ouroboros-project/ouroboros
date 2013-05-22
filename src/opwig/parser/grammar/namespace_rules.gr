@@ -34,5 +34,5 @@ unnamed_namespace_definition:
 ;
 
 namespace_name:
-    identifier //TODO ACTION
+    identifier { $$ = $1; }
 ;
