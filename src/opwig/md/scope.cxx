@@ -22,7 +22,7 @@ bool Scope::AddNestedNamespace (const string& nmspace_name, Ptr<Namespace> neste
     if (HasName(nmspace_name)) 
         throw SemanticError("Can't add namespace '"+nmspace_name+"' to scope, it already exists.", __FILE__, __LINE__);
     bool ok = namespaces_.Add(nmspace_name, nested);
-    if (ok) nested->set_parent( Ptr<Scope>(this) );
+    if (ok) nested->set_parent( shared_from_this() );
     return ok;
 }
 
@@ -45,7 +45,7 @@ bool Scope::AddGlobalVariable (Ptr<Variable> variable) {
     if (HasName(variable->name())) 
         throw SemanticError("Can't add variable '"+variable->name()+"' to scope, it already exists.", __FILE__, __LINE__);
     bool ok = variables_.Add(variable->name(), variable);
-    if (ok) variable->set_parent( Ptr<Scope>(this) );
+    if (ok) variable->set_parent( shared_from_this() );
     return ok;
 }
 
@@ -68,7 +68,7 @@ bool Scope::AddNestedClass (const string& class_name, Ptr<Class> nested) {
     if (HasName(class_name)) 
         throw SemanticError("Can't add class '"+class_name+"' to scope, it already exists.", __FILE__, __LINE__);
     bool ok = classes_.Add(class_name, nested);
-    if (ok) nested->set_parent( Ptr<Scope>(this) );
+    if (ok) nested->set_parent( shared_from_this() );
     return ok;
 }
 
@@ -91,7 +91,7 @@ bool Scope::AddNestedFunction (Ptr<Function> nested) {
     if (HasName(nested->name())) 
         throw SemanticError("Can't add function '"+nested->name()+"' to scope, it already exists.", __FILE__, __LINE__);
     bool ok = functions_.Add(nested->name(), nested);
-    if (ok) nested->set_parent( Ptr<Scope>(this) );
+    if (ok) nested->set_parent( shared_from_this() );
     return ok;
 }
 

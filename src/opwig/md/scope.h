@@ -17,7 +17,7 @@ class Variable;
 class Function;
 
 /// Metadata interface for C++ scopes.
-class Scope : public MetadataObject {
+class Scope : public MetadataObject, public std::enable_shared_from_this<Scope> {
 
   public:
 
