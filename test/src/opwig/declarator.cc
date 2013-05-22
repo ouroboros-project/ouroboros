@@ -1,15 +1,15 @@
 
 
 TEST (DeclaratorTest, ConstructorGetSetName) {
-    Declarator declarator("name");
+    Declarator declarator(NestedNameSpecifier("name"));
     ASSERT_EQ("name", declarator.name());
-    declarator.set_name("another_name");
+    declarator.set_nested_name(NestedNameSpecifier("another_name"));
     ASSERT_EQ("another_name", declarator.name());
 }
 
 TEST (DeclaratorTest, ParametersInformation) {
     using std::equal;
-    Declarator declarator("name");
+    Declarator declarator(NestedNameSpecifier("name"));
     EXPECT_FALSE(declarator.has_parameters());
     /* Empty parameter list */ {
         ParameterList parameters = {};

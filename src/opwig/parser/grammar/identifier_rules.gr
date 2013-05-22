@@ -46,8 +46,7 @@ qualified_id:
         ($$).set_name($3);
         ($$).set_global(true);
     }
-|
-    SCOPE_OPERATOR identifier { $$ = md::NestedNameSpecifier($2); }
+//    SCOPE_OPERATOR identifier { $$ = md::NestedNameSpecifier($2, true); }
 //SCOPE_OPERATOR operator_function_id
 //SCOPE_OPERATOR template_id
 ;
@@ -58,14 +57,10 @@ nested_name_specifier:
         ($$).AddPath($1);
     }
 |
-    namespace_name SCOPE_OPERATOR { 
-        $$ = md::NestedNameSpecifier();
-        ($$).AddPath($1);
-    }
-|
     nested_name_specifier identifier SCOPE_OPERATOR { 
         $$ = $1;
         ($$).AddPath($2);
     }
+//namespace_name SCOPE_OPERATOR
 //e um com template
 ;

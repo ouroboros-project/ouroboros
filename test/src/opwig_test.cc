@@ -141,7 +141,7 @@ protected:
         auto bspec = c->base_specifiers().begin();
         for (int i = 0; i < baseIndex; i++, bspec++);
         
-        EXPECT_EQ(name, bspec->name());
+        EXPECT_EQ(name, bspec->nested_name().ToString());
         EXPECT_EQ(isVirtual, bspec->is_virtual());
         EXPECT_EQ(access, bspec->access_specifier());   
     }

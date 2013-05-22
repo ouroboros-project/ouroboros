@@ -32,7 +32,3 @@ unnamed_namespace_definition:
 |
     INLINE NAMESPACE '{' declaration_seq '}'
 ;
-
-namespace_name:
-    identifier { $$ = $1; }
-;

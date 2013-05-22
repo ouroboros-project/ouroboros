@@ -9,9 +9,9 @@ TEST (NestedNameTest, NameAndGlobalEmptyPath) {
     ASSERT_EQ("another_name", nestedName.name());
     ASSERT_EQ("::another_name", nestedName.ToString());
     
-    ASSERT_EQ(true, nestedName.is_global());
+    ASSERT_TRUE(nestedName.is_global());
     nestedName.set_global(false);
-    ASSERT_EQ(false, nestedName.is_global());
+    ASSERT_FALSE(nestedName.is_global());
     ASSERT_EQ("another_name", nestedName.ToString());
 }
 

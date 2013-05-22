@@ -31,8 +31,6 @@ ptr_declarator:
 noptr_declarator:
   declarator_id { $$ = parser::Declarator($1); }
 |
-  constructor_name { $$ = parser::Declarator( md::NestedNameSpecifier($1) ); }
-|
   noptr_declarator parameters_and_qualifiers {
     $$ = $1;
     ($$).set_parameters($2);
@@ -83,13 +81,13 @@ parameter_declaration:
   decl_specifier_seq declarator { $$ = md::Parameter(($1)(md::Ptr<md::Scope>()), ($2).nested_name().name()); }
 ;
 
-cv_qualifier_seq:
-  {}
-;
+//cv_qualifier_seq:
+//  {}
+//;
 
-exception_especification:
-  {}
-;
+//exception_especification:
+//  {}
+//;
 
 ptr_operator:
   '*'
@@ -99,10 +97,6 @@ ptr_operator:
 
 declarator_id:
     id_expression { $$ = $1; }
-|
-    '~' constructor_name { 
-        $$ = md::NestedNameSpecifier("~"+$2);
-    }
 |
     constructor_name { 
         $$ = md::NestedNameSpecifier($1);

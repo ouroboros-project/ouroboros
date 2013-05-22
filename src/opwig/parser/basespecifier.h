@@ -20,6 +20,7 @@ public:
     BaseSpecifier(const md::NestedNameSpecifier& nested_base_name, bool isVirtual, md::AccessSpecifier base_access) : 
         nested_name_(nested_base_name), virtual_(isVirtual), access_(base_access) {}
 
+    std::string name() const { return nested_name_.ToString(); }
     const md::NestedNameSpecifier& nested_name() const { return nested_name_; } 
     bool is_virtual() const { return virtual_; }
     md::AccessSpecifier access_specifier() const { return access_; }

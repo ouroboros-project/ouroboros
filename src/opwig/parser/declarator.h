@@ -18,6 +18,10 @@ class Declarator final {
 
     explicit Declarator(const md::NestedNameSpecifier& the_nested_name = md::NestedNameSpecifier(""));
 
+    /// Returns nested_name().ToString().
+    std::string name() const;
+    
+    /// Gets the NestedNameSpecifier associated with this declarator.
     md::NestedNameSpecifier nested_name() const;
 
     void set_nested_name(const md::NestedNameSpecifier& the_nested_name);
@@ -43,6 +47,10 @@ class Declarator final {
 
 inline Declarator::Declarator(const md::NestedNameSpecifier& the_nested_name)
     : nested_name_(the_nested_name), pure_(false) {}
+
+inline std::string Declarator::name() const {
+    return nested_name_.ToString();
+}
 
 inline md::NestedNameSpecifier Declarator::nested_name() const {
     return nested_name_;

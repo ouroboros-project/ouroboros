@@ -92,7 +92,6 @@
 %type<String>         constructor_name
 %type<String>         type_name
 %type<String>         class_name
-%type<String>         namespace_name
 %type<String>         unqualified_id
 
 %type<DeclaratorSeq>  init_declarator_list
