@@ -109,7 +109,6 @@ inline bool MDScanner::currentIsTypeName() {
     if (last_token_ == MDParserBase::TYPE_NAME) return false;
     bool ok = (parenthesis_depth_ > 0 && (last_token_==',' || last_token_=='(') 
                                       && (nextToken==')' || nextToken==',' || nextToken=='*' || nextToken=='&' || nextToken==MDParserBase::IDENTIFIER) );
-    
     ok = ok || (parenthesis_depth_ == 0 && nextToken == MDParserBase::IDENTIFIER);
     return ok;
 }
