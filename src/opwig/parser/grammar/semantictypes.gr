@@ -16,6 +16,7 @@
 
 %token IDENTIFIER
 %token CONSTRUCTOR_NAME
+%token TYPE_NAME
 %token PRIMITIVE
 
 // Keywords

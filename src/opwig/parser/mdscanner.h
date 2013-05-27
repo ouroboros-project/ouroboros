@@ -22,7 +22,7 @@ class MDScanner: public MDScannerBase {
     MDScanner(std::string const &infile, std::string const &outfile);
     
     void ChangeScope(const md::Ptr<md::Scope>& the_current_scope);
-    
+
     // $insert lexFunctionDecl
     int lex();
 
@@ -35,6 +35,11 @@ class MDScanner: public MDScannerBase {
     void print();
     void preCode();     // re-implement this function for code that must 
                         // be exec'ed before the patternmatching starts
+
+    int peek(); //calls lex() to get the next token, then puts it back in the input queue to be re-read
+                //and returns the token.
+                // effectively 'peeking' at the next token, before it is actually read.
+    bool in_peek__ = false;
 };
 
 // $insert scannerConstructors
@@ -69,6 +74,32 @@ inline void MDScanner::ChangeScope(const md::Ptr<md::Scope>& the_current_scope) 
     current_scope_.reset();
   else
     current_scope_ = the_current_scope;
+}
+
+inline int MDScanner::peek() {
+    if (in_peek__) return -1;
+    in_peek__ = true;
+
+    static int STpeekCode;
+    int peekCode = STpeekCode++;
+
+    std::string current_matched = matched();
+    int current_token = d_token__;
+    std::cout << "Peek"<<peekCode<<" (before) '" << matched() << "'[" << d_token__ << "]" << std::endl;
+
+    int token = lex();
+    std::cout << "Peek"<<peekCode<<" (after) '" << matched() << "'=" << token << "[" << d_token__ << "]" << std::endl;
+
+    accept(0);
+    setMatched(current_matched);
+    d_token__ = current_token;
+    std::cout << "Peek"<<peekCode<<" (return) '"<< matched() << "'[" << d_token__ << "]" << std::endl;
+    
+    //int token2 = lex();
+    //std::cout << "Peek"<<peekCode<<" (afterCHECK) '" << matched() << "'=" << token2 << "[" << d_token__ << "]" << std::endl;
+
+    in_peek__ = false;
+    return token;
 }
 
 // $insert namespace-close

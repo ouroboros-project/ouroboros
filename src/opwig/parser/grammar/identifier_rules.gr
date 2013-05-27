@@ -52,7 +52,7 @@ qualified_id:
 ;
 
 nested_name_specifier:
-    type_name SCOPE_OPERATOR { 
+    identifier SCOPE_OPERATOR { 
         $$ = md::NestedNameSpecifier();
         ($$).AddPath($1);
     }
