@@ -17,9 +17,10 @@ constructor_name:
 
 
 id_expression:
-    unqualified_id { $$ = md::NestedNameSpecifier($1); }
-|
     qualified_id { $$ = $1; }
+// removed the following case (defined in CPP BNF) since it is not
+// really needed and introduces a Reduce/Reduce conflict in the grammar
+//        unqualified_id { $$ = md::NestedNameSpecifier($1); }
 ;
 
 unqualified_id:

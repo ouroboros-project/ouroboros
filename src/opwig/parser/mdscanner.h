@@ -5,6 +5,7 @@
 
 // $insert baseclass_h
 #include <opwig/parser/mdscannerbase.h>
+#include <opwig/parser/mdparserbase.h>
 
 #include <opwig/md/ptr.h>
 #include <opwig/md/scope.h>
@@ -39,7 +40,11 @@ class MDScanner: public MDScannerBase {
     int peek(); //calls lex() to get the next token, then puts it back in the input queue to be re-read
                 //and returns the token.
                 // effectively 'peeking' at the next token, before it is actually read.
-    bool in_peek__ = false;
+    bool in_peek_ = false;
+    int last_token_ = -1;
+    unsigned int parenthesis_depth_ = 0;
+    
+    bool currentIsTypeName();
 };
 
 // $insert scannerConstructors
@@ -56,7 +61,13 @@ inline MDScanner::MDScanner(std::string const &infile, std::string const &outfil
 // $insert inlineLexFunction
 inline int MDScanner::lex()
 {
-    return lex__();
+    if (!in_peek_)  last_token_ = d_token__;
+    int token = lex__();
+    if (!in_peek_) {
+        if (token == '(')   parenthesis_depth_++;
+        else if (token == ')')  parenthesis_depth_--;
+    }
+    return token;
 }
 
 inline void MDScanner::preCode() 
@@ -77,29 +88,30 @@ inline void MDScanner::ChangeScope(const md::Ptr<md::Scope>& the_current_scope) 
 }
 
 inline int MDScanner::peek() {
-    if (in_peek__) return -1;
-    in_peek__ = true;
-
-    static int STpeekCode;
-    int peekCode = STpeekCode++;
+    if (in_peek_) return -1;
+    in_peek_ = true;
 
     std::string current_matched = matched();
     int current_token = d_token__;
-    std::cout << "Peek"<<peekCode<<" (before) '" << matched() << "'[" << d_token__ << "]" << std::endl;
 
     int token = lex();
-    std::cout << "Peek"<<peekCode<<" (after) '" << matched() << "'=" << token << "[" << d_token__ << "]" << std::endl;
 
     accept(0);
     setMatched(current_matched);
     d_token__ = current_token;
-    std::cout << "Peek"<<peekCode<<" (return) '"<< matched() << "'[" << d_token__ << "]" << std::endl;
-    
-    //int token2 = lex();
-    //std::cout << "Peek"<<peekCode<<" (afterCHECK) '" << matched() << "'=" << token2 << "[" << d_token__ << "]" << std::endl;
 
-    in_peek__ = false;
+    in_peek_ = false;
     return token;
+}
+
+inline bool MDScanner::currentIsTypeName() {
+    int nextToken = peek();
+    if (last_token_ == MDParserBase::TYPE_NAME) return false;
+    bool ok = (parenthesis_depth_ > 0 && (last_token_==',' || last_token_=='(') 
+                                      && (nextToken==')' || nextToken==',' || nextToken=='*' || nextToken=='&' || nextToken==MDParserBase::IDENTIFIER) );
+    
+    ok = ok || (parenthesis_depth_ == 0 && nextToken == MDParserBase::IDENTIFIER);
+    return ok;
 }
 
 // $insert namespace-close

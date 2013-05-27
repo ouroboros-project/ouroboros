@@ -94,12 +94,10 @@ pp_number                   (\.?{digit}({digit}|{non_digit}|[eE][-+]|\.)*)
 "::"                { return MDParserBase::SCOPE_OPERATOR; }
 
 {identifier} {
-  int nextToken = peek();
   if (static_cast<bool>(current_scope_) && current_scope_->name() == matched()) {
       return MDParserBase::CONSTRUCTOR_NAME;
   }
-  else if (nextToken == MDParserBase::IDENTIFIER || nextToken == ',' || nextToken==')')
-      return MDParserBase::TYPE_NAME;
+  else if (currentIsTypeName()) return MDParserBase::TYPE_NAME;
   return MDParserBase::IDENTIFIER;
 }
 
