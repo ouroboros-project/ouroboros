@@ -63,11 +63,11 @@ inline int MDScanner::lex()
 {
     if (!in_peek_)  last_token_ = d_token__;
     if (debug())
-        std::cout << "\t-------------------------------------" << std::endl;
+        std::cout << "    -------------------------------------" << std::endl;
     int token = lex__();
     if (debug()) {
-        std::cout << "\tlex: token=" << d_token__ << " [" << matched() << "]" << std::endl;
-        std::cout << "\t-------------------------------------" << std::endl;
+        std::cout << "    lex: token=" << d_token__ << " [" << matched() << "]" << std::endl;
+        std::cout << "    -------------------------------------" << std::endl;
     }
     if (!in_peek_) {
         if (token == '(')   parenthesis_depth_++;
@@ -100,11 +100,11 @@ inline int MDScanner::peek() {
     std::string current_matched = matched();
     int current_token = d_token__;
     if (debug())
-        std::cout << "\tlex Peek (current): token=" << d_token__ << " [" << matched() << "]" << std::endl;
+        std::cout << "    lex Peek (current): token=" << d_token__ << " [" << matched() << "]" << std::endl;
 
     int token = lex();
     if (debug())
-        std::cout << "\tlex Peek (next): token=" << d_token__ << " [" << matched() << "]" << std::endl;
+        std::cout << "    lex Peek (next): token=" << d_token__ << " [" << matched() << "]" << std::endl;
 
     accept(0);
     setMatched(current_matched);
