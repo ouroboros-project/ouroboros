@@ -63,3 +63,32 @@ TEST_F (MDNestedNamesTest, ClassWithNestedBases) {
     TestClassBaseByIndex(c, 1, "::bar::base2", false, AccessSpecifier::PUBLIC);
     TestClassBaseByIndex(c, 2, "::base3", true, AccessSpecifier::PROTECTED);
 }
+
+TEST_F (MDNestedNamesTest, AddingFunctionToAnotherScope) {
+    ASSERT_EQ(RunParse("class name {}; type name::func(name arg1, name arg2);"), 0);
+    TestScopeChildNums(global_, 0u, 0u, 1u, 0u);
+
+    auto c = TestClass("name", AccessSpecifier::PUBLIC, 0u, 1u, 0u);
+    TestClassBaseNum(c, 0u);
+
+    auto f = TestFunction(c, "func", "type", AccessSpecifier::PRIVATE, false);
+    TestFunctionParameter(f, 0, "arg1", "name");
+    TestFunctionParameter(f, 1, "arg2", "name");
+}
+
+TEST_F (MDNestedNamesTest, AddingFunctionToAnotherScopeFromGlobal) {
+    ASSERT_EQ(RunParse("namespace wat { type ::name::func(type); } class name {};"), 0);
+    TestScopeChildNums(global_, 0u, 0u, 1u, 1u);
+
+    auto wat = TestNamespace("wat", AccessSpecifier::PUBLIC, 0u, 0u, 0u, 0u);
+
+    auto c = TestClass("name", AccessSpecifier::PUBLIC, 0u, 1u, 0u);
+    TestClassBaseNum(c, 0u);
+
+    auto f = TestFunction(c, "func", "type", AccessSpecifier::PRIVATE, false);
+    TestFunctionParameter(f, 0, "", "type");
+}
+
+TEST_F (MDNestedNamesTest, AddingFunctionToAnotherScopeFromGlobalError) {
+    RunParseThrow("namespace wat { type name::func(type); } class name {};");
+}

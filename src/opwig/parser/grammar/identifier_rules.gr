@@ -15,7 +15,6 @@ constructor_name:
 ;
 
 
-
 id_expression:
     qualified_id { $$ = $1; }
 // removed the following case (defined in CPP BNF) since it is not
