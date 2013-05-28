@@ -32,6 +32,8 @@ pp_number                   (\.?{digit}({digit}|{non_digit}|[eE][-+]|\.)*)
 
 %x string
 
+%debug
+
 %%
 
 {ws}                  /* do nothing */;

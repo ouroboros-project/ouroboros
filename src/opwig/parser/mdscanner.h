@@ -62,7 +62,13 @@ inline MDScanner::MDScanner(std::string const &infile, std::string const &outfil
 inline int MDScanner::lex()
 {
     if (!in_peek_)  last_token_ = d_token__;
+    if (debug())
+        std::cout << "\t-------------------------------------" << std::endl;
     int token = lex__();
+    if (debug()) {
+        std::cout << "\tlex: token=" << d_token__ << " [" << matched() << "]" << std::endl;
+        std::cout << "\t-------------------------------------" << std::endl;
+    }
     if (!in_peek_) {
         if (token == '(')   parenthesis_depth_++;
         else if (token == ')')  parenthesis_depth_--;
@@ -93,8 +99,12 @@ inline int MDScanner::peek() {
 
     std::string current_matched = matched();
     int current_token = d_token__;
+    if (debug())
+        std::cout << "\tlex Peek (current): token=" << d_token__ << " [" << matched() << "]" << std::endl;
 
     int token = lex();
+    if (debug())
+        std::cout << "\tlex Peek (next): token=" << d_token__ << " [" << matched() << "]" << std::endl;
 
     accept(0);
     setMatched(current_matched);
@@ -107,7 +117,7 @@ inline int MDScanner::peek() {
 inline bool MDScanner::currentIsTypeName() {
     int nextToken = peek();
     if (last_token_ == MDParserBase::TYPE_NAME) return false;
-    bool ok = (parenthesis_depth_ > 0 && (last_token_==',' || last_token_=='(') 
+    bool ok = (parenthesis_depth_ > 0 && (last_token_==',' || last_token_=='(' || last_token_==MDParserBase::SCOPE_OPERATOR) 
                                       && (nextToken==')' || nextToken==',' || nextToken=='*' || nextToken=='&' || nextToken==MDParserBase::IDENTIFIER) );
     ok = ok || (parenthesis_depth_ == 0 && nextToken == MDParserBase::IDENTIFIER);
     return ok;

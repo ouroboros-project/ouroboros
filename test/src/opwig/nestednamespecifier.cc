@@ -1,6 +1,8 @@
+class MDNestedNamesTest : public MDBaseTest {
+protected:
+};
 
-
-TEST (NestedNameTest, NameAndGlobalEmptyPath) {
+TEST_F (MDNestedNamesTest, NameAndGlobalEmptyPath) {
     NestedNameSpecifier nestedName("name", true);
     
     ASSERT_EQ("name", nestedName.name());
@@ -15,7 +17,7 @@ TEST (NestedNameTest, NameAndGlobalEmptyPath) {
     ASSERT_EQ("another_name", nestedName.ToString());
 }
 
-TEST (NestedNameTest, NonEmptyPath) {
+TEST_F (MDNestedNamesTest, NonEmptyPath) {
     NestedNameSpecifier nestedName("name");
     nestedName.AddPath("foo");
     nestedName.AddPath("bar");
@@ -27,4 +29,19 @@ TEST (NestedNameTest, NonEmptyPath) {
     
     nestedName.AddPath("wat");
     ASSERT_EQ("::foo::bar::wat::name", nestedName.ToString());
+}
+
+TEST_F (MDNestedNamesTest, VariableWithSimplePath) {
+    ASSERT_EQ(RunParse("foo::type var = 0;"), 0);
+
+    TestVariable("var", "foo::type", AccessSpecifier::PUBLIC);
+}
+
+TEST_F (MDNestedNamesTest, FunctionWithSimpleAndGlobalPath) {
+    ASSERT_EQ(RunParse("foo::rtype name(::type0 wat, bar::type1);"), 0);
+    TestScopeChildNums(global_, 0u, 1u, 0u, 0u);
+    
+    auto f = TestFunction("name", "foo::rtype", AccessSpecifier::PUBLIC, false);
+    TestFunctionParameter(f, 0, "wat", "::type0");
+    TestFunctionParameter(f, 1, "", "bar::type1");
 }
