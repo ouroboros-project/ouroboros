@@ -33,7 +33,7 @@ add_custom_command (
                         --baseclass-header=mdparserbase.h
                         --class-header=mdparser.h
                         --implementation-header=mdparser.ih
-                        #-V
+                        -V
                         #-t
                         #--error-verbose
                         mdparser.gr

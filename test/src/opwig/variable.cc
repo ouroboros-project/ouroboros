@@ -34,8 +34,15 @@ TEST_F (MDVariableTest, VariableConflict) {
 }
 
 TEST_F (MDVariableTest, VariableSequence) {
-    string test14 = "type var1 = 1, var2 = 2, var3 = 3;";
-    ASSERT_EQ(RunParse(test14), 0);
+    ASSERT_EQ(RunParse("type var1, var2, var3;"), 0);
+    
+    TestVariable("var1", "type", AccessSpecifier::PUBLIC);
+    TestVariable("var2", "type", AccessSpecifier::PUBLIC);
+    TestVariable("var3", "type", AccessSpecifier::PUBLIC);
+}
+
+TEST_F (MDVariableTest, VariableSequenceWithInitializer) {
+    ASSERT_EQ(RunParse("type var1 = 1, var2 = 2, var3 = 3;"), 0);
     
     TestVariable("var1", "type", AccessSpecifier::PUBLIC);
     TestVariable("var2", "type", AccessSpecifier::PUBLIC);

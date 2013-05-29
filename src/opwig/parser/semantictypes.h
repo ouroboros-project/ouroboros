@@ -6,14 +6,15 @@
 #include <opwig/md/function.h>
 #include <opwig/md/ptr.h>
 #include <opwig/md/semanticerror.h>
+#include <opwig/md/nestednamespecifier.h>
 
 #include <opwig/parser/basespecifier.h>
+#include <opwig/parser/declarator.h>
 
 #include <memory>
 #include <list>
 #include <functional>
-
-#include <opwig/parser/declarator.h>
+#include <utility>
 
 namespace opwig {
 
@@ -31,6 +32,8 @@ typedef std::list<parser::BaseSpecifier>                BaseSpecifierList;
 namespace parser {
 
 using DeclaratorList = std::list<Declarator>;
+
+typedef std::pair<md::Ptr<md::Class>, md::NestedNameSpecifier>  ClassHeadPair;
 
 } // namespace parser
 

@@ -18,6 +18,8 @@ set (
   ${CMAKE_CURRENT_BINARY_DIR}/md/semanticerror.h
   ${CMAKE_CURRENT_BINARY_DIR}/md/function.h  
   ${CMAKE_CURRENT_BINARY_DIR}/md/parameter.h
+  ${CMAKE_CURRENT_BINARY_DIR}/md/nestednamespecifier.h
+  ${CMAKE_CURRENT_BINARY_DIR}/md/nestednamespecifier.cxx
   ${OPWIG_MDPARSER_SRC}
   ${OPWIG_MDSCANNER_SRC}
 )

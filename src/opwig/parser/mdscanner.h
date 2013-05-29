@@ -5,6 +5,7 @@
 
 // $insert baseclass_h
 #include <opwig/parser/mdscannerbase.h>
+#include <opwig/parser/mdparserbase.h>
 
 #include <opwig/md/ptr.h>
 #include <opwig/md/scope.h>
@@ -22,9 +23,11 @@ class MDScanner: public MDScannerBase {
     MDScanner(std::string const &infile, std::string const &outfile);
     
     void ChangeScope(const md::Ptr<md::Scope>& the_current_scope);
-    
+
     // $insert lexFunctionDecl
     int lex();
+    
+    void setShortDebugOutput(bool short_output) { short_debug_ = short_output; }
 
   private:
     md::Ptr<md::Scope> current_scope_;
@@ -35,6 +38,16 @@ class MDScanner: public MDScannerBase {
     void print();
     void preCode();     // re-implement this function for code that must 
                         // be exec'ed before the patternmatching starts
+
+    int peek(); //calls lex() to get the next token, then puts it back in the input queue to be re-read
+                //and returns the token.
+                // effectively 'peeking' at the next token, before it is actually read.
+    bool in_peek_ = false;
+    int last_token_ = -1;
+    unsigned int parenthesis_depth_ = 0;
+    bool short_debug_ = false;
+    
+    bool currentIsTypeName();
 };
 
 // $insert scannerConstructors
@@ -51,7 +64,21 @@ inline MDScanner::MDScanner(std::string const &infile, std::string const &outfil
 // $insert inlineLexFunction
 inline int MDScanner::lex()
 {
-    return lex__();
+    if (!in_peek_) {
+        last_token_ = d_token__;
+        if (short_debug_)
+            std::cout << "    -------------------------------------" << std::endl;
+    }
+    int token = lex__();
+    if (!in_peek_) {
+        if (short_debug_) {
+            std::cout << "    lex: token=" << d_token__ << " [" << matched() << "]" << std::endl;
+            std::cout << "    -------------------------------------" << std::endl;
+        }
+        if (token == '(')   parenthesis_depth_++;
+        else if (token == ')')  parenthesis_depth_--;
+    }
+    return token;
 }
 
 inline void MDScanner::preCode() 
@@ -69,6 +96,36 @@ inline void MDScanner::ChangeScope(const md::Ptr<md::Scope>& the_current_scope) 
     current_scope_.reset();
   else
     current_scope_ = the_current_scope;
+}
+
+inline int MDScanner::peek() {
+    if (in_peek_) return -1;
+    in_peek_ = true;
+
+    std::string current_matched = matched();
+    int current_token = d_token__;
+    if (short_debug_)
+        std::cout << "    lex Peek (current): token=" << d_token__ << " [" << matched() << "]" << std::endl;
+
+    int token = lex();
+    if (short_debug_)
+        std::cout << "    lex Peek (next): token=" << d_token__ << " [" << matched() << "]" << std::endl;
+
+    accept(0);
+    setMatched(current_matched);
+    d_token__ = current_token;
+
+    in_peek_ = false;
+    return token;
+}
+
+inline bool MDScanner::currentIsTypeName() {
+    int nextToken = peek();
+    if (last_token_ == MDParserBase::TYPE_NAME) return false;
+    bool ok = (parenthesis_depth_ > 0 && (last_token_==',' || last_token_=='(' || last_token_==MDParserBase::SCOPE_OPERATOR) 
+                                      && (nextToken==')' || nextToken==',' || nextToken=='*' || nextToken=='&' || nextToken==MDParserBase::IDENTIFIER) );
+    ok = ok || (parenthesis_depth_ == 0 && nextToken == MDParserBase::IDENTIFIER);
+    return ok;
 }
 
 // $insert namespace-close

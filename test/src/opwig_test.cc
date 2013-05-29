@@ -4,6 +4,7 @@
 #include <opwig/md/namespace.h>
 #include <opwig/md/accessspecifier.h>
 #include <opwig/md/semanticerror.h>
+#include <opwig/md/nestednamespecifier.h>
 #include <opwig/parser/mdparser.h>
 #include <opwig/parser/declarator.h>
 
@@ -32,6 +33,7 @@ using opwig::md::Scope;
 using opwig::md::Namespace;
 using opwig::md::Class;
 using opwig::md::AccessSpecifier;
+using opwig::md::NestedNameSpecifier;
 using opwig::parser::BaseSpecifier;
 using opwig::parser::Declarator;
 using opwig::MDParser;
@@ -139,7 +141,7 @@ protected:
         auto bspec = c->base_specifiers().begin();
         for (int i = 0; i < baseIndex; i++, bspec++);
         
-        EXPECT_EQ(name, bspec->name());
+        EXPECT_EQ(name, bspec->nested_name().ToString());
         EXPECT_EQ(isVirtual, bspec->is_virtual());
         EXPECT_EQ(access, bspec->access_specifier());   
     }
@@ -164,7 +166,7 @@ protected:
     }
 };
 
-
+#include <opwig/nestednamespecifier.cc>
 #include <opwig/declarator.cc>
 #include <opwig/class.cc>
 #include <opwig/classmembers.cc>

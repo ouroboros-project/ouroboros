@@ -2,7 +2,7 @@
   Declaration:      ScopeAction;
   DeclarationSeq:   std::shared_ptr<ScopeActionList>;
   Type:             TypeAction;
-  Class:            md::Ptr<md::Class>;
+  ClassHead:        parser::ClassHeadPair;
   BaseSpecifier:    parser::BaseSpecifier;
   BaseSpecifierSeq: std::shared_ptr<BaseSpecifierList>;
   AccessSpecifier:  md::AccessSpecifier;
@@ -12,9 +12,11 @@
   ParameterSeq:     std::shared_ptr<md::ParameterList>;
   String:           std::string;
   StringSeq:        std::shared_ptr<StringList>;
+  NestedNameSpec:   md::NestedNameSpecifier;
 
 %token IDENTIFIER
 %token CONSTRUCTOR_NAME
+%token TYPE_NAME
 %token PRIMITIVE
 
 // Keywords
@@ -53,6 +55,7 @@
 %token VIRTUAL
 %token VOID
 %token VOLATILE
+%token SCOPE_OPERATOR
 
 // Literals
 %token STRING_LITERAL
@@ -76,10 +79,9 @@
 %type<Type>                 decl_specifier_seq_opt
 %type<Type>                 type_specifier
 %type<Type>                 trailing_type_specifier
-%type<Type>                 simple_type_specifier
 %type<Type>                 class_specifier
 
-%type<Class>                class_head
+%type<ClassHead>            class_head
 
 %type<BaseSpecifierSeq>     base_clause
 %type<BaseSpecifierSeq>     base_specifier_list
@@ -90,10 +92,8 @@
 %type<String>         identifier
 %type<String>         constructor_name
 %type<String>         type_name
-%type<String>         declarator_id
-%type<String>         class_head_name
-%type<String>         base_type_specifier
 %type<String>         class_name
+%type<String>         unqualified_id
 
 %type<DeclaratorSeq>  init_declarator_list
 %type<DeclaratorSeq>  member_declarator_list
@@ -108,3 +108,10 @@
 %type<ParameterSeq>   parameter_declaration_list
 %type<Parameter>      parameter_declaration
 
+%type<NestedNameSpec>   nested_name_specifier
+%type<NestedNameSpec>   id_expression
+%type<NestedNameSpec>   qualified_id
+%type<NestedNameSpec>   declarator_id
+%type<NestedNameSpec>   class_head_name
+%type<NestedNameSpec>   base_type_specifier
+%type<NestedNameSpec>   simple_type_specifier

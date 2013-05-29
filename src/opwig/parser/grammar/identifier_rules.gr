@@ -6,9 +6,61 @@ identifier:
   }
 ;
 
+//this rule, constructor_name, is equivalent to the class_name rule, 
+//however we created it as a means of figuring out the context
 constructor_name:
   CONSTRUCTOR_NAME {
     $$ = d_scanner.matched();
   }
 ;
 
+
+id_expression:
+    qualified_id { $$ = $1; }
+// removed the following case (defined in CPP BNF) since it is not
+// really needed and introduces a Reduce/Reduce conflict in the grammar
+//        unqualified_id { $$ = md::NestedNameSpecifier($1); }
+;
+
+unqualified_id:
+    identifier { $$ = $1; }
+|
+    '~' constructor_name { $$ = "~"+$2; }
+//operator_function_id
+//conversion_function_id
+//template_id
+;
+
+qualified_id:
+    unqualified_id { $$ = md::NestedNameSpecifier($1); }
+|
+    SCOPE_OPERATOR unqualified_id { $$ = md::NestedNameSpecifier($2, true); }
+|
+    nested_name_specifier unqualified_id {
+        $$ = $1;
+        ($$).set_name($2);
+    }
+|
+    SCOPE_OPERATOR nested_name_specifier unqualified_id {
+        $$ = $2;
+        ($$).set_name($3);
+        ($$).set_global(true);
+    }
+//    SCOPE_OPERATOR identifier { $$ = md::NestedNameSpecifier($2, true); }
+//SCOPE_OPERATOR operator_function_id
+//SCOPE_OPERATOR template_id
+;
+
+nested_name_specifier:
+    identifier SCOPE_OPERATOR { 
+        $$ = md::NestedNameSpecifier();
+        ($$).AddPath($1);
+    }
+|
+    nested_name_specifier identifier SCOPE_OPERATOR { 
+        $$ = $1;
+        ($$).AddPath($2);
+    }
+//namespace_name SCOPE_OPERATOR
+//e um com template
+;

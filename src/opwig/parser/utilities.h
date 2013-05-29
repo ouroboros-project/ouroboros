@@ -18,6 +18,9 @@ ScopeAction AddTypeToScope( const TypeAction& type_action );
 ///to the given scope.
 ScopeAction JoinDeclarations( const TypeAction& type_action, const std::shared_ptr<parser::DeclaratorList>& init_list );
 
+///Creates a type action to add the given class/nested-name-specifier to the scope;
+TypeAction AddClassToScope( md::Ptr<md::Class> classObj, const md::NestedNameSpecifier& nestedName);
+
 } // namespace parser
 } // namespace opwig
 
