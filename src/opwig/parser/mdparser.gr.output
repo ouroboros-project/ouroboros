@@ -1,0 +1,2193 @@
+[[mdparser.gr (info)] Line 30: 
+Production Rules
+(rule precedences determined from %prec or 1st terminal between parentheses):
+1: input ->  declaration_seq
+2: declaration_seq ->  <empty>
+3: declaration_seq ->  declaration_seq declaration
+4: declaration ->  block_declaration
+5: declaration ->  namespace_definition
+6: block_declaration ->  simple_declaration
+7: simple_declaration (';') ->  ';'
+8: simple_declaration (';') ->  decl_specifier_seq init_declarator_list ';'
+9: simple_declaration (';') ->  decl_specifier_seq ';'
+10: simple_declaration (';') ->  init_declarator_list ';'
+11: decl_specifier_seq ->  type_specifier
+12: decl_specifier_seq ->  decl_specifier decl_specifier_seq_opt
+13: decl_specifier_seq_opt ->  <empty>
+14: decl_specifier_seq_opt ->  decl_specifier_seq
+15: decl_specifier (FRIEND) ->  FRIEND
+16: decl_specifier (TYPEDEF) ->  TYPEDEF
+17: decl_specifier (VIRTUAL) ->  VIRTUAL
+18: init_declarator_list ->  init_declarator
+19: init_declarator_list (',') ->  init_declarator_list ',' init_declarator
+20: init_declarator ->  declarator
+21: init_declarator ->  declarator initializer
+22: declarator ->  ptr_declarator
+23: ptr_declarator ->  noptr_declarator
+24: ptr_declarator ->  ptr_operator ptr_declarator
+25: noptr_declarator ->  declarator_id
+26: noptr_declarator ->  noptr_declarator parameters_and_qualifiers
+27: noptr_declarator ('[') ->  noptr_declarator '[' expression ']'
+28: noptr_declarator ('[') ->  noptr_declarator '[' ']'
+29: noptr_declarator ('(') ->  '(' ptr_declarator ')'
+30: parameters_and_qualifiers ('(') ->  '(' parameter_declaration_clause ')'
+31: parameter_declaration_clause ->  <empty>
+32: parameter_declaration_clause ->  parameter_declaration_list
+33: parameter_declaration_list ->  parameter_declaration
+34: parameter_declaration_list (',') ->  parameter_declaration_list ',' parameter_declaration
+35: parameter_declaration ->  decl_specifier_seq
+36: parameter_declaration ->  decl_specifier_seq declarator
+37: ptr_operator ('*') ->  '*'
+38: ptr_operator ('&') ->  '&'
+39: declarator_id ->  id_expression
+40: declarator_id ->  constructor_name
+41: declarator_id (SCOPE_OPERATOR) ->  SCOPE_OPERATOR constructor_name
+42: declarator_id ->  nested_name_specifier constructor_name
+43: declarator_id (SCOPE_OPERATOR) ->  SCOPE_OPERATOR nested_name_specifier constructor_name
+44: initializer ->  brace_or_equal_initializer
+45: brace_or_equal_initializer ('=') ->  '=' initializer_clause
+46: initializer_clause ->  expression
+47: namespace_definition ->  named_namespace_definition
+48: namespace_definition ->  unnamed_namespace_definition
+49: named_namespace_definition (NAMESPACE) ->  NAMESPACE identifier '{' declaration_seq '}'
+50: named_namespace_definition (INLINE) ->  INLINE NAMESPACE identifier '{' declaration_seq '}'
+51: unnamed_namespace_definition (NAMESPACE) ->  NAMESPACE '{' declaration_seq '}'
+52: unnamed_namespace_definition (INLINE) ->  INLINE NAMESPACE '{' declaration_seq '}'
+53: type_specifier ->  trailing_type_specifier
+54: type_specifier ->  class_specifier
+55: trailing_type_specifier ->  simple_type_specifier
+56: simple_type_specifier ->  type_name
+57: simple_type_specifier (SCOPE_OPERATOR) ->  SCOPE_OPERATOR type_name
+58: simple_type_specifier ->  nested_name_specifier type_name
+59: simple_type_specifier (SCOPE_OPERATOR) ->  SCOPE_OPERATOR nested_name_specifier type_name
+60: type_name (TYPE_NAME) ->  TYPE_NAME
+61: access_specifier (PRIVATE) ->  PRIVATE
+62: access_specifier (PROTECTED) ->  PROTECTED
+63: access_specifier (PUBLIC) ->  PUBLIC
+64: class_specifier ('{') ->  class_head '{' #0001 '}'
+65: #0001 ->  <empty>
+66: class_specifier ('{') ->  class_head '{' member_specification #0002 '}'
+67: #0002 ->  <empty>
+68: class_head ->  class_key
+69: class_head ->  class_key base_clause
+70: class_head ->  class_key class_head_name
+71: class_head ->  class_key class_head_name base_clause
+72: class_head_name ->  class_name
+73: class_head_name ->  nested_name_specifier class_name
+74: base_clause (':') ->  ':' base_specifier_list
+75: base_specifier_list ->  base_specifier
+76: base_specifier_list (',') ->  base_specifier_list ',' base_specifier
+77: base_specifier ->  base_type_specifier
+78: base_specifier (VIRTUAL) ->  VIRTUAL base_type_specifier
+79: base_specifier ->  access_specifier base_type_specifier
+80: base_specifier (VIRTUAL) ->  VIRTUAL access_specifier base_type_specifier
+81: base_specifier (VIRTUAL) ->  access_specifier VIRTUAL base_type_specifier
+82: base_type_specifier ->  class_name
+83: base_type_specifier (SCOPE_OPERATOR) ->  SCOPE_OPERATOR class_name
+84: base_type_specifier ->  nested_name_specifier class_name
+85: base_type_specifier (SCOPE_OPERATOR) ->  SCOPE_OPERATOR nested_name_specifier class_name
+86: class_name ->  identifier
+87: class_key (CLASS) ->  CLASS
+88: class_key (UNION) ->  UNION
+89: class_key (STRUCT) ->  STRUCT
+90: member_specification ->  member_declaration
+91: member_specification ->  member_declaration member_specification
+92: member_specification (':') ->  access_specifier ':'
+93: member_specification (':') ->  access_specifier ':' member_specification
+94: member_declaration (';') ->  member_declarator_list ';'
+95: member_declaration (';') ->  decl_specifier_seq ';'
+96: member_declaration (';') ->  decl_specifier_seq member_declarator_list ';'
+97: member_declarator_list ->  member_declarator
+98: member_declarator_list (',') ->  member_declarator_list ',' member_declarator
+99: member_declarator ->  declarator
+100: member_declarator ->  declarator pure_specifier
+101: member_declarator ->  declarator brace_or_equal_initializer
+102: member_declarator (':') ->  ':' constant_expression
+103: member_declarator (':') ->  identifier ':' constant_expression
+104: pure_specifier ('=') ->  '=' INTEGER_LITERAL
+105: constant_expression ->  expression
+106: expression ->  term
+107: expression ->  expression term
+108: term ->  literal
+109: term ->  identifier
+110: term ->  operand
+111: term ('(') ->  '(' expression ')'
+112: literal (STRING_LITERAL) ->  STRING_LITERAL
+113: literal (CHARACTER_LITERAL) ->  CHARACTER_LITERAL
+114: literal (INTEGER_LITERAL) ->  INTEGER_LITERAL
+115: literal (HEXADECIMAL_LITERAL) ->  HEXADECIMAL_LITERAL
+116: literal (OCTAL_LITERAL) ->  OCTAL_LITERAL
+117: literal (FLOAT_LITERAL) ->  FLOAT_LITERAL
+118: operand ('+') ->  '+'
+119: operand ('-') ->  '-'
+120: operand ('*') ->  '*'
+121: operand ('/') ->  '/'
+122: operand ('%') ->  '%'
+123: operand ('^') ->  '^'
+124: operand ('?') ->  '?'
+125: operand (':') ->  ':'
+126: identifier (IDENTIFIER) ->  IDENTIFIER
+127: constructor_name (CONSTRUCTOR_NAME) ->  CONSTRUCTOR_NAME
+128: id_expression ->  qualified_id
+129: unqualified_id ->  identifier
+130: unqualified_id ('~') ->  '~' constructor_name
+131: qualified_id ->  unqualified_id
+132: qualified_id (SCOPE_OPERATOR) ->  SCOPE_OPERATOR unqualified_id
+133: qualified_id ->  nested_name_specifier unqualified_id
+134: qualified_id (SCOPE_OPERATOR) ->  SCOPE_OPERATOR nested_name_specifier unqualified_id
+135: nested_name_specifier (SCOPE_OPERATOR) ->  identifier SCOPE_OPERATOR
+136: nested_name_specifier (SCOPE_OPERATOR) ->  nested_name_specifier identifier SCOPE_OPERATOR
+137: input_$ ->  input
+
+[[mdparser.gr (info)] 
+Symbolic Terminal tokens:
+       error
+       EOF
+   257: IDENTIFIER
+   258: CONSTRUCTOR_NAME
+   259: TYPE_NAME
+   260: PRIMITIVE
+   261: CATCH
+   262: CLASS
+   263: CONST
+   264: ENUM
+   265: EXPLICIT
+   266: EXPORT
+   267: EXTERN
+   268: FALSE
+   269: FRIEND
+   270: INLINE
+   271: MUTABLE
+   272: NAMESPACE
+   273: OPERATOR
+   274: PRIVATE
+   275: PROTECTED
+   276: PUBLIC
+   277: REGISTER
+   278: RETURN
+   279: SIGNED
+   280: SIZEOF
+   281: STATIC
+   282: STRUCT
+   283: TEMPLATE
+   284: THROW
+   285: TRUE
+   286: TRY
+   287: TYPEDEF
+   288: TYPEID
+   289: TYPENAME
+   290: UNION
+   291: UNSIGNED
+   292: USING
+   293: VIRTUAL
+   294: VOID
+   295: VOLATILE
+   296: SCOPE_OPERATOR
+   297: STRING_LITERAL
+   298: CHARACTER_LITERAL
+   299: INTEGER_LITERAL
+   300: HEXADECIMAL_LITERAL
+   301: OCTAL_LITERAL
+   302: FLOAT_LITERAL
+    59: ';'
+    44: ','
+    91: '['
+    93: ']'
+    40: '('
+    41: ')'
+    42: '*'
+    38: '&'
+    61: '='
+   123: '{'
+   125: '}'
+    58: ':'
+    43: '+'
+    45: '-'
+    47: '/'
+    37: '%'
+    94: '^'
+    63: '?'
+   126: '~'
+
+[[mdparser.gr (info)] 
+Grammar States: 
+[[mdparser.gr (info)] State 0:
+137: input_$ ->  . input 
+  0:   On input to state 1
+  1:   On declaration_seq to state 2
+  Reduce by 2: declaration_seq ->  . 
+
+
+State 1:
+137: input_$ -> input  . 
+
+
+State 2:
+1: input -> declaration_seq  . 
+3: declaration_seq -> declaration_seq  . declaration 
+  0:   On declaration to state 3
+  1:   On block_declaration to state 4
+  2:   On namespace_definition to state 5
+  3:   On simple_declaration to state 6
+  4:   On named_namespace_definition to state 7
+  5:   On unnamed_namespace_definition to state 8
+  6:   On ';' to state 9
+  7:   On decl_specifier_seq to state 10
+  8:   On init_declarator_list to state 11
+  9:   On NAMESPACE to state 12
+  10:   On INLINE to state 13
+  11:   On type_specifier to state 14
+  12:   On decl_specifier to state 15
+  13:   On init_declarator to state 16
+  14:   On trailing_type_specifier to state 17
+  15:   On class_specifier to state 18
+  16:   On FRIEND to state 19
+  17:   On TYPEDEF to state 20
+  18:   On VIRTUAL to state 21
+  19:   On declarator to state 22
+  20:   On simple_type_specifier to state 23
+  21:   On class_head to state 24
+  22:   On ptr_declarator to state 25
+  23:   On type_name to state 26
+  24:   On SCOPE_OPERATOR to state 27
+  25:   On nested_name_specifier to state 28
+  26:   On class_key to state 29
+  27:   On noptr_declarator to state 30
+  28:   On ptr_operator to state 31
+  29:   On TYPE_NAME to state 32
+  30:   On identifier to state 33
+  31:   On CLASS to state 34
+  32:   On UNION to state 35
+  33:   On STRUCT to state 36
+  34:   On declarator_id to state 37
+  35:   On '(' to state 38
+  36:   On '*' to state 39
+  37:   On '&' to state 40
+  38:   On IDENTIFIER to state 41
+  39:   On id_expression to state 42
+  40:   On constructor_name to state 43
+  41:   On qualified_id to state 44
+  42:   On CONSTRUCTOR_NAME to state 45
+  43:   On unqualified_id to state 46
+  44:   On '~' to state 47
+  Reduce by 1: input -> declaration_seq  . 
+
+
+State 3:
+3: declaration_seq -> declaration_seq declaration  . 
+  Reduce by 3: declaration_seq -> declaration_seq declaration  . 
+
+
+State 4:
+4: declaration -> block_declaration  . 
+  Reduce by 4: declaration -> block_declaration  . 
+
+
+State 5:
+5: declaration -> namespace_definition  . 
+  Reduce by 5: declaration -> namespace_definition  . 
+
+
+State 6:
+6: block_declaration -> simple_declaration  . 
+  Reduce by 6: block_declaration -> simple_declaration  . 
+
+
+State 7:
+47: namespace_definition -> named_namespace_definition  . 
+  Reduce by 47: namespace_definition -> named_namespace_definition  . 
+
+
+State 8:
+48: namespace_definition -> unnamed_namespace_definition  . 
+  Reduce by 48: namespace_definition -> unnamed_namespace_definition  . 
+
+
+State 9:
+7: simple_declaration -> ';'  . 
+  Reduce by 7: simple_declaration -> ';'  . 
+
+
+State 10:
+8: simple_declaration -> decl_specifier_seq  . init_declarator_list ';' 
+9: simple_declaration -> decl_specifier_seq  . ';' 
+  0:   On init_declarator_list to state 48
+  1:   On ';' to state 49
+  2:   On init_declarator to state 16
+  3:   On declarator to state 22
+  4:   On ptr_declarator to state 25
+  5:   On noptr_declarator to state 30
+  6:   On ptr_operator to state 31
+  7:   On declarator_id to state 37
+  8:   On '(' to state 38
+  9:   On '*' to state 39
+  10:   On '&' to state 40
+  11:   On id_expression to state 42
+  12:   On constructor_name to state 43
+  13:   On SCOPE_OPERATOR to state 50
+  14:   On nested_name_specifier to state 51
+  15:   On qualified_id to state 44
+  16:   On CONSTRUCTOR_NAME to state 45
+  17:   On identifier to state 33
+  18:   On unqualified_id to state 46
+  19:   On IDENTIFIER to state 41
+  20:   On '~' to state 47
+
+
+State 11:
+10: simple_declaration -> init_declarator_list  . ';' 
+19: init_declarator_list -> init_declarator_list  . ',' init_declarator 
+  0:   On ';' to state 52
+  1:   On ',' to state 53
+
+
+State 12:
+49: named_namespace_definition -> NAMESPACE  . identifier '{' declaration_seq '}' 
+51: unnamed_namespace_definition -> NAMESPACE  . '{' declaration_seq '}' 
+  0:   On identifier to state 54
+  1:   On '{' to state 55
+  2:   On IDENTIFIER to state 41
+
+
+State 13:
+50: named_namespace_definition -> INLINE  . NAMESPACE identifier '{' declaration_seq '}' 
+52: unnamed_namespace_definition -> INLINE  . NAMESPACE '{' declaration_seq '}' 
+  0:   On NAMESPACE to state 56
+
+
+State 14:
+11: decl_specifier_seq -> type_specifier  . 
+  Reduce by 11: decl_specifier_seq -> type_specifier  . 
+
+
+State 15:
+12: decl_specifier_seq -> decl_specifier  . decl_specifier_seq_opt 
+  0:   On decl_specifier_seq_opt to state 57
+  1:   On decl_specifier_seq to state 58
+  2:   On type_specifier to state 14
+  3:   On decl_specifier to state 15
+  4:   On trailing_type_specifier to state 17
+  5:   On class_specifier to state 18
+  6:   On FRIEND to state 19
+  7:   On TYPEDEF to state 20
+  8:   On VIRTUAL to state 21
+  9:   On simple_type_specifier to state 23
+  10:   On class_head to state 24
+  11:   On type_name to state 26
+  12:   On SCOPE_OPERATOR to state 59
+  13:   On nested_name_specifier to state 60
+  14:   On class_key to state 29
+  15:   On TYPE_NAME to state 32
+  16:   On identifier to state 61
+  17:   On CLASS to state 34
+  18:   On UNION to state 35
+  19:   On STRUCT to state 36
+  20:   On IDENTIFIER to state 41
+  Reduce by 13: decl_specifier_seq_opt ->  . 
+Solved SR CONFLICT on SCOPE_OPERATOR:
+	shift to state 59, removed SCOPE_OPERATOR from LA-set of rule 13)
+Solved SR CONFLICT on SCOPE_OPERATOR:
+	shift to state 59, removed SCOPE_OPERATOR from LA-set of rule 13)
+Solved SR CONFLICT on IDENTIFIER:
+	shift to state 41, removed IDENTIFIER from LA-set of rule 13)
+
+
+State 16:
+18: init_declarator_list -> init_declarator  . 
+  Reduce by 18: init_declarator_list -> init_declarator  . 
+
+
+State 17:
+53: type_specifier -> trailing_type_specifier  . 
+  Reduce by 53: type_specifier -> trailing_type_specifier  . 
+
+
+State 18:
+54: type_specifier -> class_specifier  . 
+  Reduce by 54: type_specifier -> class_specifier  . 
+
+
+State 19:
+15: decl_specifier -> FRIEND  . 
+  Reduce by 15: decl_specifier -> FRIEND  . 
+
+
+State 20:
+16: decl_specifier -> TYPEDEF  . 
+  Reduce by 16: decl_specifier -> TYPEDEF  . 
+
+
+State 21:
+17: decl_specifier -> VIRTUAL  . 
+  Reduce by 17: decl_specifier -> VIRTUAL  . 
+
+
+State 22:
+20: init_declarator -> declarator  . 
+21: init_declarator -> declarator  . initializer 
+  0:   On initializer to state 62
+  1:   On brace_or_equal_initializer to state 63
+  2:   On '=' to state 64
+  Reduce by 20: init_declarator -> declarator  . 
+
+
+State 23:
+55: trailing_type_specifier -> simple_type_specifier  . 
+  Reduce by 55: trailing_type_specifier -> simple_type_specifier  . 
+
+
+State 24:
+64: class_specifier -> class_head  . '{' #0001 '}' 
+66: class_specifier -> class_head  . '{' member_specification #0002 '}' 
+  0:   On '{' to state 65
+
+
+State 25:
+22: declarator -> ptr_declarator  . 
+  Reduce by 22: declarator -> ptr_declarator  . 
+
+
+State 26:
+56: simple_type_specifier -> type_name  . 
+  Reduce by 56: simple_type_specifier -> type_name  . 
+
+
+State 27:
+57: simple_type_specifier -> SCOPE_OPERATOR  . type_name 
+59: simple_type_specifier -> SCOPE_OPERATOR  . nested_name_specifier type_name 
+41: declarator_id -> SCOPE_OPERATOR  . constructor_name 
+43: declarator_id -> SCOPE_OPERATOR  . nested_name_specifier constructor_name 
+132: qualified_id -> SCOPE_OPERATOR  . unqualified_id 
+134: qualified_id -> SCOPE_OPERATOR  . nested_name_specifier unqualified_id 
+  0:   On type_name to state 66
+  1:   On nested_name_specifier to state 67
+  2:   On constructor_name to state 68
+  3:   On unqualified_id to state 69
+  4:   On TYPE_NAME to state 32
+  5:   On identifier to state 33
+  6:   On CONSTRUCTOR_NAME to state 45
+  7:   On '~' to state 47
+  8:   On IDENTIFIER to state 41
+
+
+State 28:
+58: simple_type_specifier -> nested_name_specifier  . type_name 
+136: nested_name_specifier -> nested_name_specifier  . identifier SCOPE_OPERATOR 
+42: declarator_id -> nested_name_specifier  . constructor_name 
+133: qualified_id -> nested_name_specifier  . unqualified_id 
+  0:   On type_name to state 70
+  1:   On identifier to state 71
+  2:   On constructor_name to state 72
+  3:   On unqualified_id to state 73
+  4:   On TYPE_NAME to state 32
+  5:   On IDENTIFIER to state 41
+  6:   On CONSTRUCTOR_NAME to state 45
+  7:   On '~' to state 47
+
+
+State 29:
+68: class_head -> class_key  . 
+69: class_head -> class_key  . base_clause 
+70: class_head -> class_key  . class_head_name 
+71: class_head -> class_key  . class_head_name base_clause 
+  0:   On base_clause to state 74
+  1:   On class_head_name to state 75
+  2:   On ':' to state 76
+  3:   On class_name to state 77
+  4:   On nested_name_specifier to state 78
+  5:   On identifier to state 79
+  6:   On IDENTIFIER to state 41
+  Reduce by 68: class_head -> class_key  . 
+
+
+State 30:
+23: ptr_declarator -> noptr_declarator  . 
+26: noptr_declarator -> noptr_declarator  . parameters_and_qualifiers 
+27: noptr_declarator -> noptr_declarator  . '[' expression ']' 
+28: noptr_declarator -> noptr_declarator  . '[' ']' 
+  0:   On parameters_and_qualifiers to state 80
+  1:   On '[' to state 81
+  2:   On '(' to state 82
+  Reduce by 23: ptr_declarator -> noptr_declarator  . 
+
+
+State 31:
+24: ptr_declarator -> ptr_operator  . ptr_declarator 
+  0:   On ptr_declarator to state 83
+  1:   On noptr_declarator to state 30
+  2:   On ptr_operator to state 31
+  3:   On declarator_id to state 37
+  4:   On '(' to state 38
+  5:   On '*' to state 39
+  6:   On '&' to state 40
+  7:   On id_expression to state 42
+  8:   On constructor_name to state 43
+  9:   On SCOPE_OPERATOR to state 50
+  10:   On nested_name_specifier to state 51
+  11:   On qualified_id to state 44
+  12:   On CONSTRUCTOR_NAME to state 45
+  13:   On identifier to state 33
+  14:   On unqualified_id to state 46
+  15:   On IDENTIFIER to state 41
+  16:   On '~' to state 47
+
+
+State 32:
+60: type_name -> TYPE_NAME  . 
+  Reduce by 60: type_name -> TYPE_NAME  . 
+
+
+State 33:
+135: nested_name_specifier -> identifier  . SCOPE_OPERATOR 
+129: unqualified_id -> identifier  . 
+  0:   On SCOPE_OPERATOR to state 84
+  Reduce by 129: unqualified_id -> identifier  . 
+
+
+State 34:
+87: class_key -> CLASS  . 
+  Reduce by 87: class_key -> CLASS  . 
+
+
+State 35:
+88: class_key -> UNION  . 
+  Reduce by 88: class_key -> UNION  . 
+
+
+State 36:
+89: class_key -> STRUCT  . 
+  Reduce by 89: class_key -> STRUCT  . 
+
+
+State 37:
+25: noptr_declarator -> declarator_id  . 
+  Reduce by 25: noptr_declarator -> declarator_id  . 
+
+
+State 38:
+29: noptr_declarator -> '('  . ptr_declarator ')' 
+  0:   On ptr_declarator to state 85
+  1:   On noptr_declarator to state 30
+  2:   On ptr_operator to state 31
+  3:   On declarator_id to state 37
+  4:   On '(' to state 38
+  5:   On '*' to state 39
+  6:   On '&' to state 40
+  7:   On id_expression to state 42
+  8:   On constructor_name to state 43
+  9:   On SCOPE_OPERATOR to state 50
+  10:   On nested_name_specifier to state 51
+  11:   On qualified_id to state 44
+  12:   On CONSTRUCTOR_NAME to state 45
+  13:   On identifier to state 33
+  14:   On unqualified_id to state 46
+  15:   On IDENTIFIER to state 41
+  16:   On '~' to state 47
+
+
+State 39:
+37: ptr_operator -> '*'  . 
+  Reduce by 37: ptr_operator -> '*'  . 
+
+
+State 40:
+38: ptr_operator -> '&'  . 
+  Reduce by 38: ptr_operator -> '&'  . 
+
+
+State 41:
+126: identifier -> IDENTIFIER  . 
+  Reduce by 126: identifier -> IDENTIFIER  . 
+
+
+State 42:
+39: declarator_id -> id_expression  . 
+  Reduce by 39: declarator_id -> id_expression  . 
+
+
+State 43:
+40: declarator_id -> constructor_name  . 
+  Reduce by 40: declarator_id -> constructor_name  . 
+
+
+State 44:
+128: id_expression -> qualified_id  . 
+  Reduce by 128: id_expression -> qualified_id  . 
+
+
+State 45:
+127: constructor_name -> CONSTRUCTOR_NAME  . 
+  Reduce by 127: constructor_name -> CONSTRUCTOR_NAME  . 
+
+
+State 46:
+131: qualified_id -> unqualified_id  . 
+  Reduce by 131: qualified_id -> unqualified_id  . 
+
+
+State 47:
+130: unqualified_id -> '~'  . constructor_name 
+  0:   On constructor_name to state 86
+  1:   On CONSTRUCTOR_NAME to state 45
+
+
+State 48:
+8: simple_declaration -> decl_specifier_seq init_declarator_list  . ';' 
+19: init_declarator_list -> init_declarator_list  . ',' init_declarator 
+  0:   On ';' to state 87
+  1:   On ',' to state 53
+
+
+State 49:
+9: simple_declaration -> decl_specifier_seq ';'  . 
+  Reduce by 9: simple_declaration -> decl_specifier_seq ';'  . 
+
+
+State 50:
+41: declarator_id -> SCOPE_OPERATOR  . constructor_name 
+43: declarator_id -> SCOPE_OPERATOR  . nested_name_specifier constructor_name 
+132: qualified_id -> SCOPE_OPERATOR  . unqualified_id 
+134: qualified_id -> SCOPE_OPERATOR  . nested_name_specifier unqualified_id 
+  0:   On constructor_name to state 68
+  1:   On nested_name_specifier to state 88
+  2:   On unqualified_id to state 69
+  3:   On CONSTRUCTOR_NAME to state 45
+  4:   On identifier to state 33
+  5:   On '~' to state 47
+  6:   On IDENTIFIER to state 41
+
+
+State 51:
+42: declarator_id -> nested_name_specifier  . constructor_name 
+136: nested_name_specifier -> nested_name_specifier  . identifier SCOPE_OPERATOR 
+133: qualified_id -> nested_name_specifier  . unqualified_id 
+  0:   On constructor_name to state 72
+  1:   On identifier to state 71
+  2:   On unqualified_id to state 73
+  3:   On CONSTRUCTOR_NAME to state 45
+  4:   On IDENTIFIER to state 41
+  5:   On '~' to state 47
+
+
+State 52:
+10: simple_declaration -> init_declarator_list ';'  . 
+  Reduce by 10: simple_declaration -> init_declarator_list ';'  . 
+
+
+State 53:
+19: init_declarator_list -> init_declarator_list ','  . init_declarator 
+  0:   On init_declarator to state 89
+  1:   On declarator to state 22
+  2:   On ptr_declarator to state 25
+  3:   On noptr_declarator to state 30
+  4:   On ptr_operator to state 31
+  5:   On declarator_id to state 37
+  6:   On '(' to state 38
+  7:   On '*' to state 39
+  8:   On '&' to state 40
+  9:   On id_expression to state 42
+  10:   On constructor_name to state 43
+  11:   On SCOPE_OPERATOR to state 50
+  12:   On nested_name_specifier to state 51
+  13:   On qualified_id to state 44
+  14:   On CONSTRUCTOR_NAME to state 45
+  15:   On identifier to state 33
+  16:   On unqualified_id to state 46
+  17:   On IDENTIFIER to state 41
+  18:   On '~' to state 47
+
+
+State 54:
+49: named_namespace_definition -> NAMESPACE identifier  . '{' declaration_seq '}' 
+  0:   On '{' to state 90
+
+
+State 55:
+51: unnamed_namespace_definition -> NAMESPACE '{'  . declaration_seq '}' 
+  0:   On declaration_seq to state 91
+  Reduce by 2: declaration_seq ->  . 
+
+
+State 56:
+50: named_namespace_definition -> INLINE NAMESPACE  . identifier '{' declaration_seq '}' 
+52: unnamed_namespace_definition -> INLINE NAMESPACE  . '{' declaration_seq '}' 
+  0:   On identifier to state 92
+  1:   On '{' to state 93
+  2:   On IDENTIFIER to state 41
+
+
+State 57:
+12: decl_specifier_seq -> decl_specifier decl_specifier_seq_opt  . 
+  Reduce by 12: decl_specifier_seq -> decl_specifier decl_specifier_seq_opt  . 
+
+
+State 58:
+14: decl_specifier_seq_opt -> decl_specifier_seq  . 
+  Reduce by 14: decl_specifier_seq_opt -> decl_specifier_seq  . 
+
+
+State 59:
+57: simple_type_specifier -> SCOPE_OPERATOR  . type_name 
+59: simple_type_specifier -> SCOPE_OPERATOR  . nested_name_specifier type_name 
+  0:   On type_name to state 66
+  1:   On nested_name_specifier to state 94
+  2:   On TYPE_NAME to state 32
+  3:   On identifier to state 61
+  4:   On IDENTIFIER to state 41
+
+
+State 60:
+58: simple_type_specifier -> nested_name_specifier  . type_name 
+136: nested_name_specifier -> nested_name_specifier  . identifier SCOPE_OPERATOR 
+  0:   On type_name to state 70
+  1:   On identifier to state 95
+  2:   On TYPE_NAME to state 32
+  3:   On IDENTIFIER to state 41
+
+
+State 61:
+135: nested_name_specifier -> identifier  . SCOPE_OPERATOR 
+  0:   On SCOPE_OPERATOR to state 84
+
+
+State 62:
+21: init_declarator -> declarator initializer  . 
+  Reduce by 21: init_declarator -> declarator initializer  . 
+
+
+State 63:
+44: initializer -> brace_or_equal_initializer  . 
+  Reduce by 44: initializer -> brace_or_equal_initializer  . 
+
+
+State 64:
+45: brace_or_equal_initializer -> '='  . initializer_clause 
+  0:   On initializer_clause to state 96
+  1:   On expression to state 97
+  2:   On term to state 98
+  3:   On literal to state 99
+  4:   On identifier to state 100
+  5:   On operand to state 101
+  6:   On '(' to state 102
+  7:   On STRING_LITERAL to state 103
+  8:   On CHARACTER_LITERAL to state 104
+  9:   On INTEGER_LITERAL to state 105
+  10:   On HEXADECIMAL_LITERAL to state 106
+  11:   On OCTAL_LITERAL to state 107
+  12:   On FLOAT_LITERAL to state 108
+  13:   On IDENTIFIER to state 41
+  14:   On '+' to state 109
+  15:   On '-' to state 110
+  16:   On '*' to state 111
+  17:   On '/' to state 112
+  18:   On '%' to state 113
+  19:   On '^' to state 114
+  20:   On '?' to state 115
+  21:   On ':' to state 116
+
+
+State 65:
+64: class_specifier -> class_head '{'  . #0001 '}' 
+66: class_specifier -> class_head '{'  . member_specification #0002 '}' 
+  0:   On #0001 to state 117
+  1:   On member_specification to state 118
+  2:   On member_declaration to state 119
+  3:   On access_specifier to state 120
+  4:   On member_declarator_list to state 121
+  5:   On decl_specifier_seq to state 122
+  6:   On PRIVATE to state 123
+  7:   On PROTECTED to state 124
+  8:   On PUBLIC to state 125
+  9:   On member_declarator to state 126
+  10:   On type_specifier to state 14
+  11:   On decl_specifier to state 15
+  12:   On declarator to state 127
+  13:   On ':' to state 128
+  14:   On identifier to state 129
+  15:   On trailing_type_specifier to state 17
+  16:   On class_specifier to state 18
+  17:   On FRIEND to state 19
+  18:   On TYPEDEF to state 20
+  19:   On VIRTUAL to state 21
+  20:   On ptr_declarator to state 25
+  21:   On IDENTIFIER to state 41
+  22:   On simple_type_specifier to state 23
+  23:   On class_head to state 24
+  24:   On noptr_declarator to state 30
+  25:   On ptr_operator to state 31
+  26:   On type_name to state 26
+  27:   On SCOPE_OPERATOR to state 27
+  28:   On nested_name_specifier to state 28
+  29:   On class_key to state 29
+  30:   On declarator_id to state 37
+  31:   On '(' to state 38
+  32:   On '*' to state 39
+  33:   On '&' to state 40
+  34:   On TYPE_NAME to state 32
+  35:   On CLASS to state 34
+  36:   On UNION to state 35
+  37:   On STRUCT to state 36
+  38:   On id_expression to state 42
+  39:   On constructor_name to state 43
+  40:   On qualified_id to state 44
+  41:   On CONSTRUCTOR_NAME to state 45
+  42:   On unqualified_id to state 46
+  43:   On '~' to state 47
+  Reduce by 65: #0001 ->  . 
+
+
+State 66:
+57: simple_type_specifier -> SCOPE_OPERATOR type_name  . 
+  Reduce by 57: simple_type_specifier -> SCOPE_OPERATOR type_name  . 
+
+
+State 67:
+59: simple_type_specifier -> SCOPE_OPERATOR nested_name_specifier  . type_name 
+43: declarator_id -> SCOPE_OPERATOR nested_name_specifier  . constructor_name 
+134: qualified_id -> SCOPE_OPERATOR nested_name_specifier  . unqualified_id 
+136: nested_name_specifier -> nested_name_specifier  . identifier SCOPE_OPERATOR 
+  0:   On type_name to state 130
+  1:   On constructor_name to state 131
+  2:   On unqualified_id to state 132
+  3:   On identifier to state 71
+  4:   On TYPE_NAME to state 32
+  5:   On CONSTRUCTOR_NAME to state 45
+  6:   On '~' to state 47
+  7:   On IDENTIFIER to state 41
+
+
+State 68:
+41: declarator_id -> SCOPE_OPERATOR constructor_name  . 
+  Reduce by 41: declarator_id -> SCOPE_OPERATOR constructor_name  . 
+
+
+State 69:
+132: qualified_id -> SCOPE_OPERATOR unqualified_id  . 
+  Reduce by 132: qualified_id -> SCOPE_OPERATOR unqualified_id  . 
+
+
+State 70:
+58: simple_type_specifier -> nested_name_specifier type_name  . 
+  Reduce by 58: simple_type_specifier -> nested_name_specifier type_name  . 
+
+
+State 71:
+136: nested_name_specifier -> nested_name_specifier identifier  . SCOPE_OPERATOR 
+129: unqualified_id -> identifier  . 
+  0:   On SCOPE_OPERATOR to state 133
+  Reduce by 129: unqualified_id -> identifier  . 
+
+
+State 72:
+42: declarator_id -> nested_name_specifier constructor_name  . 
+  Reduce by 42: declarator_id -> nested_name_specifier constructor_name  . 
+
+
+State 73:
+133: qualified_id -> nested_name_specifier unqualified_id  . 
+  Reduce by 133: qualified_id -> nested_name_specifier unqualified_id  . 
+
+
+State 74:
+69: class_head -> class_key base_clause  . 
+  Reduce by 69: class_head -> class_key base_clause  . 
+
+
+State 75:
+70: class_head -> class_key class_head_name  . 
+71: class_head -> class_key class_head_name  . base_clause 
+  0:   On base_clause to state 134
+  1:   On ':' to state 76
+  Reduce by 70: class_head -> class_key class_head_name  . 
+
+
+State 76:
+74: base_clause -> ':'  . base_specifier_list 
+  0:   On base_specifier_list to state 135
+  1:   On base_specifier to state 136
+  2:   On base_type_specifier to state 137
+  3:   On VIRTUAL to state 138
+  4:   On access_specifier to state 139
+  5:   On class_name to state 140
+  6:   On SCOPE_OPERATOR to state 141
+  7:   On nested_name_specifier to state 142
+  8:   On PRIVATE to state 123
+  9:   On PROTECTED to state 124
+  10:   On PUBLIC to state 125
+  11:   On identifier to state 79
+  12:   On IDENTIFIER to state 41
+
+
+State 77:
+72: class_head_name -> class_name  . 
+  Reduce by 72: class_head_name -> class_name  . 
+
+
+State 78:
+73: class_head_name -> nested_name_specifier  . class_name 
+136: nested_name_specifier -> nested_name_specifier  . identifier SCOPE_OPERATOR 
+  0:   On class_name to state 143
+  1:   On identifier to state 144
+  2:   On IDENTIFIER to state 41
+
+
+State 79:
+86: class_name -> identifier  . 
+135: nested_name_specifier -> identifier  . SCOPE_OPERATOR 
+  0:   On SCOPE_OPERATOR to state 84
+  Reduce by 86: class_name -> identifier  . 
+
+
+State 80:
+26: noptr_declarator -> noptr_declarator parameters_and_qualifiers  . 
+  Reduce by 26: noptr_declarator -> noptr_declarator parameters_and_qualifiers  . 
+
+
+State 81:
+27: noptr_declarator -> noptr_declarator '['  . expression ']' 
+28: noptr_declarator -> noptr_declarator '['  . ']' 
+  0:   On expression to state 145
+  1:   On ']' to state 146
+  2:   On term to state 98
+  3:   On literal to state 99
+  4:   On identifier to state 100
+  5:   On operand to state 101
+  6:   On '(' to state 102
+  7:   On STRING_LITERAL to state 103
+  8:   On CHARACTER_LITERAL to state 104
+  9:   On INTEGER_LITERAL to state 105
+  10:   On HEXADECIMAL_LITERAL to state 106
+  11:   On OCTAL_LITERAL to state 107
+  12:   On FLOAT_LITERAL to state 108
+  13:   On IDENTIFIER to state 41
+  14:   On '+' to state 109
+  15:   On '-' to state 110
+  16:   On '*' to state 111
+  17:   On '/' to state 112
+  18:   On '%' to state 113
+  19:   On '^' to state 114
+  20:   On '?' to state 115
+  21:   On ':' to state 116
+
+
+State 82:
+30: parameters_and_qualifiers -> '('  . parameter_declaration_clause ')' 
+  0:   On parameter_declaration_clause to state 147
+  1:   On parameter_declaration_list to state 148
+  2:   On parameter_declaration to state 149
+  3:   On decl_specifier_seq to state 150
+  4:   On type_specifier to state 14
+  5:   On decl_specifier to state 15
+  6:   On trailing_type_specifier to state 17
+  7:   On class_specifier to state 18
+  8:   On FRIEND to state 19
+  9:   On TYPEDEF to state 20
+  10:   On VIRTUAL to state 21
+  11:   On simple_type_specifier to state 23
+  12:   On class_head to state 24
+  13:   On type_name to state 26
+  14:   On SCOPE_OPERATOR to state 59
+  15:   On nested_name_specifier to state 60
+  16:   On class_key to state 29
+  17:   On TYPE_NAME to state 32
+  18:   On identifier to state 61
+  19:   On CLASS to state 34
+  20:   On UNION to state 35
+  21:   On STRUCT to state 36
+  22:   On IDENTIFIER to state 41
+  Reduce by 31: parameter_declaration_clause ->  . 
+
+
+State 83:
+24: ptr_declarator -> ptr_operator ptr_declarator  . 
+  Reduce by 24: ptr_declarator -> ptr_operator ptr_declarator  . 
+
+
+State 84:
+135: nested_name_specifier -> identifier SCOPE_OPERATOR  . 
+  Reduce by 135: nested_name_specifier -> identifier SCOPE_OPERATOR  . 
+
+
+State 85:
+29: noptr_declarator -> '(' ptr_declarator  . ')' 
+  0:   On ')' to state 151
+
+
+State 86:
+130: unqualified_id -> '~' constructor_name  . 
+  Reduce by 130: unqualified_id -> '~' constructor_name  . 
+
+
+State 87:
+8: simple_declaration -> decl_specifier_seq init_declarator_list ';'  . 
+  Reduce by 8: simple_declaration -> decl_specifier_seq init_declarator_list ';'  . 
+
+
+State 88:
+43: declarator_id -> SCOPE_OPERATOR nested_name_specifier  . constructor_name 
+134: qualified_id -> SCOPE_OPERATOR nested_name_specifier  . unqualified_id 
+136: nested_name_specifier -> nested_name_specifier  . identifier SCOPE_OPERATOR 
+  0:   On constructor_name to state 131
+  1:   On unqualified_id to state 132
+  2:   On identifier to state 71
+  3:   On CONSTRUCTOR_NAME to state 45
+  4:   On '~' to state 47
+  5:   On IDENTIFIER to state 41
+
+
+State 89:
+19: init_declarator_list -> init_declarator_list ',' init_declarator  . 
+  Reduce by 19: init_declarator_list -> init_declarator_list ',' init_declarator  . 
+
+
+State 90:
+49: named_namespace_definition -> NAMESPACE identifier '{'  . declaration_seq '}' 
+  0:   On declaration_seq to state 152
+  Reduce by 2: declaration_seq ->  . 
+
+
+State 91:
+51: unnamed_namespace_definition -> NAMESPACE '{' declaration_seq  . '}' 
+3: declaration_seq -> declaration_seq  . declaration 
+  0:   On '}' to state 153
+  1:   On declaration to state 3
+  2:   On block_declaration to state 4
+  3:   On namespace_definition to state 5
+  4:   On simple_declaration to state 6
+  5:   On named_namespace_definition to state 7
+  6:   On unnamed_namespace_definition to state 8
+  7:   On ';' to state 9
+  8:   On decl_specifier_seq to state 10
+  9:   On init_declarator_list to state 11
+  10:   On NAMESPACE to state 12
+  11:   On INLINE to state 13
+  12:   On type_specifier to state 14
+  13:   On decl_specifier to state 15
+  14:   On init_declarator to state 16
+  15:   On trailing_type_specifier to state 17
+  16:   On class_specifier to state 18
+  17:   On FRIEND to state 19
+  18:   On TYPEDEF to state 20
+  19:   On VIRTUAL to state 21
+  20:   On declarator to state 22
+  21:   On simple_type_specifier to state 23
+  22:   On class_head to state 24
+  23:   On ptr_declarator to state 25
+  24:   On type_name to state 26
+  25:   On SCOPE_OPERATOR to state 27
+  26:   On nested_name_specifier to state 28
+  27:   On class_key to state 29
+  28:   On noptr_declarator to state 30
+  29:   On ptr_operator to state 31
+  30:   On TYPE_NAME to state 32
+  31:   On identifier to state 33
+  32:   On CLASS to state 34
+  33:   On UNION to state 35
+  34:   On STRUCT to state 36
+  35:   On declarator_id to state 37
+  36:   On '(' to state 38
+  37:   On '*' to state 39
+  38:   On '&' to state 40
+  39:   On IDENTIFIER to state 41
+  40:   On id_expression to state 42
+  41:   On constructor_name to state 43
+  42:   On qualified_id to state 44
+  43:   On CONSTRUCTOR_NAME to state 45
+  44:   On unqualified_id to state 46
+  45:   On '~' to state 47
+
+
+State 92:
+50: named_namespace_definition -> INLINE NAMESPACE identifier  . '{' declaration_seq '}' 
+  0:   On '{' to state 154
+
+
+State 93:
+52: unnamed_namespace_definition -> INLINE NAMESPACE '{'  . declaration_seq '}' 
+  0:   On declaration_seq to state 155
+  Reduce by 2: declaration_seq ->  . 
+
+
+State 94:
+59: simple_type_specifier -> SCOPE_OPERATOR nested_name_specifier  . type_name 
+136: nested_name_specifier -> nested_name_specifier  . identifier SCOPE_OPERATOR 
+  0:   On type_name to state 130
+  1:   On identifier to state 95
+  2:   On TYPE_NAME to state 32
+  3:   On IDENTIFIER to state 41
+
+
+State 95:
+136: nested_name_specifier -> nested_name_specifier identifier  . SCOPE_OPERATOR 
+  0:   On SCOPE_OPERATOR to state 133
+
+
+State 96:
+45: brace_or_equal_initializer -> '=' initializer_clause  . 
+  Reduce by 45: brace_or_equal_initializer -> '=' initializer_clause  . 
+
+
+State 97:
+46: initializer_clause -> expression  . 
+107: expression -> expression  . term 
+  0:   On term to state 156
+  1:   On literal to state 99
+  2:   On identifier to state 100
+  3:   On operand to state 101
+  4:   On '(' to state 102
+  5:   On STRING_LITERAL to state 103
+  6:   On CHARACTER_LITERAL to state 104
+  7:   On INTEGER_LITERAL to state 105
+  8:   On HEXADECIMAL_LITERAL to state 106
+  9:   On OCTAL_LITERAL to state 107
+  10:   On FLOAT_LITERAL to state 108
+  11:   On IDENTIFIER to state 41
+  12:   On '+' to state 109
+  13:   On '-' to state 110
+  14:   On '*' to state 111
+  15:   On '/' to state 112
+  16:   On '%' to state 113
+  17:   On '^' to state 114
+  18:   On '?' to state 115
+  19:   On ':' to state 116
+  Reduce by 46: initializer_clause -> expression  . 
+
+
+State 98:
+106: expression -> term  . 
+  Reduce by 106: expression -> term  . 
+
+
+State 99:
+108: term -> literal  . 
+  Reduce by 108: term -> literal  . 
+
+
+State 100:
+109: term -> identifier  . 
+  Reduce by 109: term -> identifier  . 
+
+
+State 101:
+110: term -> operand  . 
+  Reduce by 110: term -> operand  . 
+
+
+State 102:
+111: term -> '('  . expression ')' 
+  0:   On expression to state 157
+  1:   On term to state 98
+  2:   On literal to state 99
+  3:   On identifier to state 100
+  4:   On operand to state 101
+  5:   On '(' to state 102
+  6:   On STRING_LITERAL to state 103
+  7:   On CHARACTER_LITERAL to state 104
+  8:   On INTEGER_LITERAL to state 105
+  9:   On HEXADECIMAL_LITERAL to state 106
+  10:   On OCTAL_LITERAL to state 107
+  11:   On FLOAT_LITERAL to state 108
+  12:   On IDENTIFIER to state 41
+  13:   On '+' to state 109
+  14:   On '-' to state 110
+  15:   On '*' to state 111
+  16:   On '/' to state 112
+  17:   On '%' to state 113
+  18:   On '^' to state 114
+  19:   On '?' to state 115
+  20:   On ':' to state 116
+
+
+State 103:
+112: literal -> STRING_LITERAL  . 
+  Reduce by 112: literal -> STRING_LITERAL  . 
+
+
+State 104:
+113: literal -> CHARACTER_LITERAL  . 
+  Reduce by 113: literal -> CHARACTER_LITERAL  . 
+
+
+State 105:
+114: literal -> INTEGER_LITERAL  . 
+  Reduce by 114: literal -> INTEGER_LITERAL  . 
+
+
+State 106:
+115: literal -> HEXADECIMAL_LITERAL  . 
+  Reduce by 115: literal -> HEXADECIMAL_LITERAL  . 
+
+
+State 107:
+116: literal -> OCTAL_LITERAL  . 
+  Reduce by 116: literal -> OCTAL_LITERAL  . 
+
+
+State 108:
+117: literal -> FLOAT_LITERAL  . 
+  Reduce by 117: literal -> FLOAT_LITERAL  . 
+
+
+State 109:
+118: operand -> '+'  . 
+  Reduce by 118: operand -> '+'  . 
+
+
+State 110:
+119: operand -> '-'  . 
+  Reduce by 119: operand -> '-'  . 
+
+
+State 111:
+120: operand -> '*'  . 
+  Reduce by 120: operand -> '*'  . 
+
+
+State 112:
+121: operand -> '/'  . 
+  Reduce by 121: operand -> '/'  . 
+
+
+State 113:
+122: operand -> '%'  . 
+  Reduce by 122: operand -> '%'  . 
+
+
+State 114:
+123: operand -> '^'  . 
+  Reduce by 123: operand -> '^'  . 
+
+
+State 115:
+124: operand -> '?'  . 
+  Reduce by 124: operand -> '?'  . 
+
+
+State 116:
+125: operand -> ':'  . 
+  Reduce by 125: operand -> ':'  . 
+
+
+State 117:
+64: class_specifier -> class_head '{' #0001  . '}' 
+  0:   On '}' to state 158
+
+
+State 118:
+66: class_specifier -> class_head '{' member_specification  . #0002 '}' 
+  0:   On #0002 to state 159
+  Reduce by 67: #0002 ->  . 
+
+
+State 119:
+90: member_specification -> member_declaration  . 
+91: member_specification -> member_declaration  . member_specification 
+  0:   On member_specification to state 160
+  1:   On member_declaration to state 119
+  2:   On access_specifier to state 120
+  3:   On member_declarator_list to state 121
+  4:   On decl_specifier_seq to state 122
+  5:   On PRIVATE to state 123
+  6:   On PROTECTED to state 124
+  7:   On PUBLIC to state 125
+  8:   On member_declarator to state 126
+  9:   On type_specifier to state 14
+  10:   On decl_specifier to state 15
+  11:   On declarator to state 127
+  12:   On ':' to state 128
+  13:   On identifier to state 129
+  14:   On trailing_type_specifier to state 17
+  15:   On class_specifier to state 18
+  16:   On FRIEND to state 19
+  17:   On TYPEDEF to state 20
+  18:   On VIRTUAL to state 21
+  19:   On ptr_declarator to state 25
+  20:   On IDENTIFIER to state 41
+  21:   On simple_type_specifier to state 23
+  22:   On class_head to state 24
+  23:   On noptr_declarator to state 30
+  24:   On ptr_operator to state 31
+  25:   On type_name to state 26
+  26:   On SCOPE_OPERATOR to state 27
+  27:   On nested_name_specifier to state 28
+  28:   On class_key to state 29
+  29:   On declarator_id to state 37
+  30:   On '(' to state 38
+  31:   On '*' to state 39
+  32:   On '&' to state 40
+  33:   On TYPE_NAME to state 32
+  34:   On CLASS to state 34
+  35:   On UNION to state 35
+  36:   On STRUCT to state 36
+  37:   On id_expression to state 42
+  38:   On constructor_name to state 43
+  39:   On qualified_id to state 44
+  40:   On CONSTRUCTOR_NAME to state 45
+  41:   On unqualified_id to state 46
+  42:   On '~' to state 47
+  Reduce by 90: member_specification -> member_declaration  . 
+
+
+State 120:
+92: member_specification -> access_specifier  . ':' 
+93: member_specification -> access_specifier  . ':' member_specification 
+  0:   On ':' to state 161
+
+
+State 121:
+94: member_declaration -> member_declarator_list  . ';' 
+98: member_declarator_list -> member_declarator_list  . ',' member_declarator 
+  0:   On ';' to state 162
+  1:   On ',' to state 163
+
+
+State 122:
+95: member_declaration -> decl_specifier_seq  . ';' 
+96: member_declaration -> decl_specifier_seq  . member_declarator_list ';' 
+  0:   On ';' to state 164
+  1:   On member_declarator_list to state 165
+  2:   On member_declarator to state 126
+  3:   On declarator to state 127
+  4:   On ':' to state 128
+  5:   On identifier to state 129
+  6:   On ptr_declarator to state 25
+  7:   On IDENTIFIER to state 41
+  8:   On noptr_declarator to state 30
+  9:   On ptr_operator to state 31
+  10:   On declarator_id to state 37
+  11:   On '(' to state 38
+  12:   On '*' to state 39
+  13:   On '&' to state 40
+  14:   On id_expression to state 42
+  15:   On constructor_name to state 43
+  16:   On SCOPE_OPERATOR to state 50
+  17:   On nested_name_specifier to state 51
+  18:   On qualified_id to state 44
+  19:   On CONSTRUCTOR_NAME to state 45
+  20:   On unqualified_id to state 46
+  21:   On '~' to state 47
+
+
+State 123:
+61: access_specifier -> PRIVATE  . 
+  Reduce by 61: access_specifier -> PRIVATE  . 
+
+
+State 124:
+62: access_specifier -> PROTECTED  . 
+  Reduce by 62: access_specifier -> PROTECTED  . 
+
+
+State 125:
+63: access_specifier -> PUBLIC  . 
+  Reduce by 63: access_specifier -> PUBLIC  . 
+
+
+State 126:
+97: member_declarator_list -> member_declarator  . 
+  Reduce by 97: member_declarator_list -> member_declarator  . 
+
+
+State 127:
+99: member_declarator -> declarator  . 
+100: member_declarator -> declarator  . pure_specifier 
+101: member_declarator -> declarator  . brace_or_equal_initializer 
+  0:   On pure_specifier to state 166
+  1:   On brace_or_equal_initializer to state 167
+  2:   On '=' to state 168
+  Reduce by 99: member_declarator -> declarator  . 
+
+
+State 128:
+102: member_declarator -> ':'  . constant_expression 
+  0:   On constant_expression to state 169
+  1:   On expression to state 170
+  2:   On term to state 98
+  3:   On literal to state 99
+  4:   On identifier to state 100
+  5:   On operand to state 101
+  6:   On '(' to state 102
+  7:   On STRING_LITERAL to state 103
+  8:   On CHARACTER_LITERAL to state 104
+  9:   On INTEGER_LITERAL to state 105
+  10:   On HEXADECIMAL_LITERAL to state 106
+  11:   On OCTAL_LITERAL to state 107
+  12:   On FLOAT_LITERAL to state 108
+  13:   On IDENTIFIER to state 41
+  14:   On '+' to state 109
+  15:   On '-' to state 110
+  16:   On '*' to state 111
+  17:   On '/' to state 112
+  18:   On '%' to state 113
+  19:   On '^' to state 114
+  20:   On '?' to state 115
+  21:   On ':' to state 116
+
+
+State 129:
+103: member_declarator -> identifier  . ':' constant_expression 
+135: nested_name_specifier -> identifier  . SCOPE_OPERATOR 
+129: unqualified_id -> identifier  . 
+  0:   On ':' to state 171
+  1:   On SCOPE_OPERATOR to state 84
+  Reduce by 129: unqualified_id -> identifier  . 
+
+
+State 130:
+59: simple_type_specifier -> SCOPE_OPERATOR nested_name_specifier type_name  . 
+  Reduce by 59: simple_type_specifier -> SCOPE_OPERATOR nested_name_specifier type_name  . 
+
+
+State 131:
+43: declarator_id -> SCOPE_OPERATOR nested_name_specifier constructor_name  . 
+  Reduce by 43: declarator_id -> SCOPE_OPERATOR nested_name_specifier constructor_name  . 
+
+
+State 132:
+134: qualified_id -> SCOPE_OPERATOR nested_name_specifier unqualified_id  . 
+  Reduce by 134: qualified_id -> SCOPE_OPERATOR nested_name_specifier unqualified_id  . 
+
+
+State 133:
+136: nested_name_specifier -> nested_name_specifier identifier SCOPE_OPERATOR  . 
+  Reduce by 136: nested_name_specifier -> nested_name_specifier identifier SCOPE_OPERATOR  . 
+
+
+State 134:
+71: class_head -> class_key class_head_name base_clause  . 
+  Reduce by 71: class_head -> class_key class_head_name base_clause  . 
+
+
+State 135:
+74: base_clause -> ':' base_specifier_list  . 
+76: base_specifier_list -> base_specifier_list  . ',' base_specifier 
+  0:   On ',' to state 172
+  Reduce by 74: base_clause -> ':' base_specifier_list  . 
+
+
+State 136:
+75: base_specifier_list -> base_specifier  . 
+  Reduce by 75: base_specifier_list -> base_specifier  . 
+
+
+State 137:
+77: base_specifier -> base_type_specifier  . 
+  Reduce by 77: base_specifier -> base_type_specifier  . 
+
+
+State 138:
+78: base_specifier -> VIRTUAL  . base_type_specifier 
+80: base_specifier -> VIRTUAL  . access_specifier base_type_specifier 
+  0:   On base_type_specifier to state 173
+  1:   On access_specifier to state 174
+  2:   On class_name to state 140
+  3:   On SCOPE_OPERATOR to state 141
+  4:   On nested_name_specifier to state 142
+  5:   On PRIVATE to state 123
+  6:   On PROTECTED to state 124
+  7:   On PUBLIC to state 125
+  8:   On identifier to state 79
+  9:   On IDENTIFIER to state 41
+
+
+State 139:
+79: base_specifier -> access_specifier  . base_type_specifier 
+81: base_specifier -> access_specifier  . VIRTUAL base_type_specifier 
+  0:   On base_type_specifier to state 175
+  1:   On VIRTUAL to state 176
+  2:   On class_name to state 140
+  3:   On SCOPE_OPERATOR to state 141
+  4:   On nested_name_specifier to state 142
+  5:   On identifier to state 79
+  6:   On IDENTIFIER to state 41
+
+
+State 140:
+82: base_type_specifier -> class_name  . 
+  Reduce by 82: base_type_specifier -> class_name  . 
+
+
+State 141:
+83: base_type_specifier -> SCOPE_OPERATOR  . class_name 
+85: base_type_specifier -> SCOPE_OPERATOR  . nested_name_specifier class_name 
+  0:   On class_name to state 177
+  1:   On nested_name_specifier to state 178
+  2:   On identifier to state 79
+  3:   On IDENTIFIER to state 41
+
+
+State 142:
+84: base_type_specifier -> nested_name_specifier  . class_name 
+136: nested_name_specifier -> nested_name_specifier  . identifier SCOPE_OPERATOR 
+  0:   On class_name to state 179
+  1:   On identifier to state 144
+  2:   On IDENTIFIER to state 41
+
+
+State 143:
+73: class_head_name -> nested_name_specifier class_name  . 
+  Reduce by 73: class_head_name -> nested_name_specifier class_name  . 
+
+
+State 144:
+136: nested_name_specifier -> nested_name_specifier identifier  . SCOPE_OPERATOR 
+86: class_name -> identifier  . 
+  0:   On SCOPE_OPERATOR to state 133
+  Reduce by 86: class_name -> identifier  . 
+
+
+State 145:
+27: noptr_declarator -> noptr_declarator '[' expression  . ']' 
+107: expression -> expression  . term 
+  0:   On ']' to state 180
+  1:   On term to state 156
+  2:   On literal to state 99
+  3:   On identifier to state 100
+  4:   On operand to state 101
+  5:   On '(' to state 102
+  6:   On STRING_LITERAL to state 103
+  7:   On CHARACTER_LITERAL to state 104
+  8:   On INTEGER_LITERAL to state 105
+  9:   On HEXADECIMAL_LITERAL to state 106
+  10:   On OCTAL_LITERAL to state 107
+  11:   On FLOAT_LITERAL to state 108
+  12:   On IDENTIFIER to state 41
+  13:   On '+' to state 109
+  14:   On '-' to state 110
+  15:   On '*' to state 111
+  16:   On '/' to state 112
+  17:   On '%' to state 113
+  18:   On '^' to state 114
+  19:   On '?' to state 115
+  20:   On ':' to state 116
+
+
+State 146:
+28: noptr_declarator -> noptr_declarator '[' ']'  . 
+  Reduce by 28: noptr_declarator -> noptr_declarator '[' ']'  . 
+
+
+State 147:
+30: parameters_and_qualifiers -> '(' parameter_declaration_clause  . ')' 
+  0:   On ')' to state 181
+
+
+State 148:
+32: parameter_declaration_clause -> parameter_declaration_list  . 
+34: parameter_declaration_list -> parameter_declaration_list  . ',' parameter_declaration 
+  0:   On ',' to state 182
+  Reduce by 32: parameter_declaration_clause -> parameter_declaration_list  . 
+
+
+State 149:
+33: parameter_declaration_list -> parameter_declaration  . 
+  Reduce by 33: parameter_declaration_list -> parameter_declaration  . 
+
+
+State 150:
+35: parameter_declaration -> decl_specifier_seq  . 
+36: parameter_declaration -> decl_specifier_seq  . declarator 
+  0:   On declarator to state 183
+  1:   On ptr_declarator to state 25
+  2:   On noptr_declarator to state 30
+  3:   On ptr_operator to state 31
+  4:   On declarator_id to state 37
+  5:   On '(' to state 38
+  6:   On '*' to state 39
+  7:   On '&' to state 40
+  8:   On id_expression to state 42
+  9:   On constructor_name to state 43
+  10:   On SCOPE_OPERATOR to state 50
+  11:   On nested_name_specifier to state 51
+  12:   On qualified_id to state 44
+  13:   On CONSTRUCTOR_NAME to state 45
+  14:   On identifier to state 33
+  15:   On unqualified_id to state 46
+  16:   On IDENTIFIER to state 41
+  17:   On '~' to state 47
+  Reduce by 35: parameter_declaration -> decl_specifier_seq  . 
+
+
+State 151:
+29: noptr_declarator -> '(' ptr_declarator ')'  . 
+  Reduce by 29: noptr_declarator -> '(' ptr_declarator ')'  . 
+
+
+State 152:
+49: named_namespace_definition -> NAMESPACE identifier '{' declaration_seq  . '}' 
+3: declaration_seq -> declaration_seq  . declaration 
+  0:   On '}' to state 184
+  1:   On declaration to state 3
+  2:   On block_declaration to state 4
+  3:   On namespace_definition to state 5
+  4:   On simple_declaration to state 6
+  5:   On named_namespace_definition to state 7
+  6:   On unnamed_namespace_definition to state 8
+  7:   On ';' to state 9
+  8:   On decl_specifier_seq to state 10
+  9:   On init_declarator_list to state 11
+  10:   On NAMESPACE to state 12
+  11:   On INLINE to state 13
+  12:   On type_specifier to state 14
+  13:   On decl_specifier to state 15
+  14:   On init_declarator to state 16
+  15:   On trailing_type_specifier to state 17
+  16:   On class_specifier to state 18
+  17:   On FRIEND to state 19
+  18:   On TYPEDEF to state 20
+  19:   On VIRTUAL to state 21
+  20:   On declarator to state 22
+  21:   On simple_type_specifier to state 23
+  22:   On class_head to state 24
+  23:   On ptr_declarator to state 25
+  24:   On type_name to state 26
+  25:   On SCOPE_OPERATOR to state 27
+  26:   On nested_name_specifier to state 28
+  27:   On class_key to state 29
+  28:   On noptr_declarator to state 30
+  29:   On ptr_operator to state 31
+  30:   On TYPE_NAME to state 32
+  31:   On identifier to state 33
+  32:   On CLASS to state 34
+  33:   On UNION to state 35
+  34:   On STRUCT to state 36
+  35:   On declarator_id to state 37
+  36:   On '(' to state 38
+  37:   On '*' to state 39
+  38:   On '&' to state 40
+  39:   On IDENTIFIER to state 41
+  40:   On id_expression to state 42
+  41:   On constructor_name to state 43
+  42:   On qualified_id to state 44
+  43:   On CONSTRUCTOR_NAME to state 45
+  44:   On unqualified_id to state 46
+  45:   On '~' to state 47
+
+
+State 153:
+51: unnamed_namespace_definition -> NAMESPACE '{' declaration_seq '}'  . 
+  Reduce by 51: unnamed_namespace_definition -> NAMESPACE '{' declaration_seq '}'  . 
+
+
+State 154:
+50: named_namespace_definition -> INLINE NAMESPACE identifier '{'  . declaration_seq '}' 
+  0:   On declaration_seq to state 185
+  Reduce by 2: declaration_seq ->  . 
+
+
+State 155:
+52: unnamed_namespace_definition -> INLINE NAMESPACE '{' declaration_seq  . '}' 
+3: declaration_seq -> declaration_seq  . declaration 
+  0:   On '}' to state 186
+  1:   On declaration to state 3
+  2:   On block_declaration to state 4
+  3:   On namespace_definition to state 5
+  4:   On simple_declaration to state 6
+  5:   On named_namespace_definition to state 7
+  6:   On unnamed_namespace_definition to state 8
+  7:   On ';' to state 9
+  8:   On decl_specifier_seq to state 10
+  9:   On init_declarator_list to state 11
+  10:   On NAMESPACE to state 12
+  11:   On INLINE to state 13
+  12:   On type_specifier to state 14
+  13:   On decl_specifier to state 15
+  14:   On init_declarator to state 16
+  15:   On trailing_type_specifier to state 17
+  16:   On class_specifier to state 18
+  17:   On FRIEND to state 19
+  18:   On TYPEDEF to state 20
+  19:   On VIRTUAL to state 21
+  20:   On declarator to state 22
+  21:   On simple_type_specifier to state 23
+  22:   On class_head to state 24
+  23:   On ptr_declarator to state 25
+  24:   On type_name to state 26
+  25:   On SCOPE_OPERATOR to state 27
+  26:   On nested_name_specifier to state 28
+  27:   On class_key to state 29
+  28:   On noptr_declarator to state 30
+  29:   On ptr_operator to state 31
+  30:   On TYPE_NAME to state 32
+  31:   On identifier to state 33
+  32:   On CLASS to state 34
+  33:   On UNION to state 35
+  34:   On STRUCT to state 36
+  35:   On declarator_id to state 37
+  36:   On '(' to state 38
+  37:   On '*' to state 39
+  38:   On '&' to state 40
+  39:   On IDENTIFIER to state 41
+  40:   On id_expression to state 42
+  41:   On constructor_name to state 43
+  42:   On qualified_id to state 44
+  43:   On CONSTRUCTOR_NAME to state 45
+  44:   On unqualified_id to state 46
+  45:   On '~' to state 47
+
+
+State 156:
+107: expression -> expression term  . 
+  Reduce by 107: expression -> expression term  . 
+
+
+State 157:
+111: term -> '(' expression  . ')' 
+107: expression -> expression  . term 
+  0:   On ')' to state 187
+  1:   On term to state 156
+  2:   On literal to state 99
+  3:   On identifier to state 100
+  4:   On operand to state 101
+  5:   On '(' to state 102
+  6:   On STRING_LITERAL to state 103
+  7:   On CHARACTER_LITERAL to state 104
+  8:   On INTEGER_LITERAL to state 105
+  9:   On HEXADECIMAL_LITERAL to state 106
+  10:   On OCTAL_LITERAL to state 107
+  11:   On FLOAT_LITERAL to state 108
+  12:   On IDENTIFIER to state 41
+  13:   On '+' to state 109
+  14:   On '-' to state 110
+  15:   On '*' to state 111
+  16:   On '/' to state 112
+  17:   On '%' to state 113
+  18:   On '^' to state 114
+  19:   On '?' to state 115
+  20:   On ':' to state 116
+
+
+State 158:
+64: class_specifier -> class_head '{' #0001 '}'  . 
+  Reduce by 64: class_specifier -> class_head '{' #0001 '}'  . 
+
+
+State 159:
+66: class_specifier -> class_head '{' member_specification #0002  . '}' 
+  0:   On '}' to state 188
+
+
+State 160:
+91: member_specification -> member_declaration member_specification  . 
+  Reduce by 91: member_specification -> member_declaration member_specification  . 
+
+
+State 161:
+92: member_specification -> access_specifier ':'  . 
+93: member_specification -> access_specifier ':'  . member_specification 
+  0:   On member_specification to state 189
+  1:   On member_declaration to state 119
+  2:   On access_specifier to state 120
+  3:   On member_declarator_list to state 121
+  4:   On decl_specifier_seq to state 122
+  5:   On PRIVATE to state 123
+  6:   On PROTECTED to state 124
+  7:   On PUBLIC to state 125
+  8:   On member_declarator to state 126
+  9:   On type_specifier to state 14
+  10:   On decl_specifier to state 15
+  11:   On declarator to state 127
+  12:   On ':' to state 128
+  13:   On identifier to state 129
+  14:   On trailing_type_specifier to state 17
+  15:   On class_specifier to state 18
+  16:   On FRIEND to state 19
+  17:   On TYPEDEF to state 20
+  18:   On VIRTUAL to state 21
+  19:   On ptr_declarator to state 25
+  20:   On IDENTIFIER to state 41
+  21:   On simple_type_specifier to state 23
+  22:   On class_head to state 24
+  23:   On noptr_declarator to state 30
+  24:   On ptr_operator to state 31
+  25:   On type_name to state 26
+  26:   On SCOPE_OPERATOR to state 27
+  27:   On nested_name_specifier to state 28
+  28:   On class_key to state 29
+  29:   On declarator_id to state 37
+  30:   On '(' to state 38
+  31:   On '*' to state 39
+  32:   On '&' to state 40
+  33:   On TYPE_NAME to state 32
+  34:   On CLASS to state 34
+  35:   On UNION to state 35
+  36:   On STRUCT to state 36
+  37:   On id_expression to state 42
+  38:   On constructor_name to state 43
+  39:   On qualified_id to state 44
+  40:   On CONSTRUCTOR_NAME to state 45
+  41:   On unqualified_id to state 46
+  42:   On '~' to state 47
+  Reduce by 92: member_specification -> access_specifier ':'  . 
+
+
+State 162:
+94: member_declaration -> member_declarator_list ';'  . 
+  Reduce by 94: member_declaration -> member_declarator_list ';'  . 
+
+
+State 163:
+98: member_declarator_list -> member_declarator_list ','  . member_declarator 
+  0:   On member_declarator to state 190
+  1:   On declarator to state 127
+  2:   On ':' to state 128
+  3:   On identifier to state 129
+  4:   On ptr_declarator to state 25
+  5:   On IDENTIFIER to state 41
+  6:   On noptr_declarator to state 30
+  7:   On ptr_operator to state 31
+  8:   On declarator_id to state 37
+  9:   On '(' to state 38
+  10:   On '*' to state 39
+  11:   On '&' to state 40
+  12:   On id_expression to state 42
+  13:   On constructor_name to state 43
+  14:   On SCOPE_OPERATOR to state 50
+  15:   On nested_name_specifier to state 51
+  16:   On qualified_id to state 44
+  17:   On CONSTRUCTOR_NAME to state 45
+  18:   On unqualified_id to state 46
+  19:   On '~' to state 47
+
+
+State 164:
+95: member_declaration -> decl_specifier_seq ';'  . 
+  Reduce by 95: member_declaration -> decl_specifier_seq ';'  . 
+
+
+State 165:
+96: member_declaration -> decl_specifier_seq member_declarator_list  . ';' 
+98: member_declarator_list -> member_declarator_list  . ',' member_declarator 
+  0:   On ';' to state 191
+  1:   On ',' to state 163
+
+
+State 166:
+100: member_declarator -> declarator pure_specifier  . 
+  Reduce by 100: member_declarator -> declarator pure_specifier  . 
+
+
+State 167:
+101: member_declarator -> declarator brace_or_equal_initializer  . 
+  Reduce by 101: member_declarator -> declarator brace_or_equal_initializer  . 
+
+
+State 168:
+104: pure_specifier -> '='  . INTEGER_LITERAL 
+45: brace_or_equal_initializer -> '='  . initializer_clause 
+  0:   On INTEGER_LITERAL to state 192
+  1:   On initializer_clause to state 96
+  2:   On expression to state 97
+  3:   On term to state 98
+  4:   On literal to state 99
+  5:   On identifier to state 100
+  6:   On operand to state 101
+  7:   On '(' to state 102
+  8:   On STRING_LITERAL to state 103
+  9:   On CHARACTER_LITERAL to state 104
+  10:   On HEXADECIMAL_LITERAL to state 106
+  11:   On OCTAL_LITERAL to state 107
+  12:   On FLOAT_LITERAL to state 108
+  13:   On IDENTIFIER to state 41
+  14:   On '+' to state 109
+  15:   On '-' to state 110
+  16:   On '*' to state 111
+  17:   On '/' to state 112
+  18:   On '%' to state 113
+  19:   On '^' to state 114
+  20:   On '?' to state 115
+  21:   On ':' to state 116
+
+
+State 169:
+102: member_declarator -> ':' constant_expression  . 
+  Reduce by 102: member_declarator -> ':' constant_expression  . 
+
+
+State 170:
+105: constant_expression -> expression  . 
+107: expression -> expression  . term 
+  0:   On term to state 156
+  1:   On literal to state 99
+  2:   On identifier to state 100
+  3:   On operand to state 101
+  4:   On '(' to state 102
+  5:   On STRING_LITERAL to state 103
+  6:   On CHARACTER_LITERAL to state 104
+  7:   On INTEGER_LITERAL to state 105
+  8:   On HEXADECIMAL_LITERAL to state 106
+  9:   On OCTAL_LITERAL to state 107
+  10:   On FLOAT_LITERAL to state 108
+  11:   On IDENTIFIER to state 41
+  12:   On '+' to state 109
+  13:   On '-' to state 110
+  14:   On '*' to state 111
+  15:   On '/' to state 112
+  16:   On '%' to state 113
+  17:   On '^' to state 114
+  18:   On '?' to state 115
+  19:   On ':' to state 116
+  Reduce by 105: constant_expression -> expression  . 
+
+
+State 171:
+103: member_declarator -> identifier ':'  . constant_expression 
+  0:   On constant_expression to state 193
+  1:   On expression to state 170
+  2:   On term to state 98
+  3:   On literal to state 99
+  4:   On identifier to state 100
+  5:   On operand to state 101
+  6:   On '(' to state 102
+  7:   On STRING_LITERAL to state 103
+  8:   On CHARACTER_LITERAL to state 104
+  9:   On INTEGER_LITERAL to state 105
+  10:   On HEXADECIMAL_LITERAL to state 106
+  11:   On OCTAL_LITERAL to state 107
+  12:   On FLOAT_LITERAL to state 108
+  13:   On IDENTIFIER to state 41
+  14:   On '+' to state 109
+  15:   On '-' to state 110
+  16:   On '*' to state 111
+  17:   On '/' to state 112
+  18:   On '%' to state 113
+  19:   On '^' to state 114
+  20:   On '?' to state 115
+  21:   On ':' to state 116
+
+
+State 172:
+76: base_specifier_list -> base_specifier_list ','  . base_specifier 
+  0:   On base_specifier to state 194
+  1:   On base_type_specifier to state 137
+  2:   On VIRTUAL to state 138
+  3:   On access_specifier to state 139
+  4:   On class_name to state 140
+  5:   On SCOPE_OPERATOR to state 141
+  6:   On nested_name_specifier to state 142
+  7:   On PRIVATE to state 123
+  8:   On PROTECTED to state 124
+  9:   On PUBLIC to state 125
+  10:   On identifier to state 79
+  11:   On IDENTIFIER to state 41
+
+
+State 173:
+78: base_specifier -> VIRTUAL base_type_specifier  . 
+  Reduce by 78: base_specifier -> VIRTUAL base_type_specifier  . 
+
+
+State 174:
+80: base_specifier -> VIRTUAL access_specifier  . base_type_specifier 
+  0:   On base_type_specifier to state 195
+  1:   On class_name to state 140
+  2:   On SCOPE_OPERATOR to state 141
+  3:   On nested_name_specifier to state 142
+  4:   On identifier to state 79
+  5:   On IDENTIFIER to state 41
+
+
+State 175:
+79: base_specifier -> access_specifier base_type_specifier  . 
+  Reduce by 79: base_specifier -> access_specifier base_type_specifier  . 
+
+
+State 176:
+81: base_specifier -> access_specifier VIRTUAL  . base_type_specifier 
+  0:   On base_type_specifier to state 196
+  1:   On class_name to state 140
+  2:   On SCOPE_OPERATOR to state 141
+  3:   On nested_name_specifier to state 142
+  4:   On identifier to state 79
+  5:   On IDENTIFIER to state 41
+
+
+State 177:
+83: base_type_specifier -> SCOPE_OPERATOR class_name  . 
+  Reduce by 83: base_type_specifier -> SCOPE_OPERATOR class_name  . 
+
+
+State 178:
+85: base_type_specifier -> SCOPE_OPERATOR nested_name_specifier  . class_name 
+136: nested_name_specifier -> nested_name_specifier  . identifier SCOPE_OPERATOR 
+  0:   On class_name to state 197
+  1:   On identifier to state 144
+  2:   On IDENTIFIER to state 41
+
+
+State 179:
+84: base_type_specifier -> nested_name_specifier class_name  . 
+  Reduce by 84: base_type_specifier -> nested_name_specifier class_name  . 
+
+
+State 180:
+27: noptr_declarator -> noptr_declarator '[' expression ']'  . 
+  Reduce by 27: noptr_declarator -> noptr_declarator '[' expression ']'  . 
+
+
+State 181:
+30: parameters_and_qualifiers -> '(' parameter_declaration_clause ')'  . 
+  Reduce by 30: parameters_and_qualifiers -> '(' parameter_declaration_clause ')'  . 
+
+
+State 182:
+34: parameter_declaration_list -> parameter_declaration_list ','  . parameter_declaration 
+  0:   On parameter_declaration to state 198
+  1:   On decl_specifier_seq to state 150
+  2:   On type_specifier to state 14
+  3:   On decl_specifier to state 15
+  4:   On trailing_type_specifier to state 17
+  5:   On class_specifier to state 18
+  6:   On FRIEND to state 19
+  7:   On TYPEDEF to state 20
+  8:   On VIRTUAL to state 21
+  9:   On simple_type_specifier to state 23
+  10:   On class_head to state 24
+  11:   On type_name to state 26
+  12:   On SCOPE_OPERATOR to state 59
+  13:   On nested_name_specifier to state 60
+  14:   On class_key to state 29
+  15:   On TYPE_NAME to state 32
+  16:   On identifier to state 61
+  17:   On CLASS to state 34
+  18:   On UNION to state 35
+  19:   On STRUCT to state 36
+  20:   On IDENTIFIER to state 41
+
+
+State 183:
+36: parameter_declaration -> decl_specifier_seq declarator  . 
+  Reduce by 36: parameter_declaration -> decl_specifier_seq declarator  . 
+
+
+State 184:
+49: named_namespace_definition -> NAMESPACE identifier '{' declaration_seq '}'  . 
+  Reduce by 49: named_namespace_definition -> NAMESPACE identifier '{' declaration_seq '}'  . 
+
+
+State 185:
+50: named_namespace_definition -> INLINE NAMESPACE identifier '{' declaration_seq  . '}' 
+3: declaration_seq -> declaration_seq  . declaration 
+  0:   On '}' to state 199
+  1:   On declaration to state 3
+  2:   On block_declaration to state 4
+  3:   On namespace_definition to state 5
+  4:   On simple_declaration to state 6
+  5:   On named_namespace_definition to state 7
+  6:   On unnamed_namespace_definition to state 8
+  7:   On ';' to state 9
+  8:   On decl_specifier_seq to state 10
+  9:   On init_declarator_list to state 11
+  10:   On NAMESPACE to state 12
+  11:   On INLINE to state 13
+  12:   On type_specifier to state 14
+  13:   On decl_specifier to state 15
+  14:   On init_declarator to state 16
+  15:   On trailing_type_specifier to state 17
+  16:   On class_specifier to state 18
+  17:   On FRIEND to state 19
+  18:   On TYPEDEF to state 20
+  19:   On VIRTUAL to state 21
+  20:   On declarator to state 22
+  21:   On simple_type_specifier to state 23
+  22:   On class_head to state 24
+  23:   On ptr_declarator to state 25
+  24:   On type_name to state 26
+  25:   On SCOPE_OPERATOR to state 27
+  26:   On nested_name_specifier to state 28
+  27:   On class_key to state 29
+  28:   On noptr_declarator to state 30
+  29:   On ptr_operator to state 31
+  30:   On TYPE_NAME to state 32
+  31:   On identifier to state 33
+  32:   On CLASS to state 34
+  33:   On UNION to state 35
+  34:   On STRUCT to state 36
+  35:   On declarator_id to state 37
+  36:   On '(' to state 38
+  37:   On '*' to state 39
+  38:   On '&' to state 40
+  39:   On IDENTIFIER to state 41
+  40:   On id_expression to state 42
+  41:   On constructor_name to state 43
+  42:   On qualified_id to state 44
+  43:   On CONSTRUCTOR_NAME to state 45
+  44:   On unqualified_id to state 46
+  45:   On '~' to state 47
+
+
+State 186:
+52: unnamed_namespace_definition -> INLINE NAMESPACE '{' declaration_seq '}'  . 
+  Reduce by 52: unnamed_namespace_definition -> INLINE NAMESPACE '{' declaration_seq '}'  . 
+
+
+State 187:
+111: term -> '(' expression ')'  . 
+  Reduce by 111: term -> '(' expression ')'  . 
+
+
+State 188:
+66: class_specifier -> class_head '{' member_specification #0002 '}'  . 
+  Reduce by 66: class_specifier -> class_head '{' member_specification #0002 '}'  . 
+
+
+State 189:
+93: member_specification -> access_specifier ':' member_specification  . 
+  Reduce by 93: member_specification -> access_specifier ':' member_specification  . 
+
+
+State 190:
+98: member_declarator_list -> member_declarator_list ',' member_declarator  . 
+  Reduce by 98: member_declarator_list -> member_declarator_list ',' member_declarator  . 
+
+
+State 191:
+96: member_declaration -> decl_specifier_seq member_declarator_list ';'  . 
+  Reduce by 96: member_declaration -> decl_specifier_seq member_declarator_list ';'  . 
+
+
+State 192:
+104: pure_specifier -> '=' INTEGER_LITERAL  . 
+114: literal -> INTEGER_LITERAL  . 
+  Reduce by 104: pure_specifier -> '=' INTEGER_LITERAL  . 
+  Reduce by 114: literal -> INTEGER_LITERAL  . 
+Solved RR CONFLICT for rules 104 and 114:
+	removed { ';' ',' } from the LA set of rule 114
+
+
+State 193:
+103: member_declarator -> identifier ':' constant_expression  . 
+  Reduce by 103: member_declarator -> identifier ':' constant_expression  . 
+
+
+State 194:
+76: base_specifier_list -> base_specifier_list ',' base_specifier  . 
+  Reduce by 76: base_specifier_list -> base_specifier_list ',' base_specifier  . 
+
+
+State 195:
+80: base_specifier -> VIRTUAL access_specifier base_type_specifier  . 
+  Reduce by 80: base_specifier -> VIRTUAL access_specifier base_type_specifier  . 
+
+
+State 196:
+81: base_specifier -> access_specifier VIRTUAL base_type_specifier  . 
+  Reduce by 81: base_specifier -> access_specifier VIRTUAL base_type_specifier  . 
+
+
+State 197:
+85: base_type_specifier -> SCOPE_OPERATOR nested_name_specifier class_name  . 
+  Reduce by 85: base_type_specifier -> SCOPE_OPERATOR nested_name_specifier class_name  . 
+
+
+State 198:
+34: parameter_declaration_list -> parameter_declaration_list ',' parameter_declaration  . 
+  Reduce by 34: parameter_declaration_list -> parameter_declaration_list ',' parameter_declaration  . 
+
+
+State 199:
+50: named_namespace_definition -> INLINE NAMESPACE identifier '{' declaration_seq '}'  . 
+  Reduce by 50: named_namespace_definition -> INLINE NAMESPACE identifier '{' declaration_seq '}'  . 
+
+
+

@@ -18,7 +18,7 @@ inline void MDParser::error(char const *msg)
 // $insert lex
 inline int MDParser::lex()
 {
-    d_scanner.setDebug(debug());
+    d_scanner.setShortDebugOutput(debug());
     return d_scanner.lex();
 }
 

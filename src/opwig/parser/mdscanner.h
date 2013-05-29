@@ -26,6 +26,8 @@ class MDScanner: public MDScannerBase {
 
     // $insert lexFunctionDecl
     int lex();
+    
+    void setShortDebugOutput(bool short_output) { short_debug_ = short_output; }
 
   private:
     md::Ptr<md::Scope> current_scope_;
@@ -43,6 +45,7 @@ class MDScanner: public MDScannerBase {
     bool in_peek_ = false;
     int last_token_ = -1;
     unsigned int parenthesis_depth_ = 0;
+    bool short_debug_ = false;
     
     bool currentIsTypeName();
 };
@@ -61,15 +64,17 @@ inline MDScanner::MDScanner(std::string const &infile, std::string const &outfil
 // $insert inlineLexFunction
 inline int MDScanner::lex()
 {
-    if (!in_peek_)  last_token_ = d_token__;
-    if (debug())
-        std::cout << "    -------------------------------------" << std::endl;
-    int token = lex__();
-    if (debug()) {
-        std::cout << "    lex: token=" << d_token__ << " [" << matched() << "]" << std::endl;
-        std::cout << "    -------------------------------------" << std::endl;
-    }
     if (!in_peek_) {
+        last_token_ = d_token__;
+        if (short_debug_)
+            std::cout << "    -------------------------------------" << std::endl;
+    }
+    int token = lex__();
+    if (!in_peek_) {
+        if (short_debug_) {
+            std::cout << "    lex: token=" << d_token__ << " [" << matched() << "]" << std::endl;
+            std::cout << "    -------------------------------------" << std::endl;
+        }
         if (token == '(')   parenthesis_depth_++;
         else if (token == ')')  parenthesis_depth_--;
     }
@@ -99,11 +104,11 @@ inline int MDScanner::peek() {
 
     std::string current_matched = matched();
     int current_token = d_token__;
-    if (debug())
+    if (short_debug_)
         std::cout << "    lex Peek (current): token=" << d_token__ << " [" << matched() << "]" << std::endl;
 
     int token = lex();
-    if (debug())
+    if (short_debug_)
         std::cout << "    lex Peek (next): token=" << d_token__ << " [" << matched() << "]" << std::endl;
 
     accept(0);

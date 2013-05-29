@@ -4,7 +4,6 @@
 #include <opwig/md/class.h>
 #include <opwig/md/semanticerror.h>
 
-#include <iostream>
 namespace opwig {
 namespace md {
 
@@ -16,13 +15,10 @@ Ptr<Scope> NestedNameSpecifier::FindNearestNestingScope(Ptr<Scope> initial_scope
     Ptr<Scope> scope = initial_scope;
     
     if (global_) {
-        std::cout << "Going to backtrack scope, initial Scope name = " << scope->name() << std::endl;
         while (scope->parent()) {
-            std::cout << "Scope name = " << scope->name() << std::endl;
             scope = scope->parent();
         }
     }
-    std::cout << "finish Scope name = " << scope->name() << std::endl;
 
     for (const std::string& it : paths_) {
         if (scope->NestedNamespace(it))
