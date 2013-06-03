@@ -127,5 +127,8 @@ brace_or_equal_initializer:
 ;
 
 initializer_clause:
-  expression
+    expression
+//assignment_expression
+//braced_init_list
 ;
+

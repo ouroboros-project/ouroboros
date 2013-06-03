@@ -80,6 +80,10 @@ base_specifier:
 ;
 
 base_type_specifier:
+    class_or_decltype { $$ = $1; }
+;
+
+class_or_decltype:
     class_name { $$ = md::NestedNameSpecifier($1); }
 |
     SCOPE_OPERATOR class_name { $$ = md::NestedNameSpecifier($2, true); }
@@ -92,6 +96,7 @@ base_type_specifier:
         ($$).set_name($3);
         ($$).set_global(true);
     }
+//decltype_specifier
 ;
 
 class_name:

@@ -3,8 +3,8 @@
 %baseclass-preinclude <opwig/parser/mdparser-preincludes.h>
 %namespace            opwig
 
-//%debug
-//%error-verbose
+%debug
+%error-verbose
 
 %include grammar/semantictypes.gr
 
@@ -22,6 +22,8 @@
 
 %include grammar/class_rules.gr
 %include grammar/member_rules.gr
+
+%include grammar/function_rules.gr
 
 %include grammar/expression_rules.gr
 

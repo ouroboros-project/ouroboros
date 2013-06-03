@@ -20,9 +20,13 @@
 %token PRIMITIVE
 
 // Keywords
+%token ASM
+%token AUTO
 %token CATCH
 %token CLASS
 %token CONST
+%token DEFAULT
+%token DELETE
 %token ENUM
 %token EXPLICIT
 %token EXPORT
@@ -56,6 +60,11 @@
 %token VOID
 %token VOLATILE
 %token SCOPE_OPERATOR
+%token ASSIGNMENT_OPERATOR
+%token EXPRESSION_OPERATOR
+%token WHILE
+%token FOR
+%token IF
 
 // Literals
 %token STRING_LITERAL
@@ -115,3 +124,4 @@
 %type<NestedNameSpec>   class_head_name
 %type<NestedNameSpec>   base_type_specifier
 %type<NestedNameSpec>   simple_type_specifier
+%type<NestedNameSpec>   class_or_decltype

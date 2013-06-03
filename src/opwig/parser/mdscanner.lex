@@ -48,11 +48,15 @@ pp_number                   (\.?{digit}({digit}|{non_digit}|[eE][-+]|\.)*)
 
 {float_literal}       return MDParserBase::FLOAT_LITERAL;
 
+"asm"               { return MDParserBase::ASM; }
+"auto"              { return MDParserBase::AUTO; }
 "bool"              { return MDParserBase::PRIMITIVE; }
 "catch"             { return MDParserBase::CATCH; }
 "char"              { return MDParserBase::PRIMITIVE; }
 "class"             { return MDParserBase::CLASS; }
 "const"             { return MDParserBase::CONST; }
+"default"           { return MDParserBase::DEFAULT; }
+"delete"            { return MDParserBase::DELETE; }
 "double"            { return MDParserBase::PRIMITIVE; }
 "enum"              { return MDParserBase::ENUM; }
 "explicit"          { return MDParserBase::EXPLICIT; }
@@ -92,6 +96,35 @@ pp_number                   (\.?{digit}({digit}|{non_digit}|[eE][-+]|\.)*)
 "volatile"          { return MDParserBase::VOLATILE; }
 "wchar_t"           { return MDParserBase::PRIMITIVE; }
 "::"                { return MDParserBase::SCOPE_OPERATOR; }
+"*="                { return MDParserBase::ASSIGNMENT_OPERATOR; }
+"/="                { return MDParserBase::ASSIGNMENT_OPERATOR; }
+"%="                { return MDParserBase::ASSIGNMENT_OPERATOR; }
+"+="                { return MDParserBase::ASSIGNMENT_OPERATOR; }
+"-="                { return MDParserBase::ASSIGNMENT_OPERATOR; }
+">>="               { return MDParserBase::ASSIGNMENT_OPERATOR; }
+"<<="               { return MDParserBase::ASSIGNMENT_OPERATOR; }
+"&="                { return MDParserBase::ASSIGNMENT_OPERATOR; }
+"^="                { return MDParserBase::ASSIGNMENT_OPERATOR; }
+"|="                { return MDParserBase::ASSIGNMENT_OPERATOR; }
+"<<"                { return MDParserBase::EXPRESSION_OPERATOR; }
+">>"                { return MDParserBase::EXPRESSION_OPERATOR; }
+"=="                { return MDParserBase::EXPRESSION_OPERATOR; }
+"!="                { return MDParserBase::EXPRESSION_OPERATOR; }
+"<="                { return MDParserBase::EXPRESSION_OPERATOR; }
+">="                { return MDParserBase::EXPRESSION_OPERATOR; }
+"&&"                { return MDParserBase::EXPRESSION_OPERATOR; }
+"||"                { return MDParserBase::EXPRESSION_OPERATOR; }
+"++"                { return MDParserBase::EXPRESSION_OPERATOR; }
+"--"                { return MDParserBase::EXPRESSION_OPERATOR; }
+"->*"               { return MDParserBase::EXPRESSION_OPERATOR; }
+"->"                { return MDParserBase::EXPRESSION_OPERATOR; }
+".*"                { return MDParserBase::EXPRESSION_OPERATOR; }
+"..."               { return MDParserBase::EXPRESSION_OPERATOR; }
+"<:"                { return MDParserBase::EXPRESSION_OPERATOR; }
+":>"                { return MDParserBase::EXPRESSION_OPERATOR; }
+"while"             { return MDParserBase::WHILE; }
+"for"               { return MDParserBase::FOR; }
+"if"                { return MDParserBase::IF; }
 
 {identifier} {
   if (static_cast<bool>(current_scope_) && current_scope_->name() == matched()) {

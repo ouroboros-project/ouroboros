@@ -1,0 +1,66 @@
+//=========================// FUNCTION SPECIFICATION //
+
+function_definition:
+    declarator function_body
+|
+    decl_specifier_seq declarator function_body
+|
+    declarator '=' DEFAULT
+|
+    decl_specifier_seq declarator '=' DEFAULT
+|
+    declarator '=' DELETE
+|
+    decl_specifier_seq declarator '=' DELETE
+;
+
+function_body:
+    compound_statement
+|
+    ctor_initializer compound_statement
+|
+    function_try_block
+;
+
+compound_statement:
+    '{' ignored_code '}'
+;
+
+ctor_initializer:
+    ':' mem_initializer_list
+;
+
+mem_initializer_list:
+    mem_initializer
+|
+    mem_initializer ',' mem_initializer_list
+;
+
+mem_initializer:
+    mem_initializer_id '(' ignored_code ')'
+//mem_initializer_id braced_init_list
+;
+
+mem_initializer_id:
+    class_or_decltype
+;
+
+function_try_block:
+    TRY compound_statement handler_seq
+|
+    TRY ctor_initializer compound_statement handler_seq
+;
+
+handler_seq:
+    handler
+|
+    handler handler_seq
+;
+
+handler:
+    CATCH '(' exception_declaration ')' compound_statement
+;
+
+exception_declaration:
+    type_specifier declarator
+;
