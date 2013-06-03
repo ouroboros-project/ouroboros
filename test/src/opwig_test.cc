@@ -173,3 +173,5 @@ protected:
 #include <opwig/function.cc>
 #include <opwig/namespace.cc>
 #include <opwig/variable.cc>
+
+#include <opwig/complexclasses.cc>

@@ -1,38 +1,79 @@
 //=========================// EXPRESSIONS //
 
 constant_expression:
-    expression
+    ignored_code
+;
+
+ignored_code:
+    {} | expression separator ignored_code
+;
+
+separator:
+    {} | ';' | ',' | '='
 ;
 
 expression:
-  term
+    term
 |
-  expression term
+    expression term
 ;
 
 term:
-  literal
+    literal
 |
-  identifier
+    identifier | PRIMITIVE | VOID | TYPE_NAME | CONSTRUCTOR_NAME
 |
-  operand
+    operand
 |
-  '(' expression ')'
+    SCOPE_OPERATOR | ASSIGNMENT_OPERATOR | EXPRESSION_OPERATOR
+|
+    WHILE | FOR
+|
+    IF
+|
+    TRY | CATCH | THROW
+|
+    USING
+|
+    TRUE | FALSE
+|
+    SIZEOF
+|
+    SIGNED | UNSIGNED
+|
+    REGISTER
+|
+    DELETE
+|
+    RETURN
+|
+    CONST | STATIC | VOLATILE
+|
+    ASM
+|
+    AUTO
+|
+    '(' ignored_code ')' 
+|
+    '[' ignored_code ']'
+|
+    '{' ignored_code '}'
 ;
 
+
 literal:
-  STRING_LITERAL
+    STRING_LITERAL
 |
-  CHARACTER_LITERAL
+    CHARACTER_LITERAL
 |
-  INTEGER_LITERAL
+    INTEGER_LITERAL
 |
-  HEXADECIMAL_LITERAL
+    HEXADECIMAL_LITERAL
 |
-  OCTAL_LITERAL
+    OCTAL_LITERAL
 |
-  FLOAT_LITERAL
+    FLOAT_LITERAL
 ;
 
 operand:
-  '+' | '-' | '*' | '/' | '%' | '^' | '?' | ':' ;
+    '+' | '-' | '*' | '/' | '%' | '^' | '?' | ':' | '|' | '&' | '>' | '<' | '!' | '~';

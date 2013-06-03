@@ -30,10 +30,20 @@ ScopeAction JoinDeclarations( const TypeAction& type_action, const std::shared_p
             NestedNameSpecifier nestedName = declarator.nested_name();
             Ptr<Scope> targetScope = nestedName.FindNearestNestingScope(current_scope);
             if (declarator.has_parameters()) {
-                Ptr<Function> func = Function::Create(nestedName.name(), type, declarator.parameters(), declarator.is_pure());
-                if (!targetScope->AddNestedFunction(func)) {
-                    throw SemanticError("Failed to add Function '"+func->name()+"' to Scope", __FILE__, __LINE__);
+                Ptr<Function> func = targetScope->NestedFunction(nestedName.name());
+                if (!func) {
+                    func = Function::Create(nestedName.name(), type, declarator.parameters(), declarator.is_pure());
+                    if (!targetScope->AddNestedFunction(func)) {
+                        throw SemanticError("Failed to add Function '"+func->name()+"' to Scope", __FILE__, __LINE__);
+                    }
                 }
+                else if (func->is_declared()) {
+                    throw SemanticError("Duplicate function declaration for '"+func->name()+"' in scope "+targetScope->name(), __FILE__, __LINE__);
+                }
+                else if (func->return_type() != type) {
+                    throw SemanticError("Erroneous function declaration for '"+func->name()+"' in scope "+targetScope->name()+" [return type mismatch]", __FILE__, __LINE__);
+                }
+                func->set_declared();
             } 
             else {
                 Ptr<Variable> var = Variable::Create(nestedName.name(), type);
@@ -55,6 +65,36 @@ TypeAction AddClassToScope( Ptr<Class> classObj, const NestedNameSpecifier& nest
         if (targetScope->AddNestedClass(classObj->name(), classObj))
             return classObj->name();
         throw SemanticError("Non-anonymous class cannot have empty name!", __FILE__, __LINE__);
+    };
+    return action;
+}
+
+ScopeAction AddFunctionToScope( const TypeAction& type_action, const parser::Declarator& declarator, bool is_default, bool is_delete) {
+    ScopeAction action = [type_action, declarator, is_default, is_delete] (Ptr<Scope> current_scope) -> bool {
+        std::string type = type_action(current_scope);
+        NestedNameSpecifier nestedName = declarator.nested_name();
+        Ptr<Scope> targetScope = nestedName.FindNearestNestingScope(current_scope);
+        if (!declarator.has_parameters()) {
+            throw SemanticError("Invalid FunctionDefinition for '"+nestedName.name()+"' - no parameters clause.", __FILE__, __LINE__);
+        }
+        
+        Ptr<Function> func = targetScope->NestedFunction(nestedName.name());
+        if (!func) {
+            func = Function::Create(nestedName.name(), type, declarator.parameters(), declarator.is_pure());
+            if (!targetScope->AddNestedFunction(func)) {
+                throw SemanticError("Failed to define Function '"+func->name()+"' in Scope", __FILE__, __LINE__);
+            }
+        }
+        else if (func->is_defined()) {
+            throw SemanticError("Duplicate function definition for '"+func->name()+"' in scope "+targetScope->name(), __FILE__, __LINE__);
+        }
+        else if (func->return_type() != type) {
+            throw SemanticError("Erroneous function definition for '"+func->name()+"' in scope "+targetScope->name()+" [return type mismatch]", __FILE__, __LINE__);
+        }
+        func->set_defined();
+        func->set_default(is_default);
+        func->set_delete(is_delete);
+        return true;
     };
     return action;
 }

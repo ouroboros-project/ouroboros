@@ -36,11 +36,39 @@ class Function : public MetadataObject {
     /// Tells if the function is pure (normally used for abstract methods)
     bool is_pure() const;
     
+    /// Tells if the function was defined as default
+    bool is_default() const { return default_; }
+    
+    /// Sets the function to be defined as default
+    void set_default(bool _default) { default_ = _default; }
+    
+    /// Tells if the function was defined as delete
+    bool is_delete() const { return delete_; }
+    
+    /// Sets the function to be defined as default
+    void set_delete(bool _delete) { delete_ = _delete; }
+    
+    /// Tells if the function was declared
+    bool is_declared() const { return declared_; }
+    
+    /// Sets the function as declared
+    void set_declared() { declared_ = true; }
+    
+    /// Tells if the function was defined
+    bool is_defined() const { return defined_; }
+    
+    /// Sets the function as defined
+    void set_defined() { defined_ = true; }
+
   private:
 
     std::string   return_type_;
     ParameterList parameter_list_;
     bool          pure_;
+    bool          default_;
+    bool          delete_;
+    bool          declared_;
+    bool          defined_;
 
     Function(const std::string& the_name, const std::string& the_return_type,
              const ParameterList& the_parameter_list, const bool pure);
@@ -49,7 +77,8 @@ class Function : public MetadataObject {
 
 inline Function::Function(const std::string& the_name, const std::string& the_return_type,
                           const ParameterList& the_parameter_list, const bool pure)
-    : MetadataObject(the_name), return_type_(the_return_type), parameter_list_(the_parameter_list), pure_(pure) { }
+    : MetadataObject(the_name), return_type_(the_return_type), parameter_list_(the_parameter_list), pure_(pure),
+      default_(false), delete_(false), declared_(false), defined_(false) { }
 
 inline Ptr<Function> Function::Create(const std::string& the_name,
                                       const std::string& the_return_type,

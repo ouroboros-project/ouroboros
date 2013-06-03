@@ -20,9 +20,13 @@
 %token PRIMITIVE
 
 // Keywords
+%token ASM
+%token AUTO
 %token CATCH
 %token CLASS
 %token CONST
+%token DEFAULT
+%token DELETE
 %token ENUM
 %token EXPLICIT
 %token EXPORT
@@ -56,6 +60,11 @@
 %token VOID
 %token VOLATILE
 %token SCOPE_OPERATOR
+%token ASSIGNMENT_OPERATOR
+%token EXPRESSION_OPERATOR
+%token WHILE
+%token FOR
+%token IF
 
 // Literals
 %token STRING_LITERAL
@@ -74,6 +83,7 @@
 %type<Declaration>          namespace_definition
 %type<Declaration>          named_namespace_definition
 %type<Declaration>          unnamed_namespace_definition
+%type<Declaration>          function_definition
 
 %type<Type>                 decl_specifier_seq
 %type<Type>                 decl_specifier_seq_opt
@@ -115,3 +125,4 @@
 %type<NestedNameSpec>   class_head_name
 %type<NestedNameSpec>   base_type_specifier
 %type<NestedNameSpec>   simple_type_specifier
+%type<NestedNameSpec>   class_or_decltype

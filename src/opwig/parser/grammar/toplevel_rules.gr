@@ -1,32 +1,29 @@
 //=========================// TOP-LEVEL //
 
 input:
-  declaration_seq {
-    for (auto it: *$1)
-      if (!(it) (global_namespace_))
-        throw md::SemanticError("Namespace action failed (global)", __FILE__, __LINE__);
-  }
+    declaration_seq {
+        for (auto it: *$1)
+            if (!(it) (global_namespace_))
+                throw md::SemanticError("Namespace action failed (global)", __FILE__, __LINE__);
+    }
 ;
 
 declaration_seq:
-  /* empty */ {
-    $$ = std::shared_ptr<ScopeActionList>(new ScopeActionList);
-  }
+    /* empty */ {
+        $$ = std::shared_ptr<ScopeActionList>(new ScopeActionList);
+    }
 |
-  declaration_seq declaration {
-    ($1)->push_back($2);
-    $$ = $1;
-  }
+    declaration_seq declaration {
+        ($1)->push_back($2);
+        $$ = $1;
+    }
 ;
 
 declaration:
-  block_declaration {
-    $$ = $1;
-  }
+    block_declaration { $$ = $1; }
 |
-  namespace_definition { 
-    $$ = $1;
-  }
-//|
-//  function_declaration
+    namespace_definition { $$ = $1; }
+|
+    function_definition { $$ = $1; }
+//incomplete
 ;

@@ -16,6 +16,10 @@ trailing_type_specifier:
 ;
 
 simple_type_specifier:
+    PRIMITIVE { $$ = md::NestedNameSpecifier(d_scanner.matched()); }
+|
+    VOID { $$ = md::NestedNameSpecifier(d_scanner.matched()); }
+|
     type_name { $$ = md::NestedNameSpecifier($1); }
 |
     SCOPE_OPERATOR type_name { $$ = md::NestedNameSpecifier($2, true); }

@@ -45,6 +45,9 @@ member_declaration:
     decl_specifier_seq member_declarator_list ';' {
         $$ = parser::JoinDeclarations($1, $2);
     }
+|
+    function_definition { $$ = $1; }
+//function_definition ';' //not necessary anymore...?
 //incomplete
 ;
 

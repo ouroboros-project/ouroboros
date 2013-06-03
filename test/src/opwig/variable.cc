@@ -14,23 +14,20 @@ TEST_F (MDVariableTest, Create) {
 }
 
 TEST_F (MDVariableTest, SingleVariable) {
-    string test11 = "type var = 0;";
-    ASSERT_EQ(RunParse(test11), 0);
+    ASSERT_EQ(RunParse("type var = 0;"), 0);
 
     TestVariable("var", "type", AccessSpecifier::PUBLIC);
 }
 
 TEST_F (MDVariableTest, MultiVariable) {
-    string test12 = "type1 var1 = \"test\"; type2 var2 = 2;";
-    ASSERT_EQ(RunParse(test12), 0);
+    ASSERT_EQ(RunParse("type1 var1 = \"test\"; type2 var2 = 2;"), 0);
     
     TestVariable("var1", "type1", AccessSpecifier::PUBLIC);
     TestVariable("var2", "type2", AccessSpecifier::PUBLIC);
 }
 
 TEST_F (MDVariableTest, VariableConflict) {
-    string test13 = "type var = 0; type2 var;";
-    RunParseThrow(test13);
+    RunParseThrow("type var = 0; type2 var;");
 }
 
 TEST_F (MDVariableTest, VariableSequence) {
@@ -50,8 +47,7 @@ TEST_F (MDVariableTest, VariableSequenceWithInitializer) {
 }
 
 TEST_F (MDVariableTest, VariableInNamespace) {
-    string test15 = "namespace abc { type var; }";
-    ASSERT_EQ(RunParse(test15), 0);
+    ASSERT_EQ(RunParse("namespace abc { type var; }"), 0);
     
     auto abc = TestNamespace("abc", AccessSpecifier::PUBLIC, 1u, 0u, 0u, 0u);
     TestVariable(abc, "var", "type", AccessSpecifier::PUBLIC);
