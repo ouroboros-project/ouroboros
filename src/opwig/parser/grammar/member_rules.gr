@@ -46,9 +46,8 @@ member_declaration:
         $$ = parser::JoinDeclarations($1, $2);
     }
 |
-    function_definition //TODO: ACTION
-|
-    function_definition ';' //TODO: ACTION
+    function_definition { $$ = $1; }
+//function_definition ';' //not necessary anymore...?
 //incomplete
 ;
 

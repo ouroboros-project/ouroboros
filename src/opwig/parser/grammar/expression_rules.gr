@@ -47,7 +47,7 @@ term:
 |
     RETURN
 |
-    CONST
+    CONST | STATIC | VOLATILE
 |
     ASM
 |

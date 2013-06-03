@@ -1,17 +1,32 @@
 //=========================// FUNCTION SPECIFICATION //
 
-function_definition:
-    declarator function_body
+function_definition: //TODO: ACTION
+    declarator function_body {
+        TypeAction voidAction = [] (md::Ptr<md::Scope> current_scope) -> std::string { return ""; };
+        $$ = parser::AddFunctionToScope(voidAction, $1, false, false); 
+    }
 |
-    decl_specifier_seq declarator function_body
+    decl_specifier_seq declarator function_body { 
+        $$ = parser::AddFunctionToScope($1, $2, false, false); 
+    }
 |
-    declarator '=' DEFAULT
+    declarator '=' DEFAULT ';' { 
+        TypeAction voidAction = [] (md::Ptr<md::Scope> current_scope) -> std::string { return ""; };
+        $$ = parser::AddFunctionToScope(voidAction, $1, true, false); 
+    }
 |
-    decl_specifier_seq declarator '=' DEFAULT
+    decl_specifier_seq declarator '=' DEFAULT ';' { 
+        $$ = parser::AddFunctionToScope($1, $2, true, false); 
+    }
 |
-    declarator '=' DELETE
+    declarator '=' DELETE ';' { 
+        TypeAction voidAction = [] (md::Ptr<md::Scope> current_scope) -> std::string { return ""; };
+        $$ = parser::AddFunctionToScope(voidAction, $1, false, true); 
+    }
 |
-    decl_specifier_seq declarator '=' DELETE
+    decl_specifier_seq declarator '=' DELETE ';' { 
+        $$ = parser::AddFunctionToScope($1, $2, false, true); 
+    }
 ;
 
 function_body:

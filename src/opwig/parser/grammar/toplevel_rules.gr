@@ -20,15 +20,10 @@ declaration_seq:
 ;
 
 declaration:
-    block_declaration {
-        $$ = $1;
-    }
+    block_declaration { $$ = $1; }
 |
-    namespace_definition { 
-        $$ = $1;
-    }
+    namespace_definition { $$ = $1; }
 |
-    function_definition //TODO: ACTION
-//|
-//  function_declaration
+    function_definition { $$ = $1; }
+//incomplete
 ;
