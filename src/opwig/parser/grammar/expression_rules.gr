@@ -9,7 +9,7 @@ ignored_code:
 ;
 
 separator:
-    {} | ';' | ','
+    {} | ';' | ',' | '='
 ;
 
 expression:
@@ -21,7 +21,7 @@ expression:
 term:
     literal
 |
-    identifier | PRIMITIVE | VOID
+    identifier | PRIMITIVE | VOID | TYPE_NAME | CONSTRUCTOR_NAME
 |
     operand
 |
@@ -59,6 +59,7 @@ term:
 |
     '{' ignored_code '}'
 ;
+
 
 literal:
     STRING_LITERAL

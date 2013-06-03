@@ -77,7 +77,8 @@ class Function : public MetadataObject {
 
 inline Function::Function(const std::string& the_name, const std::string& the_return_type,
                           const ParameterList& the_parameter_list, const bool pure)
-    : MetadataObject(the_name), return_type_(the_return_type), parameter_list_(the_parameter_list), pure_(pure) { }
+    : MetadataObject(the_name), return_type_(the_return_type), parameter_list_(the_parameter_list), pure_(pure),
+      default_(false), delete_(false), declared_(false), defined_(false) { }
 
 inline Ptr<Function> Function::Create(const std::string& the_name,
                                       const std::string& the_return_type,

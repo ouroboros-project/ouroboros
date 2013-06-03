@@ -104,7 +104,7 @@ TEST_F (MDClassMembersTest, NestedNamespaceError) {
 }
 
 TEST_F (MDClassMembersTest, NamesConflict) {
-    EXPECT_THROW(RunParse("class name { type var; rtype var(type); };"), std::exception);
+    RunParseThrow("class name { type var; rtype var(type); };");
 }
 
 
@@ -176,18 +176,58 @@ TEST_F (MDClassMembersTest, ConstructorAndDestructorWithAccess) {
     TestFunctionParameter(ctor, 0, "", "type");
 }
 
-TEST_F (MDClassMembersTest, SimpleClass) {
-    ASSERT_EQ(RunParse("class name { public: name(); ~name(); rtype func(type); protected: rtype var; };"), 0);
-    auto c = TestClass("name", AccessSpecifier::PUBLIC, 1u, 1u, 0u);
+TEST_F (MDClassMembersTest, SingleConstructorDefinition) {
+    ASSERT_EQ(RunParse("class name { name(type) {} };"), 0);
+    auto c = TestClass("name", AccessSpecifier::PUBLIC, 0u, 0u, 0u);
     TestClassBaseNum(c, 0u);
-    
-    TestVariable(c, "var", "rtype", AccessSpecifier::PROTECTED);
-    auto f = TestFunction(c, "func", "rtype", AccessSpecifier::PUBLIC, false);
-    TestFunctionParameter(f, 0, "", "type");
+    TestClassDestructorNotDefined(c);
+    TestClassConstructorNum(c, 1u);
+    auto ctor = TestClassConstructorByIndex(c, 0, AccessSpecifier::PRIVATE);
+    TestFunctionParameter(ctor, 0, "", "type");
+}
 
+TEST_F (MDClassMembersTest, SingleConstructorDefinitionWithInitializer) {
+    ASSERT_EQ(RunParse("class name { name(type) : foo(bar), dafuq(0 = 1) {} };"), 0);
+    auto c = TestClass("name", AccessSpecifier::PUBLIC, 0u, 0u, 0u);
+    TestClassBaseNum(c, 0u);
+    TestClassDestructorNotDefined(c);
+    TestClassConstructorNum(c, 1u);
+    auto ctor = TestClassConstructorByIndex(c, 0, AccessSpecifier::PRIVATE);
+    TestFunctionParameter(ctor, 0, "", "type");
+}
+
+TEST_F (MDClassMembersTest, MultiConstructorDefinition) {
+    ASSERT_EQ(RunParse("class name { public: name(type) {} protected: name() {} };"), 0);
+    auto c = TestClass("name", AccessSpecifier::PUBLIC, 0u, 0u, 0u);
+    TestClassBaseNum(c, 0u);
+    TestClassDestructorNotDefined(c);
+    TestClassConstructorNum(c, 2u);
+    auto ctor = TestClassConstructorByIndex(c, 0, AccessSpecifier::PUBLIC);
+    TestFunctionParameter(ctor, 0, "", "type");
+    auto ctor2 = TestClassConstructorByIndex(c, 1, AccessSpecifier::PROTECTED);
+    TestFunctionNoParameters(ctor2);
+}
+
+TEST_F (MDClassMembersTest, SingleDestructorDefinition) {
+    ASSERT_EQ(RunParse("class name { ~name() {} };"), 0);
+    auto c = TestClass("name", AccessSpecifier::PUBLIC, 0u, 0u, 0u);
+    TestClassBaseNum(c, 0u);
+    TestClassConstructorNum(c, 0u);
+    TestClassDestructor(c, false, AccessSpecifier::PRIVATE);
+    
+    ASSERT_EQ(0u, c->constructors().size());
+}
+
+TEST_F (MDClassMembersTest, ConstructorAndDestructorDefinition) {
+    ASSERT_EQ(RunParse("class name { public: ~name(){} protected: name(type){} name(type,type2){} };"), 0);
+    auto c = TestClass("name", AccessSpecifier::PUBLIC, 0u, 0u, 0u);
+    TestClassBaseNum(c, 0u);
     TestClassDestructor(c, false, AccessSpecifier::PUBLIC);
     
-    TestClassConstructorNum(c, 1u);
-    auto ctor = TestClassConstructorByIndex(c, 0, AccessSpecifier::PUBLIC);
-    TestFunctionNoParameters(ctor);
+    TestClassConstructorNum(c, 2u);
+    auto ctor = TestClassConstructorByIndex(c, 0, AccessSpecifier::PROTECTED);
+    TestFunctionParameter(ctor, 0, "", "type");
+    ctor = TestClassConstructorByIndex(c, 1, AccessSpecifier::PROTECTED);
+    TestFunctionParameter(ctor, 0, "", "type");
+    TestFunctionParameter(ctor, 1, "", "type2");
 }

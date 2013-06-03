@@ -89,3 +89,60 @@ TEST_F (MDFunctionTest, ManyDifferentFunctions) {
         TestFunctionParameter(f, 1, "pnameX", "ptype1");
     }
 }
+
+TEST_F (MDFunctionTest, SimpleFunctionDefinition) {
+    ASSERT_EQ(RunParse("rtype name(type0 arg1, type1) { return rtype; }"), 0);
+    TestScopeChildNums(global_, 0u, 1u, 0u, 0u);
+    
+    auto f = TestFunction("name", "rtype", AccessSpecifier::PUBLIC, false);
+    TestFunctionParameter(f, 0, "arg1", "type0");
+    TestFunctionParameter(f, 1, "", "type1");
+}
+
+TEST_F (MDFunctionTest, SimpleFunctionDefinitionInNamespace) {
+    ASSERT_EQ(RunParse("namespace abc { rtype name(type0 arg1, type1) { return rtype; } }"), 0);
+    TestScopeChildNums(global_, 0u, 0u, 0u, 1u);
+    
+    auto abc = TestNamespace("abc", AccessSpecifier::PUBLIC, 0u, 1u, 0u, 0u);
+    auto f = TestFunction(abc, "name", "rtype", AccessSpecifier::PUBLIC, false);
+    TestFunctionParameter(f, 0, "arg1", "type0");
+    TestFunctionParameter(f, 1, "", "type1");
+}
+
+TEST_F (MDFunctionTest, SimpleFunctionDefinitionOutsideNamespace) {
+    ASSERT_EQ(RunParse("namespace abc { rtype name(type0 arg1, type1); } rtype abc::name(type0 arg1, type1) { return rtype; }"), 0);
+    TestScopeChildNums(global_, 0u, 0u, 0u, 1u);
+    
+    auto abc = TestNamespace("abc", AccessSpecifier::PUBLIC, 0u, 1u, 0u, 0u);
+    auto f = TestFunction(abc, "name", "rtype", AccessSpecifier::PUBLIC, false);
+    TestFunctionParameter(f, 0, "arg1", "type0");
+    TestFunctionParameter(f, 1, "", "type1");
+}
+
+TEST_F (MDFunctionTest, DuplicateDeclaration) {
+    RunParseThrow("rtype func(); rtype func();");
+}
+
+TEST_F (MDFunctionTest, DuplicateDefinition) {
+    RunParseThrow("rtype func() {} rtype func() {}");
+}
+
+TEST_F (MDFunctionTest, ReturnTypeMismatch) {
+    RunParseThrow("rtype func(); crash func() {}");
+}
+
+TEST_F (MDFunctionTest, InvalidDefinition) {
+    RunParseThrow("rtype func {}");
+}
+
+TEST_F (MDFunctionTest, MultiFunctionDefinition) {
+    ASSERT_EQ(RunParse("rtype func(type0 arg1, type1) { } rtype func2(type0) {}"), 0);
+    TestScopeChildNums(global_, 0u, 2u, 0u, 0u);
+    
+    auto f = TestFunction("func", "rtype", AccessSpecifier::PUBLIC, false);
+    TestFunctionParameter(f, 0, "arg1", "type0");
+    TestFunctionParameter(f, 1, "", "type1");
+    
+    f = TestFunction("func2", "rtype", AccessSpecifier::PUBLIC, false);
+    TestFunctionParameter(f, 0, "", "type0");
+}
