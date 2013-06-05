@@ -16,7 +16,7 @@ class Enum : public MetadataObject {
   
   public:
 
-    /// Virtual festructor.
+    /// Virtual destructor.
     virtual ~Enum() {}
 
     /// Creates a new Function object. Must be used in place of the constructor.
