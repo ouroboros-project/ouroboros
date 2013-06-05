@@ -94,9 +94,6 @@
 %type<Type>                 class_specifier
 %type<Type>                 enum_specifier
 
-%type<TypeSeq>              type_specifier_seq
-%type<TypeSeq>              enum_base
-
 %type<ClassHead>            class_head
 %type<EnumHead>             enum_head
 
@@ -113,6 +110,8 @@
 %type<String>         unqualified_id
 %type<String>         enumerator
 %type<String>         enumerator_definition
+%type<String>         enum_base
+%type<String>         primitive
 
 %type<StringSeq>      enumerator_list
 

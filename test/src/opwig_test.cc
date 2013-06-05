@@ -172,17 +172,16 @@ protected:
     }
     
     //////////// enum
-    void TestEnum(const string& name, AccessSpecifier access, const vector<string>& bases, const vector<string>& values) {
-        TestEnum(global_, name, access, bases, values);
+    void TestEnum(const string& name, AccessSpecifier access, const string& base, const vector<string>& values) {
+        TestEnum(global_, name, access, base, values);
     }
-    void TestEnum(Ptr<const Scope> scope, const string& name, AccessSpecifier access, const vector<string>& bases, const vector<string>& values) {
+    void TestEnum(Ptr<const Scope> scope, const string& name, AccessSpecifier access, const string& base, const vector<string>& values) {
         Ptr<const Enum> var = scope->NestedEnum(name);
         ASSERT_TRUE(static_cast<bool>(var));
         EXPECT_EQ(name, var->name());
         EXPECT_EQ(access, var->access());
-        ASSERT_EQ(bases.size(), var->bases().size());
+        ASSERT_EQ(base, var->base());
         ASSERT_EQ(values.size(), var->values().size());
-        EXPECT_TRUE(equal(bases.begin(), bases.end(), var->bases().begin()));
         EXPECT_TRUE(equal(values.begin(), values.end(), var->values().begin()));
     }
 };

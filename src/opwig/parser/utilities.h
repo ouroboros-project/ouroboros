@@ -25,7 +25,7 @@ TypeAction AddClassToScope( md::Ptr<md::Class> classObj, const md::NestedNameSpe
 ScopeAction AddFunctionToScope( const TypeAction& type_action, const parser::Declarator& declarator, bool is_default, bool is_delete);
 
 ///Creates a type action to add a enum to the scope;
-TypeAction AddEnumToScope( const TypeActionList& bases, const StringList& values, const md::NestedNameSpecifier& nestedName);
+TypeAction AddEnumToScope( const std::string& base, const StringList& values, const md::NestedNameSpecifier& nestedName);
 
 } // namespace parser
 } // namespace opwig

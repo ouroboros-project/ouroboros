@@ -6,9 +6,8 @@ TEST_F (MDEnumTest, SimpleEnum) {
     ASSERT_EQ(RunParse("enum name {Sup};"), 0);
     TestScopeChildNums(global_, 0u, 0u, 0u, 0u, 1u);
 
-    vector<string> bases;
     vector<string> values = {"Sup"};
-    TestEnum("name", AccessSpecifier::PUBLIC, bases, values);
+    TestEnum("name", AccessSpecifier::PUBLIC, "", values);
 }
 
 TEST_F (MDEnumTest, AnonymousEnum) {
@@ -19,18 +18,23 @@ TEST_F (MDEnumTest, SimpleEnumWithExpressions) {
     ASSERT_EQ(RunParse("enum name {Sup = 0x123, Dude=tralala};"), 0);
     TestScopeChildNums(global_, 0u, 0u, 0u, 0u, 1u);
 
-    vector<string> bases;
     vector<string> values = {"Sup", "Dude"};
-    TestEnum("name", AccessSpecifier::PUBLIC, bases, values);
+    TestEnum("name", AccessSpecifier::PUBLIC, "", values);
 }
 
 TEST_F (MDEnumTest, EnumWithBases) {
-    ASSERT_EQ(RunParse("enum name : void {Sup, Dude};"), 0);
+    ASSERT_EQ(RunParse("enum name : double {Sup, Dude};"), 0);
     TestScopeChildNums(global_, 0u, 0u, 0u, 0u, 1u);
 
-    vector<string> bases = {"void"};
     vector<string> values = {"Sup", "Dude"};
-    TestEnum("name", AccessSpecifier::PUBLIC, bases, values);
+    TestEnum("name", AccessSpecifier::PUBLIC, "double", values);
+}
+
+TEST_F (MDEnumTest, EnumWithErroneousBase) {
+    EXPECT_EQ(RunParse("enum name : wat {Sup, Dude};"), 1);
+    EXPECT_EQ(RunParse("enum name : void {Sup, Dude};"), 1);
+    EXPECT_EQ(RunParse("enum name : foo::bar {Sup, Dude};"), 1);
+    EXPECT_EQ(RunParse("enum name : ::foo::bar {Sup, Dude};"), 1);
 }
 
 TEST_F (MDEnumTest, EnumInNamespace) {
@@ -38,9 +42,8 @@ TEST_F (MDEnumTest, EnumInNamespace) {
     TestScopeChildNums(global_, 0u, 0u, 0u, 1u, 0u);
 
     auto abc = TestNamespace("abc", AccessSpecifier::PUBLIC, 0u, 0u, 0u, 0u, 1u);
-    vector<string> bases;
     vector<string> values = {"Sup", "Dude"};
-    TestEnum(abc, "name", AccessSpecifier::PUBLIC, bases, values);
+    TestEnum(abc, "name", AccessSpecifier::PUBLIC, "", values);
 }
 
 TEST_F (MDEnumTest, EnumOutsideNamespace) {
@@ -48,9 +51,8 @@ TEST_F (MDEnumTest, EnumOutsideNamespace) {
     TestScopeChildNums(global_, 0u, 0u, 0u, 1u, 0u);
 
     auto abc = TestNamespace("abc", AccessSpecifier::PUBLIC, 0u, 0u, 0u, 0u, 1u);
-    vector<string> bases;
     vector<string> values = {"Sup", "Dude"};
-    TestEnum(abc, "name", AccessSpecifier::PUBLIC, bases, values);
+    TestEnum(abc, "name", AccessSpecifier::PUBLIC, "", values);
 }
 
 TEST_F (MDEnumTest, EnumInAndOutsideNamespace) {
@@ -58,7 +60,6 @@ TEST_F (MDEnumTest, EnumInAndOutsideNamespace) {
     TestScopeChildNums(global_, 0u, 0u, 0u, 1u, 0u);
 
     auto abc = TestNamespace("abc", AccessSpecifier::PUBLIC, 0u, 0u, 0u, 0u, 1u);
-    vector<string> bases;
     vector<string> values = {"Sup", "Dude"};
-    TestEnum(abc, "name", AccessSpecifier::PUBLIC, bases, values);
+    TestEnum(abc, "name", AccessSpecifier::PUBLIC, "", values);
 }

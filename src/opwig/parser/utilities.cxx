@@ -100,16 +100,12 @@ ScopeAction AddFunctionToScope( const TypeAction& type_action, const parser::Dec
     return action;
 }
 
-TypeAction AddEnumToScope( const TypeActionList& bases, const StringList& values, const md::NestedNameSpecifier& nestedName) {
-    TypeAction action = [bases, values, nestedName] (md::Ptr<md::Scope> current_scope) -> std::string {
+TypeAction AddEnumToScope( const std::string& base, const StringList& values, const md::NestedNameSpecifier& nestedName) {
+    TypeAction action = [base, values, nestedName] (md::Ptr<md::Scope> current_scope) -> std::string {
         Ptr<Scope> targetScope = nestedName.FindNearestNestingScope(current_scope);
         if (!targetScope)
             throw SemanticError("Invalid NestedNameSpecifier("+nestedName.ToString()+")", __FILE__, __LINE__);
-        StringList strBases;
-        for (auto tact : bases) {
-            strBases.push_back( tact(current_scope) );
-        }
-        Ptr<Enum> en = Enum::Create(nestedName.name(), strBases, values);
+        Ptr<Enum> en = Enum::Create(nestedName.name(), base, values);
         if (targetScope->AddNestedEnum(en))
             return nestedName.ToString();
         throw SemanticError("Error adding enum '"+en->name()+"' to scope '"+targetScope->name()+"'!", __FILE__, __LINE__);

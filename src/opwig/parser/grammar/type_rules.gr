@@ -1,17 +1,5 @@
 //=========================// TYPE SPECIFICATION //
 
-type_specifier_seq:
-    type_specifier {
-        $$ = std::shared_ptr<TypeActionList>(new TypeActionList);
-        ($$)->push_back($1);
-    }
-|
-    type_specifier type_specifier_seq {
-        $$ = $2;
-        ($$)->push_back($1);
-    }
-;
-
 type_specifier:
     trailing_type_specifier { $$ = $1; }
 |

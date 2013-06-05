@@ -21,8 +21,7 @@ enum_head:
     }
 |
     enum_key identifier {
-        TypeActionList bases;
-        $$ = parser::EnumHeadPair(bases, md::NestedNameSpecifier($2));
+        $$ = parser::EnumHeadPair("", md::NestedNameSpecifier($2));
     }
 |
     enum_key enum_base {
@@ -30,18 +29,17 @@ enum_head:
     }
 |
     enum_key identifier enum_base {
-        $$ = parser::EnumHeadPair(*($3), md::NestedNameSpecifier($2));
+        $$ = parser::EnumHeadPair(($3), md::NestedNameSpecifier($2));
     }
 |
     enum_key nested_name_specifier identifier {
-        TypeActionList bases;
         ($2).set_name($3);
-        $$ = parser::EnumHeadPair(bases, $2);
+        $$ = parser::EnumHeadPair("", $2);
     }
 |
     enum_key nested_name_specifier identifier enum_base {
         ($2).set_name($3);
-        $$ = parser::EnumHeadPair(*($4), $2);
+        $$ = parser::EnumHeadPair(($4), $2);
     }
 ;
 
@@ -52,7 +50,7 @@ opaque_enum_declaration:
 ;
 
 enum_base:
-    ':' type_specifier_seq { $$ = $2; }
+    ':' primitive { $$ = $2; }
 ;
 
 enumerator_list:

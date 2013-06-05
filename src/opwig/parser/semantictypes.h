@@ -36,7 +36,7 @@ namespace parser {
 using DeclaratorList = std::list<Declarator>;
 
 typedef std::pair<md::Ptr<md::Class>, md::NestedNameSpecifier>  ClassHeadPair;
-typedef std::pair<TypeActionList, md::NestedNameSpecifier>          EnumHeadPair;
+typedef std::pair<std::string, md::NestedNameSpecifier>          EnumHeadPair;
 
 } // namespace parser
 
