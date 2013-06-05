@@ -1,51 +1,80 @@
 //=========================// ENUM SPECIFICATION //
 
 enum_specifier:
-    enum_head '{' '}'
+    enum_head '{' '}' {
+        StringList values;
+        $$ = parser::AddEnumToScope( ($1).first, values, ($1).second);
+    }
 |
-    enum_head '{' enumerator_list '}'
+    enum_head '{' enumerator_list '}' {
+        $$ = parser::AddEnumToScope( ($1).first, *$3, ($1).second);
+    }
 |
-    enum_head '{' enumerator_list ',' '}'
+    enum_head '{' enumerator_list ',' '}' {
+        $$ = parser::AddEnumToScope( ($1).first, *$3, ($1).second);
+    }
 ;
 
 enum_head:
-    enum_key 
+    enum_key {
+        throw md::SemanticError("Anonymous Enum not supported yet", __FILE__, __LINE__);
+    }
 |
-    enum_key identifier
+    enum_key identifier {
+        TypeActionList bases;
+        $$ = parser::EnumHeadPair(bases, md::NestedNameSpecifier($2));
+    }
 |
-    enum_key enum_base
+    enum_key enum_base {
+        throw md::SemanticError("Anonymous Enum not supported yet", __FILE__, __LINE__);
+    }
 |
-    enum_key identifier enum_base
+    enum_key identifier enum_base {
+        $$ = parser::EnumHeadPair(*($3), md::NestedNameSpecifier($2));
+    }
 |
-    enum_key nested_name_specifier identifier
+    enum_key nested_name_specifier identifier {
+        TypeActionList bases;
+        ($2).set_name($3);
+        $$ = parser::EnumHeadPair(bases, $2);
+    }
 |
-    enum_key nested_name_specifier identifier enum_base
+    enum_key nested_name_specifier identifier enum_base {
+        ($2).set_name($3);
+        $$ = parser::EnumHeadPair(*($4), $2);
+    }
 ;
 
-opaque_enum_declaration:
+opaque_enum_declaration: 
     enum_key identifier ';'
 |
     enum_key identifier enum_base ';'
 ;
 
 enum_base:
-    ':' type_specifier_seq
+    ':' type_specifier_seq { $$ = $2; }
 ;
 
 enumerator_list:
-    enumerator_definition
+    enumerator_definition {
+        $$ = std::shared_ptr<StringList>(new StringList);
+        ($$)->push_back($1);
+    }
 |
-    enumerator_list ',' enumerator_definition
+    enumerator_list ',' enumerator_definition {
+        $$ = $1;
+        ($$)->push_back($3);
+    }
 ;
 
 enumerator_definition:
-    enumerator
+    enumerator { $$ = $1; }
 |
-    enumerator '=' expression
+    enumerator '=' expression { $$ = $1; }
 ;
 
 enumerator:
-    identifier
+    identifier { $$ = $1; }
 ;
 
 enum_key:

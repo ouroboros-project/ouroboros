@@ -1,9 +1,15 @@
 //=========================// TYPE SPECIFICATION //
 
-type_specifier_seq: //TODO: ACTION
-    type_specifier
+type_specifier_seq:
+    type_specifier {
+        $$ = std::shared_ptr<TypeActionList>(new TypeActionList);
+        ($$)->push_back($1);
+    }
 |
-    type_specifier type_specifier_seq
+    type_specifier type_specifier_seq {
+        $$ = $2;
+        ($$)->push_back($1);
+    }
 ;
 
 type_specifier:
@@ -11,7 +17,7 @@ type_specifier:
 |
     class_specifier { $$ = $1; }
 |
-    enum_specifier //TODO: ACTION
+    enum_specifier { $$ = $1; }
 ;
 
 trailing_type_specifier:
