@@ -1,0 +1,53 @@
+//=========================// ENUM SPECIFICATION //
+
+enum_specifier:
+    enum_head '{' '}'
+|
+    enum_head '{' enumerator_list '}'
+|
+    enum_head '{' enumerator_list ',' '}'
+;
+
+enum_head:
+    enum_key 
+|
+    enum_key identifier
+|
+    enum_key enum_base
+|
+    enum_key identifier enum_base
+|
+    enum_key nested_name_specifier identifier
+|
+    enum_key nested_name_specifier identifier enum_base
+;
+
+opaque_enum_declaration:
+    enum_key identifier ';'
+|
+    enum_key identifier enum_base ';'
+;
+
+enum_base:
+    ':' type_specifier_seq
+;
+
+enumerator_list:
+    enumerator_definition
+|
+    enumerator_list ',' enumerator_definition
+;
+
+enumerator_definition:
+    enumerator
+|
+    enumerator '=' expression
+;
+
+enumerator:
+    identifier
+;
+
+enum_key:
+    ENUM | ENUM CLASS | ENUM STRUCT
+;

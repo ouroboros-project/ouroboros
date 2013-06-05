@@ -1,9 +1,17 @@
 //=========================// TYPE SPECIFICATION //
 
+type_specifier_seq: //TODO: ACTION
+    type_specifier
+|
+    type_specifier type_specifier_seq
+;
+
 type_specifier:
     trailing_type_specifier { $$ = $1; }
 |
     class_specifier { $$ = $1; }
+|
+    enum_specifier //TODO: ACTION
 ;
 
 trailing_type_specifier:
