@@ -13,6 +13,8 @@ set (
   ${CMAKE_CURRENT_LIST_DIR}/grammar/semantictypes.gr
   ${CMAKE_CURRENT_LIST_DIR}/grammar/toplevel_rules.gr
   ${CMAKE_CURRENT_LIST_DIR}/grammar/type_rules.gr
+  ${CMAKE_CURRENT_LIST_DIR}/grammar/enum_rules.gr
+  ${CMAKE_CURRENT_LIST_DIR}/grammar/function_rules.gr
 )
 
 set (

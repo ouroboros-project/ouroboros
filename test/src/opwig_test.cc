@@ -2,6 +2,7 @@
 #include <opwig/md/class.h>
 #include <opwig/md/function.h>
 #include <opwig/md/namespace.h>
+#include <opwig/md/enum.h>
 #include <opwig/md/accessspecifier.h>
 #include <opwig/md/semanticerror.h>
 #include <opwig/md/nestednamespecifier.h>
@@ -29,6 +30,7 @@ using opwig::md::Ptr;
 using opwig::md::Variable;
 using opwig::md::ParameterList;
 using opwig::md::Function;
+using opwig::md::Enum;
 using opwig::md::Scope;
 using opwig::md::Namespace;
 using opwig::md::Class;
@@ -43,8 +45,12 @@ protected:
     Ptr<const Namespace> global_;
     
     int RunParse(const string& str) {
+        return RunParse(str, false);
+    }
+    int RunParse(const string& str, bool debug) {
         istringstream input (str);
         MDParser parser(input);
+        parser.setDebug(debug);
         int ret = parser.parse();
         global_ = parser.global_namespace();
         EXPECT_TRUE(static_cast<bool>(global_));
@@ -57,16 +63,15 @@ protected:
     }
     
     //////////// variable
-    Ptr<const Variable> TestVariable(const string& name, const string& type, AccessSpecifier access) {
-        return TestVariable(global_, name, type, access);
+    void TestVariable(const string& name, const string& type, AccessSpecifier access) {
+        TestVariable(global_, name, type, access);
     }
-    Ptr<const Variable> TestVariable(Ptr<const Scope> scope, const string& name, const string& type, AccessSpecifier access) {
+    void TestVariable(Ptr<const Scope> scope, const string& name, const string& type, AccessSpecifier access) {
         Ptr<const Variable> var = scope->GlobalVariable(name);
-        EXPECT_TRUE(static_cast<bool>(var));
+        ASSERT_TRUE(static_cast<bool>(var));
         EXPECT_EQ(name, var->name());
         EXPECT_EQ(type, var->type());
         EXPECT_EQ(access, var->access());
-        return var;
     }
     
     /////////// functions
@@ -97,40 +102,41 @@ protected:
     
     /////////// namespace
     Ptr<const Namespace> TestNamespace(const string& name, AccessSpecifier access, size_t numVariables, 
-                                       size_t numFunctions, size_t numClasses, size_t numNamespaces) {
-        return TestNamespace(global_, name, access, numVariables, numFunctions, numClasses, numNamespaces);
+                                       size_t numFunctions, size_t numClasses, size_t numNamespaces, size_t numEnums=0u) {
+        return TestNamespace(global_, name, access, numVariables, numFunctions, numClasses, numNamespaces, numEnums);
     }
     Ptr<const Namespace> TestNamespace(Ptr<const Scope> scope, const string& name, AccessSpecifier access, 
                                        size_t numVariables, size_t numFunctions,
-                                       size_t numClasses, size_t numNamespaces) {
+                                       size_t numClasses, size_t numNamespaces, size_t numEnums=0u) {
         Ptr<const Namespace> var = scope->NestedNamespace(name);
         EXPECT_TRUE(static_cast<bool>(var));
         EXPECT_EQ(name, var->name());
         EXPECT_EQ(access, var->access());
-        TestScopeChildNums(var, numVariables, numFunctions, numClasses, numNamespaces);
+        TestScopeChildNums(var, numVariables, numFunctions, numClasses, numNamespaces, numEnums);
         return var;
     }
     
     void TestScopeChildNums(Ptr<const Scope> scope, size_t numVariables, size_t numFunctions,
-                            size_t numClasses, size_t numNamespaces) {
+                            size_t numClasses, size_t numNamespaces, size_t numEnums=0u) {
         EXPECT_EQ(numVariables, scope->GlobalVariablesNum());
         EXPECT_EQ(numFunctions, scope->NestedFunctionsNum());
         EXPECT_EQ(numClasses, scope->NestedClassesNum());
         EXPECT_EQ(numNamespaces, scope->NestedNamespacesNum());
+        EXPECT_EQ(numEnums, scope->NestedEnumsNum());
     }
     
     ////////////// class
     Ptr<const Class> TestClass(const string& name, AccessSpecifier access, size_t numVariables, 
-                                       size_t numFunctions, size_t numClasses) {
-        return TestClass(global_, name, access, numVariables, numFunctions, numClasses);
+                                       size_t numFunctions, size_t numClasses, size_t numEnums=0u) {
+        return TestClass(global_, name, access, numVariables, numFunctions, numClasses, numEnums);
     }
     Ptr<const Class> TestClass(Ptr<const Scope> scope, const string& name, AccessSpecifier access, size_t numVariables, 
-                                       size_t numFunctions, size_t numClasses) {
+                                       size_t numFunctions, size_t numClasses, size_t numEnums=0u) {
         Ptr<const Class> var = scope->NestedClass(name);
         EXPECT_TRUE(static_cast<bool>(var));
         EXPECT_EQ(name, var->name());
         EXPECT_EQ(access, var->access());
-        TestScopeChildNums(var, numVariables, numFunctions, numClasses, 0u);
+        TestScopeChildNums(var, numVariables, numFunctions, numClasses, 0u, numEnums);
         return var;
     }
     
@@ -164,6 +170,20 @@ protected:
         internalCheckFunction(func, c->name(), "", access, false);
         return func;
     }
+    
+    //////////// enum
+    void TestEnum(const string& name, AccessSpecifier access, const string& base, const vector<string>& values) {
+        TestEnum(global_, name, access, base, values);
+    }
+    void TestEnum(Ptr<const Scope> scope, const string& name, AccessSpecifier access, const string& base, const vector<string>& values) {
+        Ptr<const Enum> var = scope->NestedEnum(name);
+        ASSERT_TRUE(static_cast<bool>(var));
+        EXPECT_EQ(name, var->name());
+        EXPECT_EQ(access, var->access());
+        ASSERT_EQ(base, var->base());
+        ASSERT_EQ(values.size(), var->values().size());
+        EXPECT_TRUE(equal(values.begin(), values.end(), var->values().begin()));
+    }
 };
 
 #include <opwig/nestednamespecifier.cc>
@@ -173,5 +193,6 @@ protected:
 #include <opwig/function.cc>
 #include <opwig/namespace.cc>
 #include <opwig/variable.cc>
+#include <opwig/enum.cc>
 
 #include <opwig/complexclasses.cc>

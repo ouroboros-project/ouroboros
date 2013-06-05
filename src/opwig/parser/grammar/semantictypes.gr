@@ -2,7 +2,9 @@
   Declaration:      ScopeAction;
   DeclarationSeq:   std::shared_ptr<ScopeActionList>;
   Type:             TypeAction;
+  TypeSeq:          std::shared_ptr<TypeActionList>;
   ClassHead:        parser::ClassHeadPair;
+  EnumHead:         parser::EnumHeadPair;
   BaseSpecifier:    parser::BaseSpecifier;
   BaseSpecifierSeq: std::shared_ptr<BaseSpecifierList>;
   AccessSpecifier:  md::AccessSpecifier;
@@ -90,8 +92,10 @@
 %type<Type>                 type_specifier
 %type<Type>                 trailing_type_specifier
 %type<Type>                 class_specifier
+%type<Type>                 enum_specifier
 
 %type<ClassHead>            class_head
+%type<EnumHead>             enum_head
 
 %type<BaseSpecifierSeq>     base_clause
 %type<BaseSpecifierSeq>     base_specifier_list
@@ -104,6 +108,12 @@
 %type<String>         type_name
 %type<String>         class_name
 %type<String>         unqualified_id
+%type<String>         enumerator
+%type<String>         enumerator_definition
+%type<String>         enum_base
+%type<String>         primitive
+
+%type<StringSeq>      enumerator_list
 
 %type<DeclaratorSeq>  init_declarator_list
 %type<DeclaratorSeq>  member_declarator_list

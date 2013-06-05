@@ -14,6 +14,9 @@ constructor_name:
   }
 ;
 
+primitive:
+    PRIMITIVE { $$ = d_scanner.matched(); }
+;
 
 id_expression:
     qualified_id { $$ = $1; }

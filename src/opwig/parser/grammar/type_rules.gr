@@ -4,6 +4,8 @@ type_specifier:
     trailing_type_specifier { $$ = $1; }
 |
     class_specifier { $$ = $1; }
+|
+    enum_specifier { $$ = $1; }
 ;
 
 trailing_type_specifier:

@@ -1,5 +1,5 @@
 #include <opwig/parser/utilities.h>
-
+#include <opwig/md/enum.h>
 #include <opwig/md/variable.h>
 
 #include <iostream>
@@ -13,6 +13,7 @@ using md::Scope;
 using md::Class;
 using md::Function;
 using md::Variable;
+using md::Enum;
 using md::NestedNameSpecifier;
 
 ScopeAction AddTypeToScope( const TypeAction& type_action ) {
@@ -63,7 +64,7 @@ TypeAction AddClassToScope( Ptr<Class> classObj, const NestedNameSpecifier& nest
         if (!targetScope)
             throw SemanticError("Invalid NestedNameSpecifier("+nestedName.ToString()+")", __FILE__, __LINE__);
         if (targetScope->AddNestedClass(classObj->name(), classObj))
-            return classObj->name();
+            return nestedName.ToString();
         throw SemanticError("Non-anonymous class cannot have empty name!", __FILE__, __LINE__);
     };
     return action;
@@ -95,6 +96,19 @@ ScopeAction AddFunctionToScope( const TypeAction& type_action, const parser::Dec
         func->set_default(is_default);
         func->set_delete(is_delete);
         return true;
+    };
+    return action;
+}
+
+TypeAction AddEnumToScope( const std::string& base, const StringList& values, const md::NestedNameSpecifier& nestedName) {
+    TypeAction action = [base, values, nestedName] (md::Ptr<md::Scope> current_scope) -> std::string {
+        Ptr<Scope> targetScope = nestedName.FindNearestNestingScope(current_scope);
+        if (!targetScope)
+            throw SemanticError("Invalid NestedNameSpecifier("+nestedName.ToString()+")", __FILE__, __LINE__);
+        Ptr<Enum> en = Enum::Create(nestedName.name(), base, values);
+        if (targetScope->AddNestedEnum(en))
+            return nestedName.ToString();
+        throw SemanticError("Error adding enum '"+en->name()+"' to scope '"+targetScope->name()+"'!", __FILE__, __LINE__);
     };
     return action;
 }

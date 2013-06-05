@@ -5,6 +5,7 @@
 #include <opwig/md/variable.h>
 #include <opwig/md/class.h>
 #include <opwig/md/function.h>
+#include <opwig/md/enum.h>
 
 namespace opwig {
 namespace md {
@@ -104,6 +105,29 @@ Ptr<Function> Scope::NestedFunction (const string& func_name) {
 }
 
 /*****************************************************/
+/*** ENUM METHODS ***/
+
+size_t Scope::NestedEnumsNum () const {
+    return enums_.Num();
+}
+
+bool Scope::AddNestedEnum (Ptr<Enum> nested) {
+    if (HasName(nested->name())) 
+        throw SemanticError("Can't add enum '"+nested->name()+"' to scope, it already exists.", __FILE__, __LINE__);
+    bool ok = enums_.Add(nested->name(), nested);
+    if (ok) nested->set_parent( shared_from_this() );
+    return ok;
+}
+
+Ptr<const Enum> Scope::NestedEnum (const string& enum_name) const {
+    return enums_.Get(enum_name);
+}
+
+Ptr<Enum> Scope::NestedEnum (const string& enum_name) {
+    return enums_.Get(enum_name);
+}
+
+/*****************************************************/
 /*** GENERAL METHODS ***/
 
 AccessSpecifier Scope::GetAccessSpecifier () const {
@@ -116,13 +140,15 @@ void Scope::SetAccessSpecifier(AccessSpecifier new_access) {
     variables_.SetCurrentAccessSpecifier(new_access);
     classes_.SetCurrentAccessSpecifier(new_access);
     functions_.SetCurrentAccessSpecifier(new_access);
+    enums_.SetCurrentAccessSpecifier(new_access);
 }
 
 bool Scope::HasName(const string& obj_name) const {
     return namespaces_.HasName(obj_name) || 
            variables_.HasName(obj_name) ||
            classes_.HasName(obj_name) ||
-           functions_.HasName(obj_name);
+           functions_.HasName(obj_name) ||
+           enums_.HasName(obj_name);
 }
 
 

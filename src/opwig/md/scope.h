@@ -15,6 +15,7 @@ class Namespace;
 class Class;
 class Variable;
 class Function;
+class Enum;
 
 /// Metadata interface for C++ scopes.
 class Scope : public MetadataObject, public std::enable_shared_from_this<Scope> {
@@ -85,6 +86,21 @@ class Scope : public MetadataObject, public std::enable_shared_from_this<Scope> 
     virtual Ptr<Function> NestedFunction (const std::string& func_name);
     
     /*****************************************************/
+    /*** ENUM METHODS ***/
+    
+    /// Tells how many functions exist in this scope.
+    virtual size_t NestedEnumsNum () const;
+
+    /// Adds a function to the scope. In classes, it will be a method.
+    virtual bool AddNestedEnum (Ptr<Enum> nested);
+
+    /// Gives the function identified by the given name (const version).
+    virtual Ptr<const Enum> NestedEnum (const std::string& func_name) const;
+    
+    /// Gives the function identified by the given name.
+    virtual Ptr<Enum> NestedEnum (const std::string& func_name);
+    
+    /*****************************************************/
     /*** GENERAL METHODS ***/
     
     /// Gets the current access specifier of this scope (and its containers).
@@ -104,6 +120,7 @@ class Scope : public MetadataObject, public std::enable_shared_from_this<Scope> 
     Container<Variable>     variables_;
     Container<Class>        classes_;
     Container<Function>     functions_;
+    Container<Enum>         enums_;
 
   private:
 

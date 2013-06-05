@@ -16,7 +16,8 @@ set (
   ${CMAKE_CURRENT_BINARY_DIR}/md/class.h
   ${CMAKE_CURRENT_BINARY_DIR}/md/class.cxx
   ${CMAKE_CURRENT_BINARY_DIR}/md/semanticerror.h
-  ${CMAKE_CURRENT_BINARY_DIR}/md/function.h  
+  ${CMAKE_CURRENT_BINARY_DIR}/md/function.h
+  ${CMAKE_CURRENT_BINARY_DIR}/md/enum.h
   ${CMAKE_CURRENT_BINARY_DIR}/md/parameter.h
   ${CMAKE_CURRENT_BINARY_DIR}/md/nestednamespecifier.h
   ${CMAKE_CURRENT_BINARY_DIR}/md/nestednamespecifier.cxx

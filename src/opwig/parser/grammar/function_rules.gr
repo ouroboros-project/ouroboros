@@ -1,6 +1,6 @@
 //=========================// FUNCTION SPECIFICATION //
 
-function_definition: //TODO: ACTION
+function_definition:
     declarator function_body {
         TypeAction voidAction = [] (md::Ptr<md::Scope> current_scope) -> std::string { return ""; };
         $$ = parser::AddFunctionToScope(voidAction, $1, false, false); 

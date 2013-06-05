@@ -13,6 +13,7 @@
 
 #include <memory>
 #include <list>
+#include <vector>
 #include <functional>
 #include <utility>
 
@@ -24,8 +25,9 @@ typedef std::list<ScopeAction>                          ScopeActionList;
 /*TypeAction is just like a NamespaceAction, adding a type/class to a namespace, 
   but instead of returning a bool it returns a string with the type name.*/
 typedef std::function<std::string (md::Ptr<md::Scope>)> TypeAction;
+typedef std::list<TypeAction>                           TypeActionList;
 
-typedef std::list<std::string>                          StringList;
+typedef std::vector<std::string>                          StringList;
 
 typedef std::list<parser::BaseSpecifier>                BaseSpecifierList;
 
@@ -34,6 +36,7 @@ namespace parser {
 using DeclaratorList = std::list<Declarator>;
 
 typedef std::pair<md::Ptr<md::Class>, md::NestedNameSpecifier>  ClassHeadPair;
+typedef std::pair<std::string, md::NestedNameSpecifier>          EnumHeadPair;
 
 } // namespace parser
 
