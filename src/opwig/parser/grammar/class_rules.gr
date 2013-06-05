@@ -2,14 +2,14 @@
 
 class_specifier:
     class_head '{' {
-        d_scanner.ChangeScope(nullptr);
+        d_scanner.PopScope();
     } '}' {
         md::Ptr<md::Class> classObj = ($1).first;
         md::NestedNameSpecifier nestedName = ($1).second;
         $$ = parser::AddClassToScope(classObj, nestedName);
     }
 |
-    class_head '{' member_specification { d_scanner.ChangeScope(nullptr); } '}' {
+    class_head '{' member_specification { d_scanner.PopScope(); } '}' {
         md::Ptr<md::Class> classObj = ($1).first;
         md::NestedNameSpecifier nestedName = ($1).second;
         for (auto it: *$3)
@@ -23,23 +23,23 @@ class_head:
     class_key {
         $$ = parser::ClassHeadPair(md::Class::Create("", BaseSpecifierList()),
                                    md::NestedNameSpecifier(""));
-        d_scanner.ChangeScope(($$).first);
+        d_scanner.PushScope(($$).first);
     }
 |
     class_key base_clause { 
         $$ = parser::ClassHeadPair(md::Class::Create("", *$2),
                                    md::NestedNameSpecifier(""));
-        d_scanner.ChangeScope(($$).first);
+        d_scanner.PushScope(($$).first);
     }
 |
     class_key class_head_name {
         $$ = parser::ClassHeadPair(md::Class::Create(($2).name(), BaseSpecifierList()), $2);
-        d_scanner.ChangeScope(($$).first);
+        d_scanner.PushScope(($$).first);
     }
 |
     class_key class_head_name base_clause {
         $$ = parser::ClassHeadPair(md::Class::Create(($2).name(), *$3), $2);
-        d_scanner.ChangeScope(($$).first);
+        d_scanner.PushScope(($$).first);
     }
 ;
 

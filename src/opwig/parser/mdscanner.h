@@ -10,6 +10,8 @@
 #include <opwig/md/ptr.h>
 #include <opwig/md/scope.h>
 
+#include <stack>
+
 // $insert namespace-open
 namespace opwig
 {
@@ -22,7 +24,8 @@ class MDScanner: public MDScannerBase {
 
     MDScanner(std::string const &infile, std::string const &outfile);
     
-    void ChangeScope(const md::Ptr<md::Scope>& the_current_scope);
+    void PushScope(const md::Ptr<md::Scope>& the_current_scope);
+    void PopScope();
 
     // $insert lexFunctionDecl
     int lex();
@@ -30,7 +33,8 @@ class MDScanner: public MDScannerBase {
     void setShortDebugOutput(bool short_output) { short_debug_ = short_output; }
 
   private:
-    md::Ptr<md::Scope> current_scope_;
+    //md::Ptr<md::Scope> current_scope_;
+    std::stack<md::Ptr<md::Scope>> scope_stack_;
 
     int lex__();
     int executeAction__(size_t ruleNr);
@@ -91,11 +95,12 @@ inline void MDScanner::print()
     print__();
 }
 
-inline void MDScanner::ChangeScope(const md::Ptr<md::Scope>& the_current_scope) {
-  if (the_current_scope == nullptr)
-    current_scope_.reset();
-  else
-    current_scope_ = the_current_scope;
+inline void MDScanner::PushScope(const md::Ptr<md::Scope>& the_current_scope) {
+    scope_stack_.push(the_current_scope);
+}
+
+inline void MDScanner::PopScope() {
+    scope_stack_.pop();
 }
 
 inline int MDScanner::peek() {
