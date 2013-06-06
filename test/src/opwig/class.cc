@@ -83,6 +83,50 @@ TEST_F (MDClassTest, ClassInAndOutOfNamespace) {
     TestClassBaseNum(c2, 0u);
 }
 
+
+TEST_F (MDClassTest, ClassInClass) {
+    ASSERT_EQ(RunParse("class abc { class name {}; };"), 0);
+    
+    auto abc = TestClass("abc", AccessSpecifier::PUBLIC, 0u, 0u, 1u);
+    TestClassBaseNum(abc, 0u);
+    
+    auto c = TestClass(abc, "name", AccessSpecifier::PRIVATE, 0u, 0u, 0u);
+    TestClassBaseNum(c, 0u);
+}
+
+TEST_F (MDClassTest, ChildClassWithSameName) {
+    ASSERT_EQ(RunParse("class name { class name {}; };"), 1);
+}
+
+TEST_F (MDClassTest, ClassInClassInClass) {
+    ASSERT_EQ(RunParse("class name { class middle { class name {}; }; };"), 0);
+    
+    auto c1 = TestClass("name", AccessSpecifier::PUBLIC, 0u, 0u, 1u);
+    TestClassBaseNum(c1, 0u);
+
+    auto c2 = TestClass(c1, "middle", AccessSpecifier::PRIVATE, 0u, 0u, 1u);
+    TestClassBaseNum(c2, 0u);
+
+    auto c3 = TestClass(c2, "name", AccessSpecifier::PRIVATE, 0u, 0u, 0u);
+    TestClassBaseNum(c3, 0u);
+}
+
+TEST_F (MDClassTest, ComplexClassInClass) {
+    ASSERT_EQ(RunParse("class name { public: name* func() {} private: class name2 { name* func(type); }; };"), 0);
+    
+    auto c1 = TestClass("name", AccessSpecifier::PUBLIC, 0u, 1u, 1u);
+    TestClassBaseNum(c1, 0u);
+
+    auto f = TestFunction(c1, "func", "name", AccessSpecifier::PUBLIC, false);
+    TestFunctionNoParameters(f);
+    
+    auto c2 = TestClass(c1, "name2", AccessSpecifier::PRIVATE, 0u, 1u, 0u);
+    TestClassBaseNum(c2, 0u);
+
+    auto f2 = TestFunction(c2, "func", "name", AccessSpecifier::PRIVATE, false);
+    TestFunctionParameter(f2, 0, "", "type");
+}
+
 /*
 parseando:
 -class { }
