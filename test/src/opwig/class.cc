@@ -128,19 +128,22 @@ TEST_F (MDClassTest, ComplexClassInClass) {
 }
 
 TEST_F (MDClassTest, ClassInClassWithConstructors) {
-    ASSERT_EQ(RunParse("class name { public: name* func() {} private: class name2 { name* func(type); }; };"), 0);
+    ASSERT_EQ(RunParse("class name { public: name() {} private: class name2 { name2(type); name* name(); }; };"), 0);
     
-    auto c1 = TestClass("name", AccessSpecifier::PUBLIC, 0u, 1u, 1u);
-    TestClassAttributes(c1, 0u, 0u, false);
+    auto c1 = TestClass("name", AccessSpecifier::PUBLIC, 0u, 0u, 1u);
+    TestClassAttributes(c1, 0u, 1u, false);
+    auto ctor = TestClassConstructorByIndex(c1, 0, AccessSpecifier::PUBLIC);
+    TestFunctionNoParameters(ctor);
+    //TestFunctionParameter(ctor, 0, "", "type");
 
-    auto f = TestFunction(c1, "func", "name", AccessSpecifier::PUBLIC, false);
-    TestFunctionNoParameters(f);
-    
     auto c2 = TestClass(c1, "name2", AccessSpecifier::PRIVATE, 0u, 1u, 0u);
-    TestClassAttributes(c2, 0u, 0u, false);
+    TestClassAttributes(c2, 0u, 1u, false);
 
-    auto f2 = TestFunction(c2, "func", "name", AccessSpecifier::PRIVATE, false);
-    TestFunctionParameter(f2, 0, "", "type");
+    auto ctor2 =  TestClassConstructorByIndex(c2, 0, AccessSpecifier::PRIVATE);
+    TestFunctionParameter(ctor2, 0, "", "type");
+
+    auto f2 = TestFunction(c2, "name", "name", AccessSpecifier::PRIVATE, false);
+    TestFunctionNoParameters(f2);
 }
 
 /*
