@@ -140,9 +140,12 @@ protected:
         return var;
     }
     
-    void TestClassBaseNum(Ptr<const Class> c, size_t numBases) {
-        EXPECT_EQ(numBases, c->base_specifiers().size());
+    void TestClassAttributes(Ptr<const Class> c, size_t numBases, size_t numConstructors, bool destructorDefined) {
+        ASSERT_EQ(numBases, c->base_specifiers().size());
+        ASSERT_EQ(numConstructors, c->constructors().size());
+        ASSERT_EQ(destructorDefined, static_cast<bool>(c->destructor()));
     }
+
     void TestClassBaseByIndex(Ptr<const Class> c, int baseIndex, const string& name, bool isVirtual, AccessSpecifier access) {
         auto bspec = c->base_specifiers().begin();
         for (int i = 0; i < baseIndex; i++, bspec++);
@@ -151,19 +154,11 @@ protected:
         EXPECT_EQ(isVirtual, bspec->is_virtual());
         EXPECT_EQ(access, bspec->access_specifier());   
     }
-    
-    void TestClassDestructorNotDefined(Ptr<const Class> c) {
-        ASSERT_FALSE(static_cast<bool>(c->destructor()));
-    }
     void TestClassDestructor(Ptr<const Class> c, bool isVirtual, AccessSpecifier access) {
         Ptr<const Function> func = c->destructor();
         internalCheckFunction(func, "~"+c->name(), "", access, false);
         //TODO: CHECK IF IS VIRTUAL
         TestFunctionNoParameters(func);
-    }
-    
-    void TestClassConstructorNum(Ptr<const Class> c, size_t numConstructors) {
-        EXPECT_EQ(numConstructors, c->constructors().size());
     }
     Ptr<const Function> TestClassConstructorByIndex(Ptr<const Class> c, int ctorIndex, AccessSpecifier access) {
         Ptr<const Function> func = c->constructors()[ctorIndex];

@@ -12,7 +12,8 @@ namespace opwig {
 
 inline void MDParser::error(char const *msg)
 {
-    std::cerr << msg << '\n';
+    if (debug())
+        std::cerr << msg << '\n';
 }
 
 // $insert lex

@@ -127,10 +127,10 @@ pp_number                   (\.?{digit}({digit}|{non_digit}|[eE][-+]|\.)*)
 "if"                { return MDParserBase::IF; }
 
 {identifier} {
-  if (!scope_stack_.empty() && scope_stack_.top()->name() == matched()) {
+  if (currentIsTypeName()) return MDParserBase::TYPE_NAME;
+  else if (!scope_stack_.empty() && scope_stack_.top()->name() == matched()) {
       return MDParserBase::CONSTRUCTOR_NAME;
-  }
-  else if (currentIsTypeName()) return MDParserBase::TYPE_NAME;
+  } 
   return MDParserBase::IDENTIFIER;
 }
 
