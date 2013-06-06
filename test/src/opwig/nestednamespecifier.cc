@@ -57,7 +57,7 @@ TEST_F (MDNestedNamesTest, ClassWithNestedBases) {
     TestScopeChildNums(global_, 0u, 0u, 1u, 0u);
     
     auto c = TestClass("name", AccessSpecifier::PUBLIC, 0u, 0u, 0u);
-    TestClassBaseNum(c, 3u);
+    TestClassAttributes(c, 3u, 0u, false);
 
     TestClassBaseByIndex(c, 0, "foo::base1", true, AccessSpecifier::PRIVATE);
     TestClassBaseByIndex(c, 1, "::bar::base2", false, AccessSpecifier::PUBLIC);
@@ -69,7 +69,7 @@ TEST_F (MDNestedNamesTest, AddingFunctionToAnotherScope) {
     TestScopeChildNums(global_, 0u, 0u, 1u, 0u);
 
     auto c = TestClass("name", AccessSpecifier::PUBLIC, 0u, 1u, 0u);
-    TestClassBaseNum(c, 0u);
+    TestClassAttributes(c, 0u, 0u, false);
 
     auto f = TestFunction(c, "func", "type", AccessSpecifier::PRIVATE, false);
     TestFunctionParameter(f, 0, "arg1", "name");
@@ -87,7 +87,7 @@ TEST_F (MDNestedNamesTest, AddingFunctionToAnotherScope) {
     auto wat = TestNamespace("wat", AccessSpecifier::PUBLIC, 0u, 0u, 0u, 0u);
 
     auto c = TestClass("name", AccessSpecifier::PUBLIC, 0u, 1u, 0u);
-    TestClassBaseNum(c, 0u);
+    TestClassAttributes(c, 0u, 0u, false;
 
     auto f = TestFunction(c, "func", "type", AccessSpecifier::PRIVATE, false);
     TestFunctionParameter(f, 0, "", "type");

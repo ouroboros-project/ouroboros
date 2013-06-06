@@ -6,7 +6,7 @@ protected:
 TEST_F (MDComplexClassesTest, SimpleClass) {
     ASSERT_EQ(RunParse("class name { public: name(); ~name(); rtype func(type); protected: rtype var; };"), 0);
     auto c = TestClass("name", AccessSpecifier::PUBLIC, 1u, 1u, 0u);
-    TestClassBaseNum(c, 0u);
+    TestClassAttributes(c, 0u, 1u, true);
     
     TestVariable(c, "var", "rtype", AccessSpecifier::PROTECTED);
     auto f = TestFunction(c, "func", "rtype", AccessSpecifier::PUBLIC, false);
@@ -14,7 +14,6 @@ TEST_F (MDComplexClassesTest, SimpleClass) {
 
     TestClassDestructor(c, false, AccessSpecifier::PUBLIC);
     
-    TestClassConstructorNum(c, 1u);
     auto ctor = TestClassConstructorByIndex(c, 0, AccessSpecifier::PUBLIC);
     TestFunctionNoParameters(ctor);
 }
@@ -22,15 +21,14 @@ TEST_F (MDComplexClassesTest, SimpleClass) {
 TEST_F (MDComplexClassesTest, SimpleClassWithFuncDefinitions) {
     ASSERT_EQ(RunParse("class name { public: name(){} ~name(){} rtype func(type) { } protected: rtype var; };"), 0);
     auto c = TestClass("name", AccessSpecifier::PUBLIC, 1u, 1u, 0u);
-    TestClassBaseNum(c, 0u);
+    TestClassAttributes(c, 0u, 1u, true);
     
     TestVariable(c, "var", "rtype", AccessSpecifier::PROTECTED);
     auto f = TestFunction(c, "func", "rtype", AccessSpecifier::PUBLIC, false);
     TestFunctionParameter(f, 0, "", "type");
 
     TestClassDestructor(c, false, AccessSpecifier::PUBLIC);
-    
-    TestClassConstructorNum(c, 1u);
+
     auto ctor = TestClassConstructorByIndex(c, 0, AccessSpecifier::PUBLIC);
     TestFunctionNoParameters(ctor);
 }
@@ -46,10 +44,9 @@ TEST_F (MDComplexClassesTest, StandardClassDefinition) {
     
     auto abc = TestNamespace("abc", AccessSpecifier::PUBLIC, 0u, 0u, 1u, 0u);
     auto c = TestClass(abc, "name", AccessSpecifier::PUBLIC, 1u, 2u, 0u);
-    TestClassBaseNum(c, 1u);
+    TestClassAttributes(c, 1u, 1u, true);
     TestClassBaseByIndex(c, 0, "base", false, AccessSpecifier::PUBLIC);
     TestClassDestructor(c, true, AccessSpecifier::PUBLIC);
-    TestClassConstructorNum(c, 1u);
     auto ctor = TestClassConstructorByIndex(c, 0, AccessSpecifier::PUBLIC);
     TestFunctionParameter(ctor, 0, "", "int");
     TestFunctionParameter(ctor, 1, "arg2", "double");
