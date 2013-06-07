@@ -19,20 +19,21 @@ size_t Scope::NestedNamespacesNum () const {
     return namespaces_.Num();
 }
 
-bool Scope::AddNestedNamespace (const string& nmspace_name, Ptr<Namespace> nested) {
-    if (HasName(nmspace_name)) 
-        throw SemanticError("Can't add namespace '"+nmspace_name+"' to scope, it already exists.", __FILE__, __LINE__);
-    bool ok = namespaces_.Add(nmspace_name, nested);
+bool Scope::AddNestedNamespace (Ptr<Namespace> nested) {
+    string id = nested->id();
+    if (HasID(id)) 
+        throw SemanticError("Can't add namespace '"+id+"' to scope, it already exists.", __FILE__, __LINE__);
+    bool ok = namespaces_.Add(nested);
     if (ok) nested->set_parent( shared_from_this() );
     return ok;
 }
 
-Ptr<const Namespace> Scope::NestedNamespace (const string& nmspace_name) const {
-    return namespaces_.Get(nmspace_name);
+Ptr<const Namespace> Scope::NestedNamespace (const string& nmspace_id) const {
+    return namespaces_.Get(nmspace_id);
 }
 
-Ptr<Namespace> Scope::NestedNamespace (const string& nmspace_name) {
-    return namespaces_.Get(nmspace_name);
+Ptr<Namespace> Scope::NestedNamespace (const string& nmspace_id) {
+    return namespaces_.Get(nmspace_id);
 }
 
 /*****************************************************/
@@ -43,19 +44,19 @@ size_t Scope::GlobalVariablesNum ()  const {
 }
 
 bool Scope::AddGlobalVariable (Ptr<Variable> variable) {
-    if (HasName(variable->name())) 
-        throw SemanticError("Can't add variable '"+variable->name()+"' to scope, it already exists.", __FILE__, __LINE__);
-    bool ok = variables_.Add(variable->name(), variable);
+    if (HasID(variable->id())) 
+        throw SemanticError("Can't add variable '"+variable->id()+"' to scope, it already exists.", __FILE__, __LINE__);
+    bool ok = variables_.Add(variable);
     if (ok) variable->set_parent( shared_from_this() );
     return ok;
 }
 
-Ptr<const Variable> Scope::GlobalVariable (const string& var_name) const {
-    return variables_.Get(var_name);
+Ptr<const Variable> Scope::GlobalVariable (const string& var_id) const {
+    return variables_.Get(var_id);
 }
 
-Ptr<Variable> Scope::GlobalVariable (const string& var_name) {
-    return variables_.Get(var_name);
+Ptr<Variable> Scope::GlobalVariable (const string& var_id) {
+    return variables_.Get(var_id);
 }
 
 /*****************************************************/
@@ -65,20 +66,20 @@ size_t Scope::NestedClassesNum () const {
     return classes_.Num();
 }
 
-bool Scope::AddNestedClass (const string& class_name, Ptr<Class> nested) {
-    if (HasName(class_name)) 
-        throw SemanticError("Can't add class '"+class_name+"' to scope, it already exists.", __FILE__, __LINE__);
-    bool ok = classes_.Add(class_name, nested);
+bool Scope::AddNestedClass (Ptr<Class> nested) {
+    if (HasID(nested->id())) 
+        throw SemanticError("Can't add class '"+nested->id()+"' to scope, it already exists.", __FILE__, __LINE__);
+    bool ok = classes_.Add(nested);
     if (ok) nested->set_parent( shared_from_this() );
     return ok;
 }
 
-Ptr<const Class> Scope::NestedClass (const string& class_name) const {
-    return classes_.Get(class_name);
+Ptr<const Class> Scope::NestedClass (const string& class_id) const {
+    return classes_.Get(class_id);
 }
 
-Ptr<Class> Scope::NestedClass (const string& class_name) {
-    return classes_.Get(class_name);
+Ptr<Class> Scope::NestedClass (const string& class_id) {
+    return classes_.Get(class_id);
 }
 
 /*****************************************************/
@@ -89,19 +90,20 @@ size_t Scope::NestedFunctionsNum () const {
 }
 
 bool Scope::AddNestedFunction (Ptr<Function> nested) {
-    if (HasName(nested->name())) 
-        throw SemanticError("Can't add function '"+nested->name()+"' to scope, it already exists.", __FILE__, __LINE__);
-    bool ok = functions_.Add(nested->name(), nested);
+    string id = nested->id();
+    if (HasID(id)) 
+        throw SemanticError("Can't add function '"+id+"' to scope, it already exists.", __FILE__, __LINE__);
+    bool ok = functions_.Add(nested);
     if (ok) nested->set_parent( shared_from_this() );
     return ok;
 }
 
-Ptr<const Function> Scope::NestedFunction (const string& func_name) const {
-    return functions_.Get(func_name);
+Ptr<const Function> Scope::NestedFunction (const string& func_id) const {
+    return functions_.Get(func_id);
 }
 
-Ptr<Function> Scope::NestedFunction (const string& func_name) {
-    return functions_.Get(func_name);
+Ptr<Function> Scope::NestedFunction (const string& func_id) {
+    return functions_.Get(func_id);
 }
 
 /*****************************************************/
@@ -112,19 +114,19 @@ size_t Scope::NestedEnumsNum () const {
 }
 
 bool Scope::AddNestedEnum (Ptr<Enum> nested) {
-    if (HasName(nested->name())) 
-        throw SemanticError("Can't add enum '"+nested->name()+"' to scope, it already exists.", __FILE__, __LINE__);
-    bool ok = enums_.Add(nested->name(), nested);
+    if (HasID(nested->id())) 
+        throw SemanticError("Can't add enum '"+nested->id()+"' to scope, it already exists.", __FILE__, __LINE__);
+    bool ok = enums_.Add(nested);
     if (ok) nested->set_parent( shared_from_this() );
     return ok;
 }
 
-Ptr<const Enum> Scope::NestedEnum (const string& enum_name) const {
-    return enums_.Get(enum_name);
+Ptr<const Enum> Scope::NestedEnum (const string& enum_id) const {
+    return enums_.Get(enum_id);
 }
 
-Ptr<Enum> Scope::NestedEnum (const string& enum_name) {
-    return enums_.Get(enum_name);
+Ptr<Enum> Scope::NestedEnum (const string& enum_id) {
+    return enums_.Get(enum_id);
 }
 
 /*****************************************************/
@@ -143,12 +145,12 @@ void Scope::SetAccessSpecifier(AccessSpecifier new_access) {
     enums_.SetCurrentAccessSpecifier(new_access);
 }
 
-bool Scope::HasName(const string& obj_name) const {
-    return namespaces_.HasName(obj_name) || 
-           variables_.HasName(obj_name) ||
-           classes_.HasName(obj_name) ||
-           functions_.HasName(obj_name) ||
-           enums_.HasName(obj_name);
+bool Scope::HasID(const string& obj_id) const {
+    return namespaces_.HasID(obj_id) || 
+           variables_.HasID(obj_id) ||
+           classes_.HasID(obj_id) ||
+           functions_.HasID(obj_id) ||
+           enums_.HasID(obj_id);
 }
 
 

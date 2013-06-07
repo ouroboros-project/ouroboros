@@ -22,6 +22,10 @@ class MetadataObject {
     /// Gets the metadata object name.
     const std::string& name() const { return name_; }
 
+    /// Gets the metadata object unique ID. A scope cannot have 2 MOs with the same ID.
+    /// By default, the ID is the same as the name.
+    virtual const std::string& id() const { return name_; }
+
     /// Gives the access specifier of this metadata object.
     virtual AccessSpecifier access () const { return access_; }
     

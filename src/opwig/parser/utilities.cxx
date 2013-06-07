@@ -63,7 +63,7 @@ TypeAction AddClassToScope( Ptr<Class> classObj, const NestedNameSpecifier& nest
         Ptr<Scope> targetScope = nestedName.FindNearestNestingScope(current_scope);
         if (!targetScope)
             throw SemanticError("Invalid NestedNameSpecifier("+nestedName.ToString()+")", __FILE__, __LINE__);
-        if (targetScope->AddNestedClass(classObj->name(), classObj))
+        if (targetScope->AddNestedClass(classObj))
             return nestedName.ToString();
         throw SemanticError("Non-anonymous class cannot have empty name!", __FILE__, __LINE__);
     };

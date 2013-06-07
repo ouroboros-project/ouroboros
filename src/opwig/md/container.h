@@ -27,13 +27,13 @@ class Container {
     size_t Num () const;
 
     /// Adds a new metadata object with the current access specifier.
-    bool Add (const std::string& name, Ptr<T> mdObj);
+    bool Add (Ptr<T> mdObj);
 
     /// Gives the metadata object identified by the given name (const version).
-    Ptr<const T> Get (const std::string& name) const;
+    Ptr<const T> Get (const std::string& id) const;
     
     /// Gives the metadata object identified by the given name.
-    Ptr<T> Get (const std::string& name);
+    Ptr<T> Get (const std::string& id);
 
     /// Gets the current access specifier for this container.
     AccessSpecifier GetCurrentAccessSpecifier () const { return current_access_; }
@@ -42,7 +42,7 @@ class Container {
     void SetCurrentAccessSpecifier (AccessSpecifier current_access) { current_access_ = current_access; }
     
     /// Checks if the given name exists within this container.
-    bool HasName(const std::string& name) const;
+    bool HasID(const std::string& id) const;
 
   protected:
   
@@ -57,34 +57,35 @@ inline size_t Container<T>::Num () const {
 }
 
 template <class T>
-inline bool Container<T>::Add (const std::string& name, Ptr<T> mdObj) {
-    auto check = objects_.find(name);
+inline bool Container<T>::Add (Ptr<T> mdObj) {
+    std::string id = mdObj->id();
+    auto check = objects_.find(id);
     if (check != objects_.end())
         return false;
     mdObj->set_access(current_access_);
-    objects_[name] = mdObj;
+    objects_[id] = mdObj;
     return true;
 }
 
 template <class T>
-inline Ptr<const T> Container<T>::Get (const std::string& name) const {
-    auto get = objects_.find(name);
+inline Ptr<const T> Container<T>::Get (const std::string& id) const {
+    auto get = objects_.find(id);
     return get != objects_.end() 
         ? get->second 
         : Ptr<const T>();
 }
 
 template <class T>
-inline Ptr<T> Container<T>::Get (const std::string& name) {
-    auto get = objects_.find(name);
+inline Ptr<T> Container<T>::Get (const std::string& id) {
+    auto get = objects_.find(id);
     return get != objects_.end()
         ? get->second
         : Ptr<T>();
 }
 
 template <class T>
-inline bool Container<T>::HasName(const std::string& name) const {
-    return objects_.count(name) == 1;
+inline bool Container<T>::HasID(const std::string& id) const {
+    return objects_.count(id) == 1;
 }
 
 
