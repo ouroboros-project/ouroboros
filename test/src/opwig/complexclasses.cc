@@ -9,7 +9,7 @@ TEST_F (MDComplexClassesTest, SimpleClass) {
     TestClassAttributes(c, 0u, 1u, true);
     
     TestVariable(c, "var", "rtype", AccessSpecifier::PROTECTED);
-    auto f = TestFunction(c, "func", "rtype", AccessSpecifier::PUBLIC, false);
+    auto f = TestFunction(c, "func(type)", "func", "rtype", AccessSpecifier::PUBLIC, false);
     TestFunctionParameter(f, 0, "", "type");
 
     TestClassDestructor(c, false, AccessSpecifier::PUBLIC);
@@ -24,7 +24,7 @@ TEST_F (MDComplexClassesTest, SimpleClassWithFuncDefinitions) {
     TestClassAttributes(c, 0u, 1u, true);
     
     TestVariable(c, "var", "rtype", AccessSpecifier::PROTECTED);
-    auto f = TestFunction(c, "func", "rtype", AccessSpecifier::PUBLIC, false);
+    auto f = TestFunction(c, "func(type)", "func", "rtype", AccessSpecifier::PUBLIC, false);
     TestFunctionParameter(f, 0, "", "type");
 
     TestClassDestructor(c, false, AccessSpecifier::PUBLIC);
@@ -51,9 +51,9 @@ TEST_F (MDComplexClassesTest, StandardClassDefinition) {
     TestFunctionParameter(ctor, 0, "", "int");
     TestFunctionParameter(ctor, 1, "arg2", "double");
     
-    auto f = TestFunction(c, "func", "char", AccessSpecifier::PUBLIC, false);
+    auto f = TestFunction(c, "func()", "func", "char", AccessSpecifier::PUBLIC, false);
     TestFunctionNoParameters(f);
-    f = TestFunction(c, "func2", "void", AccessSpecifier::PUBLIC, false);
+    f = TestFunction(c, "func2(type)", "func2", "void", AccessSpecifier::PUBLIC, false);
     TestFunctionParameter(f, 0, "arg", "type");
     
     TestVariable(c, "var", "type", AccessSpecifier::PROTECTED);

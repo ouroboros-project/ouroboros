@@ -21,7 +21,7 @@ size_t Scope::NestedNamespacesNum () const {
 
 bool Scope::AddNestedNamespace (Ptr<Namespace> nested) {
     string id = nested->id();
-    if (HasID(id)) 
+    if (HasObject(nested)) 
         throw SemanticError("Can't add namespace '"+id+"' to scope, it already exists.", __FILE__, __LINE__);
     bool ok = namespaces_.Add(nested);
     if (ok) nested->set_parent( shared_from_this() );
@@ -44,7 +44,7 @@ size_t Scope::GlobalVariablesNum ()  const {
 }
 
 bool Scope::AddGlobalVariable (Ptr<Variable> variable) {
-    if (HasID(variable->id())) 
+    if (HasObject(variable)) 
         throw SemanticError("Can't add variable '"+variable->id()+"' to scope, it already exists.", __FILE__, __LINE__);
     bool ok = variables_.Add(variable);
     if (ok) variable->set_parent( shared_from_this() );
@@ -67,7 +67,7 @@ size_t Scope::NestedClassesNum () const {
 }
 
 bool Scope::AddNestedClass (Ptr<Class> nested) {
-    if (HasID(nested->id())) 
+    if (HasObject(nested)) 
         throw SemanticError("Can't add class '"+nested->id()+"' to scope, it already exists.", __FILE__, __LINE__);
     bool ok = classes_.Add(nested);
     if (ok) nested->set_parent( shared_from_this() );
@@ -91,7 +91,7 @@ size_t Scope::NestedFunctionsNum () const {
 
 bool Scope::AddNestedFunction (Ptr<Function> nested) {
     string id = nested->id();
-    if (HasID(id)) 
+    if (HasObject(nested)) 
         throw SemanticError("Can't add function '"+id+"' to scope, it already exists.", __FILE__, __LINE__);
     bool ok = functions_.Add(nested);
     if (ok) nested->set_parent( shared_from_this() );
@@ -114,7 +114,7 @@ size_t Scope::NestedEnumsNum () const {
 }
 
 bool Scope::AddNestedEnum (Ptr<Enum> nested) {
-    if (HasID(nested->id())) 
+    if (HasObject(nested)) 
         throw SemanticError("Can't add enum '"+nested->id()+"' to scope, it already exists.", __FILE__, __LINE__);
     bool ok = enums_.Add(nested);
     if (ok) nested->set_parent( shared_from_this() );
@@ -151,6 +151,18 @@ bool Scope::HasID(const string& obj_id) const {
            classes_.HasID(obj_id) ||
            functions_.HasID(obj_id) ||
            enums_.HasID(obj_id);
+}
+
+bool Scope::HasName(const std::string& obj_name) const {
+    return namespaces_.HasName(obj_name) || 
+           variables_.HasName(obj_name) ||
+           classes_.HasName(obj_name) ||
+           functions_.HasName(obj_name) ||
+           enums_.HasName(obj_name);
+}
+
+bool Scope::HasObject(const Ptr<const MetadataObject>& obj) const {
+    return HasName(obj->name()) || HasID(obj->id());
 }
 
 

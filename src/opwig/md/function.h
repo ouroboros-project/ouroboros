@@ -83,8 +83,7 @@ inline Function::Function(const std::string& the_name, const std::string& the_re
     : MetadataObject(the_name), signature_(""), return_type_(the_return_type), parameter_list_(the_parameter_list),
       pure_(pure), default_(false), delete_(false), declared_(false), defined_(false) { 
 
-    if (return_type_.size() > 0)    signature_ += return_type_ + " ";
-    signature_ += name_ + " (";
+    signature_ += name_ + "(";
     if (parameter_list_.size() > 0) {
         for (auto param : parameter_list_)
             signature_ += param.type + ",";

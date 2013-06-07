@@ -41,14 +41,17 @@ class Container {
     /// Sets the current access specifier for this container.
     void SetCurrentAccessSpecifier (AccessSpecifier current_access) { current_access_ = current_access; }
     
-    /// Checks if the given name exists within this container.
+    /// Checks if the given id exists within this container.
     bool HasID(const std::string& id) const;
+
+    /// Checks if the given id exists within this container.
+    bool HasName(const std::string& name) const;
 
   protected:
   
     AccessSpecifier current_access_;
     std::map<std::string, Ptr<T>> objects_;
-    
+    std::map<std::string, std::string> name_to_ids_;
 };
 
 template <class T>
@@ -64,6 +67,7 @@ inline bool Container<T>::Add (Ptr<T> mdObj) {
         return false;
     mdObj->set_access(current_access_);
     objects_[id] = mdObj;
+    name_to_ids_[mdObj->name()] = id;
     return true;
 }
 
@@ -88,6 +92,10 @@ inline bool Container<T>::HasID(const std::string& id) const {
     return objects_.count(id) == 1;
 }
 
+template <class T>
+inline bool Container<T>::HasName(const std::string& name) const {
+    return name_to_ids_.count(name) == 1;
+}
 
 } // namespace md
 } // namespace opwig

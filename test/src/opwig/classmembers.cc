@@ -31,7 +31,7 @@ TEST_F (MDClassMembersTest, SingleFunction) {
     auto c = TestClass("name", AccessSpecifier::PUBLIC, 0u, 1u, 0u);
     TestClassAttributes(c, 0u, 0u, false);
 
-    auto f = TestFunction(c, "func", "rtype", AccessSpecifier::PRIVATE, false);
+    auto f = TestFunction(c, "func(type)", "func", "rtype", AccessSpecifier::PRIVATE, false);
     TestFunctionParameter(f, 0, "", "type");
 }
 
@@ -40,7 +40,7 @@ TEST_F (MDClassMembersTest, SinglePureFunction) {
     auto c = TestClass("name", AccessSpecifier::PUBLIC, 0u, 1u, 0u);
     TestClassAttributes(c, 0u, 0u, false);
 
-    auto f = TestFunction(c, "func", "rtype", AccessSpecifier::PRIVATE, true);
+    auto f = TestFunction(c, "func(type)", "func", "rtype", AccessSpecifier::PRIVATE, true);
     TestFunctionParameter(f, 0, "", "type");
 }
 
@@ -58,7 +58,7 @@ TEST_F (MDClassMembersTest, SingleVarAndFunction) {
     TestClassAttributes(c, 0u, 0u, false);
 
     TestVariable(c, "var", "type", AccessSpecifier::PRIVATE);
-    auto f = TestFunction(c, "func", "rtype", AccessSpecifier::PRIVATE, false);
+    auto f = TestFunction(c, "func(type)", "func", "rtype", AccessSpecifier::PRIVATE, false);
     TestFunctionParameter(f, 0, "", "type");
 }
 
@@ -67,7 +67,7 @@ TEST_F (MDClassMembersTest, SingleFunctionWithAccessSpecifier) {
     auto c = TestClass("name", AccessSpecifier::PUBLIC, 0u, 1u, 0u);
     TestClassAttributes(c, 0u, 0u, false);
 
-    auto f = TestFunction(c, "func", "rtype", AccessSpecifier::PUBLIC, false);
+    auto f = TestFunction(c, "func(type)", "func", "rtype", AccessSpecifier::PUBLIC, false);
     TestFunctionParameter(f, 0, "", "type");
 }
 
@@ -77,7 +77,7 @@ TEST_F (MDClassMembersTest, VarAndFunctionWithMultiAccessSpecifiers) {
     TestClassAttributes(c, 0u, 0u, false);
 
     TestVariable(c, "var", "type", AccessSpecifier::PROTECTED);
-    auto f = TestFunction(c, "func", "rtype", AccessSpecifier::PUBLIC, false);
+    auto f = TestFunction(c, "func(type)", "func", "rtype", AccessSpecifier::PUBLIC, false);
     TestFunctionParameter(f, 0, "", "type");
 }
 

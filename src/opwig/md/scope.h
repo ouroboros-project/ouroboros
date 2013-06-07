@@ -111,6 +111,12 @@ class Scope : public MetadataObject, public std::enable_shared_from_this<Scope> 
     
     /// Checks if the given id exists within this scope.
     virtual bool HasID(const std::string& obj_id) const;
+
+    /// Checks if the given name exists within this scope.
+    virtual bool HasName(const std::string& obj_name) const;
+
+    /// Checks if the given id exists within this scope.
+    virtual bool HasObject(const Ptr<const MetadataObject>& obj) const;
     
   protected:
 

@@ -31,18 +31,19 @@ ScopeAction JoinDeclarations( const TypeAction& type_action, const std::shared_p
             NestedNameSpecifier nestedName = declarator.nested_name();
             Ptr<Scope> targetScope = nestedName.FindNearestNestingScope(current_scope);
             if (declarator.has_parameters()) {
-                Ptr<Function> func = targetScope->NestedFunction(nestedName.name());
+                Ptr<Function> newFunc = Function::Create(nestedName.name(), type, declarator.parameters(), declarator.is_pure());
+                Ptr<Function> func = targetScope->NestedFunction(newFunc->id());
                 if (!func) {
-                    func = Function::Create(nestedName.name(), type, declarator.parameters(), declarator.is_pure());
+                    func = newFunc;
                     if (!targetScope->AddNestedFunction(func)) {
                         throw SemanticError("Failed to add Function '"+func->name()+"' to Scope", __FILE__, __LINE__);
                     }
                 }
                 else if (func->is_declared()) {
-                    throw SemanticError("Duplicate function declaration for '"+func->name()+"' in scope "+targetScope->name(), __FILE__, __LINE__);
+                    throw SemanticError("Duplicate function declaration for '"+func->id()+"' in scope "+targetScope->name(), __FILE__, __LINE__);
                 }
                 else if (func->return_type() != type) {
-                    throw SemanticError("Erroneous function declaration for '"+func->name()+"' in scope "+targetScope->name()+" [return type mismatch]", __FILE__, __LINE__);
+                    throw SemanticError("Erroneous function declaration for '"+func->id()+"' in scope "+targetScope->name()+" [return type mismatch]", __FILE__, __LINE__);
                 }
                 func->set_declared();
             } 
@@ -78,19 +79,19 @@ ScopeAction AddFunctionToScope( const TypeAction& type_action, const parser::Dec
         if (!declarator.has_parameters()) {
             throw SemanticError("Invalid FunctionDefinition for '"+nestedName.name()+"' - no parameters clause.", __FILE__, __LINE__);
         }
-        
-        Ptr<Function> func = targetScope->NestedFunction(nestedName.name());
+        Ptr<Function> newFunc = Function::Create(nestedName.name(), type, declarator.parameters(), declarator.is_pure());
+        Ptr<Function> func = targetScope->NestedFunction(newFunc->id());
         if (!func) {
-            func = Function::Create(nestedName.name(), type, declarator.parameters(), declarator.is_pure());
+            func = newFunc;
             if (!targetScope->AddNestedFunction(func)) {
-                throw SemanticError("Failed to define Function '"+func->name()+"' in Scope", __FILE__, __LINE__);
+                throw SemanticError("Failed to define Function '"+func->id()+"' in Scope", __FILE__, __LINE__);
             }
         }
         else if (func->is_defined()) {
-            throw SemanticError("Duplicate function definition for '"+func->name()+"' in scope "+targetScope->name(), __FILE__, __LINE__);
+            throw SemanticError("Duplicate function definition for '"+func->id()+"' in scope "+targetScope->name(), __FILE__, __LINE__);
         }
         else if (func->return_type() != type) {
-            throw SemanticError("Erroneous function definition for '"+func->name()+"' in scope "+targetScope->name()+" [return type mismatch]", __FILE__, __LINE__);
+            throw SemanticError("Erroneous function definition for '"+func->id()+"' in scope "+targetScope->name()+" [return type mismatch]", __FILE__, __LINE__);
         }
         func->set_defined();
         func->set_default(is_default);
