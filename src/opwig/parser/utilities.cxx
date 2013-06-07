@@ -31,10 +31,10 @@ ScopeAction JoinDeclarations( const TypeAction& type_action, const std::shared_p
             NestedNameSpecifier nestedName = declarator.nested_name();
             Ptr<Scope> targetScope = nestedName.FindNearestNestingScope(current_scope);
             if (declarator.has_parameters()) {
-                Ptr<Function> newFunc = Function::Create(nestedName.name(), type, declarator.parameters(), declarator.is_pure());
-                Ptr<Function> func = targetScope->NestedFunction(newFunc->id());
+                std::string sig = Function::GetSignatureFor(nestedName.name(), declarator.parameters());
+                Ptr<Function> func = targetScope->NestedFunction(sig);
                 if (!func) {
-                    func = newFunc;
+                    func = Function::Create(nestedName.name(), type, declarator.parameters(), declarator.is_pure());
                     if (!targetScope->AddNestedFunction(func)) {
                         throw SemanticError("Failed to add Function '"+func->name()+"' to Scope", __FILE__, __LINE__);
                     }
@@ -79,10 +79,10 @@ ScopeAction AddFunctionToScope( const TypeAction& type_action, const parser::Dec
         if (!declarator.has_parameters()) {
             throw SemanticError("Invalid FunctionDefinition for '"+nestedName.name()+"' - no parameters clause.", __FILE__, __LINE__);
         }
-        Ptr<Function> newFunc = Function::Create(nestedName.name(), type, declarator.parameters(), declarator.is_pure());
-        Ptr<Function> func = targetScope->NestedFunction(newFunc->id());
+        std::string sig = Function::GetSignatureFor(nestedName.name(), declarator.parameters());
+        Ptr<Function> func = targetScope->NestedFunction(sig);
         if (!func) {
-            func = newFunc;
+            func = Function::Create(nestedName.name(), type, declarator.parameters(), declarator.is_pure());
             if (!targetScope->AddNestedFunction(func)) {
                 throw SemanticError("Failed to define Function '"+func->id()+"' in Scope", __FILE__, __LINE__);
             }

@@ -24,6 +24,8 @@ class Function : public MetadataObject {
     static Ptr<Function> Create(const std::string& the_name, const std::string& the_return_type,
                                 const ParameterList& the_parameter_list, const bool pure);
 
+    static std::string GetSignatureFor(const std::string& the_name, const ParameterList& the_parameter_list);
+
     /// @see opwig::md::MetadataObject::id
     virtual const std::string& id() const;
 
@@ -83,13 +85,7 @@ inline Function::Function(const std::string& the_name, const std::string& the_re
     : MetadataObject(the_name), signature_(""), return_type_(the_return_type), parameter_list_(the_parameter_list),
       pure_(pure), default_(false), delete_(false), declared_(false), defined_(false) { 
 
-    signature_ += name_ + "(";
-    if (parameter_list_.size() > 0) {
-        for (auto param : parameter_list_)
-            signature_ += param.type + ",";
-        signature_.pop_back();
-    }
-    signature_ += ")";
+    signature_ = Function::GetSignatureFor(name_, parameter_list_);
 }
 
 inline Ptr<Function> Function::Create(const std::string& the_name,
@@ -97,6 +93,17 @@ inline Ptr<Function> Function::Create(const std::string& the_name,
                                       const ParameterList& the_parameter_list,
                                       const bool pure) {
     return Ptr<Function>(new Function(the_name, the_return_type, the_parameter_list, pure));
+}
+
+inline std::string Function::GetSignatureFor(const std::string& the_name, const ParameterList& the_parameter_list) {
+    std::string signature = the_name + "(";
+    if (the_parameter_list.size() > 0) {
+        for (auto param : the_parameter_list)
+            signature += param.type + ",";
+        signature.pop_back();
+    }
+    signature += ")";
+    return signature;
 }
 
 inline const std::string& Function::id() const {

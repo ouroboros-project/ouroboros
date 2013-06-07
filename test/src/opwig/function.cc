@@ -146,3 +146,27 @@ TEST_F (MDFunctionTest, MultiFunctionDefinition) {
     f = TestFunction("func2(type0)", "func2", "rtype", AccessSpecifier::PUBLIC, false);
     TestFunctionParameter(f, 0, "", "type0");
 }
+
+TEST_F (MDFunctionTest, FunctionOverload) {
+    ASSERT_EQ(RunParse("rtype func(type0, type1); rtype func(type0) {}"), 0);
+    TestScopeChildNums(global_, 0u, 2u, 0u, 0u);
+    
+    auto f = TestFunction("func(type0,type1)", "func", "rtype", AccessSpecifier::PUBLIC, false);
+    TestFunctionParameter(f, 0, "", "type0");
+    TestFunctionParameter(f, 1, "", "type1");
+    
+    f = TestFunction("func(type0)", "func", "rtype", AccessSpecifier::PUBLIC, false);
+    TestFunctionParameter(f, 0, "", "type0");
+}
+
+TEST_F (MDFunctionTest, FunctionOverload2) {
+    ASSERT_EQ(RunParse("rtype func(type0, type1); void func() {}"), 0);
+    TestScopeChildNums(global_, 0u, 2u, 0u, 0u);
+    
+    auto f = TestFunction("func(type0,type1)", "func", "rtype", AccessSpecifier::PUBLIC, false);
+    TestFunctionParameter(f, 0, "", "type0");
+    TestFunctionParameter(f, 1, "", "type1");
+    
+    f = TestFunction("func()", "func", "void", AccessSpecifier::PUBLIC, false);
+    TestFunctionNoParameters(f);
+}

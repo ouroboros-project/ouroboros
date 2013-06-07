@@ -91,7 +91,7 @@ size_t Scope::NestedFunctionsNum () const {
 
 bool Scope::AddNestedFunction (Ptr<Function> nested) {
     string id = nested->id();
-    if (HasObject(nested)) 
+    if (HasID(id) || hasNameNonFunction(nested->name()) ) 
         throw SemanticError("Can't add function '"+id+"' to scope, it already exists.", __FILE__, __LINE__);
     bool ok = functions_.Add(nested);
     if (ok) nested->set_parent( shared_from_this() );
@@ -154,17 +154,19 @@ bool Scope::HasID(const string& obj_id) const {
 }
 
 bool Scope::HasName(const std::string& obj_name) const {
-    return namespaces_.HasName(obj_name) || 
-           variables_.HasName(obj_name) ||
-           classes_.HasName(obj_name) ||
-           functions_.HasName(obj_name) ||
-           enums_.HasName(obj_name);
+    return functions_.HasName(obj_name) || hasNameNonFunction(obj_name);
 }
 
 bool Scope::HasObject(const Ptr<const MetadataObject>& obj) const {
     return HasName(obj->name()) || HasID(obj->id());
 }
 
+bool Scope::hasNameNonFunction(const std::string& obj_name) const {
+    return namespaces_.HasName(obj_name) || 
+           variables_.HasName(obj_name) ||
+           classes_.HasName(obj_name) ||
+           enums_.HasName(obj_name);
+}
 
 } // namespace md
 } // namespace opwig

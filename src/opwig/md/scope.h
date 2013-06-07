@@ -128,6 +128,8 @@ class Scope : public MetadataObject, public std::enable_shared_from_this<Scope> 
     Container<Function>     functions_;
     Container<Enum>         enums_;
 
+    bool hasNameNonFunction(const std::string& obj_name) const;
+
   private:
 
 };
