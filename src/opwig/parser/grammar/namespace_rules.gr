@@ -20,7 +20,7 @@ named_namespace_definition:
             if (!(it) (new_namespace))
                 throw md::SemanticError("Namespace action failed (new)", __FILE__, __LINE__);
         $$ = [name,new_namespace] (Ptr<md::Scope> current_namespace) -> bool {
-            return current_namespace->AddNestedNamespace(name, new_namespace);
+            return current_namespace->AddNestedNamespace(new_namespace);
         };
     }
 |

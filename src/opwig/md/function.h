@@ -24,6 +24,11 @@ class Function : public MetadataObject {
     static Ptr<Function> Create(const std::string& the_name, const std::string& the_return_type,
                                 const ParameterList& the_parameter_list, const bool pure);
 
+    static std::string GetSignatureFor(const std::string& the_name, const ParameterList& the_parameter_list);
+
+    /// @see opwig::md::MetadataObject::id
+    virtual const std::string& id() const;
+
     /// Tells the function's return type.
     std::string return_type() const;
 
@@ -61,7 +66,7 @@ class Function : public MetadataObject {
     void set_defined() { defined_ = true; }
 
   private:
-
+    std::string   signature_;
     std::string   return_type_;
     ParameterList parameter_list_;
     bool          pure_;
@@ -77,14 +82,32 @@ class Function : public MetadataObject {
 
 inline Function::Function(const std::string& the_name, const std::string& the_return_type,
                           const ParameterList& the_parameter_list, const bool pure)
-    : MetadataObject(the_name), return_type_(the_return_type), parameter_list_(the_parameter_list), pure_(pure),
-      default_(false), delete_(false), declared_(false), defined_(false) { }
+    : MetadataObject(the_name), signature_(""), return_type_(the_return_type), parameter_list_(the_parameter_list),
+      pure_(pure), default_(false), delete_(false), declared_(false), defined_(false) { 
+
+    signature_ = Function::GetSignatureFor(name_, parameter_list_);
+}
 
 inline Ptr<Function> Function::Create(const std::string& the_name,
                                       const std::string& the_return_type,
                                       const ParameterList& the_parameter_list,
                                       const bool pure) {
     return Ptr<Function>(new Function(the_name, the_return_type, the_parameter_list, pure));
+}
+
+inline std::string Function::GetSignatureFor(const std::string& the_name, const ParameterList& the_parameter_list) {
+    std::string signature = the_name + "(";
+    if (the_parameter_list.size() > 0) {
+        for (auto param : the_parameter_list)
+            signature += param.type + ",";
+        signature.pop_back();
+    }
+    signature += ")";
+    return signature;
+}
+
+inline const std::string& Function::id() const {
+    return signature_;
 }
 
 inline std::string Function::return_type() const {

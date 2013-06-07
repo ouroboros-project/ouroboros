@@ -32,13 +32,13 @@ class Scope : public MetadataObject, public std::enable_shared_from_this<Scope> 
     virtual size_t NestedNamespacesNum () const;
 
     /// Adds a nested namespace.
-    virtual bool AddNestedNamespace (const std::string& nmspace_name, Ptr<Namespace> nested);
+    virtual bool AddNestedNamespace (Ptr<Namespace> nested);
 
     /// Gives the nested namespace identified by the given name (const version).
-    virtual Ptr<const Namespace> NestedNamespace (const std::string& nmspace_name) const;
+    virtual Ptr<const Namespace> NestedNamespace (const std::string& nmspace_id) const;
     
     /// Gives the nested namespace identified by the given name.
-    virtual Ptr<Namespace> NestedNamespace (const std::string& nmspace_name);
+    virtual Ptr<Namespace> NestedNamespace (const std::string& nmspace_id);
 
     /*****************************************************/
     /*** VARIABLE METHODS ***/
@@ -50,10 +50,10 @@ class Scope : public MetadataObject, public std::enable_shared_from_this<Scope> 
     virtual bool AddGlobalVariable (Ptr<Variable> variable);
 
     /// Gives the global variable identified by the given name (const version).
-    virtual Ptr<const Variable> GlobalVariable (const std::string& var_name) const;
+    virtual Ptr<const Variable> GlobalVariable (const std::string& var_id) const;
     
     /// Gives the global variable identified by the given name.
-    virtual Ptr<Variable> GlobalVariable (const std::string& var_name);
+    virtual Ptr<Variable> GlobalVariable (const std::string& var_id);
     
     /*****************************************************/
     /*** CLASS METHODS ***/
@@ -62,13 +62,13 @@ class Scope : public MetadataObject, public std::enable_shared_from_this<Scope> 
     virtual size_t NestedClassesNum () const;
 
     /// Adds a nested class.
-    virtual bool AddNestedClass (const std::string& class_name, Ptr<Class> nested);
+    virtual bool AddNestedClass (Ptr<Class> nested);
 
     /// Gives the nested class identified by the given name (const version).
-    virtual Ptr<const Class> NestedClass (const std::string& class_name) const;
+    virtual Ptr<const Class> NestedClass (const std::string& class_id) const;
     
     /// Gives the nested class identified by the given name.
-    virtual Ptr<Class> NestedClass (const std::string& class_name);
+    virtual Ptr<Class> NestedClass (const std::string& class_id);
 
     /*****************************************************/
     /*** FUNCTION METHODS ***/
@@ -80,10 +80,10 @@ class Scope : public MetadataObject, public std::enable_shared_from_this<Scope> 
     virtual bool AddNestedFunction (Ptr<Function> nested);
 
     /// Gives the function identified by the given name (const version).
-    virtual Ptr<const Function> NestedFunction (const std::string& func_name) const;
+    virtual Ptr<const Function> NestedFunction (const std::string& func_id) const;
     
     /// Gives the function identified by the given name.
-    virtual Ptr<Function> NestedFunction (const std::string& func_name);
+    virtual Ptr<Function> NestedFunction (const std::string& func_id);
     
     /*****************************************************/
     /*** ENUM METHODS ***/
@@ -95,10 +95,10 @@ class Scope : public MetadataObject, public std::enable_shared_from_this<Scope> 
     virtual bool AddNestedEnum (Ptr<Enum> nested);
 
     /// Gives the function identified by the given name (const version).
-    virtual Ptr<const Enum> NestedEnum (const std::string& func_name) const;
+    virtual Ptr<const Enum> NestedEnum (const std::string& enum_id) const;
     
     /// Gives the function identified by the given name.
-    virtual Ptr<Enum> NestedEnum (const std::string& func_name);
+    virtual Ptr<Enum> NestedEnum (const std::string& enum_id);
     
     /*****************************************************/
     /*** GENERAL METHODS ***/
@@ -109,8 +109,14 @@ class Scope : public MetadataObject, public std::enable_shared_from_this<Scope> 
     /// Sets the current access specifier of this scope (and its containers) to the given access specifier
     virtual void SetAccessSpecifier(AccessSpecifier new_access);
     
+    /// Checks if the given id exists within this scope.
+    virtual bool HasID(const std::string& obj_id) const;
+
     /// Checks if the given name exists within this scope.
     virtual bool HasName(const std::string& obj_name) const;
+
+    /// Checks if the given id exists within this scope.
+    virtual bool HasObject(const Ptr<const MetadataObject>& obj) const;
     
   protected:
 
@@ -121,6 +127,8 @@ class Scope : public MetadataObject, public std::enable_shared_from_this<Scope> 
     Container<Class>        classes_;
     Container<Function>     functions_;
     Container<Enum>         enums_;
+
+    bool hasNameNonFunction(const std::string& obj_name) const;
 
   private:
 

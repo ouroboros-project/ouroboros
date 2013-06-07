@@ -40,13 +40,13 @@ class Class final : public Scope {
     size_t NestedNamespacesNum () const override;
 
     /// @see opwig::md::Scope::AddNestedNamespace
-    bool AddNestedNamespace (const std::string& nmspace_name, Ptr<Namespace> nested) override;
+    bool AddNestedNamespace (Ptr<Namespace> nested) override;
 
     /// @see opwig::md::Scope::NestedNamespace
-    Ptr<const Namespace> NestedNamespace (const std::string& nmspace_name) const override;
+    Ptr<const Namespace> NestedNamespace (const std::string& nmspace_id) const override;
 
     /// @see opwig::md::Scope::NestedNamespace
-    Ptr<Namespace> NestedNamespace (const std::string& nmspace_name) override;
+    Ptr<Namespace> NestedNamespace (const std::string& nmspace_id) override;
    
     /*** FUNCTION METHODS ***/
     
@@ -74,15 +74,15 @@ inline size_t Class::NestedNamespacesNum () const {
     return 0;
 }
 
-inline bool Class::AddNestedNamespace (const std::string& nmspace_name, Ptr<Namespace> nested) {
+inline bool Class::AddNestedNamespace (Ptr<Namespace> nested) {
     throw SemanticError("Namespaces cannot be added in a class!", __FILE__, __LINE__);
 }
 
-inline Ptr<const Namespace> Class::NestedNamespace (const std::string& nmspace_name) const {
+inline Ptr<const Namespace> Class::NestedNamespace (const std::string& nmspace_id) const {
     throw SemanticError("Classes do not have nested namespaces!", __FILE__, __LINE__);
 }
 
-inline Ptr<Namespace> Class::NestedNamespace (const std::string& nmspace_name) {
+inline Ptr<Namespace> Class::NestedNamespace (const std::string& nmspace_id) {
     throw SemanticError("Classes do not have nested namespaces!", __FILE__, __LINE__);
 }
 

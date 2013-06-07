@@ -42,7 +42,7 @@ TEST_F (MDNestedNamesTest, FunctionWithSimpleAndGlobalPath) {
     ASSERT_EQ(RunParse("foo::rtype name(::type0 wat, bar::type1);"), 0);
     TestScopeChildNums(global_, 0u, 1u, 0u, 0u);
     
-    auto f = TestFunction("name", "foo::rtype", AccessSpecifier::PUBLIC, false);
+    auto f = TestFunction("name(::type0,bar::type1)", "name", "foo::rtype", AccessSpecifier::PUBLIC, false);
     TestFunctionParameter(f, 0, "wat", "::type0");
     TestFunctionParameter(f, 1, "", "bar::type1");
 }
@@ -71,7 +71,7 @@ TEST_F (MDNestedNamesTest, AddingFunctionToAnotherScope) {
     auto c = TestClass("name", AccessSpecifier::PUBLIC, 0u, 1u, 0u);
     TestClassAttributes(c, 0u, 0u, false);
 
-    auto f = TestFunction(c, "func", "type", AccessSpecifier::PRIVATE, false);
+    auto f = TestFunction(c, "func(name,name)", "func", "type", AccessSpecifier::PRIVATE, false);
     TestFunctionParameter(f, 0, "arg1", "name");
     TestFunctionParameter(f, 1, "arg2", "name");
 }
@@ -89,7 +89,7 @@ TEST_F (MDNestedNamesTest, AddingFunctionToAnotherScope) {
     auto c = TestClass("name", AccessSpecifier::PUBLIC, 0u, 1u, 0u);
     TestClassAttributes(c, 0u, 0u, false;
 
-    auto f = TestFunction(c, "func", "type", AccessSpecifier::PRIVATE, false);
+    auto f = TestFunction(c, "func(type)", "func", "type", AccessSpecifier::PRIVATE, false);
     TestFunctionParameter(f, 0, "", "type");
 }*/
 

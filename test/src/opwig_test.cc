@@ -75,11 +75,11 @@ protected:
     }
     
     /////////// functions
-    Ptr<const Function> TestFunction(const string& name, const string& return_type, AccessSpecifier access, bool isPure) {
-        return TestFunction(global_, name, return_type, access, isPure);
+    Ptr<const Function> TestFunction(const string& id, const string& name, const string& return_type, AccessSpecifier access, bool isPure) {
+        return TestFunction(global_, id, name, return_type, access, isPure);
     }
-    Ptr<const Function> TestFunction(Ptr<const Scope> scope, const string& name, const string& return_type, AccessSpecifier access, bool isPure) {
-        Ptr<const Function> func = scope->NestedFunction(name);
+    Ptr<const Function> TestFunction(Ptr<const Scope> scope, const string& id, const string& name, const string& return_type, AccessSpecifier access, bool isPure) {
+        Ptr<const Function> func = scope->NestedFunction(id);
         internalCheckFunction(func, name, return_type, access, isPure);
         return func;
     }
