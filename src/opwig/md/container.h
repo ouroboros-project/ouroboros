@@ -67,14 +67,10 @@ class Container {
 
   protected:
   
-    AccessSpecifier current_access_;
-<<<<<<< HEAD
-    std::map<std::string, Ptr<T>> objects_;
-    std::map<std::string, std::string> name_to_ids_;
-=======
-    Table           objects_;
+    AccessSpecifier                     current_access_;
+    Table                               objects_;
+    std::map<std::string, std::string>  name_to_ids_;
     
->>>>>>> [opwig] Added Scpoe::IterateClasses().
 };
 
 template <class T>

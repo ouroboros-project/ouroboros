@@ -30,18 +30,18 @@ class ProxyGeneratorTest : public ::testing::Test {
 
     void AddEmptyNonVirtualClass () {
         string class_name = "NonVirtualClass";
-        given_scope_->AddNestedClass(class_name, Class::Create(class_name, {}));
+        given_scope_->AddNestedClass(Class::Create(class_name, {}));
     }
 
     void AddNonEmptyNonVirtualClass (const string& class_name) {
         Ptr<Class> the_class = Class::Create(class_name, {});
-        given_scope_->AddNestedClass(class_name, the_class);
+        given_scope_->AddNestedClass(the_class);
         the_class->AddNestedFunction(Function::Create("~"+class_name, "", {}, false));
     }
 
     void AddEmptyVirtualClass (const string& class_name) {
         Ptr<Class> the_class = Class::Create(class_name, {});
-        given_scope_->AddNestedClass(class_name, the_class);
+        given_scope_->AddNestedClass(the_class);
         the_class->AddNestedFunction(Function::Create("~"+class_name, "", {}, false));
         // TODO make detructor virtual
     }
