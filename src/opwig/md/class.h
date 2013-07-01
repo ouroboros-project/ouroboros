@@ -48,6 +48,9 @@ class Class final : public Scope {
 
     /// @see opwig::md::Scope::NestedNamespace
     Ptr<Namespace> NestedNamespace (const std::string& nmspace_id) override;
+    
+    /// @see opwig::md::Scope::IterateNamespaces
+    Container<Namespace>::Iterable IterateNamespaces () const override;
    
     /*** FUNCTION METHODS ***/
     
@@ -85,6 +88,10 @@ inline Ptr<const Namespace> Class::NestedNamespace (const std::string& nmspace_i
 
 inline Ptr<Namespace> Class::NestedNamespace (const std::string& nmspace_id) {
     throw SemanticError("Classes do not have nested namespaces!", __FILE__, __LINE__);
+}
+
+inline Container<Namespace>::Iterable Class::IterateNamespaces () const {
+    throw SemanticError("Can't iterate - classes do not have nested namespaces!", __FILE__, __LINE__); //FIXME: not actually a semantic error
 }
 
 

@@ -39,6 +39,9 @@ class Scope : public MetadataObject, public std::enable_shared_from_this<Scope> 
     
     /// Gives the nested namespace identified by the given name.
     virtual Ptr<Namespace> NestedNamespace (const std::string& nmspace_id);
+    
+    /// Iterate thru this scope's namespaces.
+    virtual Container<Namespace>::Iterable IterateNamespaces () const;
 
     /*****************************************************/
     /*** VARIABLE METHODS ***/
@@ -55,6 +58,9 @@ class Scope : public MetadataObject, public std::enable_shared_from_this<Scope> 
     /// Gives the global variable identified by the given name.
     virtual Ptr<Variable> GlobalVariable (const std::string& var_id);
     
+    /// Iterate thru this scope's variables.
+    virtual Container<Variable>::Iterable IterateVariables () const;
+    
     /*****************************************************/
     /*** CLASS METHODS ***/
     
@@ -70,6 +76,7 @@ class Scope : public MetadataObject, public std::enable_shared_from_this<Scope> 
     /// Gives the nested class identified by the given name.
     virtual Ptr<Class> NestedClass (const std::string& class_id);
 
+    /// Iterate thru this scope's classes.
     virtual Container<Class>::Iterable IterateClasses () const;
 
     /*****************************************************/
@@ -87,6 +94,9 @@ class Scope : public MetadataObject, public std::enable_shared_from_this<Scope> 
     /// Gives the function identified by the given name.
     virtual Ptr<Function> NestedFunction (const std::string& func_id);
     
+    /// Iterate thru this scope's functions.
+    virtual Container<Function>::Iterable IterateFunctions () const;
+    
     /*****************************************************/
     /*** ENUM METHODS ***/
     
@@ -101,6 +111,9 @@ class Scope : public MetadataObject, public std::enable_shared_from_this<Scope> 
     
     /// Gives the function identified by the given name.
     virtual Ptr<Enum> NestedEnum (const std::string& enum_id);
+    
+    /// Iterate thru this scope's enums.
+    virtual Container<Enum>::Iterable IterateEnums () const;
     
     /*****************************************************/
     /*** GENERAL METHODS ***/

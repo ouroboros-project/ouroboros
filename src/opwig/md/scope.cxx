@@ -36,6 +36,10 @@ Ptr<Namespace> Scope::NestedNamespace (const string& nmspace_id) {
     return namespaces_.Get(nmspace_id);
 }
 
+Container<Namespace>::Iterable Scope::IterateNamespaces() const {
+    return namespaces_.Iterate();
+}
+
 /*****************************************************/
 /*** VARIABLE METHODS ***/
 
@@ -57,6 +61,10 @@ Ptr<const Variable> Scope::GlobalVariable (const string& var_id) const {
 
 Ptr<Variable> Scope::GlobalVariable (const string& var_id) {
     return variables_.Get(var_id);
+}
+
+Container<Variable>::Iterable Scope::IterateVariables() const {
+    return variables_.Iterate();
 }
 
 /*****************************************************/
@@ -112,6 +120,10 @@ Ptr<Function> Scope::NestedFunction (const string& func_id) {
     return functions_.Get(func_id);
 }
 
+Container<Function>::Iterable Scope::IterateFunctions() const {
+    return functions_.Iterate();
+}
+
 /*****************************************************/
 /*** ENUM METHODS ***/
 
@@ -133,6 +145,10 @@ Ptr<const Enum> Scope::NestedEnum (const string& enum_id) const {
 
 Ptr<Enum> Scope::NestedEnum (const string& enum_id) {
     return enums_.Get(enum_id);
+}
+
+Container<Enum>::Iterable Scope::IterateEnums() const {
+    return enums_.Iterate();
 }
 
 /*****************************************************/
