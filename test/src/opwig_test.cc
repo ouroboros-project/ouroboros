@@ -1,3 +1,4 @@
+
 #include <opwig/md/variable.h>
 #include <opwig/md/class.h>
 #include <opwig/md/function.h>
@@ -9,9 +10,14 @@
 #include <opwig/parser/mdparser.h>
 #include <opwig/parser/declarator.h>
 
+#include <opwig/gen/proxygenerator.h>
+
+#include <config.h>
+
 #include <gtest/gtest.h>
 
 #include <vector>
+#include <list>
 
 #include <string>
 #include <istream>
@@ -36,6 +42,7 @@ using opwig::md::Namespace;
 using opwig::md::Class;
 using opwig::md::AccessSpecifier;
 using opwig::md::NestedNameSpecifier;
+
 using opwig::parser::BaseSpecifier;
 using opwig::parser::Declarator;
 using opwig::MDParser;
@@ -180,8 +187,10 @@ protected:
         EXPECT_TRUE(equal(values.begin(), values.end(), var->values().begin()));
     }
 };
+using opwig::gen::ProxyGenerator;
 
 #include <opwig/nestednamespecifier.cc>
+#include <opwig/container.cc>
 #include <opwig/declarator.cc>
 #include <opwig/class.cc>
 #include <opwig/classmembers.cc>
@@ -191,3 +200,4 @@ protected:
 #include <opwig/enum.cc>
 
 #include <opwig/complexclasses.cc>
+#include <opwig/proxygenerator.cc>

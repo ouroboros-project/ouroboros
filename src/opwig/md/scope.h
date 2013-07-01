@@ -70,6 +70,8 @@ class Scope : public MetadataObject, public std::enable_shared_from_this<Scope> 
     /// Gives the nested class identified by the given name.
     virtual Ptr<Class> NestedClass (const std::string& class_id);
 
+    virtual Container<Class>::Iterable IterateClasses () const;
+
     /*****************************************************/
     /*** FUNCTION METHODS ***/
     
@@ -106,7 +108,8 @@ class Scope : public MetadataObject, public std::enable_shared_from_this<Scope> 
     /// Gets the current access specifier of this scope (and its containers).
     virtual AccessSpecifier GetAccessSpecifier () const;
     
-    /// Sets the current access specifier of this scope (and its containers) to the given access specifier
+    /// Sets the current access specifier of this scope (and its containers) to the given access
+    /// specifier.
     virtual void SetAccessSpecifier(AccessSpecifier new_access);
     
     /// Checks if the given id exists within this scope.
