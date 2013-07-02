@@ -25,12 +25,14 @@
 #include <iostream>
 #include <list>
 #include <algorithm>
+#include <functional>
 #include <exception>
 
 using std::vector;
 using std::string;
 using std::istringstream;
 using std::list;
+using std::function;
 
 using opwig::md::Ptr;
 using opwig::md::Variable;

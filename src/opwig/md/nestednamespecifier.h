@@ -35,8 +35,8 @@ class NestedNameSpecifier {
     /// Sets the name of the nested-name-specifier.
     void set_name(const std::string& the_name) { name_ = the_name; }
 
-    /// Evaluates the nested-name-specifier, starting from the given initial scope, and returns the scope
-    /// in which the 'name' belongs.
+    /// Evaluates the nested-name-specifier, starting from the given initial scope, and returns the
+    /// scope in which the 'name' belongs.
     Ptr<Scope> FindNearestNestingScope(Ptr<Scope> initial_scope) const;
     
     /// Returns the textual representation of this nested-name-specifier.

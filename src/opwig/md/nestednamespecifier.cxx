@@ -26,7 +26,10 @@ Ptr<Scope> NestedNameSpecifier::FindNearestNestingScope(Ptr<Scope> initial_scope
         else if (scope->NestedClass(it))
             scope = scope->NestedClass(it);
         else
-            throw SemanticError("Invalid path '"+(it)+"' in NestedNameSpecifier("+ToString()+").", __FILE__, __LINE__);
+            throw SemanticError(
+                "Invalid path '"+(it)+"' in NestedNameSpecifier("+ToString()+").",
+                __FILE__, __LINE__
+            );
     }
     return scope;
 }
@@ -40,5 +43,6 @@ std::string NestedNameSpecifier::ToString() const {
     return result + name_;
 }
 
-}
-}
+} // namespace md
+} // namespace opwig
+

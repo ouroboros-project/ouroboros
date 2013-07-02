@@ -1,12 +1,24 @@
 
 class DeclSpecifierTest : public ::testing::Test {
+
   protected:
-    DeclSpecifier CreateNonVirtual () {
-        return DeclSpecifier(NestedNameSpecifier("name"), false);
+
+    static DeclSpecifier CreateNonVirtual () {
+        return DeclSpecifier(NestedNameSpecifier("type"), false);
+    }
+
+    static DeclSpecifier CreateVirtual () {
+        return DeclSpecifier(NestedNameSpecifier("type"), true);
+    }
+
+    static void TestConstructor (function<DeclSpecifier ()> creator) {
+      DeclSpecifier declspecifier = creator();
+      ASSERT_EQ("type", declspecifier.type().name()); // FIXME
+      //ASSERT_FALSE(declspecifier.is_virtual());
     }
 };
 
 TEST_F (DeclSpecifierTest, Constructor) {
-    DeclSpecifier declspecifier = CreateNonVirtual();
+    TestConstructor(&DeclSpecifierTest::CreateNonVirtual);
 }
 
