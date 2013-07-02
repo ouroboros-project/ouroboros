@@ -3,22 +3,24 @@ class DeclSpecifierTest : public ::testing::Test {
 
   protected:
 
-    static DeclSpecifier CreateNonVirtual () {
-        return DeclSpecifier(NestedNameSpecifier("type"), false);
-    }
+    DeclSpecifier nonvirtualspec_, virtualspec_;
 
-    static DeclSpecifier CreateVirtual () {
-        return DeclSpecifier(NestedNameSpecifier("type"), true);
-    }
+    DeclSpecifierTest () :
+        nonvirtualspec_(NestedNameSpecifier("type"), false),
+        virtualspec_(NestedNameSpecifier("type"), true) {}
 
     static void TestConstructor (function<DeclSpecifier ()> creator) {
       DeclSpecifier declspecifier = creator();
-      ASSERT_EQ("type", declspecifier.type().name()); // FIXME
-      //ASSERT_FALSE(declspecifier.is_virtual());
+      ASSERT_EQ("type", declspecifier.type().ToString()); // FIXME
+      ASSERT_FALSE(declspecifier.is_virtual());
     }
+
 };
 
 TEST_F (DeclSpecifierTest, Constructor) {
-    TestConstructor(&DeclSpecifierTest::CreateNonVirtual);
+    ASSERT_EQ("type", nonvirtualspec_.type().ToString());
+    ASSERT_FALSE(nonvirtualspec_.is_virtual());
+    ASSERT_EQ("type", virtualspec_.type().ToString());
+    ASSERT_TRUE(virtualspec_.is_virtual());
 }
 
