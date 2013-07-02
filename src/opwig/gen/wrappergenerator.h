@@ -22,7 +22,9 @@ class WrapperGenerator {
     /// Virtual destructor.
     virtual ~WrapperGenerator() {}
 
-    ///
+    /// Traverses the metadata tree of the given root scope, generating wrapper code
+    /// for the selected scripting languages and writing them to the corresponding
+    /// source files.
     void Generate(const Ptr<const Scope>& root);
     
   protected:
