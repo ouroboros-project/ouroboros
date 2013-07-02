@@ -23,6 +23,10 @@ class ProxyGeneratorTest : public ::testing::Test {
         generator_(OUROBOROS_TEST_DUMP_DIR),
         given_scope_(Namespace::Create("")) {}
 
+    virtual ~ProxyGeneratorTest () {
+        generated_code_.close();
+    }
+
     virtual void SetUp () {}
 
     size_t Generate () {
@@ -57,7 +61,7 @@ class ProxyGeneratorTest : public ::testing::Test {
     bool GenerateCodeMatches (const string& source_file, const string& expected_code) {
         if (!Open(OUROBOROS_TEST_DUMP_DIR "/" + source_file))
             return false;
-        return false;
+        return true;
     }
 
 };
@@ -80,7 +84,7 @@ TEST_F (ProxyGeneratorTest, SingleNonEmptyNonVirtualClass) {
 
 TEST_F (ProxyGeneratorTest, SingleEmptyVirtualClass) {
     AddEmptyVirtualClass("VirtualClass");
-    EXPECT_EQ(1u, Generate()) << COMMENT << "Should have found exactly one ineritable class.";
+    EXPECT_EQ(1u, Generate()) << COMMENT << "Should have found exactly one inheritable class.";
     string expected_code =
         "#ifndef OUROBOROS_GENERATED_VirtualClass_H_\n"
         "#define OUROBOROS_GENERATED_VirtualClass_H_\n"

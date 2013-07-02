@@ -22,7 +22,8 @@ class Function : public MetadataObject {
 
     /// Creates a new Function object. Must be used in place of the constructor.
     static Ptr<Function> Create(const std::string& the_name, const std::string& the_return_type,
-                                const ParameterList& the_parameter_list, const bool pure);
+                                const ParameterList& the_parameter_list, const bool the_is_pure_flag,
+                                const bool the_virtual_flag);
 
     static std::string GetSignatureFor(const std::string& the_name, const ParameterList& the_parameter_list);
 
@@ -38,61 +39,71 @@ class Function : public MetadataObject {
     /// Tells the function's nth parameter name.
     std::string parameter_name(size_t n) const;
 
-    /// Tells if the function is pure (normally used for abstract methods)
+    /// Tells if the function is pure (normally used for abstract methods).
     bool is_pure() const;
+
+    /// Tells if the function is virtual.
+    bool is_virtual() const;
     
     /// Tells if the function was defined as default
-    bool is_default() const { return default_; }
+    bool is_default() const { return is_default_; }
     
     /// Sets the function to be defined as default
-    void set_default(bool _default) { default_ = _default; }
+    void set_default(bool _default) { is_default_ = _default; }
     
     /// Tells if the function was defined as delete
-    bool is_delete() const { return delete_; }
+    bool is_deleted() const { return is_deleted_; }
     
     /// Sets the function to be defined as default
-    void set_delete(bool _delete) { delete_ = _delete; }
+    void set_deleted(bool _delete) { is_deleted_ = _delete; }
     
     /// Tells if the function was declared
-    bool is_declared() const { return declared_; }
+    bool is_declared() const { return is_declared_; }
     
     /// Sets the function as declared
-    void set_declared() { declared_ = true; }
+    void set_declared() { is_declared_ = true; }
     
     /// Tells if the function was defined
-    bool is_defined() const { return defined_; }
+    bool is_defined() const { return is_defined_; }
     
     /// Sets the function as defined
-    void set_defined() { defined_ = true; }
+    void set_defined() { is_defined_ = true; }
 
   private:
     std::string   signature_;
     std::string   return_type_;
     ParameterList parameter_list_;
-    bool          pure_;
-    bool          default_;
-    bool          delete_;
-    bool          declared_;
-    bool          defined_;
+    bool          is_pure_;
+    bool          is_virtual_;
+    bool          is_default_;
+    bool          is_deleted_;
+    bool          is_declared_;
+    bool          is_defined_;
 
     Function(const std::string& the_name, const std::string& the_return_type,
-             const ParameterList& the_parameter_list, const bool pure);
+             const ParameterList& the_parameter_list, const bool the_pure_flag,
+             const bool the_virtual_flag);
 
 };
 
 inline Function::Function(const std::string& the_name, const std::string& the_return_type,
-                          const ParameterList& the_parameter_list, const bool pure)
+                          const ParameterList& the_parameter_list, const bool the_pure_flag,
+                          const bool the_virtual_flag)
     : MetadataObject(the_name), signature_(""), return_type_(the_return_type), parameter_list_(the_parameter_list),
-      pure_(pure), default_(false), delete_(false), declared_(false), defined_(false) { 
+      is_pure_(the_pure_flag), is_virtual_(the_virtual_flag), is_default_(false),
+      is_deleted_(false), is_declared_(false), is_defined_(false) { 
 
-    signature_ = Function::GetSignatureFor(name_, parameter_list_);
+    signature_ = Function::GetSignatureFor(name_, parameter_list_); // FIXME why no init list?
 }
 
 inline Ptr<Function> Function::Create(const std::string& the_name,
                                       const std::string& the_return_type,
                                       const ParameterList& the_parameter_list,
-                                      const bool pure) {
-    return Ptr<Function>(new Function(the_name, the_return_type, the_parameter_list, pure));
+                                      const bool the_pure_flag = false,
+                                      const bool the_virtual_flag = false) {
+    return Ptr<Function>(
+        new Function(the_name, the_return_type, the_parameter_list, the_pure_flag, the_virtual_flag)
+    );
 }
 
 inline std::string Function::GetSignatureFor(const std::string& the_name, const ParameterList& the_parameter_list) {
@@ -123,7 +134,11 @@ inline std::string Function::parameter_name(size_t n) const {
 }
 
 inline bool Function::is_pure() const {
-    return pure_;
+    return is_pure_;
+}
+
+inline bool Function::is_virtual() const {
+    return is_virtual_;
 }
 
 } // namespace md

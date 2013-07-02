@@ -33,7 +33,7 @@ decl_specifier_seq:
 decl_specifier_seq_opt:
   // TODO this is temporary
   /* empty */ {
-    $$ = [] (md::Ptr<md::Scope> current_namespace) -> std::string { return ""; };
+    $$ = [] (md::Ptr<md::Scope> current_namespace) { return parser::DeclSpecifier(); };
   }
 |
   decl_specifier_seq { $$ = $1; }

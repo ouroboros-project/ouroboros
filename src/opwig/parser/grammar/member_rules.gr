@@ -34,7 +34,7 @@ member_specification:
 
 member_declaration:
     member_declarator_list ';' {
-        TypeAction action = [] (md::Ptr<md::Scope> current_scope) -> std::string { return ""; };
+        TypeAction action = [] (md::Ptr<md::Scope> current_scope) { return parser::DeclSpecifier(); };
         $$ = parser::JoinDeclarations(action, $1);
     }
 |

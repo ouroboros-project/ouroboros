@@ -3,7 +3,7 @@ class DeclSpecifierTest : public ::testing::Test {
 
   protected:
 
-    DeclSpecifier nonvirtualtyped_, virtualtyped_, virtualnontyped_;
+    DeclSpecifier nonvirtualnontyped_, nonvirtualtyped_, virtualtyped_, virtualnontyped_;
 
     DeclSpecifierTest () :
         nonvirtualtyped_(false, NestedNameSpecifier("type")),
@@ -13,6 +13,8 @@ class DeclSpecifierTest : public ::testing::Test {
 };
 
 TEST_F (DeclSpecifierTest, Constructor) {
+    EXPECT_EQ("", nonvirtualnontyped_.type().ToString());
+    EXPECT_FALSE(nonvirtualnontyped_.is_virtual());
     EXPECT_EQ("type", nonvirtualtyped_.type().ToString());
     EXPECT_FALSE(nonvirtualtyped_.is_virtual());
     EXPECT_EQ("type", virtualtyped_.type().ToString());

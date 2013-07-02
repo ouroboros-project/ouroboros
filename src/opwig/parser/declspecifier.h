@@ -16,7 +16,7 @@ class DeclSpecifier final {
 
   public:
 
-    explicit DeclSpecifier (bool the_virtual_flag,
+    explicit DeclSpecifier (bool the_virtual_flag = false,
                             const md::NestedNameSpecifier& the_type = md::NestedNameSpecifier());
 
     /// Tells if the declaration is specified as virtual.
@@ -36,8 +36,8 @@ class DeclSpecifier final {
 };
 
 inline DeclSpecifier::DeclSpecifier (bool the_virtual_flag,
-                                     const md::NestedNameSpecifier& the_type) :
-    is_virtual_(the_virtual_flag), type_(the_type) {}
+                                     const md::NestedNameSpecifier& the_type)
+    : is_virtual_(the_virtual_flag), type_(the_type) {}
 
 inline md::NestedNameSpecifier DeclSpecifier::type () const {
     return type_;

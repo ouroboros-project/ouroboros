@@ -3,7 +3,7 @@ protected:
 };
 
 TEST_F (MDFunctionTest, Create) {
-    Ptr<Function> var = Function::Create("funcname", "returntype", {{"type0", "name0"}, {"type1", "name1"}}, false);
+    Ptr<Function> var = Function::Create("funcname", "returntype", {{"type0", "name0"}, {"type1", "name1"}}, false, false);
     ASSERT_TRUE(static_cast<bool>(var));
     EXPECT_EQ("funcname", var->name());
     EXPECT_EQ("returntype", var->return_type());
@@ -12,6 +12,8 @@ TEST_F (MDFunctionTest, Create) {
     EXPECT_EQ("type1", var->parameter_type(1));
     EXPECT_EQ("name1", var->parameter_name(1));
     EXPECT_EQ("funcname(type0,type1)", var->id());
+    EXPECT_FALSE(var->is_pure());
+    EXPECT_FALSE(var->is_virtual());
     EXPECT_THROW(var->parameter_type(2), std::out_of_range);
 }
 
