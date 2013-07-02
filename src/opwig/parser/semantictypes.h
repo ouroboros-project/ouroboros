@@ -10,6 +10,7 @@
 
 #include <opwig/parser/basespecifier.h>
 #include <opwig/parser/declarator.h>
+#include <opwig/parser/declspecifier.h>
 
 #include <memory>
 #include <list>

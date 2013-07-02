@@ -7,6 +7,7 @@ namespace testing {
 
 using std::ios_base;
 using std::ifstream;
+using opwig::gen::ProxyGenerator;
 
 class ProxyGeneratorTest : public ::testing::Test {
 

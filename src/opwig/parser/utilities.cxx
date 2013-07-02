@@ -24,33 +24,52 @@ ScopeAction AddTypeToScope( const TypeAction& type_action ) {
     return action;
 }
 
-ScopeAction JoinDeclarations( const TypeAction& type_action, const std::shared_ptr<parser::DeclaratorList>& init_list ) {
+ScopeAction JoinDeclarations (const TypeAction& type_action,
+                              const std::shared_ptr<parser::DeclaratorList>& init_list ) {
     ScopeAction action = [type_action, init_list] (Ptr<Scope> current_scope) -> bool {
         for (auto declarator: *init_list) {
             std::string type = type_action(current_scope);
             NestedNameSpecifier nestedName = declarator.nested_name();
             Ptr<Scope> targetScope = nestedName.FindNearestNestingScope(current_scope);
             if (declarator.has_parameters()) {
-                std::string sig = Function::GetSignatureFor(nestedName.name(), declarator.parameters());
+                std::string sig = Function::GetSignatureFor(
+                    nestedName.name(),
+                    declarator.parameters()
+                );
                 Ptr<Function> func = targetScope->NestedFunction(sig);
                 if (!func) {
-                    func = Function::Create(nestedName.name(), type, declarator.parameters(), declarator.is_pure());
+                    func = Function::Create(
+                        nestedName.name(),
+                        type,
+                        declarator.parameters(),
+                        declarator.is_pure()
+                    );
                     if (!targetScope->AddNestedFunction(func)) {
-                        throw SemanticError("Failed to add Function '"+func->name()+"' to Scope", __FILE__, __LINE__);
+                        throw SemanticError(
+                            "Failed to add Function '"+func->name()+"' to Scope", __FILE__, __LINE__
+                        );
                     }
                 }
                 else if (func->is_declared()) {
-                    throw SemanticError("Duplicate function declaration for '"+func->id()+"' in scope "+targetScope->name(), __FILE__, __LINE__);
+                    throw SemanticError(
+                        "Duplicate function declaration for '"+func->id()+"' in scope "+
+                        targetScope->name(), __FILE__, __LINE__
+                    );
                 }
                 else if (func->return_type() != type) {
-                    throw SemanticError("Erroneous function declaration for '"+func->id()+"' in scope "+targetScope->name()+" [return type mismatch]", __FILE__, __LINE__);
+                    throw SemanticError(
+                        "Erroneous function declaration for '"+func->id()+"' in scope "+
+                        targetScope->name()+" [return type mismatch]", __FILE__, __LINE__
+                    );
                 }
                 func->set_declared();
             } 
             else {
                 Ptr<Variable> var = Variable::Create(nestedName.name(), type);
                 if (!targetScope->AddGlobalVariable(var)) {
-                    throw SemanticError("Failed to add Variable '"+var->name()+"' to Scope", __FILE__, __LINE__);
+                    throw SemanticError(
+                        "Failed to add Variable '"+var->name()+"' to Scope", __FILE__, __LINE__
+                    );
                 }
             }
         }

@@ -45,10 +45,11 @@ using opwig::md::NestedNameSpecifier;
 
 using opwig::parser::BaseSpecifier;
 using opwig::parser::Declarator;
+using opwig::parser::DeclSpecifier;
 using opwig::MDParser;
 
 class MDBaseTest : public ::testing::Test {
-protected:
+  protected:
     Ptr<const Namespace> global_;
     
     int RunParse(const string& str) {
@@ -187,17 +188,22 @@ protected:
         EXPECT_TRUE(equal(values.begin(), values.end(), var->values().begin()));
     }
 };
-using opwig::gen::ProxyGenerator;
 
+// Units
+#include <opwig/declspecifier.cc>
+#include <opwig/declarator.cc>
+
+// Features - Parsing
 #include <opwig/nestednamespecifier.cc>
 #include <opwig/container.cc>
-#include <opwig/declarator.cc>
 #include <opwig/class.cc>
 #include <opwig/classmembers.cc>
 #include <opwig/function.cc>
 #include <opwig/namespace.cc>
 #include <opwig/variable.cc>
 #include <opwig/enum.cc>
-
 #include <opwig/complexclasses.cc>
+
+// Features - Generating
 #include <opwig/proxygenerator.cc>
+
