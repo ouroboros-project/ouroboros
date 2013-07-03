@@ -17,6 +17,7 @@
 #include <vector>
 #include <functional>
 #include <utility>
+#include <iostream>
 
 namespace opwig {
 

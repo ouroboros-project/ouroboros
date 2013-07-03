@@ -41,13 +41,13 @@ class ProxyGeneratorTest : public ::testing::Test {
     void AddNonEmptyNonVirtualClass (const string& class_name) {
         Ptr<Class> the_class = Class::Create(class_name, {});
         given_scope_->AddNestedClass(the_class);
-        the_class->AddNestedFunction(Function::Create("~"+class_name, "", {}, false));
+        the_class->AddNestedFunction(Function::Create("~"+class_name, "", {}));
     }
 
     void AddEmptyVirtualClass (const string& class_name) {
         Ptr<Class> the_class = Class::Create(class_name, {});
         given_scope_->AddNestedClass(the_class);
-        the_class->AddNestedFunction(Function::Create("~"+class_name, "", {}, false));
+        the_class->AddNestedFunction(Function::Create("~"+class_name, "", {}, false, true));
         // TODO make detructor virtual
     }
 

@@ -27,11 +27,16 @@ simple_declaration:
 decl_specifier_seq:
     type_specifier { $$ = $1; }
 |
-    decl_specifier decl_specifier_seq_opt { $$ = $2; }
+    decl_specifier decl_specifier_seq_opt {
+      TypeAction action1 = $1, action2 = $2;
+      $$ = [action1, action2] (md::Ptr<md::Scope> current_namespace) {
+        parser::DeclSpecifier spec1 = action1(current_namespace), spec2 = action2(current_namespace);
+        return parser::DeclSpecifier::Join(spec1, spec2);
+      };
+    }
 ;
 
 decl_specifier_seq_opt:
-  // TODO this is temporary
   /* empty */ {
     $$ = [] (md::Ptr<md::Scope> current_namespace) { return parser::DeclSpecifier(); };
   }
@@ -40,9 +45,15 @@ decl_specifier_seq_opt:
 ;
 
 decl_specifier:
-    FRIEND
+  FRIEND {
+    $$ = [] (md::Ptr<md::Scope> current_namespace) { return parser::DeclSpecifier(); };
+  }
 |
-    TYPEDEF
+  TYPEDEF {
+    $$ = [] (md::Ptr<md::Scope> current_namespace) { return parser::DeclSpecifier(); };
+  }
 |
-    VIRTUAL
+  VIRTUAL {
+    $$ = [] (md::Ptr<md::Scope> current_namespace) { return parser::DeclSpecifier(true); };
+  }
 ;
