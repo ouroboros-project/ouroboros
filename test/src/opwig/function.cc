@@ -60,14 +60,6 @@ TEST_F (MDFunctionTest, GlobalSingleArgVirtualFunction) {
     TestFunctionParameter(f, 0, "", "type");
 }
 
-TEST_F (MDFunctionTest, GlobalSingleArgVirtualFunctionWeirdOrder) {
-    ASSERT_EQ(RunParse("rtype virtual name(type);"), 0);
-    TestScopeChildNums(global_, 0u, 1u, 0u, 0u);
-    
-    auto f = TestFunction("name(type)", "name", "rtype", AccessSpecifier::PUBLIC, false, true);
-    TestFunctionParameter(f, 0, "", "type");
-}
-
 TEST_F (MDFunctionTest, GlobalBadDoubleVirtualFunction) {
     RunParseThrow("virtual virtual rtype func();");
 }

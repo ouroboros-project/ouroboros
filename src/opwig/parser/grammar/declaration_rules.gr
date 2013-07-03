@@ -11,29 +11,29 @@ block_declaration:
 ;
 
 simple_declaration:
-    ';'
+  ';'
 |
-    decl_specifier_seq init_declarator_list ';' {
-        $$ = parser::JoinDeclarations($1, $2);
-    }
+  decl_specifier_seq init_declarator_list ';' {
+    $$ = parser::JoinDeclarations($1, $2);
+  }
 |
-    decl_specifier_seq ';' {
-        $$ = parser::AddTypeToScope($1);
-    }
+  decl_specifier_seq ';' {
+    $$ = parser::AddTypeToScope($1);
+  }
 |
-    init_declarator_list ';'
+  init_declarator_list ';'
 ;
 
 decl_specifier_seq:
-    type_specifier { $$ = $1; }
+  type_specifier { $$ = $1; }
 |
-    decl_specifier decl_specifier_seq_opt {
-      TypeAction action1 = $1, action2 = $2;
-      $$ = [action1, action2] (md::Ptr<md::Scope> current_namespace) {
-        parser::DeclSpecifier spec1 = action1(current_namespace), spec2 = action2(current_namespace);
-        return parser::DeclSpecifier::Join(spec1, spec2);
-      };
-    }
+  decl_specifier decl_specifier_seq_opt {
+    TypeAction action1 = $1, action2 = $2;
+    $$ = [action1, action2] (md::Ptr<md::Scope> current_namespace) {
+      parser::DeclSpecifier spec1 = action1(current_namespace), spec2 = action2(current_namespace);
+      return parser::DeclSpecifier::Join(spec1, spec2);
+    };
+  }
 ;
 
 decl_specifier_seq_opt:
