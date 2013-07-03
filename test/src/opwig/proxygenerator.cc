@@ -61,6 +61,7 @@ class ProxyGeneratorTest : public ::testing::Test {
     bool GenerateCodeMatches (const string& source_file, const string& expected_code) {
         if (!Open(OUROBOROS_TEST_DUMP_DIR "/" + source_file))
             return false;
+
         return true;
     }
 
@@ -92,7 +93,7 @@ TEST_F (ProxyGeneratorTest, SingleEmptyVirtualClass) {
         "class VirtualClass_Proxy : public VirtualClass {};\n"
         "} // namespace generated\n"
         "#endif\n";
-    EXPECT_TRUE(GenerateCodeMatches("virtualclass_proxy.h", expected_code))
+    EXPECT_TRUE(GenerateCodeMatches("VirtualClass_proxy.h", expected_code))
         << COMMENT << "Generated proxy source should have matched the expected code.";
 }
 
