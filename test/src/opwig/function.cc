@@ -3,7 +3,7 @@ protected:
 };
 
 TEST_F (MDFunctionTest, Create) {
-    Ptr<Function> var = Function::Create("funcname", "returntype", {{"type0", "name0"}, {"type1", "name1"}}, false);
+    Ptr<Function> var = Function::Create("funcname", "returntype", {{"type0", "name0"}, {"type1", "name1"}}, false, false);
     ASSERT_TRUE(static_cast<bool>(var));
     EXPECT_EQ("funcname", var->name());
     EXPECT_EQ("returntype", var->return_type());
@@ -12,6 +12,8 @@ TEST_F (MDFunctionTest, Create) {
     EXPECT_EQ("type1", var->parameter_type(1));
     EXPECT_EQ("name1", var->parameter_name(1));
     EXPECT_EQ("funcname(type0,type1)", var->id());
+    EXPECT_FALSE(var->is_pure());
+    EXPECT_FALSE(var->is_virtual());
     EXPECT_THROW(var->parameter_type(2), std::out_of_range);
 }
 
@@ -48,6 +50,22 @@ TEST_F (MDFunctionTest, GlobalMultipleArgFunction) {
     TestFunctionParameter(f, 0, "", "type0");
     TestFunctionParameter(f, 1, "", "type1");
     TestFunctionParameter(f, 2, "", "type2");
+}
+
+TEST_F (MDFunctionTest, GlobalSingleArgVirtualFunction) {
+    ASSERT_EQ(RunParse("virtual rtype name(type);"), 0);
+    TestScopeChildNums(global_, 0u, 1u, 0u, 0u);
+    
+    auto f = TestFunction("name(type)", "name", "rtype", AccessSpecifier::PUBLIC, false, true);
+    TestFunctionParameter(f, 0, "", "type");
+}
+
+TEST_F (MDFunctionTest, GlobalBadDoubleVirtualFunction) {
+    RunParseThrow("virtual virtual rtype func();");
+}
+
+TEST_F (MDFunctionTest, GlobalBadDoubleReturnTypeFunction) {
+    ASSERT_EQ(1, RunParse("rtype virtual rtype func();"));
 }
 
 TEST_F (MDFunctionTest, ManyDifferentFunctions) {

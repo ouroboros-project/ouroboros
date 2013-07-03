@@ -87,6 +87,7 @@
 %type<Declaration>          unnamed_namespace_definition
 %type<Declaration>          function_definition
 
+%type<Type>                 decl_specifier
 %type<Type>                 decl_specifier_seq
 %type<Type>                 decl_specifier_seq_opt
 %type<Type>                 type_specifier

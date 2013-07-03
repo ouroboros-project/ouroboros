@@ -10,9 +10,9 @@ type_specifier:
 
 trailing_type_specifier:
     simple_type_specifier {
-        md::NestedNameSpecifier nestedName = $1;
-        $$ = [nestedName] (md::Ptr<md::Scope> current_namespace) -> std::string {
-            return nestedName.ToString();
+        md::NestedNameSpecifier nestedname = $1;
+        $$ = [nestedname] (md::Ptr<md::Scope> current_namespace) {
+            return parser::DeclSpecifier(false, nestedname);
         }; 
     }
 ;

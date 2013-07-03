@@ -76,9 +76,13 @@ parameter_declaration_list:
 ;
 
 parameter_declaration:
-  decl_specifier_seq { $$ = md::Parameter(($1)(md::Ptr<md::Scope>()), ""); }
+  decl_specifier_seq {
+    $$ = md::Parameter(($1)(md::Ptr<md::Scope>()).type().ToString(), "");
+  }
 |
-  decl_specifier_seq declarator { $$ = md::Parameter(($1)(md::Ptr<md::Scope>()), ($2).nested_name().name()); }
+  decl_specifier_seq declarator {
+    $$ = md::Parameter(($1)(md::Ptr<md::Scope>()).type().ToString(), ($2).nested_name().name());
+  }
 ;
 
 //cv_qualifier_seq:

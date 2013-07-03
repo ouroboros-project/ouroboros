@@ -25,12 +25,14 @@
 #include <iostream>
 #include <list>
 #include <algorithm>
+#include <functional>
 #include <exception>
 
 using std::vector;
 using std::string;
 using std::istringstream;
 using std::list;
+using std::function;
 
 using opwig::md::Ptr;
 using opwig::md::Variable;
@@ -45,10 +47,11 @@ using opwig::md::NestedNameSpecifier;
 
 using opwig::parser::BaseSpecifier;
 using opwig::parser::Declarator;
+using opwig::parser::DeclSpecifier;
 using opwig::MDParser;
 
 class MDBaseTest : public ::testing::Test {
-protected:
+  protected:
     Ptr<const Namespace> global_;
     
     int RunParse(const string& str) {
@@ -82,20 +85,21 @@ protected:
     }
     
     /////////// functions
-    Ptr<const Function> TestFunction(const string& id, const string& name, const string& return_type, AccessSpecifier access, bool isPure) {
-        return TestFunction(global_, id, name, return_type, access, isPure);
+    Ptr<const Function> TestFunction(const string& id, const string& name, const string& return_type, AccessSpecifier access, bool is_pure, bool is_virtual = false) {
+        return TestFunction(global_, id, name, return_type, access, is_pure, is_virtual);
     }
-    Ptr<const Function> TestFunction(Ptr<const Scope> scope, const string& id, const string& name, const string& return_type, AccessSpecifier access, bool isPure) {
+    Ptr<const Function> TestFunction(Ptr<const Scope> scope, const string& id, const string& name, const string& return_type, AccessSpecifier access, bool is_pure, bool is_virtual = false) {
         Ptr<const Function> func = scope->NestedFunction(id);
-        internalCheckFunction(func, name, return_type, access, isPure);
+        internalCheckFunction(func, name, return_type, access, is_pure, is_virtual);
         return func;
     }
-    void internalCheckFunction(const Ptr<const Function>& func, const string& name, const string& return_type, AccessSpecifier access, bool isPure) {
+    void internalCheckFunction(const Ptr<const Function>& func, const string& name, const string& return_type, AccessSpecifier access, bool is_pure, bool is_virtual = false) {
         ASSERT_TRUE(static_cast<bool>(func));
         EXPECT_EQ(name, func->name());
         EXPECT_EQ(return_type, func->return_type());
         EXPECT_EQ(access, func->access());
-        EXPECT_EQ(isPure, func->is_pure());
+        EXPECT_EQ(is_pure, func->is_pure());
+        EXPECT_EQ(is_virtual, func->is_virtual());
     }
     
     void TestFunctionNoParameters(Ptr<const Function> func) {
@@ -153,17 +157,17 @@ protected:
         ASSERT_EQ(destructorDefined, static_cast<bool>(c->destructor()));
     }
 
-    void TestClassBaseByIndex(Ptr<const Class> c, int baseIndex, const string& name, bool isVirtual, AccessSpecifier access) {
+    void TestClassBaseByIndex(Ptr<const Class> c, int baseIndex, const string& name, bool is_virtual, AccessSpecifier access) {
         auto bspec = c->base_specifiers().begin();
         for (int i = 0; i < baseIndex; i++, bspec++);
         
         EXPECT_EQ(name, bspec->nested_name().ToString());
-        EXPECT_EQ(isVirtual, bspec->is_virtual());
+        EXPECT_EQ(is_virtual, bspec->is_virtual());
         EXPECT_EQ(access, bspec->access_specifier());   
     }
-    void TestClassDestructor(Ptr<const Class> c, bool isVirtual, AccessSpecifier access) {
+    void TestClassDestructor(Ptr<const Class> c, bool is_virtual, AccessSpecifier access) {
         Ptr<const Function> func = c->destructor();
-        internalCheckFunction(func, "~"+c->name(), "", access, false);
+        internalCheckFunction(func, "~"+c->name(), "", access, false, is_virtual);
         //TODO: CHECK IF IS VIRTUAL
         TestFunctionNoParameters(func);
     }
@@ -187,17 +191,22 @@ protected:
         EXPECT_TRUE(equal(values.begin(), values.end(), var->values().begin()));
     }
 };
-using opwig::gen::ProxyGenerator;
 
+// Units
+#include <opwig/declspecifier.cc>
+#include <opwig/declarator.cc>
+
+// Features - Parsing
 #include <opwig/nestednamespecifier.cc>
 #include <opwig/container.cc>
-#include <opwig/declarator.cc>
 #include <opwig/class.cc>
 #include <opwig/classmembers.cc>
 #include <opwig/function.cc>
 #include <opwig/namespace.cc>
 #include <opwig/variable.cc>
 #include <opwig/enum.cc>
-
 #include <opwig/complexclasses.cc>
+
+// Features - Generating
 #include <opwig/proxygenerator.cc>
+
