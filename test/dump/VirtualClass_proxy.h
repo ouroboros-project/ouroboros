@@ -1,0 +1,1 @@
+#ifndef OUROBOROS_GENERATED_VirtualClass_H_
