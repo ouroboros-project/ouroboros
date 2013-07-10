@@ -1,6 +1,6 @@
 
 #include <opwig/gen/proxygenerator.h>
-#include <opwig/gen/codeprovider.h>
+#include <opwig/gen/proxycodeprovider.h>
 
 #include <opwig/md/scope.h>
 #include <opwig/md/class.h>
@@ -41,15 +41,12 @@ size_t ProxyGenerator::Generate (const Ptr<Scope>& the_scope) {
         auto virtual_methods = SelectVirtualFromMethods(entry.second);
         if (!virtual_methods.empty()) {
             ++proxy_count;
+            ProxyCodeProvider provider(entry.second->name());
             ofstream generated_file;
-            CodeProvider provider;
             generated_file.open(output_dir_+"/"+entry.second->name()+"_proxy.h", ios_base::out);
             generated_file
-                << provider.OpenHeader(entry.second->name())
-                    << provider.OpenNamespace("generated")
-                        << provider.ProxyClass(entry.second->name())
-                    << provider.CloseNamespace()
-                << provider.CloseHeader();
+                << provider.OpenProxy()
+                << provider.CloseProxy();
             generated_file.close();
         }
     }
