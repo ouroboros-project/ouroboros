@@ -46,13 +46,13 @@ class ProxyGeneratorTest : public ::testing::Test {
     void AddNonEmptyNonVirtualClass (const string& class_name) {
         Ptr<Class> the_class = Class::Create(class_name, {});
         given_scope_->AddNestedClass(the_class);
-        the_class->AddNestedFunction(Function::Create("~"+class_name, "", {}));
+        the_class->AddNestedFunction(Function::Create("NonVirtualMethod", "void", {}));
     }
 
-    void AddEmptyVirtualClass (const string& class_name) {
+    void AddVirtualClassWithSimpleMethod (const string& class_name) {
         Ptr<Class> the_class = Class::Create(class_name, {});
         given_scope_->AddNestedClass(the_class);
-        the_class->AddNestedFunction(Function::Create("~"+class_name, "", {}, false, true));
+        the_class->AddNestedFunction(Function::Create("VirtualMethod", "void", {}, false, true));
     }
 
     bool Open (const string& filepath) {
@@ -93,8 +93,8 @@ TEST_F (ProxyGeneratorTest, SingleNonEmptyNonVirtualClass) {
     EXPECT_EQ(0u, Generate()) << COMMENT << "Should not have detected any inheritable classes.";
 }
 
-TEST_F (ProxyGeneratorTest, SingleEmptyVirtualClass) {
-    AddEmptyVirtualClass("VirtualClass");
+TEST_F (ProxyGeneratorTest, SingleVirtualClassWithSimpleMethod) {
+    AddVirtualClassWithSimpleMethod("VirtualClass");
     EXPECT_EQ(1u, Generate()) << COMMENT << "Should have found exactly one inheritable class.";
     string expected_code =
         "#ifndef OPWIG_GENERATED_VirtualClass_H_\n"
