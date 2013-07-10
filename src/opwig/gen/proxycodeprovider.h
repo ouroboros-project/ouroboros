@@ -21,6 +21,8 @@ class ProxyCodeProvider {
     }
     std::string CloseProxy () const {
         return
+            "  private:\n"
+            "    VirtualObj proxy_;\n"
             "};\n"
             "} // namespace\n"
             "#endif\n";
