@@ -64,6 +64,14 @@ class ProxyGeneratorTest : public ::testing::Test {
         the_class->AddNestedFunction(Function::Create("VirtualMethod", "void", {}, false, true));
     }
 
+    void AddVirtualClassWithManySimpleMethods (const string& class_name) {
+        Ptr<Class> the_class = Class::Create(class_name, {});
+        given_scope_->AddNestedClass(the_class);
+        the_class->AddNestedFunction(Function::Create("VirtualMethod", "void", {}, false, true));
+        the_class->AddNestedFunction(Function::Create("AnotherVirtualMethod", "void", {}, false, true));
+        the_class->AddNestedFunction(Function::Create("GuessWhatYetAnotherVirtualMethod", "void", {}, false, true));
+    }
+
     bool Open (const string& filepath) {
         if (generated_code_.is_open())
             generated_code_.close();
@@ -90,24 +98,48 @@ const string ProxyGeneratorTest::COMMENT = " Comment: ";
 
 namespace {
 
-TestCase SINGLE_VIRTUAL_CLASS_WITH_SIMPLE_METHOD_CASE = {
-    "VirtualClass_proxy.h",
-    "#ifndef OPWIG_GENERATED_VirtualClass_H_\n"
-    "#define OPWIG_GENERATED_VirtualClass_H_\n"
-    "namespace generated {\n"
-    "class VirtualClass_Proxy : public VirtualClass {\n"
-    "  public:\n"
-    "    VirtualClass_Proxy (const VirtualObj& the_proxy)\n"
-    "        : VirtualClass(), proxy_(the_proxy) {}\n"
-    "    void VirtualMethod () {\n"
-    "        (proxy_ | \"VirtualMethod\") ();\n"
-    "    }\n"
-    "  private:\n"
-    "    VirtualObj proxy_;\n"
-    "};\n"
-    "} // namespace\n"
-    "#endif\n"
-};
+TestCase  CLASS_WITH_SIMPLE_METHOD_CASE = {
+              "VirtualClass_proxy.h",
+              "#ifndef OPWIG_GENERATED_VirtualClass_H_\n"
+              "#define OPWIG_GENERATED_VirtualClass_H_\n"
+              "namespace generated {\n"
+              "class VirtualClass_Proxy : public VirtualClass {\n"
+              "  public:\n"
+              "    VirtualClass_Proxy (const VirtualObj& the_proxy)\n"
+              "        : VirtualClass(), proxy_(the_proxy) {}\n"
+              "    void VirtualMethod () {\n"
+              "        (proxy_ | \"VirtualMethod\") ();\n"
+              "    }\n"
+              "  private:\n"
+              "    VirtualObj proxy_;\n"
+              "};\n"
+              "} // namespace\n"
+              "#endif\n"
+          },
+          CLASS_WITH_MANY_SIMPLE_METHODS_CASE = {
+              "AnotherVirtualClass_proxy.h",
+              "#ifndef OPWIG_GENERATED_AnotherVirtualClass_H_\n"
+              "#define OPWIG_GENERATED_AnotherVirtualClass_H_\n"
+              "namespace generated {\n"
+              "class AnotherVirtualClass_Proxy : public AnotherVirtualClass {\n"
+              "  public:\n"
+              "    AnotherVirtualClass_Proxy (const VirtualObj& the_proxy)\n"
+              "        : AnotherVirtualClass(), proxy_(the_proxy) {}\n"
+              "    void AnotherVirtualMethod () {\n"
+              "        (proxy_ | \"AnotherVirtualMethod\") ();\n"
+              "    }\n"
+              "    void GuessWhatYetAnotherVirtualMethod () {\n"
+              "        (proxy_ | \"GuessWhatYetAnotherVirtualMethod\") ();\n"
+              "    }\n"
+              "    void VirtualMethod () {\n"
+              "        (proxy_ | \"VirtualMethod\") ();\n"
+              "    }\n"
+              "  private:\n"
+              "    VirtualObj proxy_;\n"
+              "};\n"
+              "} // namespace\n"
+              "#endif\n"
+          };
 
 }
 
@@ -128,8 +160,20 @@ TEST_F (ProxyGeneratorTest, SingleNonEmptyNonVirtualClass) {
 TEST_F (ProxyGeneratorTest, SingleVirtualClassWithSimpleMethod) {
     AddVirtualClassWithSimpleMethod("VirtualClass");
     EXPECT_EQ(1u, Generate()) << COMMENT << "Should have found exactly one inheritable class.";
-    EXPECT_TRUE(GenerateCodeMatches(SINGLE_VIRTUAL_CLASS_WITH_SIMPLE_METHOD_CASE))
+    EXPECT_TRUE(GenerateCodeMatches(CLASS_WITH_SIMPLE_METHOD_CASE))
         << COMMENT << "Generated proxy source should have matched the expected code.";
+}
+
+TEST_F (ProxyGeneratorTest, ManyVirtualClassesWithSimpleMethods) {
+    AddVirtualClassWithSimpleMethod("VirtualClass");
+    AddVirtualClassWithManySimpleMethods("AnotherVirtualClass");
+    EXPECT_EQ(2u, Generate()) << COMMENT << "Should have found exactly two inheritable classes.";
+    EXPECT_TRUE(GenerateCodeMatches(CLASS_WITH_SIMPLE_METHOD_CASE))
+        << COMMENT << "Generated proxy source should have matched for " << "VirtualClass"
+                   << "'s expected code.";
+    EXPECT_TRUE(GenerateCodeMatches(CLASS_WITH_MANY_SIMPLE_METHODS_CASE))
+        << COMMENT << "Generated proxy source should have matched for " << "AnotherVirtualClass"
+                   << "'s expected code.";
 }
 
 } // namespace testing
