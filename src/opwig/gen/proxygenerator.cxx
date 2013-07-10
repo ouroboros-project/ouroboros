@@ -1,5 +1,6 @@
 
 #include <opwig/gen/proxygenerator.h>
+#include <opwig/gen/codeprovider.h>
 
 #include <opwig/md/scope.h>
 #include <opwig/md/class.h>
@@ -23,9 +24,14 @@ size_t ProxyGenerator::Generate (const Ptr<Scope>& the_scope) {
         if (entry.second->destructor() && entry.second->destructor()->is_virtual()) {
             ++virtual_count;
             ofstream generated_file;
+            CodeProvider provider;
             generated_file.open(output_dir_+"/"+entry.second->name()+"_proxy.h", ios_base::out);
             generated_file
-                << "#ifndef OUROBOROS_GENERATED_" << entry.second->name() << "_H_" << endl;
+                << provider.OpenHeader(entry.second->name())
+                    << provider.OpenNamespace("generated")
+                        << provider.ProxyClass(entry.second->name())
+                    << provider.CloseNamespace()
+                << provider.CloseHeader();
             generated_file.close();
         }
     return virtual_count;

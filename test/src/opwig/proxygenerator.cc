@@ -97,11 +97,11 @@ TEST_F (ProxyGeneratorTest, SingleEmptyVirtualClass) {
     AddEmptyVirtualClass("VirtualClass");
     EXPECT_EQ(1u, Generate()) << COMMENT << "Should have found exactly one inheritable class.";
     string expected_code =
-        "#ifndef OUROBOROS_GENERATED_VirtualClass_H_\n"
-        "#define OUROBOROS_GENERATED_VirtualClass_H_\n"
+        "#ifndef OPWIG_GENERATED_VirtualClass_H_\n"
+        "#define OPWIG_GENERATED_VirtualClass_H_\n"
         "namespace generated {\n"
         "class VirtualClass_Proxy : public VirtualClass {};\n"
-        "} // namespace generated\n"
+        "} // namespace\n"
         "#endif\n";
     EXPECT_TRUE(GenerateCodeMatches("VirtualClass_proxy.h", expected_code))
         << COMMENT << "Generated proxy source should have matched the expected code.";
