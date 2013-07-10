@@ -2,6 +2,9 @@
 #ifndef OPWIG_GEN_CODEPROVIDER_H_
 #define OPWIG_GEN_CODEPROVIDER_H_
 
+#include <opwig/md/function.h>
+#include <opwig/md/ptr.h>
+
 #include <string>
 
 namespace opwig {
@@ -28,6 +31,12 @@ class ProxyCodeProvider {
             "};\n"
             "} // namespace\n"
             "#endif\n";
+    }
+    std::string ProxyMethod (const md::Ptr<md::Function>& method) {
+        return
+            "    void "+method->name()+" () {\n"
+            "        (proxy_ | \""+method->name()+"\") ();\n"
+            "    }\n";
     }
   private:
     std::string proxied_class_name_;
