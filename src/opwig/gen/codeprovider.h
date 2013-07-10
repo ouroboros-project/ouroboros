@@ -28,7 +28,7 @@ class CodeProvider {
     }
     std::string ProxyClass (const std::string& the_parent) const {
         return
-            "class "+the_parent+"_Proxy : public "+the_parent+" {};\n";
+            "class "+the_parent+"_Proxy : public "+the_parent+" {\n};\n";
     }
 };
 

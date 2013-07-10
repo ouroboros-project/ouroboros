@@ -100,7 +100,8 @@ TEST_F (ProxyGeneratorTest, SingleVirtualClassWithSimpleMethod) {
         "#ifndef OPWIG_GENERATED_VirtualClass_H_\n"
         "#define OPWIG_GENERATED_VirtualClass_H_\n"
         "namespace generated {\n"
-        "class VirtualClass_Proxy : public VirtualClass {};\n"
+        "class VirtualClass_Proxy : public VirtualClass {\n"
+        "};\n"
         "} // namespace\n"
         "#endif\n";
     EXPECT_TRUE(GenerateCodeMatches("VirtualClass_proxy.h", expected_code))
