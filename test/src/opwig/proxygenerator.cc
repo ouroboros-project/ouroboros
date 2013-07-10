@@ -6,13 +6,22 @@ namespace opwig {
 namespace gen {
 namespace testing {
 
+using std::string;
 using std::ios_base;
 using std::ifstream;
 using std::stringstream;
-using std::string;
 using std::cout;
 using std::endl;
 using opwig::gen::ProxyGenerator;
+
+namespace {
+
+struct TestCase {
+    string source_file;
+    string expected_code;  
+};
+
+}
 
 class ProxyGeneratorTest : public ::testing::Test {
 
@@ -62,10 +71,10 @@ class ProxyGeneratorTest : public ::testing::Test {
         return generated_code_.good();
     }
 
-    bool GenerateCodeMatches (const string& source_file, const string& expected_code) {
-        if (!Open(OUROBOROS_TEST_DUMP_DIR "/" + source_file))
+    bool GenerateCodeMatches (const TestCase& the_case) {
+        if (!Open(OUROBOROS_TEST_DUMP_DIR "/" + the_case.source_file))
             return false;
-        stringstream ss(expected_code);
+        stringstream ss(the_case.expected_code);
         while (!ss.eof()) {
             string check, line;
             getline(ss, check);
@@ -78,6 +87,29 @@ class ProxyGeneratorTest : public ::testing::Test {
 };
 
 const string ProxyGeneratorTest::COMMENT = " Comment: ";
+
+namespace {
+
+TestCase SINGLE_VIRTUAL_CLASS_WITH_SIMPLE_METHOD_CASE = {
+    "VirtualClass_proxy.h",
+    "#ifndef OPWIG_GENERATED_VirtualClass_H_\n"
+    "#define OPWIG_GENERATED_VirtualClass_H_\n"
+    "namespace generated {\n"
+    "class VirtualClass_Proxy : public VirtualClass {\n"
+    "  public:\n"
+    "    VirtualClass_Proxy (const VirtualObj& the_proxy)\n"
+    "        : VirtualClass(), proxy_(the_proxy) {}\n"
+    "    void VirtualMethod () {\n"
+    "        (proxy_ | \"VirtualMethod\") ();\n"
+    "    }\n"
+    "  private:\n"
+    "    VirtualObj proxy_;\n"
+    "};\n"
+    "} // namespace\n"
+    "#endif\n"
+};
+
+}
 
 TEST_F (ProxyGeneratorTest, NoClassesAtAll) {
     EXPECT_EQ(0u, Generate()) << COMMENT << "Should not have detected any inheritable classes.";
@@ -96,23 +128,7 @@ TEST_F (ProxyGeneratorTest, SingleNonEmptyNonVirtualClass) {
 TEST_F (ProxyGeneratorTest, SingleVirtualClassWithSimpleMethod) {
     AddVirtualClassWithSimpleMethod("VirtualClass");
     EXPECT_EQ(1u, Generate()) << COMMENT << "Should have found exactly one inheritable class.";
-    string expected_code =
-        "#ifndef OPWIG_GENERATED_VirtualClass_H_\n"
-        "#define OPWIG_GENERATED_VirtualClass_H_\n"
-        "namespace generated {\n"
-        "class VirtualClass_Proxy : public VirtualClass {\n"
-        "  public:\n"
-        "    VirtualClass_Proxy (const VirtualObj& the_proxy)\n"
-        "        : VirtualClass(), proxy_(the_proxy) {}\n"
-        "    void VirtualMethod () {\n"
-        "        (proxy_ | \"VirtualMethod\") ();\n"
-        "    }\n"
-        "  private:\n"
-        "    VirtualObj proxy_;\n"
-        "};\n"
-        "} // namespace\n"
-        "#endif\n";
-    EXPECT_TRUE(GenerateCodeMatches("VirtualClass_proxy.h", expected_code))
+    EXPECT_TRUE(GenerateCodeMatches(SINGLE_VIRTUAL_CLASS_WITH_SIMPLE_METHOD_CASE))
         << COMMENT << "Generated proxy source should have matched the expected code.";
 }
 
