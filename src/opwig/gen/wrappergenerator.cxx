@@ -4,6 +4,7 @@ namespace opwig {
 namespace gen {
 
 void WrapperGenerator::Generate(const Ptr<const Scope>& root) {
+    
 /*
 *Repeat this for each scripting language
 
@@ -18,6 +19,22 @@ iterate thru each instance of MD:
         traverse the entirety of the original given MD tree
 
 -write FINISH/ Init function to file(s)
+
+--------------
+
+wrappeando uma função, gera:
+
+scriptRTYPE OPWIG_wrap_func ( scriptARGS ) {
+
+    T arg1 = scriptConverter.fromScript<T>(ARGS[1]);
+    T arg2 = scriptConverter.fromScript<T>(ARGS[2]);
+    ...
+    
+    RT value = func( arg1, arg2, ... );
+    
+    return scriptConverter.toScript<RT>(value);
+}
+
 */
 }
 
