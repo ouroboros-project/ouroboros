@@ -1,10 +1,31 @@
 #include <opwig/gen/wrappergenerator.h>
+#include <opwig/gen/wrapperspecification.h>
+#include <opwig/gen/converterprovider.h>
+#include <fstream>
 
 namespace opwig {
 namespace gen {
 
-void WrapperGenerator::Generate(const Ptr<const Scope>& root) {
+using std::ofstream;
+using std::ios_base;
+using std::endl;
+
+void WrapperGenerator::Generate(const Ptr<const Scope>& root, Ptr<WrapperSpecification> spec) {
     
+    ofstream wrap_file;
+    wrap_file.open(output_dir_+"/"+spec->WrapperName()+"_wrap."+wrap_file_extension_, ios_base::out);
+    
+    wrap_file << spec->FileHeader() << endl;
+    
+    generateConverterClass(wrap_file, spec->GetConverterProvider());
+    
+    for (auto entry : root->IterateFunctions()) {
+        // entry.second = Ptr<TIPO>
+        wrap_file << spec->WrapFunction(entry.second) << endl;
+    }
+    
+    wrap_file << spec->FinishFile() << endl;
+    wrap_file.close();
 /*
 *Repeat this for each scripting language
 
@@ -36,6 +57,15 @@ scriptRTYPE OPWIG_wrap_func ( scriptARGS ) {
 }
 
 */
+}
+
+void WrapperGenerator::generateConverterClass(ofstream& wrap_file, const Ptr<ConverterProvider>& provider) {
+    wrap_file << "class Converter final { public:" << endl;
+    wrap_file << provider->GetConstructorCode() << endl;
+    wrap_file << provider->GetDestructorCode() << endl;
+    wrap_file << provider->GetFromFunctionsCode() << endl;
+    wrap_file << provider->GetToFunctionsCode() << endl;
+    wrap_file << "};" << endl;
 }
 
 }

@@ -17,16 +17,19 @@ class WrapperSpecification {
     
     /// Virtual destructor.
     virtual ~WrapperSpecification() {}
-
-
-    std::string FileHeader();
-    std::string FinishFile();
     
-    std::string Function(const Ptr<const Function>& obj);
-    std::string Variable(const Ptr<const Variable>& obj);
-    std::string Class(const Ptr<const Class>& obj);
-    std::string Namespace(const Ptr<const Namespace>& obj);
-    std::string Enum(const Ptr<const Enum>& obj);
+    virtual std::string WrapperName() const = 0;
+    
+    virtual Ptr<ConverterProvider> GetConverterProvider() const = 0;
+
+    virtual std::string FileHeader() const = 0;
+    virtual std::string FinishFile() const = 0;
+    
+    virtual std::string WrapFunction(const Ptr<const Function>& obj) const = 0;
+    /*virtual std::string WrapVariable(const Ptr<const Variable>& obj) = 0;
+    virtual std::string WrapClass(const Ptr<const Class>& obj) = 0;
+    virtual std::string WrapNamespace(const Ptr<const Namespace>& obj) = 0;
+    virtual std::string WrapEnum(const Ptr<const Enum>& obj) = 0;*/
 };
 
 } // namespace gen
