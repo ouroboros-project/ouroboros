@@ -17,7 +17,7 @@ void WrapperGenerator::Generate(const Ptr<const md::Scope>& root, Ptr<WrapperSpe
     ofstream wrap_file;
     wrap_file.open(output_dir_+"/"+spec->WrapperName()+"_wrap."+wrap_file_extension_, ios_base::out);
     
-    wrap_file << spec->FileHeader() << endl;
+    wrap_file << spec->FileHeader() << endl << endl;
     
     generateConverterClass(wrap_file, spec->GetConverterProvider());
     
@@ -62,12 +62,14 @@ scriptRTYPE OPWIG_wrap_func ( scriptARGS ) {
 }
 
 void WrapperGenerator::generateConverterClass(ofstream& wrap_file, const Ptr<ConverterProvider>& provider) {
+    wrap_file <<  "/***************** CONVERTER **************************/" << endl;
     wrap_file << "class Converter final { public:" << endl;
     wrap_file << provider->GetConstructorCode() << endl << endl;
     wrap_file << provider->GetDestructorCode() << endl << endl;
     wrap_file << provider->GetFromFunctionsCode() << endl << endl;
     wrap_file << provider->GetToFunctionsCode() << endl;
     wrap_file << "};" << endl;
+    wrap_file << "/******************************************************/" << endl << endl;
 }
 
 }

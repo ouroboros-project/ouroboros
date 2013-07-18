@@ -1,7 +1,3 @@
-
-#include <fstream>
-#include <sstream>
-
 namespace opwig {
 namespace gen {
 namespace testing {

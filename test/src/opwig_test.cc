@@ -11,6 +11,9 @@
 #include <opwig/parser/declarator.h>
 
 #include <opwig/gen/proxygenerator.h>
+#include <opwig/gen/wrappergenerator.h>
+#include <opwig/gen/wrapperspecification.h>
+#include <opwig/gen/converterprovider.h>
 
 #include <config.h>
 
@@ -22,6 +25,7 @@
 #include <string>
 #include <istream>
 #include <sstream>
+#include <fstream>
 #include <iostream>
 #include <list>
 #include <algorithm>
@@ -209,4 +213,5 @@ class MDBaseTest : public ::testing::Test {
 
 // Features - Generating
 #include <opwig/proxygenerator.cc>
+#include <opwig/wrappergenerator.cc>
 
