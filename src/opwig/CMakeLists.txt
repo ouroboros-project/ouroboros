@@ -29,8 +29,6 @@ set (
   ${CMAKE_CURRENT_BINARY_DIR}/gen/wrappergenerator.h
   ${CMAKE_CURRENT_BINARY_DIR}/gen/wrapperspecification.h
   ${CMAKE_CURRENT_BINARY_DIR}/gen/converterprovider.h
-  ${CMAKE_CURRENT_BINARY_DIR}/gen/wrapperimpl/dummyspecification.h
-  ${CMAKE_CURRENT_BINARY_DIR}/gen/wrapperimpl/dummyprovider.h
   ${OPWIG_MDPARSER_SRC}
   ${OPWIG_MDSCANNER_SRC}
 )
