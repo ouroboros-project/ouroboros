@@ -52,7 +52,7 @@ class DummySpecification : public WrapperSpecification {
             "// -------------------------------------------------------------\n"
             "// finished file";
     }
-    virtual std::string WrapFunction(const md::Ptr<const md::Function>& obj) const {
+    virtual std::string WrapFunction(const md::Ptr<const md::Function>& obj) {
         std::stringstream func;
         func << "RETURN_TYPE OPWIG_wrap_"+obj->name()+"(ARG_1_TYPE arg1) {" << std::endl;
         func << "    DummyConverter converter ();" << std::endl;
@@ -68,6 +68,10 @@ class DummySpecification : public WrapperSpecification {
         func << "}";
         return func.str();
     }
+    virtual std::string WrapVariable(const md::Ptr<const md::Variable>& obj) { return "VARIABLE:"+obj->name(); }
+    virtual std::string WrapClass(const md::Ptr<const md::Class>& obj) { return "CLASS:"+obj->name(); }
+    virtual std::string WrapNamespace(const md::Ptr<const md::Namespace>& obj) { return "NAMESPACE:"+obj->name(); }
+    virtual std::string WrapEnum(const md::Ptr<const md::Enum>& obj) { return "ENUM:"+obj->name(); }
 };
  
 /*********************************************************/
