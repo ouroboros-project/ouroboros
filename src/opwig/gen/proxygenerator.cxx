@@ -35,7 +35,7 @@ list<Ptr<Function>> SelectVirtualFromMethods (const Ptr<Class>& the_class) {
 
 } // unnamed namespace
 
-size_t ProxyGenerator::Generate (const Ptr<Scope>& the_scope) {
+size_t ProxyGenerator::Generate (const Ptr<const Scope>& the_scope) {
     size_t proxy_count = 0;
     for (auto entry : the_scope->IterateClasses()) {
         auto virtual_methods = SelectVirtualFromMethods(entry.second);

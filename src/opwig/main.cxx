@@ -15,13 +15,11 @@ int main (int argc, char** argv) {
     std::ifstream in(*argv);
     opwig::MDParser parser(in);
     
-    //try {
-        parser.parse();
-    //}
-    //catch (std::exception const &exc) {
-    //    std::cout << "ExceptionMessage: " << exc.what() << std::endl;
-    //    throw exc;
-    //}
+    if (parser.parse())
+      std::cout << "Failed to parse C++ code." << std::endl;
+
+    opwig::gen::ProxyGenerator("./").Generate(parser.global_namespace());
+
   }
   return EXIT_SUCCESS;
 }
