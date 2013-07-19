@@ -20,17 +20,16 @@ class ProxyCodeProvider {
             "#define OPWIG_GENERATED_"+proxied_class_name_+"_H_\n"
             "#include <opa/baseproxy.h>\n"
             "namespace generated {\n"
-            "class "+proxied_class_name_+"Proxy :"
+            "class "+proxy_name()+";\n"
+            "class "+proxy_name()+" :"
               " public "+proxied_class_name_+","
-              " public opa::BaseProxy<"+proxied_class_name_+"Proxy> {\n"
+              " public opa::BaseProxy<"+proxy_name()+"> {\n"
             "  public:\n"
-            "    "+proxied_class_name_+"Proxy (const VirtualObj& the_proxy)\n"
-            "        : "+proxied_class_name_+"(), proxy_(the_proxy) {}\n";
+            "    "+proxy_name()+" (const VirtualObj& the_proxy)\n"
+            "        : opa::BaseProxy<"+proxy_name()+">(the_proxy) {}\n";
     }
     std::string CloseProxy () const {
         return
-            "  private:\n"
-            "    VirtualObj proxy_;\n"
             "};\n"
             "} // namespace\n"
             "#endif\n";
@@ -43,6 +42,9 @@ class ProxyCodeProvider {
     }
   private:
     std::string proxied_class_name_;
+    std::string proxy_name () const {
+      return proxied_class_name_+"Proxy";
+    }
 };
 
 } // namespace gen
