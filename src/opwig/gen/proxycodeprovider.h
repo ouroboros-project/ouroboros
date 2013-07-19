@@ -21,13 +21,14 @@ class ProxyCodeProvider {
             "#define OPWIG_GENERATED_"+proxied_class_name_+"_H_\n"
             "#include \""+header_path_+"\"\n"
             "#include <opa/baseproxy.h>\n"
+            "#include <opa/virtualobj.h>\n"
             "namespace generated {\n"
             "class "+proxy_name()+";\n"
             "class "+proxy_name()+" :"
               " public "+proxied_class_name_+","
               " public opa::BaseProxy<"+proxy_name()+"> {\n"
             "  public:\n"
-            "    "+proxy_name()+" (const VirtualObj& the_proxy)\n"
+            "    "+proxy_name()+" (const opa::VirtualObj& the_proxy)\n"
             "        : opa::BaseProxy<"+proxy_name()+">(the_proxy) {}\n";
     }
     std::string CloseProxy () const {
