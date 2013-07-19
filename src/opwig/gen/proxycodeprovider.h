@@ -12,12 +12,14 @@ namespace gen {
 
 class ProxyCodeProvider {
   public:
-    ProxyCodeProvider (const std::string& the_proxied_class_name)
-        : proxied_class_name_(the_proxied_class_name) {}
+    ProxyCodeProvider (const std::string& the_proxied_class_name,
+                       const std::string& the_header_path = "")
+        : proxied_class_name_(the_proxied_class_name), header_path_(the_header_path) {}
     std::string OpenProxy () const {
         return
             "#ifndef OPWIG_GENERATED_"+proxied_class_name_+"_H_\n"
             "#define OPWIG_GENERATED_"+proxied_class_name_+"_H_\n"
+            "#include \""+header_path_+"\"\n"
             "#include <opa/baseproxy.h>\n"
             "namespace generated {\n"
             "class "+proxy_name()+";\n"
@@ -42,6 +44,7 @@ class ProxyCodeProvider {
     }
   private:
     std::string proxied_class_name_;
+    std::string header_path_;
     std::string proxy_name () const {
       return proxied_class_name_+"Proxy";
     }

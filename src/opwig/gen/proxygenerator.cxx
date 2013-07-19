@@ -41,7 +41,7 @@ size_t ProxyGenerator::Generate (const Ptr<const Scope>& the_scope) {
         auto virtual_methods = SelectVirtualFromMethods(entry.second);
         if (!virtual_methods.empty()) {
             ++proxy_count;
-            ProxyCodeProvider provider(entry.second->name());
+            ProxyCodeProvider provider(entry.second->name(), header_path_);
             ofstream generated_file;
             generated_file.open(output_dir_+"/"+entry.second->name()+"Proxy.h", ios_base::out);
             generated_file << provider.OpenProxy();

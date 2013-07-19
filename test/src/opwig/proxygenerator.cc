@@ -17,6 +17,8 @@ struct TestCase {
     string expected_code;  
 };
 
+const string HEADER_PATH = "imaginaryheader.h";
+
 }
 
 class ProxyGeneratorTest : public ::testing::Test {
@@ -30,7 +32,7 @@ class ProxyGeneratorTest : public ::testing::Test {
     const static string COMMENT;
 
     ProxyGeneratorTest () : 
-        generator_(OUROBOROS_TEST_DUMP_DIR),
+        generator_(OUROBOROS_TEST_DUMP_DIR, HEADER_PATH),
         given_scope_(Namespace::Create("")) {}
 
     virtual ~ProxyGeneratorTest () {
@@ -98,6 +100,7 @@ TestCase  CLASS_WITH_SIMPLE_METHOD_CASE = {
               "VirtualClassProxy.h",
               "#ifndef OPWIG_GENERATED_VirtualClass_H_\n"
               "#define OPWIG_GENERATED_VirtualClass_H_\n"
+              "#include \""+HEADER_PATH+"\"\n"
               "#include <opa/baseproxy.h>\n"
               "namespace generated {\n"
               "class VirtualClassProxy;\n"
@@ -116,6 +119,7 @@ TestCase  CLASS_WITH_SIMPLE_METHOD_CASE = {
               "AnotherVirtualClassProxy.h",
               "#ifndef OPWIG_GENERATED_AnotherVirtualClass_H_\n"
               "#define OPWIG_GENERATED_AnotherVirtualClass_H_\n"
+              "#include \""+HEADER_PATH+"\"\n"
               "#include <opa/baseproxy.h>\n"
               "namespace generated {\n"
               "class AnotherVirtualClassProxy;\n"
