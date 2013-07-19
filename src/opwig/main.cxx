@@ -4,24 +4,26 @@
 
 #include <cstdlib>
 
+#include <string>
 #include <iostream>
 #include <fstream>
 
 #include <memory>
 #include <exception>
 
+using std::string;
+
 int main (int argc, char** argv) {
   for (++argv, --argc; argc; ++argv, --argc) {
-    std::ifstream in(*argv);
+    string header_path = *argv;
+    std::ifstream in(header_path);
     opwig::MDParser parser(in);
     
-    //try {
-        parser.parse();
-    //}
-    //catch (std::exception const &exc) {
-    //    std::cout << "ExceptionMessage: " << exc.what() << std::endl;
-    //    throw exc;
-    //}
+    if (parser.parse())
+      std::cout << "Failed to parse C++ code." << std::endl;
+
+    opwig::gen::ProxyGenerator("./", header_path).Generate(parser.global_namespace());
+
   }
   return EXIT_SUCCESS;
 }

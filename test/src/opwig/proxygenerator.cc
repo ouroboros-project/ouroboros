@@ -17,6 +17,8 @@ struct TestCase {
     string expected_code;  
 };
 
+const string HEADER_PATH = "imaginaryheader.h";
+
 }
 
 class ProxyGeneratorTest : public ::testing::Test {
@@ -30,7 +32,7 @@ class ProxyGeneratorTest : public ::testing::Test {
     const static string COMMENT;
 
     ProxyGeneratorTest () : 
-        generator_(OUROBOROS_TEST_DUMP_DIR),
+        generator_(OUROBOROS_TEST_DUMP_DIR, HEADER_PATH),
         given_scope_(Namespace::Create("")) {}
 
     virtual ~ProxyGeneratorTest () {
@@ -95,32 +97,40 @@ const string ProxyGeneratorTest::COMMENT = " Comment: ";
 namespace {
 
 TestCase  CLASS_WITH_SIMPLE_METHOD_CASE = {
-              "VirtualClass_proxy.h",
+              "VirtualClassProxy.h",
               "#ifndef OPWIG_GENERATED_VirtualClass_H_\n"
               "#define OPWIG_GENERATED_VirtualClass_H_\n"
+              "#include \""+HEADER_PATH+"\"\n"
+              "#include <opa/baseproxy.h>\n"
+              "#include <opa/virtualobj.h>\n"
               "namespace generated {\n"
-              "class VirtualClass_Proxy : public VirtualClass {\n"
+              "class VirtualClassProxy;\n"
+              "class VirtualClassProxy : public VirtualClass, public opa::BaseProxy<VirtualClassProxy> {\n"
               "  public:\n"
-              "    VirtualClass_Proxy (const VirtualObj& the_proxy)\n"
-              "        : VirtualClass(), proxy_(the_proxy) {}\n"
+              "    VirtualClassProxy (const opa::VirtualObj& the_proxy)\n"
+              "        : opa::BaseProxy<VirtualClassProxy>(the_proxy) {}\n"
               "    void VirtualMethod () {\n"
               "        (proxy_ | \"VirtualMethod\") ();\n"
               "    }\n"
-              "  private:\n"
-              "    VirtualObj proxy_;\n"
               "};\n"
               "} // namespace\n"
               "#endif\n"
           },
           CLASS_WITH_MANY_SIMPLE_METHODS_CASE = {
-              "AnotherVirtualClass_proxy.h",
+              "AnotherVirtualClassProxy.h",
               "#ifndef OPWIG_GENERATED_AnotherVirtualClass_H_\n"
               "#define OPWIG_GENERATED_AnotherVirtualClass_H_\n"
+              "#include \""+HEADER_PATH+"\"\n"
+              "#include <opa/baseproxy.h>\n"
+              "#include <opa/virtualobj.h>\n"
               "namespace generated {\n"
-              "class AnotherVirtualClass_Proxy : public AnotherVirtualClass {\n"
+              "class AnotherVirtualClassProxy;\n"
+              "class AnotherVirtualClassProxy : public AnotherVirtualClass,"
+                                              " public opa::BaseProxy<AnotherVirtualClassProxy>"
+                                              " {\n"
               "  public:\n"
-              "    AnotherVirtualClass_Proxy (const VirtualObj& the_proxy)\n"
-              "        : AnotherVirtualClass(), proxy_(the_proxy) {}\n"
+              "    AnotherVirtualClassProxy (const opa::VirtualObj& the_proxy)\n"
+              "        : opa::BaseProxy<AnotherVirtualClassProxy>(the_proxy) {}\n"
               "    void AnotherVirtualMethod () {\n"
               "        (proxy_ | \"AnotherVirtualMethod\") ();\n"
               "    }\n"
@@ -130,8 +140,6 @@ TestCase  CLASS_WITH_SIMPLE_METHOD_CASE = {
               "    void VirtualMethod () {\n"
               "        (proxy_ | \"VirtualMethod\") ();\n"
               "    }\n"
-              "  private:\n"
-              "    VirtualObj proxy_;\n"
               "};\n"
               "} // namespace\n"
               "#endif\n"

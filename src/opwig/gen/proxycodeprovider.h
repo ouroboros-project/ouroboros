@@ -12,22 +12,27 @@ namespace gen {
 
 class ProxyCodeProvider {
   public:
-    ProxyCodeProvider (const std::string& the_proxied_class_name)
-        : proxied_class_name_(the_proxied_class_name) {}
+    ProxyCodeProvider (const std::string& the_proxied_class_name,
+                       const std::string& the_header_path = "")
+        : proxied_class_name_(the_proxied_class_name), header_path_(the_header_path) {}
     std::string OpenProxy () const {
         return
             "#ifndef OPWIG_GENERATED_"+proxied_class_name_+"_H_\n"
             "#define OPWIG_GENERATED_"+proxied_class_name_+"_H_\n"
+            "#include \""+header_path_+"\"\n"
+            "#include <opa/baseproxy.h>\n"
+            "#include <opa/virtualobj.h>\n"
             "namespace generated {\n"
-            "class "+proxied_class_name_+"_Proxy : public "+proxied_class_name_+" {\n"
+            "class "+proxy_name()+";\n"
+            "class "+proxy_name()+" :"
+              " public "+proxied_class_name_+","
+              " public opa::BaseProxy<"+proxy_name()+"> {\n"
             "  public:\n"
-            "    "+proxied_class_name_+"_Proxy (const VirtualObj& the_proxy)\n"
-            "        : "+proxied_class_name_+"(), proxy_(the_proxy) {}\n";
+            "    "+proxy_name()+" (const opa::VirtualObj& the_proxy)\n"
+            "        : opa::BaseProxy<"+proxy_name()+">(the_proxy) {}\n";
     }
     std::string CloseProxy () const {
         return
-            "  private:\n"
-            "    VirtualObj proxy_;\n"
             "};\n"
             "} // namespace\n"
             "#endif\n";
@@ -40,6 +45,10 @@ class ProxyCodeProvider {
     }
   private:
     std::string proxied_class_name_;
+    std::string header_path_;
+    std::string proxy_name () const {
+      return proxied_class_name_+"Proxy";
+    }
 };
 
 } // namespace gen

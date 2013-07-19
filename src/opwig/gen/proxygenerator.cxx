@@ -35,15 +35,15 @@ list<Ptr<Function>> SelectVirtualFromMethods (const Ptr<Class>& the_class) {
 
 } // unnamed namespace
 
-size_t ProxyGenerator::Generate (const Ptr<Scope>& the_scope) {
+size_t ProxyGenerator::Generate (const Ptr<const Scope>& the_scope) {
     size_t proxy_count = 0;
     for (auto entry : the_scope->IterateClasses()) {
         auto virtual_methods = SelectVirtualFromMethods(entry.second);
         if (!virtual_methods.empty()) {
             ++proxy_count;
-            ProxyCodeProvider provider(entry.second->name());
+            ProxyCodeProvider provider(entry.second->name(), header_path_);
             ofstream generated_file;
-            generated_file.open(output_dir_+"/"+entry.second->name()+"_proxy.h", ios_base::out);
+            generated_file.open(output_dir_+"/"+entry.second->name()+"Proxy.h", ios_base::out);
             generated_file << provider.OpenProxy();
             for (auto virtual_method : virtual_methods)
                 generated_file << provider.ProxyMethod(virtual_method);
