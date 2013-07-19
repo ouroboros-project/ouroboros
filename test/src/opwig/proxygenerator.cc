@@ -98,8 +98,9 @@ TestCase  CLASS_WITH_SIMPLE_METHOD_CASE = {
               "VirtualClassProxy.h",
               "#ifndef OPWIG_GENERATED_VirtualClass_H_\n"
               "#define OPWIG_GENERATED_VirtualClass_H_\n"
+              "#include <opa/baseproxy.h>\n"
               "namespace generated {\n"
-              "class VirtualClass_Proxy : public VirtualClass {\n"
+              "class VirtualClass_Proxy : public VirtualClass, public opa::BaseProxy {\n"
               "  public:\n"
               "    VirtualClass_Proxy (const VirtualObj& the_proxy)\n"
               "        : VirtualClass(), proxy_(the_proxy) {}\n"
@@ -116,8 +117,10 @@ TestCase  CLASS_WITH_SIMPLE_METHOD_CASE = {
               "AnotherVirtualClassProxy.h",
               "#ifndef OPWIG_GENERATED_AnotherVirtualClass_H_\n"
               "#define OPWIG_GENERATED_AnotherVirtualClass_H_\n"
+              "#include <opa/baseproxy.h>\n"
               "namespace generated {\n"
-              "class AnotherVirtualClass_Proxy : public AnotherVirtualClass {\n"
+              "class AnotherVirtualClass_Proxy : public AnotherVirtualClass,"
+                                               " public opa::BaseProxy {\n"
               "  public:\n"
               "    AnotherVirtualClass_Proxy (const VirtualObj& the_proxy)\n"
               "        : AnotherVirtualClass(), proxy_(the_proxy) {}\n"

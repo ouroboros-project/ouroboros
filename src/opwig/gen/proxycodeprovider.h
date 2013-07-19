@@ -18,8 +18,10 @@ class ProxyCodeProvider {
         return
             "#ifndef OPWIG_GENERATED_"+proxied_class_name_+"_H_\n"
             "#define OPWIG_GENERATED_"+proxied_class_name_+"_H_\n"
+            "#include <opa/baseproxy.h>\n"
             "namespace generated {\n"
-            "class "+proxied_class_name_+"_Proxy : public "+proxied_class_name_+" {\n"
+            "class "+proxied_class_name_+"_Proxy : public "+proxied_class_name_+","
+                                                 " public opa::BaseProxy {\n"
             "  public:\n"
             "    "+proxied_class_name_+"_Proxy (const VirtualObj& the_proxy)\n"
             "        : "+proxied_class_name_+"(), proxy_(the_proxy) {}\n";
