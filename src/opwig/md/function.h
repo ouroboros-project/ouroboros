@@ -38,6 +38,9 @@ class Function : public MetadataObject {
 
     /// Tells the function's nth parameter name.
     std::string parameter_name(size_t n) const;
+    
+    /// Tells the number of parameters of this function.
+    size_t num_parameters() const { return parameter_list_.size(); }
 
     /// Tells if the function is pure (normally used for abstract methods).
     bool is_pure() const;

@@ -23,6 +23,12 @@ set (
   ${CMAKE_CURRENT_BINARY_DIR}/md/nestednamespecifier.cxx
   ${CMAKE_CURRENT_BINARY_DIR}/gen/proxygenerator.h
   ${CMAKE_CURRENT_BINARY_DIR}/gen/proxygenerator.cxx
+  ${CMAKE_CURRENT_BINARY_DIR}/gen/proxycodeprovider.h
+  ${CMAKE_CURRENT_BINARY_DIR}/gen/wrappergenerator.h
+  ${CMAKE_CURRENT_BINARY_DIR}/gen/wrappergenerator.cxx
+  ${CMAKE_CURRENT_BINARY_DIR}/gen/wrappergenerator.h
+  ${CMAKE_CURRENT_BINARY_DIR}/gen/wrapperspecification.h
+  ${CMAKE_CURRENT_BINARY_DIR}/gen/converterprovider.h
   ${OPWIG_MDPARSER_SRC}
   ${OPWIG_MDSCANNER_SRC}
 )
