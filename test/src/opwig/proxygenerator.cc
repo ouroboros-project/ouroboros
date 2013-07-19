@@ -95,7 +95,7 @@ const string ProxyGeneratorTest::COMMENT = " Comment: ";
 namespace {
 
 TestCase  CLASS_WITH_SIMPLE_METHOD_CASE = {
-              "VirtualClass_proxy.h",
+              "VirtualClassProxy.h",
               "#ifndef OPWIG_GENERATED_VirtualClass_H_\n"
               "#define OPWIG_GENERATED_VirtualClass_H_\n"
               "namespace generated {\n"
@@ -113,7 +113,7 @@ TestCase  CLASS_WITH_SIMPLE_METHOD_CASE = {
               "#endif\n"
           },
           CLASS_WITH_MANY_SIMPLE_METHODS_CASE = {
-              "AnotherVirtualClass_proxy.h",
+              "AnotherVirtualClassProxy.h",
               "#ifndef OPWIG_GENERATED_AnotherVirtualClass_H_\n"
               "#define OPWIG_GENERATED_AnotherVirtualClass_H_\n"
               "namespace generated {\n"
