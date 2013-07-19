@@ -12,14 +12,15 @@ using std::ios_base;
 using std::endl;
 using md::Ptr;
 
-void WrapperGenerator::Generate(const Ptr<const md::Scope>& root, Ptr<WrapperSpecification> spec) {
+void WrapperGenerator::Generate(const std::string& module_name, const Ptr<const md::Scope>& root, Ptr<WrapperSpecification> spec) {
+    spec->set_module_name(module_name);
     
     ofstream wrap_file;
-    wrap_file.open(output_dir_+"/"+spec->WrapperName()+"_wrap."+wrap_file_extension_, ios_base::out);
+    wrap_file.open(output_dir_+"/"+spec->WrapperName()+"_"+module_name+"_wrap."+wrap_file_extension_, ios_base::out);
     
     wrap_file << spec->FileHeader() << endl << endl;
     
-    generateConverterClass(wrap_file, spec->GetConverterProvider());
+    generateConverterClass(wrap_file, spec->WrapperName(), spec->GetConverterProvider());
     
     for (auto entry : root->IterateFunctions()) {
         // entry.second = Ptr<TIPO>
@@ -28,47 +29,19 @@ void WrapperGenerator::Generate(const Ptr<const md::Scope>& root, Ptr<WrapperSpe
     
     wrap_file << spec->FinishFile() << endl;
     wrap_file.close();
-/*
-*Repeat this for each scripting language
-
--write HEADER to file(s)
-
-for each metadata (MD) type:
-iterate thru each instance of MD:
-    -execute something for wrapping it -> generate CODE
-    -write CODE(s) to file(s)
-    -for scope MDs:
-        call Generate() for this instance -> use recursion to
-        traverse the entirety of the original given MD tree
-
--write FINISH/ Init function to file(s)
-
---------------
-
-wrappeando uma função, gera:
-
-scriptRTYPE OPWIG_wrap_func ( scriptARGS ) {
-
-    T arg1 = scriptConverter.fromScript<T>(ARGS[1]);
-    T arg2 = scriptConverter.fromScript<T>(ARGS[2]);
-    ...
-    
-    RT value = func( arg1, arg2, ... );
-    
-    return scriptConverter.toScript<RT>(value);
 }
 
-*/
-}
-
-void WrapperGenerator::generateConverterClass(ofstream& wrap_file, const Ptr<ConverterProvider>& provider) {
+void WrapperGenerator::generateConverterClass(ofstream& wrap_file, const std::string& wrapper_name, const Ptr<ConverterProvider>& provider) {
     wrap_file <<  "/***************** CONVERTER **************************/" << endl;
-    wrap_file << "class Converter final { public:" << endl;
+    wrap_file << "#ifndef __OPWIG_GENERATED_" << wrapper_name << "_CONVERTER_" << endl;
+    wrap_file << "#define __OPWIG_GENERATED_" << wrapper_name << "_CONVERTER_" << endl;
+    wrap_file << "class " << wrapper_name << "Converter final { public:" << endl;
     wrap_file << provider->GetConstructorCode() << endl << endl;
     wrap_file << provider->GetDestructorCode() << endl << endl;
     wrap_file << provider->GetFromFunctionsCode() << endl << endl;
     wrap_file << provider->GetToFunctionsCode() << endl;
     wrap_file << "};" << endl;
+    wrap_file << "#endif //" << wrapper_name << "_CONVERTER" << endl;
     wrap_file << "/******************************************************/" << endl << endl;
 }
 

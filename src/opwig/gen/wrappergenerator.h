@@ -34,13 +34,13 @@ class WrapperGenerator {
     /// Traverses the metadata tree of the given root scope, generating wrapper code
     /// for the selected scripting languages and writing them to the corresponding
     /// source files.
-    void Generate(const md::Ptr<const md::Scope>& root, md::Ptr<WrapperSpecification> spec);
+    void Generate(const std::string& module_name, const md::Ptr<const md::Scope>& root, md::Ptr<WrapperSpecification> spec);
     
   protected:
     std::string output_dir_;
     std::string wrap_file_extension_;
     
-    void generateConverterClass(std::ofstream& wrap_file, const md::Ptr<ConverterProvider>& provider);
+    void generateConverterClass(std::ofstream& wrap_file, const std::string& wrapper_name, const md::Ptr<ConverterProvider>& provider);
 };
 
 } // namespace gen
