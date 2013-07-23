@@ -27,7 +27,7 @@ static void InitScripts () {
 }
 
 static bool LuaTests() {
-    return SCRIPT_MANAGER()->LoadModule("data").valid();
+    return SCRIPT_MANAGER()->LoadModule("luatalker").valid();
 }
 
 static bool PythonTests() {
