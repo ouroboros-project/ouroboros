@@ -8,15 +8,24 @@
 #include <languages/python/pythonwrapper.h>
 
 #include <cstdlib>
-
+#include <string>
+#include <iostream>
 #include <memory>
 
 using opa::VirtualObj;
 using opa::ScriptManager;
 
+using std::string;
+using std::cout;
+using std::cin;
+using std::endl;
 using std::shared_ptr;
 
-static void InitScripts () {
+namespace {
+
+const string LOGMARK = "[--LOG--] ";
+
+void InitScripts () {
 #ifdef OUROBOROS_LUA_BINDINGS
     SCRIPT_MANAGER()->Register(new opa::lua::LuaWrapper());
 #endif
@@ -26,39 +35,53 @@ static void InitScripts () {
     SCRIPT_MANAGER()->Initialize("./scripts/");
 }
 
-static bool LuaTests() {
-    return SCRIPT_MANAGER()->LoadModule("luatalker").valid();
+bool RunTalker (const string& which) {
+  string      prompt_token = "$";
+  size_t      skip_lines   = 1;
+  VirtualObj  talker = SCRIPT_MANAGER()->LoadModule(which+"talker");
+  if (!talker) return false;
+  if (!talker["respond"]) return false;
+  if (talker["prompt_token"])
+    prompt_token = talker["prompt_token"].value<const char*>();
+  if (talker["skip_lines"])
+    skip_lines = static_cast<size_t>(talker["skip_lines"].value<int>());
+  cout << "Say something!" << endl;
+  cout << prompt_token << " ";
+  cout.flush();
+  string input;
+  getline(cin, input);
+  for (size_t i = 0; i < skip_lines; ++i)
+    cout << endl;
+  VirtualObj arg(talker.wrapper());
+  arg.set_value(input.c_str());
+  cout << talker["respond"](VirtualObj::List(arg)).value<const char*>();
+  return true;
 }
 
-static bool PythonTests() {
-    VirtualObj wassup = SCRIPT_MANAGER()->LoadModule("wassup");
-    if(!wassup) return false;
-    if(!wassup["supimpa"]) return false;
-
-    VirtualObj::List args;
-    return wassup["supimpa"](args).valid();
-}
+} // unnamed namespace
 
 int main(int argc, char **argv) {
-
+    int success = EXIT_SUCCESS;
     InitScripts();
     
 #ifdef OUROBOROS_LUA_BINDINGS
-    if(!LuaTests()) {
-        puts("LUA FAILED!");
-        return EXIT_FAILURE;
+    cout << LOGMARK << "Using Lua wrappings and embedding..." << endl;
+    if(!RunTalker("lua")) {
+        cout << LOGMARK << "Lua wrappings and embedding failed!" << endl;
+        success = EXIT_FAILURE;
     };
 #endif
 
 #ifdef OUROBOROS_PYTHON_BINDINGS
-    if(!PythonTests()) {
-        puts("PYTHON FAILED!");
-        return EXIT_FAILURE;
+    cout << LOGMARK << "Using Python wrappings and embedding..." << endl;
+    if(!RunTalker("python")) {
+        cout << LOGMARK << "Python wrappings and embedding failed!" << endl;
+        success = EXIT_FAILURE;
     }
 #endif
 
     SCRIPT_MANAGER()->Finalize();
     delete SCRIPT_MANAGER();
     
-    return EXIT_SUCCESS;
+    return success;
 }

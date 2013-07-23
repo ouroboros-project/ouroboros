@@ -22,7 +22,13 @@ endforeach( OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES )
 
 include_directories("src")
 
-add_executable (milestone-00 EXCLUDE_FROM_ALL src/script_test.cxx )
+add_executable (
+  milestone-00
+  EXCLUDE_FROM_ALL
+  src/main.cxx
+  src/prompt.h
+  src/prompt.cxx
+)
 target_link_libraries (
   milestone-00
   libouroboros
