@@ -22,9 +22,21 @@ void WrapperGenerator::Generate(const std::string& module_name, const Ptr<const 
     
     generateConverterClass(wrap_file, spec->WrapperName(), spec->GetConverterProvider());
     
+    // entry.second = Ptr<TIPO>
     for (auto entry : root->IterateFunctions()) {
-        // entry.second = Ptr<TIPO>
         wrap_file << spec->WrapFunction(entry.second) << endl;
+    }
+    for (auto entry : root->IterateVariables()) {
+        wrap_file << spec->WrapVariable(entry.second) << endl;
+    }
+    for (auto entry : root->IterateEnums()) {
+        wrap_file << spec->WrapEnum(entry.second) << endl;
+    }
+    for (auto entry : root->IterateClasses()) {
+        wrap_file << spec->WrapClass(entry.second) << endl;
+    }
+    for (auto entry : root->IterateNamespaces()) {
+        wrap_file << spec->WrapNamespace(entry.second) << endl;
     }
     
     wrap_file << spec->FinishFile() << endl;

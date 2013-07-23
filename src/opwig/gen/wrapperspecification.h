@@ -9,6 +9,10 @@ namespace opwig {
 
 namespace md {
 class Function;
+class Variable;
+class Class;
+class Namespace;
+class Enum;
 }
 
 namespace gen {
@@ -50,11 +54,11 @@ class WrapperSpecification {
     /// And also that using the <>Converter (constructor, methods, etc)  
     /// depends on how you defined it in the ConverterProvider.
     
-    virtual std::string WrapFunction(const md::Ptr<const md::Function>& obj) const = 0;
-    /*virtual std::string WrapVariable(const md::Ptr<const md::Variable>& obj) = 0;
+    virtual std::string WrapFunction(const md::Ptr<const md::Function>& obj) = 0;
+    virtual std::string WrapVariable(const md::Ptr<const md::Variable>& obj) = 0;
     virtual std::string WrapClass(const md::Ptr<const md::Class>& obj) = 0;
     virtual std::string WrapNamespace(const md::Ptr<const md::Namespace>& obj) = 0;
-    virtual std::string WrapEnum(const md::Ptr<const md::Enum>& obj) = 0;*/
+    virtual std::string WrapEnum(const md::Ptr<const md::Enum>& obj) = 0;
     
     /// Gets the name of the module currently being wrapped.
     const std::string& module_name() const { return module_name_; }
