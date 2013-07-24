@@ -7,6 +7,9 @@
 %namespace              "opwig"
 
 ws                          [ \f\v\t\n]
+comment_line                [/][/](.)*[\r\n]
+comment_block               [/]\*(.)*\*[/]
+cpp_directive               #(.)*[\r\n]
 digit                       [0-9]
 nonzero                     [1-9]
 hex                         [0-9A-Fa-f]
@@ -34,7 +37,13 @@ pp_number                   (\.?{digit}({digit}|{non_digit}|[eE][-+]|\.)*)
 
 %%
 
-{ws}                  /* do nothing */;
+{comment_line}        /* do nothing */;
+
+{comment_block}       /* do nothing */;
+
+{cpp_directive}       /* do nothing */;
+
+{ws}+                 /* do nothing */;
 
 {string_literal}      return MDParserBase::STRING_LITERAL;
 
