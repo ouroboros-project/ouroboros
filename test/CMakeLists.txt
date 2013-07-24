@@ -103,3 +103,5 @@ configure_file (
   "src/config.h"
 )
 
+add_subdirectory(acceptance/milestone-00)
+
