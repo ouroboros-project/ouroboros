@@ -5,7 +5,8 @@
 namespace prompt {
 
 /// Prints prompt output.
-/// @param str The output string.
+/** @param str The output string.
+ */
 void print (char* str);
 
 } // namespace prompt
