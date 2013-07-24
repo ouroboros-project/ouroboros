@@ -148,8 +148,7 @@ namespace {
 
 WrapperTestCase  SIMPLE_GLOBAL_FUNCTIONS = {
               "Dummy_TestModule_wrap.cxx",
-              "#ifndef __OPWIG_GENERATED_Dummy_CONVERTER_\n"
-              "#define __OPWIG_GENERATED_Dummy_CONVERTER_\n"
+              "namespace {\n"
               "class DummyConverter final { public:\n"
               "Converter() {}\n"
               "~Converter() {}\n"
@@ -162,7 +161,7 @@ WrapperTestCase  SIMPLE_GLOBAL_FUNCTIONS = {
               "    return SOMETHING;\n"
               "}\n"
               "};\n"
-              "#endif //Dummy_CONVERTER\n"
+              "} // unnamed namespace\n"
               "RETURN_TYPE OPWIG_wrap_DoStuff(ARG_1_TYPE arg1) {\n"
               "    DummyConverter converter ();\n"
               "    CppType0 fArg0 = converter.fromScript<CppType0>(arg1);\n"
