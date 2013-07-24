@@ -19,8 +19,10 @@ int main (int argc, char** argv) {
     std::ifstream in(header_path);
     opwig::MDParser parser(in);
     
-    if (parser.parse())
+    if (parser.parse()) {
       std::cout << "Failed to parse C++ code." << std::endl;
+      return EXIT_FAILURE;
+    }
 
     opwig::gen::ProxyGenerator("./", header_path).Generate(parser.global_namespace());
 
