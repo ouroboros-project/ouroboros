@@ -29,7 +29,6 @@ void WrapperGenerator::Generate (const std::string& module_name, const Ptr<const
       generateConverterClass(wrap_file, spec->wrapper_name(), converter_provider);
     
     // entry.second = Ptr<TIPO>
-    cout << "Number of functions found: " << root->NestedFunctionsNum() << endl;
     for (auto entry : root->IterateFunctions()) {
         wrap_file << spec->WrapFunction(entry.second) << endl;
     }
