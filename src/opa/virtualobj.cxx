@@ -14,8 +14,12 @@ VirtualObj VirtualObj::operator() (const list<VirtualObj>& args) const {
     for (it = args.begin(); it != args.end(); ++it) {
         // Wrappers of executed VObj (we) and of the VObjs passed as
         // arguments must be the same.
-        if (!*it || wrapper() != it->wrapper()) {
-            puts("FAIL");
+        if (!*it) {
+            puts("[vobj::op()] Argument in not a valid virtual object.");
+            return VirtualObj();
+        }
+        if (wrapper() != it->wrapper()) {
+            puts("[vobj::op()] Argument wrapper is not the same as the called object.");
             return VirtualObj();
         }
         arglist.push_back(it->data_);

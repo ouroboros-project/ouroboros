@@ -14,24 +14,33 @@ Ptr<ConverterProvider> WrapperSpecification::GetConverterProvider () const {
 
 string WrapperSpecification::FileHeader () const {
     return
+        "#include <languages/lua/luawrapper.h>\n"
+        "#include <opa/scriptmanager.h>\n"
+        "#include <opa/module.h>\n"
         "#include <lua5.1/lauxlib.h>\n"
         "#include <iostream>\n"
         "using std::cout;\n"
-        "using std::endl;\n";
+        "using std::endl;\n"
+        "using opa::Module;\n"
+        "using opa::lua::LuaWrapper;\n";
 }
 
 string WrapperSpecification::FinishFile () const {
     return
         "namespace {\n\n"
+        // List os wrapped functions
         "luaL_Reg wrapped_functions[] = {\n"
         "    { NULL, NULL }\n"
         "};\n\n"
+        // Bootstrap class
         "class Bootstrap final {\n"
         "  public:\n"
         "    Bootstrap ();\n"
         "};\n\n"
+        // Bootstrap object
         "Bootstrap entry_point;\n\n"
         "} // unnamed namespace\n\n"
+        // Loader function
         "extern \"C\" {\n\n"
         "/// [-1,+1,e]\n"
         "int luaopen_"+module_name_+" (lua_State* L) {\n"
@@ -42,9 +51,20 @@ string WrapperSpecification::FinishFile () const {
         "    return 1;\n"
         "}\n\n"
         "} // extern \"C\"\n\n"
+        // Bootstrap implementation
         "namespace {\n\n"
         "Bootstrap::Bootstrap () {\n"
         "    cout << \"Bootstrapping Lua module \\\""+module_name_+"\\\"\" << endl;\n"
+        "    LuaWrapper *wrapper = dynamic_cast<LuaWrapper*>(\n"
+        "        SCRIPT_MANAGER()->GetWrapper(\"Lua\")\n"
+        "    );\n"
+        "    if (wrapper == NULL) {\n"
+        "        wrapper = new LuaWrapper;\n"
+        "        SCRIPT_MANAGER()->Register(wrapper);\n"
+        "    }\n"
+        "    wrapper->RegisterModule("
+                "Module<int(*)(lua_State*)>(\""+module_name_+"\",luaopen_"+module_name_+")"
+             ");\n"
         "}\n\n"
         "} // unnamed namespace\n";
 }

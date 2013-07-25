@@ -54,8 +54,14 @@ bool RunTalker (const string& which) {
   for (size_t i = 0; i < skip_lines; ++i)
     cout << endl;
   VirtualObj arg(talker.wrapper());
-  arg.set_value(input.c_str());
-  cout << talker["respond"](VirtualObj::List(arg)).value<const char*>();
+  arg.set_value<const char*>(input.c_str());
+  if (!arg) return false;
+  VirtualObj::List args;
+  args.push_back(arg);
+  if (!args.front()) return false;
+  VirtualObj result = talker["respond"](args);
+  if (!result) return false;
+  cout << result.value<const char*>();
   return true;
 }
 
@@ -70,7 +76,8 @@ int main(int argc, char **argv) {
     if(!RunTalker("lua")) {
         cout << LOGMARK << "Lua wrappings and embedding failed!" << endl;
         success = EXIT_FAILURE;
-    };
+    } else
+        cout << LOGMARK << "Lua wrappings and embedding was succesul!" << endl;
 #endif
 
 #ifdef OUROBOROS_PYTHON_BINDINGS
