@@ -15,13 +15,13 @@ set (
 set (
   MILESTONE_00_GENERATED_SRC
   src/Lua_Prompt_wrap.cxx
-  src/Python_Prompt_wrap.cxx
+  #src/Python_Prompt_wrap.cxx
 )
 
 add_custom_command (
   OUTPUT ${MILESTONE_00_GENERATED_SRC}
   COMMAND opwig
-  ARGS    src/prompt.h
+  ARGS    --module-name=Prompt src/prompt.h
   DEPENDS src/prompt.h opwig
   WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/src
 )

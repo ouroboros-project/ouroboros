@@ -1,5 +1,6 @@
 *~
 .*.swp
+.swp
 !CMakeLists.txt
 CMakeCache.txt
 CMakeFiles/
