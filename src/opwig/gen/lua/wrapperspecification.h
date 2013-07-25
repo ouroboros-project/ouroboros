@@ -10,7 +10,27 @@ namespace lua {
 
 class WrapperSpecification final : public ::opwig::gen::WrapperSpecification {
 
+  public:
+
+    std::string wrapper_name () const;
+
+    md::Ptr<ConverterProvider> GetConverterProvider() const;
+
+    std::string FileHeader() const;
+
+    std::string FinishFile() const;
+
+    std::string WrapFunction(const md::Ptr<const md::Function>& obj);
+    std::string WrapVariable(const md::Ptr<const md::Variable>& obj);
+    std::string WrapClass(const md::Ptr<const md::Class>& obj);
+    std::string WrapNamespace(const md::Ptr<const md::Namespace>& obj);
+    std::string WrapEnum(const md::Ptr<const md::Enum>& obj);
+
 };
+
+inline std::string WrapperSpecification::wrapper_name () const {
+    return "Lua";
+}
 
 } // namespace lua
 } // namespace gen

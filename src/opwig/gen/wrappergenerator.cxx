@@ -17,12 +17,14 @@ void WrapperGenerator::Generate (const std::string& module_name, const Ptr<const
     spec->set_module_name(module_name);
     
     ofstream wrap_file;
-    wrap_file.open(output_dir_+"/"+spec->WrapperName()+"_"+module_name+"_wrap."+wrap_file_extension_,
+    wrap_file.open(output_dir_+"/"+spec->wrapper_name()+"_"+module_name+"_wrap."+wrap_file_extension_,
                    ios_base::out);
     
     wrap_file << spec->FileHeader() << endl << endl;
     
-    generateConverterClass(wrap_file, spec->WrapperName(), spec->GetConverterProvider());
+    Ptr<ConverterProvider> converter_provider = spec->GetConverterProvider();
+    if (converter_provider)
+      generateConverterClass(wrap_file, spec->wrapper_name(), converter_provider);
     
     // entry.second = Ptr<TIPO>
     for (auto entry : root->IterateFunctions()) {

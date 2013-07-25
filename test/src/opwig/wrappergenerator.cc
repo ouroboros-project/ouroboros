@@ -37,7 +37,7 @@ class DummySpecification : public WrapperSpecification {
   public:
     DummySpecification() {}
     virtual ~DummySpecification() {}
-    virtual std::string WrapperName() const { return "Dummy"; }
+    virtual std::string wrapper_name() const { return "Dummy"; }
     
     virtual md::Ptr<ConverterProvider> GetConverterProvider() const {
         return md::Ptr<ConverterProvider>(new DummyProvider() );

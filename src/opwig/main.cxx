@@ -1,6 +1,10 @@
 
 #include <opwig/parser/mdparser.h>
 #include <opwig/gen/proxygenerator.h>
+#include <opwig/gen/wrappergenerator.h>
+#include <opwig/gen/wrapperspecification.h>
+#include <opwig/gen/lua/wrapperspecification.h>
+#include <opwig/md/ptr.h>
 
 #include <cstdlib>
 
@@ -12,6 +16,8 @@
 #include <exception>
 
 using std::string;
+using opwig::md::Ptr;
+using opwig::gen::WrapperSpecification;
 
 int main (int argc, char** argv) {
   for (++argv, --argc; argc; ++argv, --argc) {
@@ -25,6 +31,9 @@ int main (int argc, char** argv) {
     }
 
     opwig::gen::ProxyGenerator("./", header_path).Generate(parser.global_namespace());
+    opwig::gen::WrapperGenerator("./")
+      .Generate("module", parser.global_namespace(),
+                Ptr<WrapperSpecification>(new opwig::gen::lua::WrapperSpecification));
 
   }
   return EXIT_SUCCESS;

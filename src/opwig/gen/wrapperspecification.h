@@ -30,7 +30,7 @@ class WrapperSpecification {
     virtual ~WrapperSpecification() {}
     
     /// Name of this wrapper specification (name of the language it wraps).
-    virtual std::string WrapperName() const = 0;
+    virtual std::string wrapper_name() const = 0;
     
     /// Returns a new instance of a ConverterProvider for this Wrapper Specification.
     virtual md::Ptr<ConverterProvider> GetConverterProvider() const = 0;

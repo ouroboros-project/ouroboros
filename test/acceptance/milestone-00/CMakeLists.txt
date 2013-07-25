@@ -23,7 +23,7 @@ add_custom_command (
   COMMAND opwig
   ARGS    src/prompt.h
   DEPENDS src/prompt.h opwig
-  WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
+  WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/src
 )
 
 set_source_files_properties (
