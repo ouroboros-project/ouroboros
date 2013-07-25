@@ -2,14 +2,14 @@
 #ifndef OUROBOROS_MILESTONE_00_PROMPT_H_
 #define OUROBOROS_MILESTONE_00_PROMPT_H_
 
-namespace prompt {
+//namespace prompt {
 
 /// Prints prompt output.
 /** @param str The output string.
  */
-void print (char* str);
+bool print (char* str);
 
-} // namespace prompt
+//} // namespace prompt
 
 #endif
 

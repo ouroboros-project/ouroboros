@@ -21,6 +21,10 @@ using std::string;
 using opwig::md::Ptr;
 using opwig::gen::WrapperSpecification;
 
+namespace {
+  const string OPWIG_MARK = "[opwig] ";
+}
+
 int main (int argc, char** argv) {
     list<string> inputs;
     string       module_name = "Module";
@@ -35,10 +39,15 @@ int main (int argc, char** argv) {
     for (string input : inputs) {
         string header_path = input;
         std::ifstream in(header_path);
+        if (!in.good()) {
+            std::cout << OPWIG_MARK << "Failed to open source \"" << input << "\"" << std::endl;
+            return EXIT_FAILURE;
+        }
         opwig::MDParser parser(in);
         
+        std::cout << OPWIG_MARK << "Parsing source \"" << input << "\"" << std::endl;
         if (parser.parse()) {
-            std::cout << "Failed to parse C++ code." << std::endl;
+            std::cout << OPWIG_MARK << "Failed to parse C++ code." << std::endl;
             return EXIT_FAILURE;
         }
 

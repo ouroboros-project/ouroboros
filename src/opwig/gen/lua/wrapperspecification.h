@@ -3,6 +3,8 @@
 #define OPWIG_GEN_LUA_WRAPPERSPECIFICATION_H_
 
 #include <opwig/gen/wrapperspecification.h>
+#include <list>
+#include <string>
 
 namespace opwig {
 namespace gen {
@@ -25,6 +27,10 @@ class WrapperSpecification final : public ::opwig::gen::WrapperSpecification {
     std::string WrapClass(const md::Ptr<const md::Class>& obj);
     std::string WrapNamespace(const md::Ptr<const md::Namespace>& obj);
     std::string WrapEnum(const md::Ptr<const md::Enum>& obj);
+
+  private:
+
+    std::list<std::string> wrapped_functions_;
 
 };
 

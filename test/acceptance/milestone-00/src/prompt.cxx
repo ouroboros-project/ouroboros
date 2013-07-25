@@ -3,14 +3,15 @@
 
 #include <iostream>
 
-namespace prompt {
+//namespace prompt {
 
 using std::cout;
 using std::endl;
 
-void print (char* str) {
+bool print (char* str) {
   cout << str << endl;
+  return true;
 }
 
-} // namespace prompt
+//} // namespace prompt
 

@@ -21,7 +21,7 @@ set (
 add_custom_command (
   OUTPUT ${MILESTONE_00_GENERATED_SRC}
   COMMAND opwig
-  ARGS    --module-name=prompt src/prompt.h
+  ARGS    --module-name=prompt prompt.h
   DEPENDS src/prompt.h opwig
   WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/src
 )
