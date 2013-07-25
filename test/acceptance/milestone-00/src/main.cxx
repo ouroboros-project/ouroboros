@@ -27,7 +27,8 @@ const string LOGMARK = "[--LOG--] ";
 
 void InitScripts () {
 #ifdef OUROBOROS_LUA_BINDINGS
-    SCRIPT_MANAGER()->Register(new opa::lua::LuaWrapper());
+    if (SCRIPT_MANAGER()->GetWrapper("Lua") == NULL)
+        SCRIPT_MANAGER()->Register(new opa::lua::LuaWrapper());
 #endif
 #ifdef OUROBOROS_PYTHON_BINDINGS
     SCRIPT_MANAGER()->Register(new opa::python::PythonWrapper());
