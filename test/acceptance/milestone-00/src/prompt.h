@@ -7,7 +7,7 @@
 /// Prints prompt output.
 /** @param str The output string.
  */
-void print (char* str);
+bool print (char* str);
 
 //} // namespace prompt
 

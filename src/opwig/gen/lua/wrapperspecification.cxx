@@ -36,13 +36,19 @@ string WrapperSpecification::FileHeader () const {
 }
 
 string WrapperSpecification::FinishFile () const {
-    return
+    string functions_wrap_code =
         "namespace {\n\n"
-        // List os wrapped functions
-        "luaL_Reg wrapped_functions[] = {\n"
+        "// List of wrapped functions\n"
+        "luaL_Reg wrapped_functions[] = {\n";
+    for (auto func_name : wrapped_functions_)
+        functions_wrap_code +=
+            "    { \""+func_name+"\", OPWIG_wrap_"+func_name+" },\n";
+    functions_wrap_code +=
         "    { NULL, NULL }\n"
         "};\n\n"
-        "} // unnamed namespace\n\n"
+        "} // unnamed namespace\n\n";
+    return
+        functions_wrap_code+
         // Loader function
         "extern \"C\" {\n\n"
         "/// [-1,+1,e]\n"
@@ -80,6 +86,7 @@ string WrapperSpecification::FinishFile () const {
 }
 
 string WrapperSpecification::WrapFunction(const md::Ptr<const md::Function>& obj) {
+    wrapped_functions_.push_back(obj->name());
     return
       "int OPWIG_wrap_"+obj->name()+" (lua_State* L) {\n"
       "    return 0;\n"
