@@ -61,8 +61,7 @@ bool RunTalker (const string& which) {
   if (!args.front()) return false;
   VirtualObj result = talker["respond"](args);
   if (!result) return false;
-  cout << result.value<const char*>();
-  return true;
+  return result.value<bool>();
 }
 
 } // unnamed namespace

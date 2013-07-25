@@ -74,6 +74,7 @@ VirtualData::Ptr LuaWrapper::OperateBuffer(const DataID operand_id,
         LuaMsg("was lua data #%d.\n", operand_id);
         DeleteDataID(result_id);
         return VirtualData::Ptr();
+        // TODO throw exception!
     }
     return data_gear_->HasValue(result_id)
         ? VirtualData::Ptr(new LuaData(this, result_id))
