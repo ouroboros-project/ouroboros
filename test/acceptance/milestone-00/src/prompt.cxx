@@ -8,7 +8,7 @@ namespace prompt {
 using std::cout;
 using std::endl;
 
-void print (const char* str) {
+void print (char* str) {
   cout << str << endl;
 }
 

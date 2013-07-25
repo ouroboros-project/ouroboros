@@ -17,6 +17,8 @@ class Enum;
 
 namespace gen {
 
+class ConverterProvider;
+
 /// Base class for specification of a scripting language for wrapper generation.
 class WrapperSpecification {
 
@@ -28,7 +30,7 @@ class WrapperSpecification {
     virtual ~WrapperSpecification() {}
     
     /// Name of this wrapper specification (name of the language it wraps).
-    virtual std::string WrapperName() const = 0;
+    virtual std::string wrapper_name() const = 0;
     
     /// Returns a new instance of a ConverterProvider for this Wrapper Specification.
     virtual md::Ptr<ConverterProvider> GetConverterProvider() const = 0;
@@ -42,7 +44,7 @@ class WrapperSpecification {
     /// This text block is written LAST in the generated files, and as such
     /// you should put anything to finish the wrap code here...
     /// Most scripting languages (Python, Lua, etc) wrapping module code 
-    /// has a 'init' function, defined last in the code, which inicializes
+    /// have a 'init' function, defined last in the code, which initializes
     /// the module. You should write that here as well.
     virtual std::string FinishFile() const = 0;
     

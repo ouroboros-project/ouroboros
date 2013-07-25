@@ -74,7 +74,7 @@ class Constant {
 #undef DECLARE_LUA_CONSTANT
 
 inline void LuaMsg (const char *format, ...) {
-    printf("[Lua] ");
+    fprintf(stderr, "[Lua] ");
     va_list list;
     va_start(list,format);
     vprintf(format, list);

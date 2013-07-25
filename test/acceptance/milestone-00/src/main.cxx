@@ -27,7 +27,8 @@ const string LOGMARK = "[--LOG--] ";
 
 void InitScripts () {
 #ifdef OUROBOROS_LUA_BINDINGS
-    SCRIPT_MANAGER()->Register(new opa::lua::LuaWrapper());
+    if (SCRIPT_MANAGER()->GetWrapper("Lua") == NULL)
+        SCRIPT_MANAGER()->Register(new opa::lua::LuaWrapper());
 #endif
 #ifdef OUROBOROS_PYTHON_BINDINGS
     SCRIPT_MANAGER()->Register(new opa::python::PythonWrapper());
@@ -53,9 +54,14 @@ bool RunTalker (const string& which) {
   for (size_t i = 0; i < skip_lines; ++i)
     cout << endl;
   VirtualObj arg(talker.wrapper());
-  arg.set_value(input.c_str());
-  cout << talker["respond"](VirtualObj::List(arg)).value<const char*>();
-  return true;
+  arg.set_value<const char*>(input.c_str());
+  if (!arg) return false;
+  VirtualObj::List args;
+  args.push_back(arg);
+  if (!args.front()) return false;
+  VirtualObj result = talker["respond"](args);
+  if (!result) return false;
+  return result.value<bool>();
 }
 
 } // unnamed namespace
@@ -69,7 +75,8 @@ int main(int argc, char **argv) {
     if(!RunTalker("lua")) {
         cout << LOGMARK << "Lua wrappings and embedding failed!" << endl;
         success = EXIT_FAILURE;
-    };
+    } else
+        cout << LOGMARK << "Lua wrappings and embedding was succesul!" << endl;
 #endif
 
 #ifdef OUROBOROS_PYTHON_BINDINGS

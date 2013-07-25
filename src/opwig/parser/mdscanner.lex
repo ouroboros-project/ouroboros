@@ -7,6 +7,10 @@
 %namespace              "opwig"
 
 ws                          [ \f\v\t\n]
+comment_line                [/][/](.)*[\r\n]
+comment_block_start         [/]\*
+comment_block_end           \*[/]
+cpp_directive               #(.)*[\r\n]
 digit                       [0-9]
 nonzero                     [1-9]
 hex                         [0-9A-Fa-f]
@@ -31,10 +35,9 @@ string_literal              (L?\"(([^\"\\\n])|(\\.))*\")
 pp_number                   (\.?{digit}({digit}|{non_digit}|[eE][-+]|\.)*)
 
 %x string
+%x comment
 
 %%
-
-{ws}                  /* do nothing */;
 
 {string_literal}      return MDParserBase::STRING_LITERAL;
 
@@ -133,6 +136,19 @@ pp_number                   (\.?{digit}({digit}|{non_digit}|[eE][-+]|\.)*)
   } 
   return MDParserBase::IDENTIFIER;
 }
+
+{comment_line}        /* do nothing */;
+
+{comment_block_start} { begin(StartCondition__::comment); }
+
+<comment> {
+  {comment_block_end} { begin(StartCondition__::INITIAL); }
+  .|\n                /* do nothing*/;
+}
+
+{cpp_directive}       /* do nothing */;
+
+{ws}+                 /* do nothing */;
 
 .                     return matched().front();
 

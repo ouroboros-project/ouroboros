@@ -7,7 +7,7 @@ namespace prompt {
 /// Prints prompt output.
 /** @param str The output string.
  */
-void print (const char* str);
+void print (char* str);
 
 } // namespace prompt
 

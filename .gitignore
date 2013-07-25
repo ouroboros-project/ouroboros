@@ -1,5 +1,6 @@
 *~
 .*.swp
+.swp
 !CMakeLists.txt
 CMakeCache.txt
 CMakeFiles/
@@ -26,6 +27,7 @@ src/config.h
 doc/doxy
 src/generated/*_wrap.cc
 src/generated/*.py
+*.pyc
 src/generated/*.rule
 CPackConfig.cmake
 CPackSourceConfig.cmake
