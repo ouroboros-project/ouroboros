@@ -4,44 +4,12 @@ namespace gen {
 /*******************************************************
  Dummy Wrapper definition for testing
 *******************************************************/
-class DummyProvider : public ConverterProvider {
-  public:
-    DummyProvider() {}
-    virtual ~DummyProvider() {}
-
-    virtual std::string GetConstructorCode() const {
-        return 
-            "Converter() {}";
-    }
-    virtual std::string GetDestructorCode() const {
-        return
-            "~Converter() {}";
-    }
-    virtual std::string GetToFunctionsCode() const {
-        return
-            "template <typename T>\n"
-            "ScriptType toScript(T value) {\n"
-            "    return SOMETHING;\n"
-            "}";
-    }
-    virtual std::string GetFromFunctionsCode() const {
-        return
-            "template <typename T>\n"
-            "T fromScript(ScriptType value) {\n"
-            "    return SOMETHING;\n"
-            "}";
-    }
-};
-//////////////
 class DummySpecification : public WrapperSpecification {
   public:
     DummySpecification() {}
     virtual ~DummySpecification() {}
     virtual std::string wrapper_name() const { return "Dummy"; }
     
-    virtual md::Ptr<ConverterProvider> GetConverterProvider() const {
-        return md::Ptr<ConverterProvider>(new DummyProvider() );
-    }
     virtual std::string FileHeader() const {
         return
             "// Source generated with OPWIG for scripting language DUMMY\n"
@@ -148,20 +116,6 @@ namespace {
 
 WrapperTestCase  SIMPLE_GLOBAL_FUNCTIONS = {
               "Dummy_TestModule_wrap.cxx",
-              "namespace {\n"
-              "class DummyConverter final { public:\n"
-              "Converter() {}\n"
-              "~Converter() {}\n"
-              "template <typename T>\n"
-              "T fromScript(ScriptType value) {\n"
-              "    return SOMETHING;\n"
-              "}\n"
-              "template <typename T>\n"
-              "ScriptType toScript(T value) {\n"
-              "    return SOMETHING;\n"
-              "}\n"
-              "};\n"
-              "} // unnamed namespace\n"
               "RETURN_TYPE OPWIG_wrap_DoStuff(ARG_1_TYPE arg1) {\n"
               "    DummyConverter converter ();\n"
               "    CppType0 fArg0 = converter.fromScript<CppType0>(arg1);\n"

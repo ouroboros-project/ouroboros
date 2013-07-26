@@ -13,7 +13,6 @@
 #include <opwig/gen/proxygenerator.h>
 #include <opwig/gen/wrappergenerator.h>
 #include <opwig/gen/wrapperspecification.h>
-#include <opwig/gen/converterprovider.h>
 
 #include <config.h>
 

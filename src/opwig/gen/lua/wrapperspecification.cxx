@@ -9,10 +9,6 @@ namespace lua {
 using std::string;
 using md::Ptr;
 
-Ptr<ConverterProvider> WrapperSpecification::GetConverterProvider () const {
-    return Ptr<ConverterProvider>();
-}
-
 string WrapperSpecification::FileHeader () const {
     return
         "\n"

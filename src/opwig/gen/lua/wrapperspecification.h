@@ -16,8 +16,6 @@ class WrapperSpecification final : public ::opwig::gen::WrapperSpecification {
 
     std::string wrapper_name () const;
 
-    md::Ptr<ConverterProvider> GetConverterProvider() const;
-
     std::string FileHeader() const;
 
     std::string FinishFile() const;

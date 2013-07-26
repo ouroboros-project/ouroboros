@@ -1,6 +1,5 @@
 #include <opwig/gen/wrappergenerator.h>
 #include <opwig/gen/wrapperspecification.h>
-#include <opwig/gen/converterprovider.h>
 #include <opwig/md/scope.h>
 #include <fstream>
 #include <iostream>
@@ -24,11 +23,6 @@ void WrapperGenerator::Generate (const std::string& module_name, const Ptr<const
     
     wrap_file << spec->FileHeader() << endl << endl;
     
-    Ptr<ConverterProvider> converter_provider = spec->GetConverterProvider();
-    if (converter_provider)
-      generateConverterClass(wrap_file, spec->wrapper_name(), converter_provider);
-    
-    // entry.second = Ptr<TIPO>
     for (auto entry : root->IterateFunctions()) {
         wrap_file << spec->WrapFunction(entry.second) << endl;
     }
@@ -49,19 +43,5 @@ void WrapperGenerator::Generate (const std::string& module_name, const Ptr<const
     wrap_file.close();
 }
 
-void WrapperGenerator::generateConverterClass (ofstream& wrap_file, const std::string& wrapper_name,
-                                               const Ptr<ConverterProvider>& provider) {
-    wrap_file <<  "/***************** CONVERTER **************************/" << endl;
-    wrap_file << "namespace {" << endl;
-    wrap_file << "class " << wrapper_name << "Converter final { public:" << endl;
-    wrap_file << provider->GetConstructorCode() << endl << endl;
-    wrap_file << provider->GetDestructorCode() << endl << endl;
-    wrap_file << provider->GetFromFunctionsCode() << endl << endl;
-    wrap_file << provider->GetToFunctionsCode() << endl;
-    wrap_file << "};" << endl;
-    wrap_file << "} // unnamed namespace" << endl;
-    wrap_file << "/******************************************************/" << endl << endl;
-}
-
-}
-}
+} //end namespace gen
+} //end namespace opwig
