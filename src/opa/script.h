@@ -8,6 +8,7 @@ void InitScripts();
 
 // Public classes
 class LangWrapper;
+class Converter;
 class VirtualData;
 class VirtualObj;
 

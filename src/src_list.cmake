@@ -1,6 +1,7 @@
 SET(OUROBOROS_SRC 
     ./src/opa/script.h 
     ./src/opa/baseproxy.h 
+    ./src/opa/converter.h
     ./src/opa/defs.h 
     ./src/opa/initscripts.cxx 
     ./src/opa/langwrapper.h 
