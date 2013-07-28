@@ -56,7 +56,7 @@ std::string WrapperGenerator::generateBootstrap(const md::Ptr<WrapperSpecificati
         // Bootstrap object
         "Bootstrap entry_point;\n\n"
         "Bootstrap::Bootstrap () {\n"
-        "    cout << \"Bootstrapping "+spec->wrapper_name()+" module \\\"\" << "+spec->module_name()+" << \"\\\"\" << endl;\n"
+        "    cout << \"Bootstrapping "+spec->wrapper_name()+" module "+spec->module_name()+"\" << endl;\n"
         "    "+spec->wrapper_name()+"Wrapper *wrapper = dynamic_cast<"+spec->wrapper_name()+"Wrapper*>(\n"
         "        SCRIPT_MANAGER()->GetWrapper(\""+spec->wrapper_name()+"\")\n"
         "    );\n"
@@ -68,7 +68,7 @@ std::string WrapperGenerator::generateBootstrap(const md::Ptr<WrapperSpecificati
                 "Module<"+spec->LoadFuncSignature()+">(\""+spec->module_name()+"\", "+spec->LoadFuncName()+")"
              ");\n"
         "}\n\n"
-        "} // unnamed namespace\n"
+        "} // unnamed namespace\n";
 }
 
 } //end namespace gen
