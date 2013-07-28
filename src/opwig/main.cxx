@@ -52,9 +52,11 @@ int main (int argc, char** argv) {
         }
 
         opwig::gen::ProxyGenerator("./", header_path).Generate(parser.global_namespace());
-        opwig::gen::WrapperGenerator("./")
-            .Generate(module_name, parser.global_namespace(),
-                      Ptr<WrapperSpecification>(new opwig::gen::lua::WrapperSpecification));
+        opwig::gen::WrapperGenerator("./").Generate(
+            module_name,
+            parser.global_namespace(),
+            Ptr<WrapperSpecification>(new opwig::gen::lua::WrapperSpecification(input))
+        );
 
     }
     return EXIT_SUCCESS;

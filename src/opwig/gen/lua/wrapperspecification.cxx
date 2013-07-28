@@ -15,6 +15,7 @@ string WrapperSpecification::FileHeader () const {
     return
         "\n"
         "// This is a generated file.\n\n"
+        "#include \""+intput_file_+"\"\n"
         "#include <languages/lua/luawrapper.h>\n"
         "#include <languages/lua/converter.h>\n"
         "#include <opa/scriptmanager.h>\n"
@@ -43,7 +44,7 @@ string WrapperSpecification::FinishFile () const {
         functions_wrap_code +=
             "    { \""+func_name+"\", OPWIG_wrap_"+func_name+" },\n";
     functions_wrap_code +=
-        "    { NULL, NULL }\n"
+        "    { nullptr, nullptr }\n"
         "};\n\n"
         "} // unnamed namespace\n\n";
     return
@@ -63,16 +64,22 @@ string WrapperSpecification::FinishFile () const {
 
 string WrapperSpecification::WrapFunction(const md::Ptr<const md::Function>& obj) {
     wrapped_functions_.push_back(obj->name());
-    stringstream func_code;
+    stringstream func_code, call_code;
     func_code << "int OPWIG_wrap_" << obj->name() << " (lua_State* L) {\n"
-              << "    opa::lua::Converter convert;\n";
+              << "    opa::lua::Converter convert(L);\n";
+    call_code << obj->name() << "(";
     for (size_t i = 0; i < obj->num_parameters(); ++i) {
-      string type = obj->parameter_type(i);
-      func_code
-        << "    " << type << " arg_" << i << " = convert.ScriptToType<" << type
-        << ">(opa::lua::hook(L, " << i << ");\n";
+        string type = obj->parameter_type(i);
+        func_code << "    " << type << " arg_" << i
+                            << " = convert.ScriptToType<" << type << ">(" << (i+1) << ");\n";
+        call_code << "arg_" << i;
+        if (i+1 < obj->num_parameters())
+            call_code << ", ";
     }
-    func_code << "    return 0;\n"
+    call_code << ")";
+    func_code << "    " << obj->return_type() << " result = " << call_code.str() << ";\n";
+    func_code << "    int stack = convert.TypeToScript<" << obj->return_type() << ">(result);\n";
+    func_code << "    return stack;\n"
               << "}\n\n";
 
     return func_code.str();
