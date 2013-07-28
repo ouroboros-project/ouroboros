@@ -19,6 +19,12 @@ TEST_F (MDVariableTest, SingleVariable) {
     TestVariable("var", "type", AccessSpecifier::PUBLIC);
 }
 
+TEST_F (MDVariableTest, SinglePointerVariable) {
+    ASSERT_EQ(RunParse("type *var = 0;"), 0);
+
+    TestVariable("var", "type*", AccessSpecifier::PUBLIC);
+}
+
 TEST_F (MDVariableTest, MultiVariable) {
     ASSERT_EQ(RunParse("type1 var1 = \"test\"; type2 var2 = 2;"), 0);
     

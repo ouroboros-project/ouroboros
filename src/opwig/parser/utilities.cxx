@@ -67,7 +67,8 @@ ScopeAction JoinDeclarations (const TypeAction& type_action,
                 func->set_declared();
             } 
             else {
-                Ptr<Variable> var = Variable::Create(nestedname.name(), type);
+                Ptr<Variable> var =
+                    Variable::Create(nestedname.name(), type+declarator.pointer_type());
                 if (!targetScope->AddGlobalVariable(var)) {
                     throw SemanticError(
                         "Failed to add Variable '"+var->name()+"' to Scope", __FILE__, __LINE__

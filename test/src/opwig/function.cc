@@ -33,6 +33,14 @@ TEST_F (MDFunctionTest, GlobalSingleArgFunction) {
     TestFunctionParameter(f, 0, "", "type");
 }
 
+TEST_F (MDFunctionTest, GlobalSinglePointerArgFunction) {
+    ASSERT_EQ(RunParse("rtype name(type* arg);"), 0);
+    TestScopeChildNums(global_, 0u, 1u, 0u, 0u);
+    
+    auto f = TestFunction("name(type*)", "name", "rtype", AccessSpecifier::PUBLIC, false);
+    TestFunctionParameter(f, 0, "arg", "type*");
+}
+
 TEST_F (MDFunctionTest, GlobalDoubleArgFunction) {
     ASSERT_EQ(RunParse("rtype name(type0, type1);"), 0);
     TestScopeChildNums(global_, 0u, 1u, 0u, 0u);
@@ -73,7 +81,7 @@ TEST_F (MDFunctionTest, ManyDifferentFunctions) {
         "rtype0 name0(ptype0, ptype1);"
         "rtype1 name1(ptype0 pname0, ptype1);"
         "rtype2 name2(ptype0 pname0, ptype1 pname1);"
-        "rtype3 name3(ptype0 **pname0[]);"
+        "rtype3 name3(ptype0 *pname0[]);"
         "namespace abc {"
         "  rtype2 name0(ptype0, ptype1 pnameX);"
         "}"
@@ -97,8 +105,8 @@ TEST_F (MDFunctionTest, ManyDifferentFunctions) {
         TestFunctionParameter(f, 1, "pname1", "ptype1");
     }
     /* forth */ {
-        auto f = TestFunction("name3(ptype0)", "name3", "rtype3", AccessSpecifier::PUBLIC, false);
-        TestFunctionParameter(f, 0, "pname0", "ptype0");
+        auto f = TestFunction("name3(ptype0*)", "name3", "rtype3", AccessSpecifier::PUBLIC, false);
+        TestFunctionParameter(f, 0, "pname0", "ptype0*");
     }
     /* fifth */ {
         auto abc = TestNamespace("abc", AccessSpecifier::PUBLIC, 0u, 1u, 0u, 0u);
