@@ -8,7 +8,7 @@
 using std::cout;
 using std::endl;
 
-bool print (const char* str) {
+bool message (const char* str) {
   cout << str << endl;
   return true;
 }

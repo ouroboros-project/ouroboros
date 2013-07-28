@@ -6,6 +6,8 @@ SET(OUROBOROS_PYTHON_SRC
     ./pythonmodules.cxx 
     ./pythonwrapper.cxx 
     ./pythonwrapper.h 
+    ./pythonconverter.cxx
+    ./pythonconverter.h
     ./swigpyrun.h 
 )
 

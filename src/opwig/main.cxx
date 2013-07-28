@@ -4,6 +4,7 @@
 #include <opwig/gen/wrappergenerator.h>
 #include <opwig/gen/wrapperspecification.h>
 #include <opwig/gen/lua/wrapperspecification.h>
+#include <opwig/gen/python/pythonspecification.h>
 #include <opwig/md/ptr.h>
 
 #include <cstdlib>
@@ -57,7 +58,11 @@ int main (int argc, char** argv) {
             parser.global_namespace(),
             Ptr<WrapperSpecification>(new opwig::gen::lua::WrapperSpecification(input))
         );
-
+        opwig::gen::WrapperGenerator("./").Generate(
+            module_name, 
+            parser.global_namespace(),
+            Ptr<WrapperSpecification>(new opwig::gen::python::PythonSpecification(input))
+        );
     }
     return EXIT_SUCCESS;
 }
