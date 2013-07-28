@@ -15,6 +15,7 @@ string WrapperSpecification::FileHeader () const {
     return
         "\n"
         "// This is a generated file.\n\n"
+        "#include \""+intput_file_+"\"\n"
         "#include <languages/lua/luawrapper.h>\n"
         "#include <languages/lua/converter.h>\n"
         "#include <opa/scriptmanager.h>\n"
@@ -43,7 +44,7 @@ string WrapperSpecification::FinishFile () const {
         functions_wrap_code +=
             "    { \""+func_name+"\", OPWIG_wrap_"+func_name+" },\n";
     functions_wrap_code +=
-        "    { NULL, NULL }\n"
+        "    { nullptr, nullptr }\n"
         "};\n\n"
         "} // unnamed namespace\n\n";
     return
