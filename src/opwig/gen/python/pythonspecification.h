@@ -12,6 +12,7 @@ namespace python {
 class PythonSpecification final : public ::opwig::gen::WrapperSpecification {
 
   public:
+    PythonSpecification(const std::string& input_file) : input_file_(input_file) {}
 
     std::string wrapper_name () const;
 
@@ -30,6 +31,7 @@ class PythonSpecification final : public ::opwig::gen::WrapperSpecification {
     
   private:
     std::list<std::string> wrapped_functions_;
+    std::string input_file_;
 
     std::string generateMethodTable() const;
 };

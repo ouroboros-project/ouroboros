@@ -4,6 +4,7 @@
 #include <Python.h>
 #include <opa/converter.h>
 #include <string>
+#include <typeinfo>
 
 namespace opa {
 namespace python {
@@ -47,7 +48,7 @@ public:
     template <typename T>
     T PyArgToType(PyObject* args, int index) {
         PyObject* arg = PyTuple_GetItem(args, static_cast<Py_ssize_t>(index));
-        std::string i
+        std::string i;
         if (arg == nullptr) throw ConversionError("Python", "Failed to get ARGS tuple element at index "+std::to_string(index));
         return ScriptToType<T>(arg);
     }

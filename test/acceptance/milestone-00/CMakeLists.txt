@@ -18,6 +18,9 @@ set (
   src/Python_prompt_wrap.cxx
 )
 
+find_package (PythonLibs 2.6)
+include_directories (${PYTHON_INCLUDE_DIRS})
+
 add_custom_command (
   OUTPUT ${MILESTONE_00_GENERATED_SRC}
   COMMAND opwig

@@ -32,13 +32,13 @@ class Converter final /* : public ::opa::Converter<const StackHook&> */ {
     //const StackHook& CharToScript (char value) override;
     //const StackHook& CStrToScript (const char* value) override;
 
-    CONVERTER_TEMPLATE_TO_SCRIPT(int) {
+    CONVERTER_IMPL_TYPE_TO_SCRIPT(int) {
         VirtualObj vobj(wrapper_);
         vobj.set_value<T>(value);
         return this->ExportVObj(vobj);
     }
 
-    CONVERTER_TEMPLATE_FROM_SCRIPT(int) {
+    CONVERTER_IMPL_SCRIPT_TO_TYPE(int) {
         return this->ImportVObj(value).value<T>();
     }
 
