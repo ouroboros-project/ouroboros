@@ -1,5 +1,5 @@
-#ifndef OPWIG_GEN_PYTHON_WRAPPERSPECIFICATION_H_
-#define OPWIG_GEN_PYTHON_WRAPPERSPECIFICATION_H_
+#ifndef OPWIG_GEN_PYTHON_PYTHONSPECIFICATION_H_
+#define OPWIG_GEN_PYTHON_PYTHONSPECIFICATION_H_
 
 #include <opwig/gen/wrapperspecification.h>
 #include <list>
@@ -9,7 +9,7 @@ namespace opwig {
 namespace gen {
 namespace python {
 
-class WrapperSpecification final : public ::opwig::gen::WrapperSpecification {
+class PythonSpecification final : public ::opwig::gen::WrapperSpecification {
 
   public:
 
@@ -25,19 +25,30 @@ class WrapperSpecification final : public ::opwig::gen::WrapperSpecification {
     std::string WrapNamespace(const md::Ptr<const md::Namespace>& obj);
     std::string WrapEnum(const md::Ptr<const md::Enum>& obj);
 
+    std::string LoadFuncSignature() const;
+    std::string LoadFuncName() const;
+    
   private:
-
     std::list<std::string> wrapped_functions_;
 
+    std::string generateMethodTable() const;
 };
 
-inline std::string WrapperSpecification::wrapper_name () const {
+inline std::string PythonSpecification::wrapper_name () const {
     return "Python";
+}
+
+inline std::string PythonSpecification::LoadFuncSignature () const {
+    return "void (*)(void)";
+}
+
+inline std::string PythonSpecification::LoadFuncName () const {
+    return "init_"+module_name_;
 }
 
 } // namespace python
 } // namespace gen
 } // namespace opwig
 
-#endif // OPWIG_GEN_PYTHON_WRAPPERSPECIFICATION_H_
+#endif // OPWIG_GEN_PYTHON_PYTHONSPECIFICATION_H_
 
