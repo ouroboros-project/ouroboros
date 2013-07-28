@@ -15,7 +15,7 @@ set (
 set (
   MILESTONE_00_GENERATED_SRC
   src/Lua_prompt_wrap.cxx
-  #src/Python_prompt_wrap.cxx
+  src/Python_prompt_wrap.cxx
 )
 
 add_custom_command (
