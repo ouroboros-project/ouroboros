@@ -3,7 +3,7 @@
 function_definition:
     declarator function_body {
         TypeAction voidAction = [] (md::Ptr<md::Scope> current_scope) {
-          return parser::DeclSpecifier();
+          return parser::DeclSpecifier::EMPTY();
         };
         $$ = parser::AddFunctionToScope(voidAction, $1, false, false); 
     }
@@ -14,7 +14,7 @@ function_definition:
 |
     declarator '=' DEFAULT ';' { 
         TypeAction voidAction = [] (md::Ptr<md::Scope> current_scope) {
-          return parser::DeclSpecifier();
+          return parser::DeclSpecifier::EMPTY();
         };
         $$ = parser::AddFunctionToScope(voidAction, $1, true, false); 
     }
@@ -25,7 +25,7 @@ function_definition:
 |
     declarator '=' DELETE ';' { 
         TypeAction voidAction = [] (md::Ptr<md::Scope> current_scope) {
-          return parser::DeclSpecifier();
+          return parser::DeclSpecifier::EMPTY();
         };
         $$ = parser::AddFunctionToScope(voidAction, $1, false, true); 
     }

@@ -87,7 +87,7 @@ TypeAction AddClassToScope( Ptr<Class> classObj, const NestedNameSpecifier& nest
         if (!targetScope)
             throw SemanticError("Invalid NestedNameSpecifier("+nestedname.ToString()+")", __FILE__, __LINE__);
         if (targetScope->AddNestedClass(classObj))
-            return DeclSpecifier(false, nestedname);
+            return DeclSpecifier::TYPE(nestedname);
         throw SemanticError("Non-anonymous class cannot have empty name!", __FILE__, __LINE__);
     };
     return action;
@@ -131,7 +131,7 @@ TypeAction AddEnumToScope( const std::string& base, const StringList& values, co
             throw SemanticError("Invalid NestedNameSpecifier("+nestedname.ToString()+")", __FILE__, __LINE__);
         Ptr<Enum> en = Enum::Create(nestedname.name(), base, values);
         if (targetScope->AddNestedEnum(en))
-            return DeclSpecifier(false, nestedname);
+            return DeclSpecifier::TYPE(nestedname);
         throw SemanticError("Error adding enum '"+en->name()+"' to scope '"+targetScope->name()+"'!", __FILE__, __LINE__);
     };
     return action;

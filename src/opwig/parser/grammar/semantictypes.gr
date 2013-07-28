@@ -138,3 +138,5 @@
 %type<NestedNameSpec>   base_type_specifier
 %type<NestedNameSpec>   simple_type_specifier
 %type<NestedNameSpec>   class_or_decltype
+%type<String>           cv_qualifier
+

@@ -3,12 +3,12 @@ class DeclSpecifierTest : public ::testing::Test {
 
   protected:
 
-    DeclSpecifier nonvirtualnontyped_, nonvirtualtyped_, virtualtyped_, virtualnontyped_;
+    DeclSpecifier nonvirtualnontyped_, nonvirtualtyped_, virtualnontyped_;
 
     DeclSpecifierTest () :
-        nonvirtualtyped_(false, NestedNameSpecifier("type")),
-        virtualtyped_(true, NestedNameSpecifier("type")),
-        virtualnontyped_(true) {}
+        nonvirtualnontyped_(DeclSpecifier::EMPTY()),
+        nonvirtualtyped_(DeclSpecifier::TYPE(NestedNameSpecifier("type"))),
+        virtualnontyped_(DeclSpecifier::VIRTUAL()) {}
 
 };
 
@@ -17,8 +17,6 @@ TEST_F (DeclSpecifierTest, Constructor) {
     EXPECT_FALSE(nonvirtualnontyped_.is_virtual());
     EXPECT_EQ("type", nonvirtualtyped_.type().ToString());
     EXPECT_FALSE(nonvirtualtyped_.is_virtual());
-    EXPECT_EQ("type", virtualtyped_.type().ToString());
-    EXPECT_TRUE(virtualtyped_.is_virtual());
     EXPECT_EQ("", virtualnontyped_.type().ToString());
     EXPECT_TRUE(virtualnontyped_.is_virtual());
 }
@@ -30,10 +28,10 @@ TEST_F (DeclSpecifierTest, JoinTypeAndVirtualSpecs) {
 }
 
 TEST_F (DeclSpecifierTest, FailJoinDoubleVirtual) {
-    EXPECT_THROW(DeclSpecifier::Join(virtualtyped_, virtualnontyped_), std::exception);
+    EXPECT_THROW(DeclSpecifier::Join(virtualnontyped_, virtualnontyped_), std::exception);
 }
 
 TEST_F (DeclSpecifierTest, FailJoinDoubleType) {
-    EXPECT_THROW(DeclSpecifier::Join(virtualtyped_, nonvirtualtyped_), std::exception);
+    EXPECT_THROW(DeclSpecifier::Join(nonvirtualtyped_, nonvirtualtyped_), std::exception);
 }
 

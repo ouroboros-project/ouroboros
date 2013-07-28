@@ -38,7 +38,7 @@ decl_specifier_seq:
 
 decl_specifier_seq_opt:
   /* empty */ {
-    $$ = [] (md::Ptr<md::Scope> current_namespace) { return parser::DeclSpecifier(); };
+    $$ = [] (md::Ptr<md::Scope> current_namespace) { return parser::DeclSpecifier::EMPTY(); };
   }
 |
   decl_specifier_seq { $$ = $1; }
@@ -46,14 +46,14 @@ decl_specifier_seq_opt:
 
 decl_specifier:
   FRIEND {
-    $$ = [] (md::Ptr<md::Scope> current_namespace) { return parser::DeclSpecifier(); };
+    $$ = [] (md::Ptr<md::Scope> current_namespace) { return parser::DeclSpecifier::FRIEND(); };
   }
 |
   TYPEDEF {
-    $$ = [] (md::Ptr<md::Scope> current_namespace) { return parser::DeclSpecifier(); };
+    $$ = [] (md::Ptr<md::Scope> current_namespace) { return parser::DeclSpecifier::TYPEDEF(); };
   }
 |
   VIRTUAL {
-    $$ = [] (md::Ptr<md::Scope> current_namespace) { return parser::DeclSpecifier(true); };
+    $$ = [] (md::Ptr<md::Scope> current_namespace) { return parser::DeclSpecifier::VIRTUAL(); };
   }
 ;

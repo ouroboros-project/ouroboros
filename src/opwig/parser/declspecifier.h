@@ -16,8 +16,12 @@ class DeclSpecifier final {
 
   public:
 
-    explicit DeclSpecifier (bool the_virtual_flag = false,
-                            const md::NestedNameSpecifier& the_type = md::NestedNameSpecifier());
+    static DeclSpecifier EMPTY ();
+    static DeclSpecifier TYPE (const md::NestedNameSpecifier& the_type);
+    static DeclSpecifier VIRTUAL ();
+    static DeclSpecifier TYPEDEF ();
+    static DeclSpecifier FRIEND ();
+    static DeclSpecifier CONST ();
 
     /// Tells if the declaration is specified as virtual.
     bool is_virtual () const;
@@ -30,14 +34,43 @@ class DeclSpecifier final {
 
   private:
 
-    bool                    is_virtual_;
+    bool                    is_virtual_,
+                            is_const_,
+                            is_volatile_;
     md::NestedNameSpecifier type_;
+
+    explicit DeclSpecifier (bool the_virtual_flag = false,
+                            const md::NestedNameSpecifier& the_type = md::NestedNameSpecifier());
 
 };
 
 inline DeclSpecifier::DeclSpecifier (bool the_virtual_flag,
                                      const md::NestedNameSpecifier& the_type)
     : is_virtual_(the_virtual_flag), type_(the_type) {}
+
+inline DeclSpecifier DeclSpecifier::EMPTY () {
+    return DeclSpecifier();
+}
+
+inline DeclSpecifier DeclSpecifier::TYPE (const md::NestedNameSpecifier& the_type) {
+    return DeclSpecifier(false, the_type);
+}
+
+inline DeclSpecifier DeclSpecifier::VIRTUAL () {
+    return DeclSpecifier(true);
+}
+
+inline DeclSpecifier DeclSpecifier::TYPEDEF () {
+    return EMPTY();
+}
+
+inline DeclSpecifier DeclSpecifier::FRIEND () {
+    return EMPTY();
+}
+
+inline DeclSpecifier DeclSpecifier::CONST () {
+    return EMPTY();
+}
 
 inline md::NestedNameSpecifier DeclSpecifier::type () const {
     return type_;
