@@ -26,6 +26,9 @@ class DeclSpecifier final {
     /// Tells if the declaration is specified as virtual.
     bool is_virtual () const;
 
+    /// Tells if the declaration is specified as a const type.
+    bool is_const () const;
+
     /// Gets the NestedNameSpecifier type associated with this declation specifier.
     md::NestedNameSpecifier type () const;
 
@@ -39,25 +42,25 @@ class DeclSpecifier final {
                             is_volatile_;
     md::NestedNameSpecifier type_;
 
-    explicit DeclSpecifier (bool the_virtual_flag = false,
-                            const md::NestedNameSpecifier& the_type = md::NestedNameSpecifier());
+    explicit DeclSpecifier (const md::NestedNameSpecifier& the_type = md::NestedNameSpecifier(),
+                            bool the_virtual_flag = false, bool the_const_flag = false);
 
 };
 
-inline DeclSpecifier::DeclSpecifier (bool the_virtual_flag,
-                                     const md::NestedNameSpecifier& the_type)
-    : is_virtual_(the_virtual_flag), type_(the_type) {}
+inline DeclSpecifier::DeclSpecifier (const md::NestedNameSpecifier& the_type, bool the_virtual_flag,
+                                     bool the_const_flag)
+    : is_virtual_(the_virtual_flag), is_const_(the_const_flag), type_(the_type) {}
 
 inline DeclSpecifier DeclSpecifier::EMPTY () {
     return DeclSpecifier();
 }
 
 inline DeclSpecifier DeclSpecifier::TYPE (const md::NestedNameSpecifier& the_type) {
-    return DeclSpecifier(false, the_type);
+    return DeclSpecifier(the_type);
 }
 
 inline DeclSpecifier DeclSpecifier::VIRTUAL () {
-    return DeclSpecifier(true);
+    return DeclSpecifier(md::NestedNameSpecifier(), true);
 }
 
 inline DeclSpecifier DeclSpecifier::TYPEDEF () {
@@ -69,7 +72,7 @@ inline DeclSpecifier DeclSpecifier::FRIEND () {
 }
 
 inline DeclSpecifier DeclSpecifier::CONST () {
-    return EMPTY();
+    return DeclSpecifier(md::NestedNameSpecifier(), false, true);
 }
 
 inline md::NestedNameSpecifier DeclSpecifier::type () const {
@@ -80,10 +83,18 @@ inline bool DeclSpecifier::is_virtual () const {
     return is_virtual_;
 }
 
+inline bool DeclSpecifier::is_const () const {
+    return is_const_;
+}
+
 inline DeclSpecifier DeclSpecifier::Join (const DeclSpecifier& lhs, const DeclSpecifier& rhs) {
     if (lhs.is_virtual() && rhs.is_virtual())
         throw md::SemanticError("Double virtual specification.", __FILE__, __LINE__);
     bool virtual_flag = lhs.is_virtual() || rhs.is_virtual();
+
+    if (lhs.is_const() && rhs.is_const())
+        throw md::SemanticError("Double const type specification.", __FILE__, __LINE__);
+    bool const_flag = lhs.is_const() || rhs.is_const();
 
     bool lhs_typed = !lhs.type().ToString().empty(),
          rhs_typed = !rhs.type().ToString().empty();
@@ -95,7 +106,7 @@ inline DeclSpecifier DeclSpecifier::Join (const DeclSpecifier& lhs, const DeclSp
     else
       the_type = rhs.type();
   
-    return DeclSpecifier(virtual_flag, the_type);
+    return DeclSpecifier(the_type, virtual_flag, const_flag);
 }
 
 } // namespace parser
