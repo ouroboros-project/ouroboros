@@ -70,7 +70,7 @@ string WrapperSpecification::WrapFunction(const md::Ptr<const md::Function>& obj
       string type = obj->parameter_type(i);
       func_code
         << "    " << type << " arg_" << i << " = convert.ScriptToType<" << type
-        << ">(opa::lua::hook(L, " << i << ");\n";
+        << ">(opa::lua::Hook(L, " << i+1 << "));\n";
     }
     func_code << "    return 0;\n"
               << "}\n\n";
