@@ -8,13 +8,13 @@ void InitScripts();
 
 // Public classes
 class LangWrapper;
-class Converter;
 class VirtualData;
 class VirtualObj;
 
-template <class loader_t> class InheritableLangWrapper;
+template <typename T> class Converter;
+template <typename loader_t> class InheritableLangWrapper;
 
-template <class loader_t>
+template <typename loader_t>
 class Module;
 
 // Managers

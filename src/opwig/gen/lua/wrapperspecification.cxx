@@ -1,12 +1,14 @@
 
 #include <opwig/gen/lua/wrapperspecification.h>
 #include <opwig/md/function.h>
+#include <sstream>
 
 namespace opwig {
 namespace gen {
 namespace lua {
 
 using std::string;
+using std::stringstream;
 using md::Ptr;
 
 string WrapperSpecification::FileHeader () const {
@@ -14,6 +16,7 @@ string WrapperSpecification::FileHeader () const {
         "\n"
         "// This is a generated file.\n\n"
         "#include <languages/lua/luawrapper.h>\n"
+        "#include <languages/lua/converter.h>\n"
         "#include <opa/scriptmanager.h>\n"
         "#include <opa/module.h>\n"
         "#include <lua5.1/lauxlib.h>\n"
@@ -60,10 +63,19 @@ string WrapperSpecification::FinishFile () const {
 
 string WrapperSpecification::WrapFunction(const md::Ptr<const md::Function>& obj) {
     wrapped_functions_.push_back(obj->name());
-    return
-      "int OPWIG_wrap_"+obj->name()+" (lua_State* L) {\n"
-      "    return 0;\n"
-      "}\n\n";
+    stringstream func_code;
+    func_code << "int OPWIG_wrap_" << obj->name() << " (lua_State* L) {\n"
+              << "    opa::lua::Converter convert;\n";
+    for (size_t i = 0; i < obj->num_parameters(); ++i) {
+      string type = obj->parameter_type(i);
+      func_code
+        << "    " << type << " arg_" << i << " = convert.ScriptToType<" << type
+        << ">(opa::lua::hook(L, " << i << ");\n";
+    }
+    func_code << "    return 0;\n"
+              << "}\n\n";
+
+    return func_code.str();
 }
 
 string WrapperSpecification::WrapVariable(const md::Ptr<const md::Variable>& obj) {

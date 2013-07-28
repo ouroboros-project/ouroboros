@@ -1,51 +1,64 @@
 //=========================// TYPE SPECIFICATION //
 
 type_specifier:
-    trailing_type_specifier { $$ = $1; }
+  trailing_type_specifier { $$ = $1; }
 |
-    class_specifier { $$ = $1; }
+  class_specifier { $$ = $1; }
 |
-    enum_specifier { $$ = $1; }
+  enum_specifier { $$ = $1; }
 ;
 
 trailing_type_specifier:
-    simple_type_specifier {
-        md::NestedNameSpecifier nestedname = $1;
-        $$ = [nestedname] (md::Ptr<md::Scope> current_namespace) {
-            return parser::DeclSpecifier(false, nestedname);
-        }; 
-    }
+  simple_type_specifier {
+    md::NestedNameSpecifier nestedname = $1;
+    $$ = [nestedname] (md::Ptr<md::Scope> current_namespace) {
+        return parser::DeclSpecifier::TYPE(nestedname);
+    }; 
+  }
+// Moved to decl_specifier rule
+//|
+//  cv_qualifier {
+//    $$ = [] (md::Ptr<md::Scope> current_namespace) {
+//      return parser::DeclSpecifier::CONST();
+//    };
+//  }
+;
+
+cv_qualifier:
+  CONST { $$ = d_scanner.matched(); }
+|
+  VOLATILE { $$ = d_scanner.matched(); }
 ;
 
 simple_type_specifier:
-    PRIMITIVE { $$ = md::NestedNameSpecifier(d_scanner.matched()); }
+  PRIMITIVE { $$ = md::NestedNameSpecifier(d_scanner.matched()); }
 |
-    VOID { $$ = md::NestedNameSpecifier(d_scanner.matched()); }
+  VOID { $$ = md::NestedNameSpecifier(d_scanner.matched()); }
 |
-    type_name { $$ = md::NestedNameSpecifier($1); }
+  type_name { $$ = md::NestedNameSpecifier($1); }
 |
-    SCOPE_OPERATOR type_name { $$ = md::NestedNameSpecifier($2, true); }
+  SCOPE_OPERATOR type_name { $$ = md::NestedNameSpecifier($2, true); }
 |
-    nested_name_specifier type_name { 
-        $$ = $1;
-        ($$).set_name($2);
-    }
+  nested_name_specifier type_name { 
+    $$ = $1;
+    ($$).set_name($2);
+  }
 |
-    SCOPE_OPERATOR nested_name_specifier type_name { 
-        $$ = $2;
-        ($$).set_name($3);
-        ($$).set_global(true);
-    }
+  SCOPE_OPERATOR nested_name_specifier type_name { 
+    $$ = $2;
+    ($$).set_name($3);
+    ($$).set_global(true);
+  }
 ;
 
 type_name:
-    TYPE_NAME { $$ = d_scanner.matched(); }
+  TYPE_NAME { $$ = d_scanner.matched(); }
 ;
 
 access_specifier:
-    PRIVATE { $$ = md::AccessSpecifier::PRIVATE; }
+  PRIVATE { $$ = md::AccessSpecifier::PRIVATE; }
 | 
-    PROTECTED { $$ = md::AccessSpecifier::PROTECTED; }
+  PROTECTED { $$ = md::AccessSpecifier::PROTECTED; }
 |
-    PUBLIC { $$ = md::AccessSpecifier::PUBLIC; }
+  PUBLIC { $$ = md::AccessSpecifier::PUBLIC; }
 ;

@@ -88,15 +88,21 @@ class MDBaseTest : public ::testing::Test {
     }
     
     /////////// functions
-    Ptr<const Function> TestFunction(const string& id, const string& name, const string& return_type, AccessSpecifier access, bool is_pure, bool is_virtual = false) {
+    Ptr<const Function> TestFunction (const string& id, const string& name,
+                                      const string& return_type, AccessSpecifier access,
+                                      bool is_pure, bool is_virtual = false) {
         return TestFunction(global_, id, name, return_type, access, is_pure, is_virtual);
     }
-    Ptr<const Function> TestFunction(Ptr<const Scope> scope, const string& id, const string& name, const string& return_type, AccessSpecifier access, bool is_pure, bool is_virtual = false) {
+    Ptr<const Function> TestFunction (Ptr<const Scope> scope, const string& id, const string& name,
+                                      const string& return_type, AccessSpecifier access,
+                                      bool is_pure, bool is_virtual = false) {
         Ptr<const Function> func = scope->NestedFunction(id);
         internalCheckFunction(func, name, return_type, access, is_pure, is_virtual);
         return func;
     }
-    void internalCheckFunction(const Ptr<const Function>& func, const string& name, const string& return_type, AccessSpecifier access, bool is_pure, bool is_virtual = false) {
+    void internalCheckFunction (const Ptr<const Function>& func, const string& name,
+                                const string& return_type, AccessSpecifier access, bool is_pure,
+                                bool is_virtual = false) {
         ASSERT_TRUE(static_cast<bool>(func));
         EXPECT_EQ(name, func->name());
         EXPECT_EQ(return_type, func->return_type());

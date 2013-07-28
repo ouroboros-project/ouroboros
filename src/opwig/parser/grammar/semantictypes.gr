@@ -123,6 +123,7 @@
 %type<Declarator>     member_declarator
 %type<Declarator>     ptr_declarator
 %type<Declarator>     noptr_declarator
+%type<String>         ptr_operator
 
 %type<ParameterSeq>   parameters_and_qualifiers
 %type<ParameterSeq>   parameter_declaration_clause
@@ -137,3 +138,5 @@
 %type<NestedNameSpec>   base_type_specifier
 %type<NestedNameSpec>   simple_type_specifier
 %type<NestedNameSpec>   class_or_decltype
+%type<String>           cv_qualifier
+
