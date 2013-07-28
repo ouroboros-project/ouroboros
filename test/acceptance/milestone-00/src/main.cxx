@@ -31,7 +31,8 @@ void InitScripts () {
         SCRIPT_MANAGER()->Register(new opa::lua::LuaWrapper());
 #endif
 #ifdef OUROBOROS_PYTHON_BINDINGS
-    SCRIPT_MANAGER()->Register(new opa::python::PythonWrapper());
+    if (SCRIPT_MANAGER()->GetWrapper("Python") == NULL)
+        SCRIPT_MANAGER()->Register(new opa::python::PythonWrapper());
 #endif
     SCRIPT_MANAGER()->Initialize("./scripts/");
 }
@@ -76,7 +77,7 @@ int main(int argc, char **argv) {
         cout << LOGMARK << "Lua wrappings and embedding failed!" << endl;
         success = EXIT_FAILURE;
     } else
-        cout << LOGMARK << "Lua wrappings and embedding was succesul!" << endl;
+        cout << LOGMARK << "Lua wrappings and embedding was successful!" << endl;
 #endif
 
 #ifdef OUROBOROS_PYTHON_BINDINGS
@@ -84,7 +85,8 @@ int main(int argc, char **argv) {
     if(!RunTalker("python")) {
         cout << LOGMARK << "Python wrappings and embedding failed!" << endl;
         success = EXIT_FAILURE;
-    }
+    } else
+        cout << LOGMARK << "Python wrappings and embedding was successful!" << endl;
 #endif
 
     SCRIPT_MANAGER()->Finalize();

@@ -45,7 +45,7 @@ inline std::string PythonSpecification::LoadFuncSignature () const {
 }
 
 inline std::string PythonSpecification::LoadFuncName () const {
-    return "init_"+module_name_;
+    return "init"+module_name_;
 }
 
 } // namespace python
