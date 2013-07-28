@@ -32,11 +32,11 @@ PRIMITIVE_CONVERTER_TEMPLATES(DummyConverter, ScriptObj)
 //used internally
 #define CONVERTER_TEMPLATE_SPECIALIZATION(Class, ScriptType, CppType, CppTypeName) \
     template<> \
-    ScriptType Class::TypeToScript<CppType>(CppType value) { \
+    inline ScriptType Class::TypeToScript<CppType>(CppType value) { \
         return CppTypeName##ToScript (value); \
     } \
     template<> \
-    CppType Class::ScriptToType<CppType>(ScriptType value) { \
+    inline CppType Class::ScriptToType<CppType>(ScriptType value) { \
         return ScriptTo##CppTypeName (value); \
     } 
 
@@ -48,7 +48,7 @@ PRIMITIVE_CONVERTER_TEMPLATES(DummyConverter, ScriptObj)
     CONVERTER_TEMPLATE_SPECIALIZATION(Class, ScriptType, float, Float) \
     CONVERTER_TEMPLATE_SPECIALIZATION(Class, ScriptType, double, Double) \
     CONVERTER_TEMPLATE_SPECIALIZATION(Class, ScriptType, char, Char) \
-    CONVERTER_TEMPLATE_SPECIALIZATION(Class, ScriptType, char*, CStr) \
+    CONVERTER_TEMPLATE_SPECIALIZATION(Class, ScriptType, const char*, CStr) \
     
 // Defines the signature of the TypeToScript template method
 #define CONVERTER_TEMPLATE_TO_SCRIPT(ScriptType) \
@@ -70,21 +70,21 @@ class Converter {
   public:
     virtual ~Converter() {}
     
-    bool        ScriptToBool    (T t) = 0;
-    short       ScriptToShort   (T t) = 0;
-    int         ScriptToInt     (T t) = 0;
-    float       ScriptToFloat   (T t) = 0;
-    double      ScriptToDouble  (T t) = 0;
-    char        ScriptToChar    (T t) = 0;
-    const char* ScriptToCStr    (T t) = 0;
+    virtual bool        ScriptToBool    (T t) = 0;
+    virtual short       ScriptToShort   (T t) = 0;
+    virtual int         ScriptToInt     (T t) = 0;
+    virtual float       ScriptToFloat   (T t) = 0;
+    virtual double      ScriptToDouble  (T t) = 0;
+    virtual char        ScriptToChar    (T t) = 0;
+    virtual const char* ScriptToCStr    (T t) = 0;
     
-    T BoolToScript      (bool value) = 0;
-    T ShortToScript     (short value) = 0;
-    T IntToScript       (int value) = 0;
-    T FloatToScript     (float value) = 0;
-    T DoubleToScript    (double value) = 0;
-    T CharToScript      (char value) = 0;
-    T CStrToScript      (const char* value) = 0;
+    virtual T BoolToScript      (bool value) = 0;
+    virtual T ShortToScript     (short value) = 0;
+    virtual T IntToScript       (int value) = 0;
+    virtual T FloatToScript     (float value) = 0;
+    virtual T DoubleToScript    (double value) = 0;
+    virtual T CharToScript      (char value) = 0;
+    virtual T CStrToScript      (const char* value) = 0;
  
   protected:
     Converter() {}

@@ -14,6 +14,7 @@ string WrapperSpecification::FileHeader () const {
         "\n"
         "// This is a generated file.\n\n"
         "#include <languages/lua/luawrapper.h>\n"
+        "#include <languages/lua/converter.h>\n"
         "#include <opa/scriptmanager.h>\n"
         "#include <opa/module.h>\n"
         "#include <lua5.1/lauxlib.h>\n"
@@ -60,10 +61,15 @@ string WrapperSpecification::FinishFile () const {
 
 string WrapperSpecification::WrapFunction(const md::Ptr<const md::Function>& obj) {
     wrapped_functions_.push_back(obj->name());
-    return
-      "int OPWIG_wrap_"+obj->name()+" (lua_State* L) {\n"
+    string func_code;
+    func_code +=
+      "int OPWIG_wrap_"+obj->name()+" (lua_State* L) {\n";
+
+    func_code +=
       "    return 0;\n"
       "}\n\n";
+
+    return func_code;
 }
 
 string WrapperSpecification::WrapVariable(const md::Ptr<const md::Variable>& obj) {
