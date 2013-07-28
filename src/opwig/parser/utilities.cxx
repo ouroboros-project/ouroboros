@@ -29,7 +29,7 @@ ScopeAction JoinDeclarations (const TypeAction& type_action,
     ScopeAction action = [type_action, init_list] (Ptr<Scope> current_scope) -> bool {
         for (auto declarator: *init_list) {
             DeclSpecifier spec = type_action(current_scope);
-            std::string type = spec.type().ToString();
+            std::string type = spec.type();
             NestedNameSpecifier nestedname = declarator.nested_name();
             Ptr<Scope> targetScope = nestedname.FindNearestNestingScope(current_scope);
             if (declarator.has_parameters()) {
@@ -96,7 +96,7 @@ TypeAction AddClassToScope( Ptr<Class> classObj, const NestedNameSpecifier& nest
 ScopeAction AddFunctionToScope( const TypeAction& type_action, const parser::Declarator& declarator, bool is_default, bool is_delete) {
     ScopeAction action = [type_action, declarator, is_default, is_delete] (Ptr<Scope> current_scope) -> bool {
         DeclSpecifier spec = type_action(current_scope);
-        std::string type = spec.type().ToString();
+        std::string type = spec.type();
         NestedNameSpecifier nestedname = declarator.nested_name();
         Ptr<Scope> targetScope = nestedname.FindNearestNestingScope(current_scope);
         if (!declarator.has_parameters()) {

@@ -80,12 +80,12 @@ parameter_declaration_list:
 
 parameter_declaration:
   decl_specifier_seq /* abstract_declarator */ {
-    $$ = md::Parameter(($1)(md::Ptr<md::Scope>()).type().ToString(), "");
+    $$ = md::Parameter(($1)(md::Ptr<md::Scope>()).type(), "");
   }
 |
   decl_specifier_seq declarator {
     $$ = md::Parameter(
-      ($1)(md::Ptr<md::Scope>()).type().ToString()+($2).pointer_type(),
+      ($1)(md::Ptr<md::Scope>()).type()+($2).pointer_type(),
       ($2).nested_name().name()
     );
   }

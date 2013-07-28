@@ -13,7 +13,7 @@ class DeclSpecifierTest : public ::testing::Test {
 
     void Check (const DeclSpecifier& which, const std::string& type, bool is_virtual,
                 bool is_const) {
-      EXPECT_EQ(type, which.type().ToString());
+      EXPECT_EQ(type, which.type_specifier().ToString());
       EXPECT_EQ(is_virtual, which.is_virtual());
       EXPECT_EQ(is_const, which.is_const());
     }
@@ -25,6 +25,12 @@ TEST_F (DeclSpecifierTest, Constructor) {
     Check(typed_, "type", false, false);
     Check(virtual_, "", true, false);
     Check(const_, "", false, true);
+}
+
+TEST_F (DeclSpecifierTest, FullType) {
+    EXPECT_EQ("type", typed_.type());
+    EXPECT_EQ("const type", (DeclSpecifier::Join(typed_, const_).type()));
+    EXPECT_EQ("", const_.type());
 }
 
 TEST_F (DeclSpecifierTest, JoinTypeAndVirtualSpecs) {

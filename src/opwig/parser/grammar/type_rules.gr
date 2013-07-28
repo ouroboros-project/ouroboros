@@ -15,12 +15,13 @@ trailing_type_specifier:
         return parser::DeclSpecifier::TYPE(nestedname);
     }; 
   }
-|
-  cv_qualifier {
-    $$ = [] (md::Ptr<md::Scope> current_namespace) {
-      return parser::DeclSpecifier::CONST();
-    };
-  }
+// Moved to decl_specifier rule
+//|
+//  cv_qualifier {
+//    $$ = [] (md::Ptr<md::Scope> current_namespace) {
+//      return parser::DeclSpecifier::CONST();
+//    };
+//  }
 ;
 
 cv_qualifier:

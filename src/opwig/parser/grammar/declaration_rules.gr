@@ -56,4 +56,11 @@ decl_specifier:
   VIRTUAL {
     $$ = [] (md::Ptr<md::Scope> current_namespace) { return parser::DeclSpecifier::VIRTUAL(); };
   }
+|
+  // TODO Is it OK for this to be here?
+  cv_qualifier {
+    $$ = [] (md::Ptr<md::Scope> current_namespace) {
+      return parser::DeclSpecifier::CONST();
+    };
+  }
 ;

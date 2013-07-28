@@ -29,8 +29,11 @@ class DeclSpecifier final {
     /// Tells if the declaration is specified as a const type.
     bool is_const () const;
 
-    /// Gets the NestedNameSpecifier type associated with this declation specifier.
-    md::NestedNameSpecifier type () const;
+    /// Gets the NestedNameSpecifier type associated with this declaration specifier.
+    md::NestedNameSpecifier type_specifier () const;
+
+    /// Gets the full type associated with this declaration specifier.
+    std::string type () const;
 
     /// Joins two declaration specifiers according to C++ semantics.
     static DeclSpecifier Join (const DeclSpecifier& lhs, const DeclSpecifier& rhs);
@@ -40,16 +43,16 @@ class DeclSpecifier final {
     bool                    is_virtual_,
                             is_const_,
                             is_volatile_;
-    md::NestedNameSpecifier type_;
+    md::NestedNameSpecifier type_specifier_;
 
-    explicit DeclSpecifier (const md::NestedNameSpecifier& the_type = md::NestedNameSpecifier(),
+    explicit DeclSpecifier (const md::NestedNameSpecifier& the_speficier = md::NestedNameSpecifier(),
                             bool the_virtual_flag = false, bool the_const_flag = false);
 
 };
 
-inline DeclSpecifier::DeclSpecifier (const md::NestedNameSpecifier& the_type, bool the_virtual_flag,
+inline DeclSpecifier::DeclSpecifier (const md::NestedNameSpecifier& the_specifier, bool the_virtual_flag,
                                      bool the_const_flag)
-    : is_virtual_(the_virtual_flag), is_const_(the_const_flag), type_(the_type) {}
+    : is_virtual_(the_virtual_flag), is_const_(the_const_flag), type_specifier_(the_specifier) {}
 
 inline DeclSpecifier DeclSpecifier::EMPTY () {
     return DeclSpecifier();
@@ -75,8 +78,14 @@ inline DeclSpecifier DeclSpecifier::CONST () {
     return DeclSpecifier(md::NestedNameSpecifier(), false, true);
 }
 
-inline md::NestedNameSpecifier DeclSpecifier::type () const {
-    return type_;
+inline md::NestedNameSpecifier DeclSpecifier::type_specifier () const {
+    return type_specifier_;
+}
+
+inline std::string DeclSpecifier::type () const {
+    if (type_specifier_.ToString().empty())
+      return "";
+    return (is_const_ ? "const " : "") + type_specifier_.ToString();
 }
 
 inline bool DeclSpecifier::is_virtual () const {
@@ -96,8 +105,8 @@ inline DeclSpecifier DeclSpecifier::Join (const DeclSpecifier& lhs, const DeclSp
         throw md::SemanticError("Double const type specification.", __FILE__, __LINE__);
     bool const_flag = lhs.is_const() || rhs.is_const();
 
-    bool lhs_typed = !lhs.type().ToString().empty(),
-         rhs_typed = !rhs.type().ToString().empty();
+    bool lhs_typed = !lhs.type_specifier().ToString().empty(),
+         rhs_typed = !rhs.type_specifier().ToString().empty();
     if (lhs_typed && rhs_typed)
         throw md::SemanticError("Double type specification.", __FILE__, __LINE__);
     md::NestedNameSpecifier the_type;
