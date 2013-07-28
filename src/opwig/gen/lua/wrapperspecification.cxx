@@ -66,21 +66,20 @@ string WrapperSpecification::WrapFunction(const md::Ptr<const md::Function>& obj
     wrapped_functions_.push_back(obj->name());
     stringstream func_code, call_code;
     func_code << "int OPWIG_wrap_" << obj->name() << " (lua_State* L) {\n"
-              << "    opa::lua::Converter convert;\n";
+              << "    opa::lua::Converter convert(L);\n";
     call_code << obj->name() << "(";
     for (size_t i = 0; i < obj->num_parameters(); ++i) {
         string type = obj->parameter_type(i);
-        func_code
-          << "    " << type << " arg_" << i << " = convert.ScriptToType<" << type
-          << ">(opa::lua::Hook(L, " << i+1 << "));\n";
+        func_code << "    " << type << " arg_" << i
+                            << " = convert.ScriptToType<" << type << ">(" << (i+1) << ");\n";
         call_code << "arg_" << i;
         if (i+1 < obj->num_parameters())
             call_code << ", ";
     }
     call_code << ")";
     func_code << "    " << obj->return_type() << " result = " << call_code.str() << ";\n";
-
-    func_code << "    return 0;\n"
+    func_code << "    int stack = convert.TypeToScript<" << obj->return_type() << ">(result);\n";
+    func_code << "    return stack;\n"
               << "}\n\n";
 
     return func_code.str();

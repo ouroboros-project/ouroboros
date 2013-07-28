@@ -10,21 +10,11 @@
 namespace opa {
 namespace lua {
 
-struct StackHook {
-  lua_State *L;
-  int       index;
-};
-
-inline StackHook Hook (lua_State *L, int index) {
-  StackHook hook = { L, index };
-  return hook;
-}
-
 class Converter final /* : public ::opa::Converter<const StackHook&> */ {
 
   public:
 
-    Converter ();
+    Converter (lua_State *L);
 
     //bool ScriptToBool (const StackHook& t) override;
     //short ScriptToShort (const StackHook& t) override;
@@ -42,16 +32,23 @@ class Converter final /* : public ::opa::Converter<const StackHook&> */ {
     //const StackHook& CharToScript (char value) override;
     //const StackHook& CStrToScript (const char* value) override;
 
-    CONVERTER_TEMPLATE_TO_SCRIPT(const StackHook&);
-    CONVERTER_TEMPLATE_FROM_SCRIPT(const StackHook&) {
-        return MakeVObj(value).value<T>();
+    CONVERTER_TEMPLATE_TO_SCRIPT(int) {
+        VirtualObj vobj(wrapper_);
+        vobj.set_value<T>(value);
+        return this->ExportVObj(vobj);
+    }
+
+    CONVERTER_TEMPLATE_FROM_SCRIPT(int) {
+        return this->ImportVObj(value).value<T>();
     }
 
   private:
 
-    LuaWrapper *wrapper_;
+    lua_State   *L_;
+    LuaWrapper  *wrapper_;
 
-    VirtualObj MakeVObj (const StackHook& hook);
+    VirtualObj ImportVObj (int stack_index);
+    int ExportVObj (const VirtualObj& vobj);
 
 };
 
