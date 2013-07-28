@@ -37,14 +37,6 @@ string PythonSpecification::FileHeader() const {
         "} // unnamed namespace\n\n";
 }
 
-template <typename T>
-T wat(PyObject* args, int index) {
-    //pega arg da tupla
-    // se arg=null, solta exception
-    //converte arg com o converter (se dar erro, solta exception)
-    // retorna valor
-}
-
 
 // FINISH BLOCK
 std::string PythonSpecification::generateMethodTable() const {
