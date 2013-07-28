@@ -40,7 +40,35 @@ void WrapperGenerator::Generate (const std::string& module_name, const Ptr<const
     }
     
     wrap_file << spec->FinishFile() << endl;
+    wrap_file << generateBootstrap(spec) << endl;
     wrap_file.close();
+}
+
+std::string WrapperGenerator::generateBootstrap(const md::Ptr<WrapperSpecification>& spec) const {
+    return 
+        // Bootstrap implementation
+        "namespace {\n\n"
+        // Bootstrap class
+        "class Bootstrap final {\n"
+        "  public:\n"
+        "    Bootstrap ();\n"
+        "};\n\n"
+        // Bootstrap object
+        "Bootstrap entry_point;\n\n"
+        "Bootstrap::Bootstrap () {\n"
+        "    cout << \"Bootstrapping "+spec->wrapper_name()+" module \\\"\" << "+spec->module_name()+" << \"\\\"\" << endl;\n"
+        "    "+spec->wrapper_name()+"Wrapper *wrapper = dynamic_cast<"+spec->wrapper_name()+"Wrapper*>(\n"
+        "        SCRIPT_MANAGER()->GetWrapper(\""+spec->wrapper_name()+"\")\n"
+        "    );\n"
+        "    if (wrapper == NULL) {\n"
+        "        wrapper = new "+spec->wrapper_name()+"Wrapper;\n"
+        "        SCRIPT_MANAGER()->Register(wrapper);\n"
+        "    }\n"
+        "    wrapper->RegisterModule("
+                "Module<"+spec->LoadFuncSignature()+">(\""+spec->module_name()+"\", "+spec->LoadFuncName()+")"
+             ");\n"
+        "}\n\n"
+        "} // unnamed namespace\n"
 }
 
 } //end namespace gen

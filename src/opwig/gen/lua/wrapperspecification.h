@@ -26,6 +26,9 @@ class WrapperSpecification final : public ::opwig::gen::WrapperSpecification {
     std::string WrapNamespace(const md::Ptr<const md::Namespace>& obj);
     std::string WrapEnum(const md::Ptr<const md::Enum>& obj);
 
+    std::string LoadFuncSignature() const;
+    std::string LoadFuncName() const;
+    
   private:
 
     std::list<std::string> wrapped_functions_;
@@ -34,6 +37,14 @@ class WrapperSpecification final : public ::opwig::gen::WrapperSpecification {
 
 inline std::string WrapperSpecification::wrapper_name () const {
     return "Lua";
+}
+
+inline std::string WrapperSpecification::LoadFuncSignature () const {
+    return "int(*)(lua_State*)";
+}
+
+inline std::string WrapperSpecification::LoadFuncName () const {
+    return "luaopen_"+module_name();
 }
 
 } // namespace lua

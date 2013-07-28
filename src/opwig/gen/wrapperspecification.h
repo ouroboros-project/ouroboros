@@ -59,11 +59,18 @@ class WrapperSpecification {
     virtual std::string WrapNamespace(const md::Ptr<const md::Namespace>& obj) = 0;
     virtual std::string WrapEnum(const md::Ptr<const md::Enum>& obj) = 0;
     
+    /// Returns the signature of the load_func (initializing function) of the module.
+    virtual std::string LoadFuncSignature() const = 0;
+
+    /// Returns the name of load_func (if needed, you should include the module_name).
+    virtual std::string LoadFuncName() const = 0;
+    
     /// Gets the name of the module currently being wrapped.
     const std::string& module_name() const { return module_name_; }
     
     /// Sets the name of the module currently being wrapped.
     void set_module_name(const std::string& name) { module_name_ = name; }
+    
     
   protected:
     std::string module_name_;

@@ -55,30 +55,7 @@ string WrapperSpecification::FinishFile () const {
         "    lua_setfield(L, LUA_GLOBALSINDEX, MODULE_NAME);\n"
         "    return 1;\n"
         "}\n\n"
-        "} // extern \"C\"\n\n"
-        // Bootstrap implementation
-        "namespace {\n\n"
-        // Bootstrap class
-        "class Bootstrap final {\n"
-        "  public:\n"
-        "    Bootstrap ();\n"
-        "};\n\n"
-        // Bootstrap object
-        "Bootstrap entry_point;\n\n"
-        "Bootstrap::Bootstrap () {\n"
-        "    cout << \"Bootstrapping Lua module \\\"\" << MODULE_NAME << \"\\\"\" << endl;\n"
-        "    LuaWrapper *wrapper = dynamic_cast<LuaWrapper*>(\n"
-        "        SCRIPT_MANAGER()->GetWrapper(\"Lua\")\n"
-        "    );\n"
-        "    if (wrapper == NULL) {\n"
-        "        wrapper = new LuaWrapper;\n"
-        "        SCRIPT_MANAGER()->Register(wrapper);\n"
-        "    }\n"
-        "    wrapper->RegisterModule("
-                "Module<int(*)(lua_State*)>(MODULE_NAME, luaopen_"+module_name_+")"
-             ");\n"
-        "}\n\n"
-        "} // unnamed namespace\n";
+        "} // extern \"C\"\n\n";
 }
 
 string WrapperSpecification::WrapFunction(const md::Ptr<const md::Function>& obj) {

@@ -40,6 +40,7 @@ class WrapperGenerator {
     std::string output_dir_;
     std::string wrap_file_extension_;
     
+    std::string generateBootstrap(const md::Ptr<WrapperSpecification>& spec) const;
 };
 
 } // namespace gen
