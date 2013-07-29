@@ -104,4 +104,5 @@ configure_file (
 )
 
 add_subdirectory(acceptance/milestone-00)
+add_subdirectory(acceptance/milestone-01)
 
