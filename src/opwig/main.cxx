@@ -6,6 +6,7 @@
 #include <opwig/gen/lua/wrapperspecification.h>
 #include <opwig/gen/python/pythonspecification.h>
 #include <opwig/md/ptr.h>
+#include <opwig/md/namespace.h>
 
 #include <cstdlib>
 
@@ -37,6 +38,8 @@ int main (int argc, char** argv) {
         else
             inputs.push_back(*argv);
     }
+    
+    Ptr<opwig::md::Namespace> global = opwig::md::Namespace::Create("");
     for (string input : inputs) {
         string header_path = input;
         std::ifstream in(header_path);
@@ -44,7 +47,7 @@ int main (int argc, char** argv) {
             std::cout << OPWIG_MARK << "Failed to open source \"" << input << "\"" << std::endl;
             return EXIT_FAILURE;
         }
-        opwig::MDParser parser(in);
+        opwig::MDParser parser(in, global);
         
         std::cout << OPWIG_MARK << "Parsing source \"" << input << "\"" << std::endl;
         if (parser.parse()) {
@@ -53,17 +56,19 @@ int main (int argc, char** argv) {
         }
 
         opwig::gen::ProxyGenerator("./", header_path).Generate(parser.global_namespace());
-        opwig::gen::WrapperGenerator("./").Generate(
-            module_name,
-            parser.global_namespace(),
-            Ptr<WrapperSpecification>(new opwig::gen::lua::WrapperSpecification(input))
-        );
-        opwig::gen::WrapperGenerator("./").Generate(
-            module_name, 
-            parser.global_namespace(),
-            Ptr<WrapperSpecification>(new opwig::gen::python::PythonSpecification(input))
-        );
+
     }
+    
+    opwig::gen::WrapperGenerator(inputs, "./").Generate(
+        module_name,
+        global,
+        Ptr<WrapperSpecification>(new opwig::gen::lua::WrapperSpecification)
+    );
+    opwig::gen::WrapperGenerator(inputs, "./").Generate(
+        module_name, 
+        global,
+        Ptr<WrapperSpecification>(new opwig::gen::python::PythonSpecification)
+    );
     return EXIT_SUCCESS;
 }
 

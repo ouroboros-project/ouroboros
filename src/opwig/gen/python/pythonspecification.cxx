@@ -26,8 +26,6 @@ string PythonSpecification::FileHeader() const {
         "#include <iostream>\n"
         "#include <string>\n"
         "\n"
-        "#include \""+input_file_+"\"\n"
-        "\n"
         "using std::string;\n"
         "using std::cout;\n"
         "using std::endl;\n"

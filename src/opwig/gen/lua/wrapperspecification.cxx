@@ -15,7 +15,6 @@ string WrapperSpecification::FileHeader () const {
     return
         "\n"
         "// This is a generated file.\n\n"
-        "#include \""+intput_file_+"\"\n"
         "#include <languages/lua/luawrapper.h>\n"
         "#include <languages/lua/converter.h>\n"
         "#include <opa/scriptmanager.h>\n"

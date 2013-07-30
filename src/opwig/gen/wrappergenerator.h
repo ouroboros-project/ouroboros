@@ -5,6 +5,7 @@
 #include <opwig/md/ptr.h>
 #include <fstream>
 #include <string>
+#include <list>
 
 namespace opwig {
 
@@ -24,8 +25,8 @@ class WrapperGenerator {
 
   public:
     /// constructor
-    WrapperGenerator (const std::string& output_dir, const std::string& file_extension="cxx")
-        : output_dir_(output_dir), wrap_file_extension_(file_extension) {}
+    WrapperGenerator (const std::list<std::string>& input_files, const std::string& output_dir, const std::string& file_extension="cxx")
+        : input_files_(input_files), output_dir_(output_dir), wrap_file_extension_(file_extension) {}
     
     /// Virtual destructor.
     virtual ~WrapperGenerator() {}
@@ -37,6 +38,7 @@ class WrapperGenerator {
                    const md::Ptr<WrapperSpecification>& spec);
     
   protected:
+    std::list<std::string> input_files_;
     std::string output_dir_;
     std::string wrap_file_extension_;
     

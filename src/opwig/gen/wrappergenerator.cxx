@@ -23,6 +23,10 @@ void WrapperGenerator::Generate (const std::string& module_name, const Ptr<const
     
     wrap_file << spec->FileHeader() << endl << endl;
     
+    for (auto input_file : input_files_) {
+        wrap_file << "#include <" << input_file << ">" << endl;
+    }
+    
     for (auto entry : root->IterateFunctions()) {
         wrap_file << spec->WrapFunction(entry.second) << endl;
     }

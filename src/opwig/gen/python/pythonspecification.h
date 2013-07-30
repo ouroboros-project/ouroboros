@@ -12,7 +12,7 @@ namespace python {
 class PythonSpecification final : public ::opwig::gen::WrapperSpecification {
 
   public:
-    PythonSpecification(const std::string& input_file) : input_file_(input_file) {}
+    PythonSpecification() {}
 
     std::string wrapper_name () const;
 

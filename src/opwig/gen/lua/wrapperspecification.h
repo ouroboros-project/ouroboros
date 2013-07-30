@@ -14,7 +14,7 @@ class WrapperSpecification final : public ::opwig::gen::WrapperSpecification {
 
   public:
 
-    WrapperSpecification (const std::string& the_input_file);
+    WrapperSpecification ();
 
     std::string wrapper_name () const;
 
@@ -34,12 +34,10 @@ class WrapperSpecification final : public ::opwig::gen::WrapperSpecification {
   private:
 
     std::list<std::string>  wrapped_functions_;
-    std::string             intput_file_;
 
 };
 
-inline WrapperSpecification::WrapperSpecification (const std::string& the_input_file)
-    : intput_file_(the_input_file) {}
+inline WrapperSpecification::WrapperSpecification () {}
 
 inline std::string WrapperSpecification::wrapper_name () const {
     return "Lua";
