@@ -75,7 +75,7 @@ class WrapperGeneratorTest : public ::testing::Test {
     const static string COMMENT;
 
     WrapperGeneratorTest () : 
-        generator_(OUROBOROS_TEST_DUMP_DIR),
+        generator_({}, OUROBOROS_TEST_DUMP_DIR),
         given_scope_(Namespace::Create("")) {}
 
     virtual ~WrapperGeneratorTest () {
