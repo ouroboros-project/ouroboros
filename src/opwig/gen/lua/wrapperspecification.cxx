@@ -92,7 +92,7 @@ string WrapperSpecification::WrapClass(const md::Ptr<const md::Class>& obj) {
     return "";
 }
 
-string WrapperSpecification::WrapNamespace(const md::Ptr<const md::Namespace>& obj) {
+string WrapperSpecification::WrapNamespace(const md::Ptr<const md::Namespace>& obj, bool closing) {
     return "";
 }
 

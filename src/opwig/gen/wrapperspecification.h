@@ -56,7 +56,7 @@ class WrapperSpecification {
     virtual std::string WrapFunction(const md::Ptr<const md::Function>& obj) = 0;
     virtual std::string WrapVariable(const md::Ptr<const md::Variable>& obj) = 0;
     virtual std::string WrapClass(const md::Ptr<const md::Class>& obj) = 0;
-    virtual std::string WrapNamespace(const md::Ptr<const md::Namespace>& obj) = 0;
+    virtual std::string WrapNamespace(const md::Ptr<const md::Namespace>& obj, bool closing) = 0;
     virtual std::string WrapEnum(const md::Ptr<const md::Enum>& obj) = 0;
     
     /// Returns the signature of the load_func (initializing function) of the module.
