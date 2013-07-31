@@ -7,6 +7,7 @@ set (
   OPWIG_SRC
   ${CMAKE_CURRENT_BINARY_DIR}/md/accessspecifier.h
   ${CMAKE_CURRENT_BINARY_DIR}/md/metadataobject.h
+  ${CMAKE_CURRENT_BINARY_DIR}/md/metadataobject.cxx
   ${CMAKE_CURRENT_BINARY_DIR}/md/container.h
   ${CMAKE_CURRENT_BINARY_DIR}/md/scope.h
   ${CMAKE_CURRENT_BINARY_DIR}/md/scope.cxx
