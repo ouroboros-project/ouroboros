@@ -99,7 +99,7 @@ string PythonSpecification::WrapClass(const Ptr<const md::Class>& obj) {
 }
 
 // WRAP NAMESPACE
-string PythonSpecification::WrapNamespace(const Ptr<const md::Namespace>& obj) {
+string PythonSpecification::WrapNamespace(const Ptr<const md::Namespace>& obj, bool closing) {
     return "";
 }
 

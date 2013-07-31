@@ -11,6 +11,7 @@ namespace opwig {
 
 namespace md {
 class Scope;
+class Namespace;
 }
 
 namespace gen {
@@ -42,7 +43,13 @@ class WrapperGenerator {
     std::string output_dir_;
     std::string wrap_file_extension_;
     
-    std::string generateBootstrap(const md::Ptr<WrapperSpecification>& spec) const;
+    std::ofstream wrap_file_;
+    md::Ptr<WrapperSpecification> spec_;
+    
+    std::string generateBootstrap() const;
+    
+    void iterateAndWrapScope(const md::Ptr<const md::Scope>& scope);
+    void handleNamespace(const md::Ptr<const md::Namespace>& nspace);
 };
 
 } // namespace gen

@@ -22,8 +22,8 @@ class MetadataObject {
     /// Gets the metadata object name.
     const std::string& name() const { return name_; }
 
-    /// Gets the metadata object unique ID. A scope cannot have 2 MOs with the same ID.
-    /// By default, the ID is the same as the name.
+    /** Gets the metadata object unique ID. A scope cannot have 2 MOs with the same ID.
+        By default, the ID is the same as the name. */
     virtual const std::string& id() const { return name_; }
 
     /// Gives the access specifier of this metadata object.
@@ -38,6 +38,10 @@ class MetadataObject {
     /// Sets the parent scope of this metadata object.
     void set_parent(Ptr<Scope> parent_scope) { parent_ = parent_scope; }
     
+    /** Gets the string representation of the implicit nested name of this metadata object.
+        The returned nested name will start from the global namespace. */
+    std::string nested_name(const std::string& separator="::") const;
+    
   protected:
   
     MetadataObject(const std::string& obj_name) : name_(obj_name) {};
@@ -46,9 +50,6 @@ class MetadataObject {
     AccessSpecifier access_;
     Ptr<Scope> parent_;
 };
-
-
-
 
 } // namespace md
 } // namespace opwig

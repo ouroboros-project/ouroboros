@@ -38,7 +38,7 @@ class DummySpecification : public WrapperSpecification {
     }
     virtual std::string WrapVariable(const md::Ptr<const md::Variable>& obj) { return "VARIABLE:"+obj->name(); }
     virtual std::string WrapClass(const md::Ptr<const md::Class>& obj) { return "CLASS:"+obj->name(); }
-    virtual std::string WrapNamespace(const md::Ptr<const md::Namespace>& obj) { return "NAMESPACE:"+obj->name(); }
+    virtual std::string WrapNamespace(const md::Ptr<const md::Namespace>& obj, bool closing) { return "NAMESPACE:"+obj->name(); }
     virtual std::string WrapEnum(const md::Ptr<const md::Enum>& obj) { return "ENUM:"+obj->name(); }
     virtual std::string LoadFuncSignature() const { return "void(*)(void)"; }
     virtual std::string LoadFuncName() const { return "init_"+module_name_; }

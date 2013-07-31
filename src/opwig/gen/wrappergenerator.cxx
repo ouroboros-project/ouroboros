@@ -1,6 +1,7 @@
 #include <opwig/gen/wrappergenerator.h>
 #include <opwig/gen/wrapperspecification.h>
 #include <opwig/md/scope.h>
+#include <opwig/md/namespace.h>
 #include <fstream>
 #include <iostream>
 
@@ -16,40 +17,26 @@ using md::Ptr;
 void WrapperGenerator::Generate (const std::string& module_name, const Ptr<const md::Scope>& root,
                                  const Ptr<WrapperSpecification>& spec) {
     spec->set_module_name(module_name);
+    spec_ = spec;
     
-    ofstream wrap_file;
-    wrap_file.open(output_dir_+"/"+spec->wrapper_name()+"_"+module_name+"_wrap."+wrap_file_extension_,
+    wrap_file_.open(output_dir_+"/"+spec->wrapper_name()+"_"+module_name+"_wrap."+wrap_file_extension_,
                    ios_base::out);
     
-    wrap_file << spec->FileHeader() << endl << endl;
+    wrap_file_ << spec->FileHeader() << endl << endl;
     
     for (auto input_file : input_files_) {
-        wrap_file << "#include <" << input_file << ">" << endl;
+        wrap_file_ << "#include <" << input_file << ">" << endl;
     }
-    wrap_file << endl;
+    wrap_file_ << endl;
     
-    for (auto entry : root->IterateFunctions()) {
-        wrap_file << spec->WrapFunction(entry.second) << endl;
-    }
-    for (auto entry : root->IterateVariables()) {
-        wrap_file << spec->WrapVariable(entry.second) << endl;
-    }
-    for (auto entry : root->IterateEnums()) {
-        wrap_file << spec->WrapEnum(entry.second) << endl;
-    }
-    for (auto entry : root->IterateClasses()) {
-        wrap_file << spec->WrapClass(entry.second) << endl;
-    }
-    for (auto entry : root->IterateNamespaces()) {
-        wrap_file << spec->WrapNamespace(entry.second) << endl;
-    }
+    iterateAndWrapScope(root);
     
-    wrap_file << spec->FinishFile() << endl;
-    wrap_file << generateBootstrap(spec) << endl;
-    wrap_file.close();
+    wrap_file_ << spec->FinishFile() << endl;
+    wrap_file_ << generateBootstrap() << endl;
+    wrap_file_.close();
 }
 
-std::string WrapperGenerator::generateBootstrap(const md::Ptr<WrapperSpecification>& spec) const {
+std::string WrapperGenerator::generateBootstrap() const {
     return 
         // Bootstrap implementation
         "namespace {\n\n"
@@ -61,19 +48,43 @@ std::string WrapperGenerator::generateBootstrap(const md::Ptr<WrapperSpecificati
         // Bootstrap object
         "Bootstrap entry_point;\n\n"
         "Bootstrap::Bootstrap () {\n"
-        "    cout << \"Bootstrapping "+spec->wrapper_name()+" module "+spec->module_name()+"\" << endl;\n"
-        "    "+spec->wrapper_name()+"Wrapper *wrapper = dynamic_cast<"+spec->wrapper_name()+"Wrapper*>(\n"
-        "        SCRIPT_MANAGER()->GetWrapper(\""+spec->wrapper_name()+"\")\n"
+        "    cout << \"Bootstrapping "+spec_->wrapper_name()+" module "+spec_->module_name()+"\" << endl;\n"
+        "    "+spec_->wrapper_name()+"Wrapper *wrapper = dynamic_cast<"+spec_->wrapper_name()+"Wrapper*>(\n"
+        "        SCRIPT_MANAGER()->GetWrapper(\""+spec_->wrapper_name()+"\")\n"
         "    );\n"
         "    if (wrapper == NULL) {\n"
-        "        wrapper = new "+spec->wrapper_name()+"Wrapper;\n"
+        "        wrapper = new "+spec_->wrapper_name()+"Wrapper;\n"
         "        SCRIPT_MANAGER()->Register(wrapper);\n"
         "    }\n"
         "    wrapper->RegisterModule("
-                "Module<"+spec->LoadFuncSignature()+">(\""+spec->module_name()+"\", "+spec->LoadFuncName()+")"
+                "Module<"+spec_->LoadFuncSignature()+">(\""+spec_->module_name()+"\", "+spec_->LoadFuncName()+")"
              ");\n"
         "}\n\n"
         "} // unnamed namespace\n";
+}
+
+void WrapperGenerator::iterateAndWrapScope(const Ptr<const md::Scope>& scope) {
+    for (auto entry : scope->IterateFunctions()) {
+        wrap_file_ << spec_->WrapFunction(entry.second) << endl;
+    }
+    for (auto entry : scope->IterateVariables()) {
+        wrap_file_ << spec_->WrapVariable(entry.second) << endl;
+    }
+    for (auto entry : scope->IterateEnums()) {
+        wrap_file_ << spec_->WrapEnum(entry.second) << endl;
+    }
+    for (auto entry : scope->IterateClasses()) {
+        wrap_file_ << spec_->WrapClass(entry.second) << endl;
+    }
+    for (auto entry : scope->IterateNamespaces()) {
+        handleNamespace(entry.second);
+    }
+}
+
+void WrapperGenerator::handleNamespace(const Ptr<const md::Namespace>& nspace) {
+    wrap_file_ << spec_->WrapNamespace(nspace, false) << endl;
+    iterateAndWrapScope(nspace);
+    wrap_file_ << spec_->WrapNamespace(nspace, true) << endl;
 }
 
 } //end namespace gen
