@@ -34,7 +34,16 @@ string PythonSpecification::FileHeader() const {
         "using opa::python::PythonConverter;\n"
         "\n"
         "namespace {\n\n"
-        "const char *MODULE_NAME = \""+module_name_+"\";\n\n"
+        "const char *MODULE_NAME = \""+module_name_+"\";\n"
+        "\n"
+        "bool NumArgsOk(PyObject* args, int num) {\n"
+        "    if (static_cast<int>(PyTuple_Size(args)) != num) {\n"
+        "        string msg = \"expected \"+std::to_string(num)+\" parameters, but received \"+std::to_string(PyTuple_Size(args))+\".\";\n"
+        "        PyErr_SetString(PyExc_RuntimeError, msg.c_str());\n"
+        "        return false;\n"
+        "    }\n"
+        "    return true;\n"
+        "}\n"
         "} // unnamed namespace\n\n";
 }
 
@@ -69,12 +78,13 @@ string PythonSpecification::WrapFunction(const Ptr<const md::Function>& obj) {
         
     stringstream func;
     func << "PyObject* OPWIG_wrap_"+obj->name()+"(PyObject* self, PyObject* args) {" << std::endl;
+    func << TAB << "if (!NumArgsOk(args, " << obj->num_parameters() << ")) return nullptr;" << endl;
     func << TAB << "PythonConverter converter;" << std::endl;
     stringstream args ("");
     for (unsigned i=0; i<obj->num_parameters(); i++) {
         func << TAB << obj->parameter_type(i) <<" fArg"<< i << ";" << endl;
         func << TAB << "try { fArg"<< i <<" = converter.PyArgToType<"<< obj->parameter_type(i) <<">(args, " << i << "); }" << endl;
-        func << TAB << "catch (std::exception& e) { return nullptr; }" << endl;
+        func << TAB << "catch (std::exception& e) { cout << e.what() << endl; return nullptr; }" << endl;
         if (i > 0)
             args << ", ";
         args << "fArg" << i;
