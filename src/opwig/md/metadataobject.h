@@ -39,8 +39,9 @@ class MetadataObject {
     void set_parent(Ptr<Scope> parent_scope) { parent_ = parent_scope; }
     
     /** Gets the string representation of the implicit nested name of this metadata object.
-        The returned nested name will start from the global namespace. */
-    std::string nested_name(const std::string& separator="::") const;
+        The returned nested name will start from the global namespace, and will include the initial
+        separator if includeGlobalSeparator is true. */
+    std::string nested_name(const std::string& separator="::", bool includeGlobalSeparator=true) const;
     
   protected:
   

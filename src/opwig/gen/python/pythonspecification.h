@@ -9,10 +9,12 @@ namespace opwig {
 namespace gen {
 namespace python {
 
+class WrapModule;
+
 class PythonSpecification final : public ::opwig::gen::WrapperSpecification {
 
   public:
-    PythonSpecification() {}
+    PythonSpecification();
 
     std::string wrapper_name () const;
 
@@ -30,10 +32,8 @@ class PythonSpecification final : public ::opwig::gen::WrapperSpecification {
     std::string LoadFuncName() const;
     
   private:
-    std::list<std::string> wrapped_functions_;
-    std::string input_file_;
-
-    std::string generateMethodTable() const;
+    md::Ptr<WrapModule> root_module_;
+    md::Ptr<WrapModule> current_;
 };
 
 inline std::string PythonSpecification::wrapper_name () const {
