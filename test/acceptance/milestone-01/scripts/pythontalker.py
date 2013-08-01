@@ -6,6 +6,7 @@ def main(name):
     prompt.out.send_message(name + ":  WAZAAAAAAAAAP")
     while True:
         msg = prompt.input.receive_message()
+        print "message received = [%s]" % (msg)
         if msg in ["adios", "adieu", "arrivederci", "quit", "goodbye", "flw", "falou", "té mais", "té", "bye", "hasta"]:
             break
         elif msg == "hip hip":

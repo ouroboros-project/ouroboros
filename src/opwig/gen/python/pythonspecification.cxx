@@ -115,7 +115,7 @@ string PythonSpecification::WrapFunction(const Ptr<const md::Function>& obj) {
     }
     if (obj->return_type() == "void") {
         func << TAB << obj->nested_name() << "("<< args.str() << ");" << endl;
-        func << TAB << "return Py_RETURN_NONE;" << endl;
+        func << TAB << "Py_RETURN_NONE;" << endl;
     }
     else {
         func << TAB << obj->return_type() << " fValue = " << obj->nested_name() << "("<< args.str() << ");" << endl;
