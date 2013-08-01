@@ -24,6 +24,7 @@ class WrapModule final {
     void AddSubModule(const md::Ptr<WrapModule>& subm) { sub_modules_.push_back(subm); }
     
     std::string name() { return name_; }
+    void set_name(const std::string& name) { name_ = name; }
     const md::Ptr<WrapModule>& parent() const { return parent_; }
     const std::list<md::Ptr<WrapModule>>& sub_modules() const { return sub_modules_; }
 
