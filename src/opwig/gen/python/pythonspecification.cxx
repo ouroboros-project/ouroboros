@@ -1,5 +1,7 @@
 #include <opwig/gen/python/pythonspecification.h>
+#include <opwig/gen/python/wrapmodule.h>
 #include <opwig/md/function.h>
+#include <opwig/md/namespace.h>
 
 #include <sstream>
 
@@ -13,6 +15,12 @@ using std::stringstream;
 using std::endl;
 
 const char* TAB = "    ";
+const string BASE_NSPACE = "opwig_py_generated";
+
+PythonSpecification::PythonSpecification() {
+    root_module_ = Ptr<WrapModule>(new WrapModule(module_name_));
+    current_ = root_module_;
+}
 
 // HEADER BLOCK
 string PythonSpecification::FileHeader() const {
@@ -32,10 +40,12 @@ string PythonSpecification::FileHeader() const {
         "using opa::Module;\n"
         "using opa::python::PythonWrapper;\n"
         "using opa::python::PythonConverter;\n"
-        "\n"
+        "\n";
+}
+
+string PythonSpecification::MiddleBlock() const {
+    return
         "namespace {\n\n"
-        "const char *MODULE_NAME = \""+module_name_+"\";\n"
-        "\n"
         "bool NumArgsOk(PyObject* args, int num) {\n"
         "    if (static_cast<int>(PyTuple_Size(args)) != num) {\n"
         "        string msg = \"expected \"+std::to_string(num)+\" parameters, but received \"+std::to_string(PyTuple_Size(args))+\".\";\n"
@@ -44,37 +54,50 @@ string PythonSpecification::FileHeader() const {
         "    }\n"
         "    return true;\n"
         "}\n"
-        "} // unnamed namespace\n\n";
-}
-
-string PythonSpecification::MiddleBlock() const {
-    return "";
+        "} // unnamed namespace\n\n"
+        "namespace "+BASE_NSPACE+" {\n\n";
 }
 
 // FINISH BLOCK
-std::string PythonSpecification::generateMethodTable() const {
-    stringstream table;
-    table << "static PyMethodDef ModuleMethods[] = {" << endl;
-    for (auto func_name : wrapped_functions_)
-        table << TAB << "{\"" << func_name << "\", OPWIG_wrap_" << func_name << ", METH_VARARGS, \"calls C++ wrapped function\" }," << endl;
-    table << TAB << "{NULL, NULL, 0, NULL} //sentinel" << endl;
-    table << "};" << endl;
-    return table.str();
+void HandleWrapModuleForInitFunc(stringstream& block, const Ptr<WrapModule>& module) {
+    block << TAB << "PyObject* " << module->name() << "_mod = Py_InitModule(\"" << module->name();
+    block << "\", " << module->GetMethodTableName() << ");" << endl;
+    
+    if (module->parent()) {
+        block << TAB << "if (PyModule_AddObject(" << module->parent()->name() << "_mod, \"";
+        block << module->name() << "\", " << module->name() << "_mod) == -1) {" << endl;
+        block << TAB << TAB << "PyErr_SetString(PyExc_RuntimeError, \"could not add submodule ";
+        block << module->name() << " to module " << module->parent()->name() << "\");" << endl;
+        block << TAB << "}" << endl;
+    }
+
+    for (auto subm : module->sub_modules() )
+        HandleWrapModuleForInitFunc(block, subm);
+}
+
+void HandleModuleMethodTables(stringstream& block, const Ptr<WrapModule>& module) {
+    block << "//module " << module->name() << " method table" << endl;
+    block << module->GenerateMethodTable(BASE_NSPACE) << endl;
+    for (auto subm : module->sub_modules() )
+        HandleModuleMethodTables(block, subm);
 }
 
 string PythonSpecification::FinishFile() const {
     stringstream block;
-    block << endl << "//module method table" << endl << generateMethodTable() << endl;
+    block << endl << "} //namespace " << BASE_NSPACE << endl << endl;
+    HandleModuleMethodTables(block, root_module_);
     block << "PyMODINIT_FUNC" << endl;
     block << LoadFuncName() << "(void) {" << endl;
-    block << TAB << "Py_InitModule(MODULE_NAME, ModuleMethods);" << endl;
+    HandleWrapModuleForInitFunc(block, root_module_);
     block << "}" << endl;
     return block.str();
 }
 
 // WRAP FUNCION
 string PythonSpecification::WrapFunction(const Ptr<const md::Function>& obj) {
-    wrapped_functions_.push_back(obj->name());
+    string wrapped_full_name = obj->nested_name("::", false);
+    wrapped_full_name.insert(wrapped_full_name.size()-(obj->name()).size(), "OPWIG_wrap_");
+    current_->AddFunction(obj->name(), wrapped_full_name);
         
     stringstream func;
     func << "PyObject* OPWIG_wrap_"+obj->name()+"(PyObject* self, PyObject* args) {" << std::endl;
@@ -90,11 +113,11 @@ string PythonSpecification::WrapFunction(const Ptr<const md::Function>& obj) {
         args << "fArg" << i;
     }
     if (obj->return_type() == "void") {
-        func << TAB << obj->name() << "("<< args.str() << ");" << endl;
+        func << TAB << obj->nested_name() << "("<< args.str() << ");" << endl;
         func << TAB << "return Py_RETURN_NONE;" << endl;
     }
     else {
-        func << TAB << obj->return_type() << " fValue = " << obj->name() << "("<< args.str() << ");" << endl;
+        func << TAB << obj->return_type() << " fValue = " << obj->nested_name() << "("<< args.str() << ");" << endl;
         func << TAB << "return converter.TypeToScript<"<< obj->return_type() <<">(fValue);" << endl;
     }
     func << "}";
@@ -113,7 +136,16 @@ string PythonSpecification::WrapClass(const Ptr<const md::Class>& obj) {
 
 // WRAP NAMESPACE
 string PythonSpecification::WrapNamespace(const Ptr<const md::Namespace>& obj, bool closing) {
-    return "";
+    if (!closing) {
+        Ptr<WrapModule> newm = Ptr<WrapModule>(new WrapModule(obj->name(), current_));
+        current_->AddSubModule(newm);
+        current_ = newm;
+        return "namespace "+obj->name()+" {\n";
+    }
+    else {
+        current_ = current_->parent();
+        return "} //closing namespace "+obj->name()+"\n";
+    }
 }
 
 // WRAP ENUM
