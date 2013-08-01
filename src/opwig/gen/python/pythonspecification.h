@@ -17,7 +17,7 @@ class PythonSpecification final : public ::opwig::gen::WrapperSpecification {
     std::string wrapper_name () const;
 
     std::string FileHeader() const;
-
+    std::string MiddleBlock() const;
     std::string FinishFile() const;
 
     std::string WrapFunction(const md::Ptr<const md::Function>& obj);

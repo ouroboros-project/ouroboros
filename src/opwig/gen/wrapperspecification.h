@@ -36,6 +36,11 @@ class WrapperSpecification {
         This text block is written FIRST in the generated files, and as such
         you should put anything you will otherwise need here... */
     virtual std::string FileHeader() const = 0;
+
+    /** Returns the 'middle' code block, which is situated after the 
+        input file(s) include(s) but right before any metadata wrap
+        function call. */
+    virtual std::string MiddleBlock() const = 0;
     
     /** Returns the final block of text of the generated source files.
         This text block is written LAST in the generated files, and as such

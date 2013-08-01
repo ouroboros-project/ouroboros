@@ -34,6 +34,13 @@ string WrapperSpecification::FileHeader () const {
         "} // unnamed namespace\n\n";
 }
 
+string WrapperSpecification::MiddleBlock() const {
+    /***********
+        WIL, OLHA BEEEIIIIN
+    ************/
+    return "";
+}
+
 string WrapperSpecification::FinishFile () const {
     string functions_wrap_code =
         "namespace {\n\n"

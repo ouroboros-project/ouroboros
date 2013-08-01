@@ -38,6 +38,9 @@ string PythonSpecification::FileHeader() const {
         "} // unnamed namespace\n\n";
 }
 
+string PythonSpecification::MiddleBlock() const {
+    return "";
+}
 
 // FINISH BLOCK
 std::string PythonSpecification::generateMethodTable() const {

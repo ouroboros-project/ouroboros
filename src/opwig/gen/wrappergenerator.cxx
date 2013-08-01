@@ -22,12 +22,13 @@ void WrapperGenerator::Generate (const std::string& module_name, const Ptr<const
     wrap_file_.open(output_dir_+"/"+spec->wrapper_name()+"_"+module_name+"_wrap."+wrap_file_extension_,
                    ios_base::out);
     
-    wrap_file_ << spec->FileHeader() << endl << endl;
+    wrap_file_ << spec->FileHeader() << endl;
     
     for (auto input_file : input_files_) {
         wrap_file_ << "#include <" << input_file << ">" << endl;
     }
-    wrap_file_ << endl;
+    wrap_file_ << endl << spec->MiddleBlock() << endl;
+
     
     iterateAndWrapScope(root);
     

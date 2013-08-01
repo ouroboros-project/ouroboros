@@ -15,6 +15,7 @@ class DummySpecification : public WrapperSpecification {
             "// Source generated with OPWIG for scripting language DUMMY\n"
             "// -------------------------------------------------------------";
     }
+    virtual std::string MiddleBlock() const { return ""; }
     virtual std::string FinishFile() const {
         return
             "// -------------------------------------------------------------\n"
