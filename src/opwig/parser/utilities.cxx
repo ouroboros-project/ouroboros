@@ -41,7 +41,7 @@ ScopeAction JoinDeclarations (const TypeAction& type_action,
                 if (!func) {
                     func = Function::Create(
                         nestedname.name(),
-                        type,
+                        type+declarator.pointer_type(),
                         declarator.parameters(),
                         declarator.is_pure(),
                         spec.is_virtual()
@@ -100,21 +100,44 @@ ScopeAction AddFunctionToScope( const TypeAction& type_action, const parser::Dec
         NestedNameSpecifier nestedname = declarator.nested_name();
         Ptr<Scope> targetScope = nestedname.FindNearestNestingScope(current_scope);
         if (!declarator.has_parameters()) {
-            throw SemanticError("Invalid FunctionDefinition for '"+nestedname.name()+"' - no parameters clause.", __FILE__, __LINE__);
+            throw SemanticError(
+                "Invalid FunctionDefinition for '"+nestedname.name()+"' - no parameters clause.",
+                __FILE__,
+                __LINE__
+            );
         }
         std::string sig = Function::GetSignatureFor(nestedname.name(), declarator.parameters());
         Ptr<Function> func = targetScope->NestedFunction(sig);
         if (!func) {
-            func = Function::Create(nestedname.name(), type, declarator.parameters(), declarator.is_pure(), spec.is_virtual());
+            func = Function::Create(
+                nestedname.name(),
+                type+declarator.pointer_type(),
+                declarator.parameters(),
+                declarator.is_pure(),
+                spec.is_virtual()
+            );
             if (!targetScope->AddNestedFunction(func)) {
-                throw SemanticError("Failed to define Function '"+func->id()+"' in Scope", __FILE__, __LINE__);
+                throw SemanticError(
+                    "Failed to define Function '"+func->id()+"' in Scope",
+                    __FILE__,
+                    __LINE__
+                );
             }
         }
         else if (func->is_defined()) {
-            throw SemanticError("Duplicate function definition for '"+func->id()+"' in scope "+targetScope->name(), __FILE__, __LINE__);
+            throw SemanticError(
+                "Duplicate function definition for '"+func->id()+"' in scope "+targetScope->name(),
+                __FILE__,
+                __LINE__
+            );
         }
         else if (func->return_type() != type) {
-            throw SemanticError("Erroneous function definition for '"+func->id()+"' in scope "+targetScope->name()+" [return type mismatch]", __FILE__, __LINE__);
+            throw SemanticError(
+                "Erroneous function definition for '"+func->id()+"' in scope "+targetScope->name()
+                                                     +" [return type mismatch]",
+                __FILE__,
+                __LINE__
+            );
         }
         func->set_defined();
         func->set_default(is_default);
@@ -124,15 +147,25 @@ ScopeAction AddFunctionToScope( const TypeAction& type_action, const parser::Dec
     return action;
 }
 
-TypeAction AddEnumToScope( const std::string& base, const StringList& values, const md::NestedNameSpecifier& nestedname) {
+TypeAction AddEnumToScope (const std::string& base, const StringList& values,
+                           const md::NestedNameSpecifier& nestedname) {
     TypeAction action = [base, values, nestedname] (md::Ptr<md::Scope> current_scope) {
         Ptr<Scope> targetScope = nestedname.FindNearestNestingScope(current_scope);
         if (!targetScope)
-            throw SemanticError("Invalid NestedNameSpecifier("+nestedname.ToString()+")", __FILE__, __LINE__);
+            throw SemanticError(
+                "Invalid NestedNameSpecifier("+nestedname.ToString()+")",
+                __FILE__,
+                __LINE__
+            );
         Ptr<Enum> en = Enum::Create(nestedname.name(), base, values);
         if (targetScope->AddNestedEnum(en))
             return DeclSpecifier::TYPE(nestedname);
-        throw SemanticError("Error adding enum '"+en->name()+"' to scope '"+targetScope->name()+"'!", __FILE__, __LINE__);
+        throw SemanticError(
+            "Error adding enum '"+en->name()+"' to scope '"+targetScope->name()
+                                                                           +"'!",
+            __FILE__,
+            __LINE__
+        );
     };
     return action;
 }
