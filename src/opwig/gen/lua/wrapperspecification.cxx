@@ -1,6 +1,7 @@
 
 #include <opwig/gen/lua/wrapperspecification.h>
 #include <opwig/md/function.h>
+#include <opwig/md/namespace.h>
 #include <sstream>
 
 namespace opwig {
@@ -46,9 +47,9 @@ string WrapperSpecification::FinishFile () const {
         "namespace {\n\n"
         "// List of wrapped functions\n"
         "luaL_Reg wrapped_functions[] = {\n";
-    for (auto func_name : wrapped_functions_)
+    for (auto wrap : wrapped_functions_)
         functions_wrap_code +=
-            "    { \""+func_name+"\", OPWIG_wrap_"+func_name+" },\n";
+            "    { \""+wrap.func_name+"\", "+wrap.func_path+"OPWIG_wrap_"+wrap.func_name+" },\n";
     functions_wrap_code +=
         "    { nullptr, nullptr }\n"
         "};\n\n"
@@ -68,8 +69,8 @@ string WrapperSpecification::FinishFile () const {
         "} // extern \"C\"\n\n";
 }
 
-string WrapperSpecification::WrapFunction(const md::Ptr<const md::Function>& obj) {
-    wrapped_functions_.push_back(obj->name());
+string WrapperSpecification::WrapFunction (const md::Ptr<const md::Function>& obj) {
+    wrapped_functions_.push_back({obj->name(), DumpNamespaceStack()+"generated::"});
     stringstream func_code, call_code;
     func_code << "int OPWIG_wrap_" << obj->name() << " (lua_State* L) {\n"
               << "    opa::lua::Converter convert(L);\n";
@@ -83,28 +84,50 @@ string WrapperSpecification::WrapFunction(const md::Ptr<const md::Function>& obj
             call_code << ", ";
     }
     call_code << ")";
-    func_code << "    " << obj->return_type() << " result = " << call_code.str() << ";\n";
-    func_code << "    int stack = convert.TypeToScript<" << obj->return_type() << ">(result);\n";
+    if (obj->return_type() == "void") {
+        func_code << "    " << call_code.str() << ";\n";
+        func_code << "    int stack = 0;\n";
+    } else {
+        func_code << "    " << obj->return_type() << " result = " << call_code.str() << ";\n";
+        func_code << "    int stack = convert.TypeToScript<" << obj->return_type() << ">(result);\n";
+    }
     func_code << "    return stack;\n"
               << "}\n\n";
 
     return func_code.str();
 }
 
-string WrapperSpecification::WrapVariable(const md::Ptr<const md::Variable>& obj) {
+string WrapperSpecification::WrapVariable (const md::Ptr<const md::Variable>& obj) {
     return "";
 }
 
-string WrapperSpecification::WrapClass(const md::Ptr<const md::Class>& obj) {
+string WrapperSpecification::WrapClass (const md::Ptr<const md::Class>& obj) {
     return "";
 }
 
-string WrapperSpecification::WrapNamespace(const md::Ptr<const md::Namespace>& obj, bool closing) {
+string WrapperSpecification::WrapNamespace (const md::Ptr<const md::Namespace>& obj, bool closing) {
+    if (!closing) {
+        namespace_stack_.push_back(obj->name());
+        return
+            "namespace "+obj->name()+" {\n"
+            "namespace generated {\n\n";
+    } else {
+        namespace_stack_.pop_back();
+        return
+            "} // namespace generated\n"
+            "} // namespace "+obj->name()+"\n\n";
+    }
+}
+
+string WrapperSpecification::WrapEnum (const md::Ptr<const md::Enum>& obj) {
     return "";
 }
 
-string WrapperSpecification::WrapEnum(const md::Ptr<const md::Enum>& obj) {
-    return "";
+string WrapperSpecification::DumpNamespaceStack () const {
+    string dump;
+    for (auto namespace_dump : namespace_stack_)
+        dump += namespace_dump+"::";
+    return dump;
 }
 
 } // namespace lua

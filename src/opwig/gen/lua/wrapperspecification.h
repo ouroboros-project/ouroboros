@@ -33,7 +33,15 @@ class WrapperSpecification final : public ::opwig::gen::WrapperSpecification {
     
   private:
 
-    std::list<std::string>  wrapped_functions_;
+    struct FuncWrap {
+        std::string func_name;
+        std::string func_path;
+    };
+
+    std::list<FuncWrap>     wrapped_functions_;
+    std::list<std::string>  namespace_stack_;
+
+    std::string DumpNamespaceStack () const;
 
 };
 
