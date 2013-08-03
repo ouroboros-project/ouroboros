@@ -26,7 +26,8 @@ class WrapperGenerator {
 
   public:
     /// constructor
-    WrapperGenerator (const std::list<std::string>& input_files, const std::string& output_dir, const std::string& file_extension="cxx")
+    WrapperGenerator (const std::list<std::string>& input_files, const std::string& output_dir,
+                      const std::string& file_extension="cxx")
         : input_files_(input_files), output_dir_(output_dir), wrap_file_extension_(file_extension) {}
     
     /// Virtual destructor.

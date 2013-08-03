@@ -16,7 +16,7 @@ set (
 
 set (
   MILESTONE_GENERATED_SRC
-  #src/Lua_prompt_wrap.cxx
+  src/Lua_prompt_wrap.cxx
   src/Python_prompt_wrap.cxx
 )
 

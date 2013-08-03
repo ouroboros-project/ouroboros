@@ -14,7 +14,14 @@ using md::Ptr;
 string WrapperSpecification::FileHeader () const {
     return
         "\n"
-        "// This is a generated file.\n\n"
+        "// This is a generated file.\n\n";
+}
+
+string WrapperSpecification::MiddleBlock() const {
+    /***********
+        WIL, OLHA BEEEIIIIN
+    ************/
+    return
         "#include <languages/lua/luawrapper.h>\n"
         "#include <languages/lua/converter.h>\n"
         "#include <opa/scriptmanager.h>\n"
@@ -32,13 +39,6 @@ string WrapperSpecification::FileHeader () const {
         "namespace {\n\n"
         "const char *MODULE_NAME = \""+module_name_+"\";\n\n"
         "} // unnamed namespace\n\n";
-}
-
-string WrapperSpecification::MiddleBlock() const {
-    /***********
-        WIL, OLHA BEEEIIIIN
-    ************/
-    return "";
 }
 
 string WrapperSpecification::FinishFile () const {
