@@ -3,6 +3,7 @@
 #define OPWIG_GEN_LUA_WRAPPERSPECIFICATION_H_
 
 #include <opwig/gen/wrapperspecification.h>
+#include <opwig/md/ptr.h>
 #include <list>
 #include <string>
 
@@ -34,18 +35,23 @@ class WrapperSpecification final : public ::opwig::gen::WrapperSpecification {
   private:
 
     struct FuncWrap {
-        std::string func_name;
-        std::string func_path;
+        std::string name;
+        std::string nesting;
     };
 
-    std::list<FuncWrap>     wrapped_functions_;
-    std::list<std::string>  namespace_stack_;
+    struct Module {
+        std::string         name, path;
+        std::list<FuncWrap> functions;
+    };
 
-    std::string DumpNamespaceStack () const;
+    std::list<md::Ptr<Module>>  modules_;
+    std::list<md::Ptr<Module>>  module_stack_;
+
+    std::string DumpNamespaceNesting () const;
+
+    md::Ptr<Module> current_module () const;
 
 };
-
-inline WrapperSpecification::WrapperSpecification () {}
 
 inline std::string WrapperSpecification::wrapper_name () const {
     return "Lua";
@@ -57,6 +63,10 @@ inline std::string WrapperSpecification::LoadFuncSignature () const {
 
 inline std::string WrapperSpecification::LoadFuncName () const {
     return "luaopen_"+module_name();
+}
+
+inline md::Ptr<WrapperSpecification::Module> WrapperSpecification::current_module () const {
+    return module_stack_.back();
 }
 
 } // namespace lua
