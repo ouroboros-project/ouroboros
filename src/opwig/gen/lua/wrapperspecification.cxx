@@ -64,7 +64,11 @@ string WrapperSpecification::FinishFile () const {
         "} // unnamed namespace\n\n";
     string init_functions_code =
         // Loader function
-        "extern \"C\" {\n\n";
+        "extern \"C\" {\n\n"
+        "// Forward declarations\n\n";
+    for (auto module : modules_)
+        init_functions_code +=
+            "int luaopen_"+module->path+module->name+" (lua_State *L);\n\n";
     for (auto module : modules_) {
         init_functions_code +=
             "/// [-(1|2),+1,e]\n"
@@ -85,7 +89,21 @@ string WrapperSpecification::FinishFile () const {
             "    lua_setfield(L, 1, MODULE_NAME);\n"
             "    // Leave only the module table in the stack\n"
             "    lua_remove(L, 1);\n"
-            "    lua_settop(L, 1);\n"
+            "    lua_settop(L, 1);\n";
+        for (auto submodule : module->children) {
+            init_functions_code +=
+                "    // Add submodule \""+submodule->name+"\"\n"
+                "    lua_pushcfunction(L, luaopen_"+submodule->path+submodule->name+");\n"
+                "    lua_pushstring(L, \""+submodule->name+"\");\n"
+                "    lua_pushvalue(L, 1);\n"
+                "    // Stack: [module, cfunction, string, module]\n"
+                "    lua_call(L, 2, 1);\n"
+                "    // Stack: [module, submodule]\n"
+                "    lua_setfield(L, 1, \""+submodule->name+"\");\n"
+                ;
+        }
+        init_functions_code +=
+            "    // Return de module itself\n"
             "    return 1;\n"
             "}\n\n";
     }
@@ -139,7 +157,7 @@ string WrapperSpecification::WrapNamespace (const md::Ptr<const md::Namespace>& 
         for (auto module : module_stack_)
           new_module->path += module->name+"_";
 
-        current_module()->chilrden.push_back(new_module);
+        current_module()->children.push_back(new_module);
         modules_.push_back(new_module);
         module_stack_.push_back(new_module);
 

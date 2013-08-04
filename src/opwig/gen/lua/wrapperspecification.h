@@ -42,7 +42,7 @@ class WrapperSpecification final : public ::opwig::gen::WrapperSpecification {
     struct Module {
         std::string                 name, path;
         std::list<FuncWrap>         functions;
-        std::list<md::Ptr<Module>>  chilrden;
+        std::list<md::Ptr<Module>>  children;
     };
 
     std::list<md::Ptr<Module>>  modules_;
