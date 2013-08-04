@@ -31,13 +31,16 @@ string WrapperSpecification::MiddleBlock() const {
         "#include <languages/lua/converter.h>\n"
         "#include <opa/scriptmanager.h>\n"
         "#include <opa/module.h>\n"
+        "#include <opa/converter.h>\n"
         "#include <lua5.1/lauxlib.h>\n"
         "#include <iostream>\n"
         "#include <string>\n"
+        "#include <stdexcept>\n"
         "\n"
         "using std::string;\n"
         "using std::cout;\n"
         "using std::endl;\n"
+        "using std::runtime_error;\n"
         "using opa::Module;\n"
         "using opa::lua::LuaWrapper;\n"
         "\n"
@@ -114,17 +117,46 @@ string WrapperSpecification::FinishFile () const {
 
 string WrapperSpecification::WrapFunction (const md::Ptr<const md::Function>& obj) {
     module_stack_.back()->functions.push_back({obj->name(), DumpNamespaceNesting()+"generated::"});
-    stringstream func_code, call_code;
-    func_code << "int OPWIG_wrap_" << obj->name() << " (lua_State* L) {\n"
-              << "    opa::lua::Converter convert(L);\n";
+    stringstream func_code, args_code, call_code;
+    size_t       num_params = obj->num_parameters();
+    func_code << "int OPWIG_wrap_" << obj->name() << " (lua_State* L) {\n";
+    if (num_params > 0)
+        func_code
+              << "    int args = 0;\n"
+              << "    if ((args = lua_gettop(L)) < " << num_params << ")\n"
+              << "        return luaL_error(\n"
+              << "            L,\n"
+              << "            \"Error: %s expected %d arguments but received only %d.\\n\",\n"
+              << "            \"" << DumpNamespaceNesting() << obj->name() << "\",\n"
+              << "            " << num_params << ",\n"
+              << "            args\n"
+              << "        );\n";
+    func_code << "    opa::lua::Converter convert(L);\n";
+    if (num_params > 0)
+        args_code
+              << "    try {\n";
     call_code << obj->name() << "(";
     for (size_t i = 0; i < obj->num_parameters(); ++i) {
         string type = obj->parameter_type(i);
-        func_code << "    " << type << " arg_" << i
-                            << " = convert.ScriptToType<" << type << ">(" << (i+1) << ");\n";
+        func_code
+              << "    " << type << " arg_" << i << ";\n";
+        args_code
+              << "        arg_" << i << " = "
+              <<              "convert.ScriptToType<" << type << ">(" << (i+1) << ");\n";
         call_code << "arg_" << i;
         if (i+1 < obj->num_parameters())
             call_code << ", ";
+    }
+    if (num_params > 0) {
+        args_code
+              << "    } catch (runtime_error e) {\n"
+              << "        return luaL_error(\n"
+              << "            L,\n"
+              << "            \"%s.\\n\",\n"
+              << "            e.what()\n"
+              << "        );\n"
+              << "    }\n";
+        func_code << args_code.str();
     }
     call_code << ")";
     if (obj->return_type() == "void") {

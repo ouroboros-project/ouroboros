@@ -5,7 +5,14 @@ local out = prompt.out
 local input = prompt.input
 
 function main (name)
-  out.send_message(name..": S'up.");
+  print(name..": Let's check some things first...")
+  local check, err = pcall(function () out.send_message() end)
+  if check == false and err then
+    print(err)
+  else
+    return false
+  end
+  out.send_message(name..": Everything ok so far. S'up bro.", 'unused');
   while true do
     local msg = input.receive_message()
     print("[received '"..msg.."']")
