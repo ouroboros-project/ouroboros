@@ -4,16 +4,23 @@
 #include <iostream>
 #include <string>
 
+#include <cstring>
+
 namespace input {
 
 using std::cin;
 using std::endl;
 using std::string;
 
+namespace {
+char buffer[256];
+}
+
 const char* receive_message () {
     string value;
     getline(cin, value);
-    return value.c_str();
+    strcpy(buffer, value.c_str());
+    return buffer;
 }
 
 double receive_number () {
