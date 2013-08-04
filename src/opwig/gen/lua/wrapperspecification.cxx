@@ -115,8 +115,20 @@ string WrapperSpecification::FinishFile () const {
 string WrapperSpecification::WrapFunction (const md::Ptr<const md::Function>& obj) {
     module_stack_.back()->functions.push_back({obj->name(), DumpNamespaceNesting()+"generated::"});
     stringstream func_code, call_code;
-    func_code << "int OPWIG_wrap_" << obj->name() << " (lua_State* L) {\n"
-              << "    opa::lua::Converter convert(L);\n";
+    size_t       num_params = obj->num_parameters();
+    func_code << "int OPWIG_wrap_" << obj->name() << " (lua_State* L) {\n";
+    if (num_params > 0)
+        func_code
+              << "    int args = 0;\n"
+              << "    if ((args = lua_gettop(L)) < " << num_params << ")\n"
+              << "        return luaL_error(\n"
+              << "            L,\n"
+              << "            \"Error: %s expected %d arguments but received only %d.\\n\",\n"
+              << "            \"" << DumpNamespaceNesting() << obj->name() << "\",\n"
+              << "            " << num_params << ",\n"
+              << "            args\n"
+              << "        );\n";
+    func_code << "    opa::lua::Converter convert(L);\n";
     call_code << obj->name() << "(";
     for (size_t i = 0; i < obj->num_parameters(); ++i) {
         string type = obj->parameter_type(i);
