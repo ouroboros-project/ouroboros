@@ -62,19 +62,36 @@ string WrapperSpecification::FinishFile () const {
     }
     functions_wrap_code +=
         "} // unnamed namespace\n\n";
-    return
-        functions_wrap_code+
+    string init_functions_code =
         // Loader function
-        "extern \"C\" {\n\n"
-        "/// [-1,+1,e]\n"
-        "int luaopen_"+module_name_+" (lua_State* L) {\n"
-        "    const char *mod_name = luaL_checkstring(L, 1);\n"
-        "    lua_settop(L, 0);\n"
-        "    luaL_register(L, mod_name, "+module_name_+"_functions);\n"
-        "    lua_setfield(L, LUA_GLOBALSINDEX, MODULE_NAME);\n"
-        "    return 1;\n"
-        "}\n\n"
+        "extern \"C\" {\n\n";
+    for (auto module : modules_) {
+        init_functions_code +=
+            "/// [-(1|2),+1,e]\n"
+            "int luaopen_"+module->path+module->name+" (lua_State* L) {\n"
+            "    //const char *mod_name = luaL_checkstring(L, 1);\n"
+            "    if (lua_gettop(L) > 1) {\n"
+            "        lua_remove(L, 1);\n"
+            "        lua_settop(L, 1);\n"
+            "    } else {\n"
+            "        lua_settop(L, 0);\n"
+            "        lua_pushvalue(L, LUA_GLOBALSINDEX);\n"
+            "    }\n"
+            "    // Nesting table is at index 1.\n"
+            "    lua_newtable(L);\n"
+            "    lua_pushvalue(L, -1);\n"
+            "    // Module table is at index 2 and 3.\n"
+            "    luaL_register(L, NULL, "+module->path+module->name+"_functions);\n"
+            "    lua_setfield(L, 1, MODULE_NAME);\n"
+            "    // Leave only the module table in the stack\n"
+            "    lua_remove(L, 1);\n"
+            "    lua_settop(L, 1);\n"
+            "    return 1;\n"
+            "}\n\n";
+    }
+    init_functions_code +=
         "} // extern \"C\"\n\n";
+    return functions_wrap_code + init_functions_code;
 }
 
 string WrapperSpecification::WrapFunction (const md::Ptr<const md::Function>& obj) {
@@ -122,6 +139,7 @@ string WrapperSpecification::WrapNamespace (const md::Ptr<const md::Namespace>& 
         for (auto module : module_stack_)
           new_module->path += module->name+"_";
 
+        current_module()->chilrden.push_back(new_module);
         modules_.push_back(new_module);
         module_stack_.push_back(new_module);
 
