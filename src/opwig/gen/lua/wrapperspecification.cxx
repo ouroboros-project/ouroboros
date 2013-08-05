@@ -29,10 +29,10 @@ string WrapperSpecification::MiddleBlock() const {
     return
         "#include <languages/lua/luawrapper.h>\n"
         "#include <languages/lua/converter.h>\n"
+        "#include <languages/lua/header.h>\n"
         "#include <opa/scriptmanager.h>\n"
         "#include <opa/module.h>\n"
         "#include <opa/converter.h>\n"
-        "#include <lua5.1/lauxlib.h>\n"
         "#include <iostream>\n"
         "#include <string>\n"
         "#include <stdexcept>\n"
@@ -128,7 +128,7 @@ string WrapperSpecification::WrapFunction (const md::Ptr<const md::Function>& ob
               << "            L,\n"
               << "            \"Error: %s expected %d arguments but received only %d.\\n\",\n"
               << "            \"" << DumpNamespaceNesting() << obj->name() << "\",\n"
-              << "            " << num_params << ",\n"
+              << "            " << static_cast<int>(num_params) << ",\n"
               << "            args\n"
               << "        );\n";
     func_code << "    opa::lua::Converter convert(L);\n";
@@ -152,7 +152,8 @@ string WrapperSpecification::WrapFunction (const md::Ptr<const md::Function>& ob
               << "    } catch (runtime_error e) {\n"
               << "        return luaL_error(\n"
               << "            L,\n"
-              << "            \"%s.\\n\",\n"
+              << "            \"Error: could not convert %s's arguments (%s).\\n\",\n"
+              << "            \"" << DumpNamespaceNesting() << obj->name() << "\",\n"
               << "            e.what()\n"
               << "        );\n"
               << "    }\n";
@@ -160,12 +161,14 @@ string WrapperSpecification::WrapFunction (const md::Ptr<const md::Function>& ob
     }
     call_code << ")";
     if (obj->return_type() == "void") {
-        func_code << "    " << call_code.str() << ";\n";
-        func_code << "    int stack = 0;\n";
+        func_code
+              << "    " << call_code.str() << ";\n"
+              << "    int stack = 0;\n";
     } else {
-        func_code << "    " << obj->return_type() << " result = " << call_code.str() << ";\n";
-        func_code << "    int stack = convert.TypeToScript<" << obj->return_type()
-                                                             << ">(result);\n";
+        func_code
+              << "    " << obj->return_type() << " result = " << call_code.str() << ";\n"
+              << "    convert.TypeToScript<" << obj->return_type() << ">(result);\n"
+              << "    int stack = 1;\n";
     }
     func_code << "    return stack;\n"
               << "}\n\n";

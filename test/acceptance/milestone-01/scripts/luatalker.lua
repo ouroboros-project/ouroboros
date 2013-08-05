@@ -4,12 +4,29 @@ require 'prompt'
 local out = prompt.out
 local input = prompt.input
 
-function main (name)
-  print(name..": Let's check some things first...")
+local function wrongnumtest ()
   local check, err = pcall(function () out.send_message() end)
   if check == false and err then
     print(err)
   else
+    return false
+  end
+  return true
+end
+
+local function wrongtypetest ()
+  local check, err = pcall(function () out.send_multimessage('derp', function() end) end)
+  if check == false and err then
+    print(err)
+  else
+    return false
+  end
+  return true
+end
+
+function main (name)
+  print(name..": Let's check some things first...")
+  if not wrongnumtest() or not wrongtypetest() then
     return false
   end
   out.send_message(name..": Everything ok so far. S'up bro.", 'unused');
