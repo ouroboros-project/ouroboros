@@ -1,5 +1,6 @@
 #include <opwig/gen/python/pythonspecification.h>
 #include <opwig/gen/python/wrapmodule.h>
+#include <opwig/gen/python/utilities.h>
 #include <opwig/md/function.h>
 #include <opwig/md/namespace.h>
 
@@ -13,9 +14,6 @@ using std::string;
 using md::Ptr;
 using std::stringstream;
 using std::endl;
-
-const char* TAB = "    ";
-const string BASE_NSPACE = "opwig_py_generated";
 
 PythonSpecification::PythonSpecification() {
     root_module_ = Ptr<WrapModule>(new WrapModule(""));
@@ -96,12 +94,10 @@ string PythonSpecification::FinishFile() const {
 
 // WRAP FUNCION
 string PythonSpecification::WrapFunction(const Ptr<const md::Function>& obj) {
-    string wrapped_full_name = obj->nested_name("::", false);
-    wrapped_full_name.insert(wrapped_full_name.size()-(obj->name()).size(), "OPWIG_wrap_");
-    current_->AddFunction(obj->name(), wrapped_full_name);
+    current_->AddFunction(obj->name(), GetWrappedFunctionNestedName(obj));
         
     stringstream func;
-    func << "PyObject* OPWIG_wrap_"+obj->name()+"(PyObject* self, PyObject* args) {" << std::endl;
+    func << "PyObject* " << FUNC_PREFIX << obj->name() << "(PyObject* self, PyObject* args) {" << std::endl;
     func << TAB << "if (!NumArgsOk(args, " << obj->num_parameters() << ")) return nullptr;" << endl;
     func << TAB << "PythonConverter converter;" << std::endl;
     stringstream args ("");

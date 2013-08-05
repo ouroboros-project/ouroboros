@@ -1,4 +1,5 @@
 #include <opwig/gen/python/wrapmodule.h>
+#include <opwig/gen/python/utilities.h>
 #include <vector>
 #include <string>
 #include <sstream>
@@ -22,7 +23,6 @@ string WrapModule::GetMethodTableName() const {
 
 string WrapModule::GenerateMethodTable(const string& base_nspace) const {
     stringstream table;
-    const char* TAB = "    ";
     table << "static PyMethodDef " << GetMethodTableName() << "[] = {" << endl;
     for (unsigned i=0; i < function_names_.size(); i++) {
         string func_name = function_names_[i];

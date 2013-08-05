@@ -35,6 +35,8 @@ set (
   ${CMAKE_CURRENT_BINARY_DIR}/gen/python/pythonspecification.cxx
   ${CMAKE_CURRENT_BINARY_DIR}/gen/python/wrapmodule.h
   ${CMAKE_CURRENT_BINARY_DIR}/gen/python/wrapmodule.cxx
+  ${CMAKE_CURRENT_BINARY_DIR}/gen/python/utilities.h
+  ${CMAKE_CURRENT_BINARY_DIR}/gen/python/utilities.cxx
   ${OPWIG_MDPARSER_SRC}
   ${OPWIG_MDSCANNER_SRC}
 )

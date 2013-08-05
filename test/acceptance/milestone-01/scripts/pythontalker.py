@@ -10,7 +10,7 @@ def main(name):
         if msg in ["adios", "adieu", "arrivederci", "quit", "goodbye", "flw", "falou", "té mais", "té", "bye", "hasta"]:
             break
         elif msg == "hip hip":
-            prompt.out.send_multimessage(name+": HOORAH!", 3)
+            prompt.out.send_multimessage(name+": HOORAH!", "crack")
         elif msg in ["vegeta", "scouter", "nappa"]:
             prompt.out.send_message(name+": what was Goku's power level reported from Vegeta's scouter?")
             pl = prompt.input.receive_number()
