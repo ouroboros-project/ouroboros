@@ -1,9 +1,10 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
 import prompt
+from prompt import out
 
 def main(name):
-    prompt.out.send_message(name + ":  WAZAAAAAAAAAP")
+    out.send_message(name + ":  WAZAAAAAAAAAP")
     while True:
         msg = prompt.input.receive_message()
         print "message received = [%s]" % (msg)
