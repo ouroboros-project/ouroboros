@@ -21,6 +21,8 @@ const std::string FUNC_PREFIX = "OPWIG_wrap_";
 
 std::string GetWrappedFunctionNestedName(const md::Ptr<const md::Function>& func);
 
+std::string GetMETHARGSforFunction(const md::Ptr<const md::Function>& func);
+
 } // namespace python
 } // namespace gen
 } // namespace opwig

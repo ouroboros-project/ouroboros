@@ -2,11 +2,15 @@
 #define OPWIG_GEN_PYTHON_WRAPMODULE_H_
 
 #include <opwig/md/ptr.h>
-#include <vector>
 #include <list>
 #include <string>
 
 namespace opwig {
+
+namespace md {
+class Function;
+}
+
 namespace gen {
 namespace python {
 
@@ -16,7 +20,7 @@ class WrapModule final {
     WrapModule(const std::string& name, const md::Ptr<WrapModule>& parent) : name_(name), parent_(parent) {}
     ~WrapModule() {}
 
-    void AddFunction(const std::string& name, const std::string& wrapped_full_name);
+    void AddFunction(const md::Ptr<const md::Function>& func);
 
     std::string GetMethodTableName() const;
     std::string GenerateMethodTable(const std::string& base_nspace) const;
@@ -30,8 +34,7 @@ class WrapModule final {
 
   private:
     std::string name_;
-    std::vector<std::string> function_names_;
-    std::vector<std::string> full_wrapped_functions_;
+    std::list<md::Ptr<const md::Function>> functions_;
     md::Ptr<WrapModule> parent_;
     std::list<md::Ptr<WrapModule>> sub_modules_;
 };

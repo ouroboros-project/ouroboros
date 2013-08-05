@@ -94,11 +94,12 @@ string PythonSpecification::FinishFile() const {
 
 // WRAP FUNCION
 string PythonSpecification::WrapFunction(const Ptr<const md::Function>& obj) {
-    current_->AddFunction(obj->name(), GetWrappedFunctionNestedName(obj));
+    current_->AddFunction(obj);
         
     stringstream func;
     func << "PyObject* " << FUNC_PREFIX << obj->name() << "(PyObject* self, PyObject* args) {" << std::endl;
-    func << TAB << "if (!NumArgsOk(args, " << obj->num_parameters() << ")) return nullptr;" << endl;
+    if (obj->num_parameters() > 0)
+        func << TAB << "if (!NumArgsOk(args, " << obj->num_parameters() << ")) return nullptr;" << endl;
     func << TAB << "PythonConverter converter;" << std::endl;
     stringstream args ("");
     for (unsigned i=0; i<obj->num_parameters(); i++) {

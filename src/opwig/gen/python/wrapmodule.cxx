@@ -1,5 +1,6 @@
 #include <opwig/gen/python/wrapmodule.h>
 #include <opwig/gen/python/utilities.h>
+#include <opwig/md/function.h>
 #include <vector>
 #include <string>
 #include <sstream>
@@ -12,9 +13,8 @@ using std::string;
 using std::stringstream;
 using std::endl;
 
-void WrapModule::AddFunction(const string& name, const string& wrapped_full_name) {
-    function_names_.push_back(name);
-    full_wrapped_functions_.push_back(wrapped_full_name);
+void WrapModule::AddFunction(const md::Ptr<const md::Function>& func) {
+    functions_.push_back(func);
 }
 
 string WrapModule::GetMethodTableName() const {
@@ -24,11 +24,11 @@ string WrapModule::GetMethodTableName() const {
 string WrapModule::GenerateMethodTable(const string& base_nspace) const {
     stringstream table;
     table << "static PyMethodDef " << GetMethodTableName() << "[] = {" << endl;
-    for (unsigned i=0; i < function_names_.size(); i++) {
-        string func_name = function_names_[i];
-        string full_func_name = full_wrapped_functions_[i];
+    for (auto func : functions_) {
+        string func_name = func->name();
+        string full_func_name = GetWrappedFunctionNestedName(func);
         table << TAB << "{\"" << func_name << "\", " << base_nspace << "::" << full_func_name;
-        table << ", METH_VARARGS, \"calls C++ wrapped function\" }," << endl;
+        table << ", " << GetMETHARGSforFunction(func) << ", \"calls C++ wrapped function\" }," << endl;
     }
     table << TAB << "{NULL, NULL, 0, NULL} //sentinel" << endl;
     table << "};" << endl;

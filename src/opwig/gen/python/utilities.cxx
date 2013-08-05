@@ -16,6 +16,13 @@ string GetWrappedFunctionNestedName(const Ptr<const Function>& func) {
     return full_name;
 }
 
+string GetMETHARGSforFunction(const Ptr<const Function>& func) {
+    if (func->num_parameters() == 0)
+        return "METH_NOARGS";
+    else
+        return "METH_VARARGS";
+}
+
 } // namespace python
 } // namespace gen
 } // namespace opwig
