@@ -29,16 +29,11 @@ void InitScripts () {
     SCRIPT_MANAGER()->Initialize("./scripts/");
 }
 
-bool RunTalker (const string& which, const string& name) {
+bool RunTalker (const string& which) {
     VirtualObj  talker = SCRIPT_MANAGER()->LoadModule(which+"talker");
     if (!talker) return false;
     if (!talker["main"]) return false;
-    VirtualObj arg(talker.wrapper());
-    arg.set_value<const char*>(name.c_str());
-    if (!arg) return false;
     VirtualObj::List args;
-    args.push_back(arg);
-    if (!args.front()) return false;
     VirtualObj result = talker["main"](args);
     if (!result) return false;
     return result.value<bool>();
@@ -49,15 +44,10 @@ bool RunTalker (const string& which, const string& name) {
 int main(int argc, char **argv) {
     int success = EXIT_SUCCESS;
     InitScripts();
-
-    if (argc < 2) {
-        cout << LOGMARK << "Missing argument." << endl;
-        return EXIT_FAILURE;
-    }
     
 #ifdef OUROBOROS_LUA_BINDINGS
     cout << LOGMARK << "Using Lua wrappings and embedding..." << endl;
-    if(!RunTalker("lua", argv[1])) {
+    if(!RunTalker("lua")) {
         cout << LOGMARK << "Lua wrappings and embedding failed!" << endl;
         success = EXIT_FAILURE;
     } else
@@ -66,7 +56,7 @@ int main(int argc, char **argv) {
 
 #ifdef OUROBOROS_PYTHON_BINDINGS
     cout << LOGMARK << "Using Python wrappings and embedding..." << endl;
-    if(!RunTalker("python", argv[1])) {
+    if(!RunTalker("python")) {
         cout << LOGMARK << "Python wrappings and embedding failed!" << endl;
         success = EXIT_FAILURE;
     } else

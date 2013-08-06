@@ -1,27 +1,33 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-import prompt
+from prompt.input import receive_message, receive_number, receive_confirmation
 from prompt import out
+from prompt.out.constants import TALKER_NAME
 
-def main(name):
-    out.send_message(name + ":  WAZAAAAAAAAAP")
+def main():
+    out.send_message(TALKER_NAME + ":  WAZAAAAAAAAAP")
     while True:
-        msg = prompt.input.receive_message()
+        msg = receive_message()
         print "message received = [%s]" % (msg)
         if msg in ["adios", "adieu", "arrivederci", "quit", "goodbye", "flw", "falou", "té mais", "té", "bye", "hasta"]:
             break
         elif msg == "hip hip":
-            prompt.out.send_multimessage(name+": HOORAH!", 3)
+            out.send_multimessage(TALKER_NAME+": HOORAH!", 3)
         elif msg in ["vegeta", "scouter", "nappa"]:
-            prompt.out.send_message(name+": what was Goku's power level reported from Vegeta's scouter?")
-            pl = prompt.input.receive_number()
+            out.send_message(TALKER_NAME+": what was Goku's power level reported from Vegeta's scouter?")
+            pl = receive_number()
             if pl > 9000.0:
-                prompt.out.send_message(name+": correct.")
+                out.send_message(TALKER_NAME+": correct.")
             else:
-                prompt.out.send_message(name+": dafuq dude?")
+                out.send_message(TALKER_NAME+": dafuq dude?")
         elif msg == "ask me":
-            prompt.out.send_message(name+": vc é bobo?")
-            bobo = prompt.input.receive_confirmation()
-            prompt.out.send_message(name+": "+str(bobo)+"? Hmpf.")
+            out.send_message(TALKER_NAME+": vc é bobo?")
+            bobo = receive_confirmation()
+            out.send_message(TALKER_NAME+": "+str(bobo)+"? Hmpf.")
+        elif msg == "break":
+            out.BREAK_LINE = not out.BREAK_LINE
+            out.send_message(TALKER_NAME+": toggled break line - "+str(out.BREAK_LINE))
+        elif msg in ["help", "h"]:
+            out.send_message(TALKER_NAME+": 'hip hip', 'scouter', 'ask me', 'break', 'quit'")
         
     return True
