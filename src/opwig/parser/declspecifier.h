@@ -84,7 +84,9 @@ inline md::NestedNameSpecifier DeclSpecifier::type_specifier () const {
 }
 
 inline md::Ptr<md::Type> DeclSpecifier::type () const {
-    return md::Type::Create(type_specifier_.ToString(), is_const_);
+    if (!type_specifier_.ToString().empty())
+        return md::Type::Create(type_specifier_.ToString(), is_const_);
+    return md::Ptr<md::Type>();
 }
 
 inline bool DeclSpecifier::is_virtual () const {

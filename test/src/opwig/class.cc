@@ -117,13 +117,13 @@ TEST_F (MDClassTest, ComplexClassInClass) {
     auto c1 = TestClass("name", AccessSpecifier::PUBLIC, 0u, 1u, 1u);
     TestClassAttributes(c1, 0u, 0u, false);
 
-    auto f = TestFunction(c1, "func()", "func", "name*", AccessSpecifier::PUBLIC, false);
+    auto f = TestFunction(c1, "func()", "func", "name *", AccessSpecifier::PUBLIC, false);
     TestFunctionNoParameters(f);
     
     auto c2 = TestClass(c1, "name2", AccessSpecifier::PRIVATE, 0u, 1u, 0u);
     TestClassAttributes(c2, 0u, 0u, false);
 
-    auto f2 = TestFunction(c2, "func(type)", "func", "name*", AccessSpecifier::PRIVATE, false);
+    auto f2 = TestFunction(c2, "func(type)", "func", "name *", AccessSpecifier::PRIVATE, false);
     TestFunctionParameter(f2, 0, "", "type");
 }
 
@@ -142,7 +142,7 @@ TEST_F (MDClassTest, ClassInClassWithConstructors) {
     auto ctor2 =  TestClassConstructorByIndex(c2, 0, AccessSpecifier::PRIVATE);
     TestFunctionParameter(ctor2, 0, "", "type");
 
-    auto f2 = TestFunction(c2, "name()", "name", "name*", AccessSpecifier::PRIVATE, false);
+    auto f2 = TestFunction(c2, "name()", "name", "name *", AccessSpecifier::PRIVATE, false);
     TestFunctionNoParameters(f2);
 }
 

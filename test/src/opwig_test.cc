@@ -1,4 +1,4 @@
-
+#include <opwig/md/type.h>
 #include <opwig/md/variable.h>
 #include <opwig/md/class.h>
 #include <opwig/md/function.h>
@@ -38,6 +38,7 @@ using std::list;
 using std::function;
 
 using opwig::md::Ptr;
+using opwig::md::Type;
 using opwig::md::Variable;
 using opwig::md::ParameterList;
 using opwig::md::Function;
@@ -83,7 +84,7 @@ class MDBaseTest : public ::testing::Test {
         Ptr<const Variable> var = scope->GlobalVariable(name);
         ASSERT_TRUE(static_cast<bool>(var));
         EXPECT_EQ(name, var->name());
-        EXPECT_EQ(type, var->type());
+        EXPECT_EQ(type, var->type()->full_type());
         EXPECT_EQ(access, var->access());
     }
     
@@ -105,7 +106,10 @@ class MDBaseTest : public ::testing::Test {
                                 bool is_virtual = false) {
         ASSERT_TRUE(static_cast<bool>(func));
         EXPECT_EQ(name, func->name());
-        EXPECT_EQ(return_type, func->return_type());
+        if (return_type.empty())
+            EXPECT_FALSE(func->return_type());
+        else
+            EXPECT_EQ(return_type, func->return_type()->full_type());
         EXPECT_EQ(access, func->access());
         EXPECT_EQ(is_pure, func->is_pure());
         EXPECT_EQ(is_virtual, func->is_virtual());
@@ -117,7 +121,7 @@ class MDBaseTest : public ::testing::Test {
     }
     void TestFunctionParameter(Ptr<const Function> func, int paramIndex, const string& param_name, const string& param_type) {
         EXPECT_EQ(param_name, func->parameter_name(paramIndex));
-        EXPECT_EQ(param_type, func->parameter_type(paramIndex));
+        EXPECT_EQ(param_type, func->parameter_type(paramIndex)->full_type());
     }
     
     /////////// namespace

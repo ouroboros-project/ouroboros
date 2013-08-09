@@ -36,7 +36,7 @@ TEST_F (MDNamespaceTest, NestSingle) {
 
 TEST_F (MDNamespaceTest, AddSingleFunction) {
     Ptr<Namespace>  space = Namespace::Create("abc");
-    Ptr<Function>   foo   = Function::Create("foo", "void", {});
+    Ptr<Function>   foo   = Function::Create("foo", Type::Create("void",false), {});
     EXPECT_TRUE(space->AddNestedFunction(foo));
     EXPECT_EQ(space->NestedFunctionsNum(), 1u);
     EXPECT_EQ(space->NestedFunction("foo()"), foo);
@@ -45,9 +45,9 @@ TEST_F (MDNamespaceTest, AddSingleFunction) {
 
 TEST_F (MDNamespaceTest, AddManyFunctions) {
     Ptr<Namespace>  space = Namespace::Create("abc");
-    Ptr<Function>   foo1  = Function::Create("foo1", "void", {});
-    Ptr<Function>   foo2  = Function::Create("foo1", "void", {});
-    Ptr<Function>   foo3  = Function::Create("foo2", "void", {});
+    Ptr<Function>   foo1  = Function::Create("foo1", Type::Create("void",false), {});
+    Ptr<Function>   foo2  = Function::Create("foo1", Type::Create("void",false), {});
+    Ptr<Function>   foo3  = Function::Create("foo2", Type::Create("void",false), {});
     EXPECT_TRUE(space->AddNestedFunction(foo1));
     EXPECT_THROW(space->AddNestedFunction(foo2), std::exception);
     EXPECT_TRUE(space->AddNestedFunction(foo3));

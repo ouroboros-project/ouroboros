@@ -27,13 +27,14 @@ class DummySpecification : public WrapperSpecification {
         func << "    DummyConverter converter ();" << std::endl;
         std::stringstream args ("");
         for (unsigned i=0; i<obj->num_parameters(); i++) {
-            func << "    "<< obj->parameter_type(i) <<" fArg"<< i <<" = converter.fromScript<"<< obj->parameter_type(i) <<">(arg1);" << std::endl;
+            func << "    "<< obj->parameter_type(i)->full_type() <<" fArg"<< i;
+            func << " = converter.fromScript<"<< obj->parameter_type(i)->full_type() <<">(arg1);" << std::endl;
             if (i > 0)
                 args << ", ";
             args << "fArg" << i;
         }
-        func << "    " << obj->return_type() << " fValue = " << obj->name() << "("<< args.str() << ");" << std::endl;
-        func << "    return converter.toScript<"<< obj->return_type() <<">(fValue);" << std::endl;
+        func << "    " << obj->return_type()->full_type() << " fValue = " << obj->name() << "("<< args.str() << ");" << std::endl;
+        func << "    return converter.toScript<"<< obj->return_type()->full_type() <<">(fValue);" << std::endl;
         func << "}";
         return func.str();
     }
@@ -136,8 +137,10 @@ WrapperTestCase  SIMPLE_GLOBAL_FUNCTIONS = {
 }
 
 TEST_F (WrapperGeneratorTest, SimpleGlobalFunctions) {
-    given_scope_->AddNestedFunction(Function::Create("Wat", "CppRetType", {}, false, false));
-    given_scope_->AddNestedFunction(Function::Create("DoStuff", "CppRetType", {{"CppType0", "n0"}, {"CppType1", "n1"}}, false, false));
+    given_scope_->AddNestedFunction(Function::Create("Wat", Type::Create("CppRetType",false), {}, false, false));
+    given_scope_->AddNestedFunction(Function::Create("DoStuff", Type::Create("CppRetType",false), 
+                                                    {{Type::Create("CppType0",false), "n0"}, {Type::Create("CppType1",false), "n1"}},
+                                                    false, false));
     Generate();
     GenerateCodeMatches(SIMPLE_GLOBAL_FUNCTIONS);
 }

@@ -1,5 +1,6 @@
 #include <opwig/md/class.h>
 #include <opwig/md/function.h>
+#include <opwig/md/type.h>
 
 namespace opwig {
 namespace md {
