@@ -137,7 +137,7 @@ string WrapperSpecification::WrapFunction (const md::Ptr<const md::Function>& ob
               << "    try {\n";
     call_code << obj->name() << "(";
     for (size_t i = 0; i < obj->num_parameters(); ++i) {
-        string type = obj->parameter_type(i);
+        string type = obj->parameter_type(i)->full_type();
         func_code
               << "    " << type << " arg_" << i << ";\n";
         args_code
@@ -160,14 +160,14 @@ string WrapperSpecification::WrapFunction (const md::Ptr<const md::Function>& ob
         func_code << args_code.str();
     }
     call_code << ")";
-    if (obj->return_type() == "void") {
+    if (obj->return_type()->full_type() == "void") {
         func_code
               << "    " << call_code.str() << ";\n"
               << "    int stack = 0;\n";
     } else {
         func_code
-              << "    " << obj->return_type() << " result = " << call_code.str() << ";\n"
-              << "    convert.TypeToScript<" << obj->return_type() << ">(result);\n"
+              << "    " << obj->return_type()->full_type() << " result = " << call_code.str() << ";\n"
+              << "    convert.TypeToScript<" << obj->return_type()->full_type() << ">(result);\n"
               << "    int stack = 1;\n";
     }
     func_code << "    return stack;\n"
