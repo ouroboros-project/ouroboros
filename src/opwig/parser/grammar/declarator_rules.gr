@@ -84,10 +84,10 @@ parameter_declaration:
   }
 |
   decl_specifier_seq declarator {
-    $$ = md::Parameter(
-      ($1)(md::Ptr<md::Scope>()).type()+($2).pointer_type(),
-      ($2).nested_name().name()
-    );
+    $$ = md::Parameter(md::Type::ChainTypes(
+                            ($1)(md::Ptr<md::Scope>()).type(), 
+                            ($2).pointer_type()), 
+                        ($2).nested_name().name() );
   }
 ;
 

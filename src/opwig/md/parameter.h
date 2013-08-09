@@ -2,6 +2,7 @@
 #ifndef OPWIG_MD_PARAMETER_H_
 #define OPWIG_MD_PARAMETER_H_
 
+#include <opwig/md/type.h>
 #include <vector>
 #include <initializer_list>
 
@@ -10,20 +11,20 @@ namespace md {
 
 /// Function parameter information.
 struct Parameter final {
-    std::string type;
+    Ptr<Type> type;
     std::string name;
-    Parameter (const std::string& the_type= "", const std::string& the_name = "");
+    Parameter (const Ptr<Type>& the_type, const std::string& the_name = "");
     bool operator ==(const Parameter& rhs) const;
 };
 
 /// List of function parameter information.
 using ParameterList = std::vector<Parameter>;
 
-inline Parameter::Parameter (const std::string& the_type, const std::string& the_name)
+inline Parameter::Parameter (const Ptr<Type>& the_type, const std::string& the_name)
     : type(the_type), name(the_name) {}
 
 inline bool Parameter::operator ==(const Parameter& rhs) const {
-    return type == rhs.type && name == rhs.name;
+    return type == rhs.type;
 }
 
 } // namespace md

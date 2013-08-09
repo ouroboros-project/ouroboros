@@ -12,6 +12,7 @@ set (
   ${CMAKE_CURRENT_BINARY_DIR}/md/scope.h
   ${CMAKE_CURRENT_BINARY_DIR}/md/scope.cxx
   ${CMAKE_CURRENT_BINARY_DIR}/md/ptr.h
+  ${CMAKE_CURRENT_BINARY_DIR}/md/type.h
   ${CMAKE_CURRENT_BINARY_DIR}/md/namespace.h
   ${CMAKE_CURRENT_BINARY_DIR}/md/variable.h
   ${CMAKE_CURRENT_BINARY_DIR}/md/class.h
