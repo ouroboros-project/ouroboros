@@ -3,13 +3,15 @@ protected:
 };
 
 TEST_F (MDFunctionTest, Create) {
-    Ptr<Function> var = Function::Create("funcname", "returntype", {{"type0", "name0"}, {"type1", "name1"}}, false, false);
+    Ptr<Function> var = Function::Create("funcname", Type::Create("returntype", false), 
+                                        {{Type::Create("type0", false), "name0"}, {Type::Create("type1",false), "name1"}},
+                                        false, false);
     ASSERT_TRUE(static_cast<bool>(var));
     EXPECT_EQ("funcname", var->name());
-    EXPECT_EQ("returntype", var->return_type());
-    EXPECT_EQ("type0", var->parameter_type(0));
+    EXPECT_EQ("returntype", var->return_type()->full_type());
+    EXPECT_EQ("type0", var->parameter_type(0)->full_type());
     EXPECT_EQ("name0", var->parameter_name(0));
-    EXPECT_EQ("type1", var->parameter_type(1));
+    EXPECT_EQ("type1", var->parameter_type(1)->full_type());
     EXPECT_EQ("name1", var->parameter_name(1));
     EXPECT_EQ("funcname(type0,type1)", var->id());
     EXPECT_FALSE(var->is_pure());
@@ -37,8 +39,8 @@ TEST_F (MDFunctionTest, GlobalSinglePointerArgFunction) {
     ASSERT_EQ(RunParse("rtype name(type* arg);"), 0);
     TestScopeChildNums(global_, 0u, 1u, 0u, 0u);
     
-    auto f = TestFunction("name(type*)", "name", "rtype", AccessSpecifier::PUBLIC, false);
-    TestFunctionParameter(f, 0, "arg", "type*");
+    auto f = TestFunction("name(type *)", "name", "rtype", AccessSpecifier::PUBLIC, false);
+    TestFunctionParameter(f, 0, "arg", "type *");
 }
 
 TEST_F (MDFunctionTest, GlobalDoubleArgFunction) {
@@ -105,8 +107,8 @@ TEST_F (MDFunctionTest, ManyDifferentFunctions) {
         TestFunctionParameter(f, 1, "pname1", "ptype1");
     }
     /* forth */ {
-        auto f = TestFunction("name3(ptype0*)", "name3", "rtype3", AccessSpecifier::PUBLIC, false);
-        TestFunctionParameter(f, 0, "pname0", "ptype0*");
+        auto f = TestFunction("name3(ptype0 *)", "name3", "rtype3", AccessSpecifier::PUBLIC, false);
+        TestFunctionParameter(f, 0, "pname0", "ptype0 *");
     }
     /* fifth */ {
         auto abc = TestNamespace("abc", AccessSpecifier::PUBLIC, 0u, 1u, 0u, 0u);

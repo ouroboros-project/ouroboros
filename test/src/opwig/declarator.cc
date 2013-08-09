@@ -20,7 +20,7 @@ TEST (DeclaratorTest, ParametersInformation) {
         EXPECT_TRUE(equal(parameters_check.begin(), parameters_check.end(), parameters.begin()));
     }
     /* Single parameter list */ {
-        ParameterList parameters = {{"type1", "name1"}};
+        ParameterList parameters = {{Type::Create("type1",false), "name1"}};
         declarator.set_parameters(parameters);
         EXPECT_TRUE(declarator.has_parameters());
         const ParameterList parameters_check = declarator.parameters();
@@ -28,7 +28,9 @@ TEST (DeclaratorTest, ParametersInformation) {
         EXPECT_TRUE(equal(parameters_check.begin(), parameters_check.end(), parameters.begin()));
     }
     /* Multiple parameter list */ {
-        ParameterList parameters = {{"type1", "name1"}, {"type2", "name2"}, {"type3", "name3"}};
+        ParameterList parameters = {{Type::Create("type1",false), "name1"},
+                                    {Type::Create("type2",false), "name2"},
+                                    {Type::Create("type3",false), "name3"}};
         declarator.set_parameters(parameters);
         EXPECT_TRUE(declarator.has_parameters());
         const ParameterList parameters_check = declarator.parameters();

@@ -3,6 +3,7 @@
 #include <opwig/gen/python/utilities.h>
 #include <opwig/md/function.h>
 #include <opwig/md/namespace.h>
+#include <opwig/md/type.h>
 
 #include <sstream>
 
@@ -103,20 +104,20 @@ string PythonSpecification::WrapFunction(const Ptr<const md::Function>& obj) {
     func << TAB << "PythonConverter converter;" << std::endl;
     stringstream args ("");
     for (unsigned i=0; i<obj->num_parameters(); i++) {
-        func << TAB << obj->parameter_type(i) <<" fArg"<< i << ";" << endl;
-        func << TAB << "try { fArg"<< i <<" = converter.PyArgToType<"<< obj->parameter_type(i) <<">(args, " << i << "); }" << endl;
+        func << TAB << obj->parameter_type(i)->full_type() <<" fArg"<< i << ";" << endl;
+        func << TAB << "try { fArg"<< i <<" = converter.PyArgToType<"<< obj->parameter_type(i)->full_type() <<">(args, " << i << "); }" << endl;
         func << TAB << "catch (std::exception& e) { cout << e.what() << endl; return nullptr; }" << endl;
         if (i > 0)
             args << ", ";
         args << "fArg" << i;
     }
-    if (obj->return_type() == "void") {
+    if (obj->return_type()->full_type() == "void") {
         func << TAB << obj->nested_name() << "("<< args.str() << ");" << endl;
         func << TAB << "Py_RETURN_NONE;" << endl;
     }
     else {
-        func << TAB << obj->return_type() << " fValue = " << obj->nested_name() << "("<< args.str() << ");" << endl;
-        func << TAB << "return converter.TypeToScript<"<< obj->return_type() <<">(fValue);" << endl;
+        func << TAB << obj->return_type()->full_type() << " fValue = " << obj->nested_name() << "("<< args.str() << ");" << endl;
+        func << TAB << "return converter.TypeToScript<"<< obj->return_type()->full_type() <<">(fValue);" << endl;
     }
     func << "}";
     return func.str();

@@ -2,10 +2,10 @@
 class MDVariableTest : public MDBaseTest {
 protected:
     void CheckVariable(const string& name, const string& type) {
-        Ptr<Variable> var = Variable::Create(name, type);
+        Ptr<Variable> var = Variable::Create(name, Type::Create(type,false));
         ASSERT_TRUE(static_cast<bool>(var));
         EXPECT_EQ(name, var->name());
-        EXPECT_EQ(type, var->type());
+        EXPECT_EQ(type, var->type()->full_type());
     }
 };
 
@@ -22,7 +22,7 @@ TEST_F (MDVariableTest, SingleVariable) {
 TEST_F (MDVariableTest, SinglePointerVariable) {
     ASSERT_EQ(RunParse("type *var = 0;"), 0);
 
-    TestVariable("var", "type*", AccessSpecifier::PUBLIC);
+    TestVariable("var", "type *", AccessSpecifier::PUBLIC);
 }
 
 TEST_F (MDVariableTest, MultiVariable) {

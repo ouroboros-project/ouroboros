@@ -4,6 +4,7 @@
 
 #include <opwig/md/metadataobject.h>
 #include <opwig/md/ptr.h>
+#include <opwig/md/type.h>
 #include <opwig/md/parameter.h>
 
 #include <vector>
@@ -21,7 +22,7 @@ class Function : public MetadataObject {
     virtual ~Function() {}
 
     /// Creates a new Function object. Must be used in place of the constructor.
-    static Ptr<Function> Create(const std::string& the_name, const std::string& the_return_type,
+    static Ptr<Function> Create(const std::string& the_name, const Ptr<const Type>& the_return_type,
                                 const ParameterList& the_parameter_list, const bool the_is_pure_flag,
                                 const bool the_virtual_flag);
 
@@ -31,10 +32,10 @@ class Function : public MetadataObject {
     virtual const std::string& id() const;
 
     /// Tells the function's return type.
-    std::string return_type() const;
+    Ptr<const Type> return_type() const;
 
     /// Tells the function's nth parameter type.
-    std::string parameter_type(size_t n) const;
+    Ptr<const Type> parameter_type(size_t n) const;
 
     /// Tells the function's nth parameter name.
     std::string parameter_name(size_t n) const;
@@ -74,7 +75,7 @@ class Function : public MetadataObject {
 
   private:
     std::string   signature_;
-    std::string   return_type_;
+    Ptr<const Type>    return_type_;
     ParameterList parameter_list_;
     bool          is_pure_;
     bool          is_virtual_;
@@ -83,13 +84,13 @@ class Function : public MetadataObject {
     bool          is_declared_;
     bool          is_defined_;
 
-    Function(const std::string& the_name, const std::string& the_return_type,
+    Function(const std::string& the_name, const Ptr<const Type>& the_return_type,
              const ParameterList& the_parameter_list, const bool the_pure_flag,
              const bool the_virtual_flag);
 
 };
 
-inline Function::Function(const std::string& the_name, const std::string& the_return_type,
+inline Function::Function(const std::string& the_name, const Ptr<const Type>& the_return_type,
                           const ParameterList& the_parameter_list, const bool the_pure_flag,
                           const bool the_virtual_flag)
     : MetadataObject(the_name), signature_(""), return_type_(the_return_type), parameter_list_(the_parameter_list),
@@ -100,7 +101,7 @@ inline Function::Function(const std::string& the_name, const std::string& the_re
 }
 
 inline Ptr<Function> Function::Create(const std::string& the_name,
-                                      const std::string& the_return_type,
+                                      const Ptr<const Type>& the_return_type,
                                       const ParameterList& the_parameter_list,
                                       const bool the_pure_flag = false,
                                       const bool the_virtual_flag = false) {
@@ -113,7 +114,7 @@ inline std::string Function::GetSignatureFor(const std::string& the_name, const 
     std::string signature = the_name + "(";
     if (the_parameter_list.size() > 0) {
         for (auto param : the_parameter_list)
-            signature += param.type + ",";
+            signature += param.type->full_type() + ",";
         signature.pop_back();
     }
     signature += ")";
@@ -124,11 +125,11 @@ inline const std::string& Function::id() const {
     return signature_;
 }
 
-inline std::string Function::return_type() const {
+inline Ptr<const Type> Function::return_type() const {
     return return_type_;
 }
 
-inline std::string Function::parameter_type(size_t n) const {
+inline Ptr<const Type> Function::parameter_type(size_t n) const {
     return parameter_list_.at(n).type; // throw handle exception?
 }
 

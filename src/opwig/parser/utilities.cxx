@@ -1,6 +1,7 @@
 #include <opwig/parser/utilities.h>
 #include <opwig/md/enum.h>
 #include <opwig/md/variable.h>
+#include <opwig/md/type.h>
 
 #include <iostream>
 
@@ -9,6 +10,7 @@ namespace parser {
 
 using md::SemanticError;
 using md::Ptr;
+using md::Type;
 using md::Scope;
 using md::Class;
 using md::Function;
@@ -29,7 +31,7 @@ ScopeAction JoinDeclarations (const TypeAction& type_action,
     ScopeAction action = [type_action, init_list] (Ptr<Scope> current_scope) -> bool {
         for (auto declarator: *init_list) {
             DeclSpecifier spec = type_action(current_scope);
-            std::string type = spec.type();
+            Ptr<Type> type = spec.type();
             NestedNameSpecifier nestedname = declarator.nested_name();
             Ptr<Scope> targetScope = nestedname.FindNearestNestingScope(current_scope);
             if (declarator.has_parameters()) {
@@ -41,7 +43,7 @@ ScopeAction JoinDeclarations (const TypeAction& type_action,
                 if (!func) {
                     func = Function::Create(
                         nestedname.name(),
-                        type+declarator.pointer_type(),
+                        Type::ChainTypes(type, declarator.pointer_type()),
                         declarator.parameters(),
                         declarator.is_pure(),
                         spec.is_virtual()
@@ -58,7 +60,7 @@ ScopeAction JoinDeclarations (const TypeAction& type_action,
                         targetScope->name(), __FILE__, __LINE__
                     );
                 }
-                else if (func->return_type() != type) {
+                else if (*func->return_type() != *type) {
                     throw SemanticError(
                         "Erroneous function declaration for '"+func->id()+"' in scope "+
                         targetScope->name()+" [return type mismatch]", __FILE__, __LINE__
@@ -68,7 +70,7 @@ ScopeAction JoinDeclarations (const TypeAction& type_action,
             } 
             else {
                 Ptr<Variable> var =
-                    Variable::Create(nestedname.name(), type+declarator.pointer_type());
+                    Variable::Create(nestedname.name(), Type::ChainTypes(type, declarator.pointer_type()));
                 if (!targetScope->AddGlobalVariable(var)) {
                     throw SemanticError(
                         "Failed to add Variable '"+var->name()+"' to Scope", __FILE__, __LINE__
@@ -96,7 +98,7 @@ TypeAction AddClassToScope( Ptr<Class> classObj, const NestedNameSpecifier& nest
 ScopeAction AddFunctionToScope( const TypeAction& type_action, const parser::Declarator& declarator, bool is_default, bool is_delete) {
     ScopeAction action = [type_action, declarator, is_default, is_delete] (Ptr<Scope> current_scope) -> bool {
         DeclSpecifier spec = type_action(current_scope);
-        std::string type = spec.type();
+        Ptr<Type> type = spec.type();
         NestedNameSpecifier nestedname = declarator.nested_name();
         Ptr<Scope> targetScope = nestedname.FindNearestNestingScope(current_scope);
         if (!declarator.has_parameters()) {
@@ -111,7 +113,7 @@ ScopeAction AddFunctionToScope( const TypeAction& type_action, const parser::Dec
         if (!func) {
             func = Function::Create(
                 nestedname.name(),
-                type+declarator.pointer_type(),
+                Type::ChainTypes(type, declarator.pointer_type()),
                 declarator.parameters(),
                 declarator.is_pure(),
                 spec.is_virtual()
@@ -131,7 +133,7 @@ ScopeAction AddFunctionToScope( const TypeAction& type_action, const parser::Dec
                 __LINE__
             );
         }
-        else if (func->return_type() != type) {
+        else if (*func->return_type() != *type) {
             throw SemanticError(
                 "Erroneous function definition for '"+func->id()+"' in scope "+targetScope->name()
                                                      +" [return type mismatch]",

@@ -3,6 +3,7 @@
 #define OPWIG_DECLSPECIFIER_H_
 
 #include <opwig/md/ptr.h>
+#include <opwig/md/type.h>
 #include <opwig/md/nestednamespecifier.h>
 #include <opwig/md/semanticerror.h>
 
@@ -33,7 +34,7 @@ class DeclSpecifier final {
     md::NestedNameSpecifier type_specifier () const;
 
     /// Gets the full type associated with this declaration specifier.
-    std::string type () const;
+    md::Ptr<md::Type> type () const;
 
     /// Joins two declaration specifiers according to C++ semantics.
     static DeclSpecifier Join (const DeclSpecifier& lhs, const DeclSpecifier& rhs);
@@ -82,10 +83,10 @@ inline md::NestedNameSpecifier DeclSpecifier::type_specifier () const {
     return type_specifier_;
 }
 
-inline std::string DeclSpecifier::type () const {
-    if (type_specifier_.ToString().empty())
-      return "";
-    return (is_const_ ? "const " : "") + type_specifier_.ToString();
+inline md::Ptr<md::Type> DeclSpecifier::type () const {
+    if (!type_specifier_.ToString().empty())
+        return md::Type::Create(type_specifier_.ToString(), is_const_);
+    return md::Ptr<md::Type>();
 }
 
 inline bool DeclSpecifier::is_virtual () const {
@@ -111,9 +112,9 @@ inline DeclSpecifier DeclSpecifier::Join (const DeclSpecifier& lhs, const DeclSp
         throw md::SemanticError("Double type specification.", __FILE__, __LINE__);
     md::NestedNameSpecifier the_type;
     if (lhs_typed)
-      the_type = lhs.type();
+      the_type = lhs.type_specifier();
     else
-      the_type = rhs.type();
+      the_type = rhs.type_specifier();
   
     return DeclSpecifier(the_type, virtual_flag, const_flag);
 }

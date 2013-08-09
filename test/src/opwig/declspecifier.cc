@@ -28,9 +28,9 @@ TEST_F (DeclSpecifierTest, Constructor) {
 }
 
 TEST_F (DeclSpecifierTest, FullType) {
-    EXPECT_EQ("type", typed_.type());
-    EXPECT_EQ("const type", (DeclSpecifier::Join(typed_, const_).type()));
-    EXPECT_EQ("", const_.type());
+    EXPECT_EQ("type", typed_.type()->full_type());
+    EXPECT_EQ("const type", (DeclSpecifier::Join(typed_, const_).type()->full_type()));
+    EXPECT_FALSE(const_.type());
 }
 
 TEST_F (DeclSpecifierTest, JoinTypeAndVirtualSpecs) {

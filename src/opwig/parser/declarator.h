@@ -3,6 +3,7 @@
 #define OPWIG_DECLARATOR_H_
 
 #include <opwig/md/ptr.h>
+#include <opwig/md/type.h>
 #include <opwig/md/parameter.h>
 #include <opwig/md/nestednamespecifier.h>
 
@@ -34,7 +35,7 @@ class Declarator final {
 
     void set_parameters (md::Ptr<md::ParameterList> the_parameters);
 
-    std::string pointer_type () const;
+    md::Ptr<md::Type> pointer_type () const;
 
     void set_pointer_type (const std::string& the_pointer_type);
     
@@ -46,12 +47,12 @@ class Declarator final {
 
     md::NestedNameSpecifier     nested_name_;
     md::Ptr<md::ParameterList>  parameters_;
-    std::string                 pointer_type_;
+    md::Ptr<md::Type>           pointer_type_;
     bool pure_;
 };
 
 inline Declarator::Declarator (const md::NestedNameSpecifier& the_nested_name)
-    : nested_name_(the_nested_name), pointer_type_(""), pure_(false) {}
+    : nested_name_(the_nested_name), pure_(false) {}
 
 inline std::string Declarator::name () const {
     return nested_name_.ToString();
@@ -81,12 +82,12 @@ inline void Declarator::set_parameters (md::Ptr<md::ParameterList> the_parameter
   parameters_ = the_parameters;
 }
 
-inline std::string Declarator::pointer_type () const {
+inline md::Ptr<md::Type> Declarator::pointer_type () const {
     return pointer_type_;
 }
 
 inline void Declarator::set_pointer_type (const std::string& the_pointer_type) {
-    pointer_type_ = the_pointer_type;
+    pointer_type_ = md::Type::Create(the_pointer_type, false);
 }
 
 inline bool Declarator::is_pure () const {
