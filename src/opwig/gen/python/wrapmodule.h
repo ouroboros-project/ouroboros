@@ -12,6 +12,9 @@ class Function;
 }
 
 namespace gen {
+
+struct ScriptModule;
+
 namespace python {
 
 class WrapModule final {
@@ -32,11 +35,15 @@ class WrapModule final {
     const md::Ptr<WrapModule>& parent() const { return parent_; }
     const std::list<md::Ptr<WrapModule>>& sub_modules() const { return sub_modules_; }
 
+    std::list<ScriptModule> ConvertTreeToScriptModuleList() const;
+
   private:
     std::string name_;
     std::list<md::Ptr<const md::Function>> functions_;
     md::Ptr<WrapModule> parent_;
     std::list<md::Ptr<WrapModule>> sub_modules_;
+
+    void auxConvertToModuleList(std::list<ScriptModule>& moduleList) const;
 };
 
 } // namespace python

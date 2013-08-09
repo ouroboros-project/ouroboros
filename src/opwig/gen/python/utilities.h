@@ -23,6 +23,8 @@ std::string GetWrappedFunctionNestedName(const md::Ptr<const md::Function>& func
 
 std::string GetMETHARGSforFunction(const md::Ptr<const md::Function>& func);
 
+std::string GetInitFuncNameForModule(const std::string& module_name);
+
 } // namespace python
 } // namespace gen
 } // namespace opwig

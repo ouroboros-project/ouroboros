@@ -30,7 +30,7 @@ class WrapperSpecification final : public ::opwig::gen::WrapperSpecification {
     std::string WrapEnum(const md::Ptr<const md::Enum>& obj);
 
     std::string LoadFuncSignature() const;
-    std::string LoadFuncName() const;
+    std::list<ScriptModule> GetGeneratedModules() const;
     
   private:
 
@@ -62,8 +62,10 @@ inline std::string WrapperSpecification::LoadFuncSignature () const {
     return "int(*)(lua_State*)";
 }
 
-inline std::string WrapperSpecification::LoadFuncName () const {
-    return "luaopen_"+module_name();
+inline std::list<ScriptModule> WrapperSpecification::GetGeneratedModules () const {
+    //return "luaopen_"+module_name();
+    std::list<ScriptModule> lista;
+    return lista;
 }
 
 inline md::Ptr<WrapperSpecification::Module> WrapperSpecification::current_module () const {

@@ -23,6 +23,10 @@ string GetMETHARGSforFunction(const Ptr<const Function>& func) {
         return "METH_VARARGS";
 }
 
+std::string GetInitFuncNameForModule(const std::string& module_name) {
+    return "init"+module_name;
+}
+
 } // namespace python
 } // namespace gen
 } // namespace opwig

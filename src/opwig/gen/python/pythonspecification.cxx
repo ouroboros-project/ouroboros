@@ -87,7 +87,7 @@ string PythonSpecification::FinishFile() const {
     block << endl << "} //namespace " << BASE_NSPACE << endl << endl;
     HandleModuleMethodTables(block, root_module_);
     block << "PyMODINIT_FUNC" << endl;
-    block << LoadFuncName() << "(void) {" << endl;
+    block << GetInitFuncNameForModule(module_name_) << "(void) {" << endl;
     HandleWrapModuleForInitFunc(block, root_module_);
     block << "}" << endl;
     return block.str();
@@ -150,6 +150,10 @@ string PythonSpecification::WrapNamespace(const Ptr<const md::Namespace>& obj, b
 // WRAP ENUM
 string PythonSpecification::WrapEnum(const Ptr<const md::Enum>& obj) {
     return "";
+}
+
+std::list<ScriptModule> PythonSpecification::GetGeneratedModules () const {
+    return root_module_->ConvertTreeToScriptModuleList();
 }
 
 } // namespace python
