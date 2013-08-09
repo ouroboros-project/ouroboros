@@ -29,7 +29,7 @@ class PythonSpecification final : public ::opwig::gen::WrapperSpecification {
     std::string WrapEnum(const md::Ptr<const md::Enum>& obj);
 
     std::string LoadFuncSignature() const;
-    std::string LoadFuncName() const;
+    std::list<ScriptModule> GetGeneratedModules() const;
     
   private:
     md::Ptr<WrapModule> root_module_;
@@ -42,10 +42,6 @@ inline std::string PythonSpecification::wrapper_name () const {
 
 inline std::string PythonSpecification::LoadFuncSignature () const {
     return "void (*)(void)";
-}
-
-inline std::string PythonSpecification::LoadFuncName () const {
-    return "init"+module_name_;
 }
 
 } // namespace python

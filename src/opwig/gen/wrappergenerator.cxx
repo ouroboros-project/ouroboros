@@ -12,9 +12,10 @@ using std::cout;
 using std::ofstream;
 using std::ios_base;
 using std::endl;
+using std::string;
 using md::Ptr;
 
-void WrapperGenerator::Generate (const std::string& module_name, const Ptr<const md::Scope>& root,
+void WrapperGenerator::Generate (const string& module_name, const Ptr<const md::Scope>& root,
                                  const Ptr<WrapperSpecification>& spec) {
     spec->set_module_name(module_name);
     spec_ = spec;
@@ -38,7 +39,7 @@ void WrapperGenerator::Generate (const std::string& module_name, const Ptr<const
 }
 
 std::string WrapperGenerator::generateBootstrap() const {
-    return 
+    string bootstrap =
         // Bootstrap implementation
         "namespace {\n\n"
         // Bootstrap class
@@ -56,12 +57,19 @@ std::string WrapperGenerator::generateBootstrap() const {
         "    if (wrapper == NULL) {\n"
         "        wrapper = new "+spec_->wrapper_name()+"Wrapper;\n"
         "        SCRIPT_MANAGER()->Register(wrapper);\n"
-        "    }\n"
-        "    wrapper->RegisterModule("
-                "Module<"+spec_->LoadFuncSignature()+">(\""+spec_->module_name()+"\", "+spec_->LoadFuncName()+")"
-             ");\n"
+        "    }\n";
+    cout << "Generating bootstrap for " << spec_->wrapper_name() << endl;
+    for (auto scriptMod : spec_->GetGeneratedModules()) {
+        cout << "  module name: " << scriptMod.module_name << endl;
+        bootstrap +=
+            "    wrapper->RegisterModule("
+                "Module<"+spec_->LoadFuncSignature()+">(\""+scriptMod.module_name+"\", "+scriptMod.init_func_name+")"
+             ");\n";
+    }
+    bootstrap +=
         "}\n\n"
         "} // unnamed namespace\n";
+    return bootstrap;
 }
 
 void WrapperGenerator::iterateAndWrapScope(const Ptr<const md::Scope>& scope) {
