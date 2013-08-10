@@ -78,12 +78,17 @@ string WrapperSpecification::FinishFile () const {
         for (auto parent = module->parent.lock(); parent; parent = parent->parent.lock())
             nesting_modules =
                 "        lua_getfield(L, -1, \""+parent->name+"\");\n"
+                "        if (lua_isnil(L, -1)) {\n"
+                "            lua_pop(L, 1);\n"
+                "            lua_newtable(L);\n"
+                "            lua_pushvalue(L, -1);\n"
+                "            lua_setfield(L, -3, \""+parent->name+"\");\n"
+                "        }\n"
                 "        lua_remove(L, -2);\n"
                 + nesting_modules;
         init_functions_code +=
             "/// [-(1|2),+1,e]\n"
             "int luaopen_"+module->path+module->name+" (lua_State* L) {\n"
-            "    //const char *mod_name = luaL_checkstring(L, 1);\n"
             "    if (lua_gettop(L) > 1) {\n"
             "        lua_remove(L, 1);\n"
             "        lua_settop(L, 1);\n"

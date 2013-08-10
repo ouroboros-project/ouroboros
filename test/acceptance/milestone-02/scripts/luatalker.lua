@@ -24,7 +24,8 @@ local function wrongtypetest ()
   return true
 end
 
-function main (name)
+function main ()
+  local name = out.constants.TALKER_NAME
   print(name..": Let's check some things first...")
   if not wrongnumtest() or not wrongtypetest() then
     return false
