@@ -62,8 +62,11 @@ std::string WrapperGenerator::generateBootstrap() const {
     for (auto scriptMod : spec_->GetGeneratedModules()) {
         bootstrap +=
             "    wrapper->RegisterModule("
-                "Module<"+spec_->LoadFuncSignature()+">(\""+scriptMod.module_name+"\", "+scriptMod.init_func_name+")"
-             ");\n";
+                    "Module<"+spec_->LoadFuncSignature()+">("
+                          "\""+scriptMod.module_name+"\", "
+                          +scriptMod.init_func_name+
+                    ")"
+                ");\n";
     }
     bootstrap +=
         "}\n\n"

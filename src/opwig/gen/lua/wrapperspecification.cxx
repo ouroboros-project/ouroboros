@@ -20,6 +20,7 @@ WrapperSpecification::WrapperSpecification () {
 
 string WrapperSpecification::FileHeader () const {
     current_module()->name = module_name_;
+    current_module()->open = false;
     return
         "\n"
         "// This is a generated file.\n\n";
@@ -73,6 +74,12 @@ string WrapperSpecification::FinishFile () const {
         init_functions_code +=
             "int luaopen_"+module->path+module->name+" (lua_State *L);\n\n";
     for (auto module : modules_) {
+        string nesting_modules;
+        for (auto parent = module->parent.lock(); parent; parent = parent->parent.lock())
+            nesting_modules =
+                "        lua_getfield(L, -1, \""+parent->name+"\");\n"
+                "        lua_remove(L, -2);\n"
+                + nesting_modules;
         init_functions_code +=
             "/// [-(1|2),+1,e]\n"
             "int luaopen_"+module->path+module->name+" (lua_State* L) {\n"
@@ -83,6 +90,7 @@ string WrapperSpecification::FinishFile () const {
             "    } else {\n"
             "        lua_settop(L, 0);\n"
             "        lua_pushvalue(L, LUA_GLOBALSINDEX);\n"
+            + nesting_modules +
             "    }\n"
             "    // Nesting table is at index 1.\n"
             "    lua_newtable(L);\n"
@@ -195,6 +203,7 @@ string WrapperSpecification::WrapNamespace (const md::Ptr<const md::Namespace>& 
 
         new_module->name = obj->name();
         new_module->open = false;
+        new_module->parent = current_module();
         for (auto module : module_stack_)
           new_module->path += module->name+"_";
 

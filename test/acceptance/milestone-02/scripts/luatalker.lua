@@ -1,8 +1,8 @@
 
-require 'prompt'
+--require 'prompt'
 
-local out = prompt.out
-local input = prompt.input
+local out = require 'prompt.out'
+local input = require 'prompt.input'
 
 local function wrongnumtest ()
   local check, err = pcall(function () out.send_message() end)
