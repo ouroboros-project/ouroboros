@@ -64,12 +64,6 @@ inline std::string WrapperSpecification::LoadFuncSignature () const {
     return "int(*)(lua_State*)";
 }
 
-inline std::list<ScriptModule> WrapperSpecification::GetGeneratedModules () const {
-    //return "luaopen_"+module_name();
-    std::list<ScriptModule> lista;
-    return lista;
-}
-
 inline md::Ptr<WrapperSpecification::Module> WrapperSpecification::current_module () const {
     return module_stack_.back();
 }

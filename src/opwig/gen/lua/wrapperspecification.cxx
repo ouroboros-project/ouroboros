@@ -227,6 +227,17 @@ string WrapperSpecification::WrapEnum (const md::Ptr<const md::Enum>& obj) {
     return "";
 }
 
+std::list<ScriptModule> WrapperSpecification::GetGeneratedModules () const {
+    std::list<ScriptModule> the_list;
+    for (auto module : modules_) {
+        string modname = module->name;
+        for (auto parent = module->parent.lock(); parent; parent = parent->parent.lock())
+          modname = parent->name+"."+modname;
+        the_list.push_back(ScriptModule(modname, "luaopen_"+module->path+module->name));
+    }
+    return the_list;
+}
+
 string WrapperSpecification::DumpNamespaceNesting () const {
     string dump;
     bool skip = true;
