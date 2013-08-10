@@ -119,6 +119,11 @@ string WrapperSpecification::WrapFunction (const md::Ptr<const md::Function>& ob
     module_stack_.back()->functions.push_back({obj->name(), DumpNamespaceNesting()+"generated::"});
     stringstream func_code, args_code, call_code;
     size_t       num_params = obj->num_parameters();
+    if (!current_module()->open) {
+      func_code
+              << "namespace generated {\n\n";
+      current_module()->open = true;
+    }
     func_code << "int OPWIG_wrap_" << obj->name() << " (lua_State* L) {\n";
     if (num_params > 0)
         func_code
@@ -189,6 +194,7 @@ string WrapperSpecification::WrapNamespace (const md::Ptr<const md::Namespace>& 
         Ptr<Module> new_module(new Module);
 
         new_module->name = obj->name();
+        new_module->open = false;
         for (auto module : module_stack_)
           new_module->path += module->name+"_";
 
@@ -197,13 +203,13 @@ string WrapperSpecification::WrapNamespace (const md::Ptr<const md::Namespace>& 
         module_stack_.push_back(new_module);
 
         return
-            "namespace "+new_module->name+" {\n"
-            "namespace generated {\n\n";
+            "namespace "+new_module->name+" {\n";
     } else {
+        bool open = current_module()->open;
         module_stack_.pop_back();
 
         return
-            "} // namespace generated\n"
+            string(open ? "} // namespace generated\n\n" : "")+
             "} // namespace "+obj->name()+"\n\n";
     }
 }

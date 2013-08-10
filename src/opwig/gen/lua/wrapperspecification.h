@@ -43,6 +43,7 @@ class WrapperSpecification final : public ::opwig::gen::WrapperSpecification {
         std::string                 name, path;
         std::list<FuncWrap>         functions;
         std::list<md::Ptr<Module>>  children;
+        bool                        open;
     };
 
     std::list<md::Ptr<Module>>  modules_;
