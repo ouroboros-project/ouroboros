@@ -4,6 +4,8 @@
 local out = require 'prompt.out'
 local input = require 'prompt.input'
 
+table.foreach(getmetatable(out), print)
+
 local function wrongnumtest ()
   local check, err = pcall(function () out.send_message() end)
   if check == false and err then

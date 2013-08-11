@@ -90,6 +90,9 @@ string WrapperSpecification::FinishFile () const {
         "    // Stack: [module, submodule]\n"
         "    L.setfield(1, name);\n"
         "}\n\n"
+        "int OPWIG_Lua_UniversalGetter (lua_State *L) {\n"
+        "    return 0;\n"
+        "}\n"
         "} // unnamed namespace\n\n";
     string init_functions_code =
         // Loader function
@@ -124,8 +127,9 @@ string WrapperSpecification::FinishFile () const {
             "    // Leave only the module table in the stack\n"
             "    L.remove(1);\n"
             "    L.settop(1);\n"
-            // TODO
-            "    luaL_register(L, NULL, "+module->path+module->name+"_functions);\n";
+            "    // Register module's funcitons.\n"
+            "    luaL_register(L, NULL, "+module->path+module->name+"_functions);\n"
+            "    // Register module's submodules.\n";
         for (auto submodule : module->children) {
             init_functions_code +=
                 "    OPWIG_Lua_ExportSubmodule("
@@ -136,6 +140,15 @@ string WrapperSpecification::FinishFile () const {
                 ;
         }
         init_functions_code +=
+            "    // Set module metatable.\n"
+            "    L.newtable();\n"
+            "    L.pushvalue(-1);\n"
+            "    L.setmetatable(1);\n"
+            "    // Populate metatable.\n"
+            "    L.pushcfunction(OPWIG_Lua_UniversalGetter, 0);\n"
+            "    L.setfield(2, \"__index\");\n"
+            "    // Leave only the module table in the stack.\n"
+            "    L.settop(1);\n"
             "    // Return de module itself\n"
             "    return 1;\n"
             "}\n\n";
