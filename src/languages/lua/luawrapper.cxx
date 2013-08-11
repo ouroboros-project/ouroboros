@@ -48,7 +48,9 @@ void LuaWrapper::ExecuteCode(const std::string& code) {
 }
 
 VirtualObj LuaWrapper::LoadModule(const string& name) {
-	string fullpath = SCRIPT_MANAGER()->scripts_path() + SCRIPT_MANAGER()->ConvertDottedNotationToPath(name) + "." + file_extension();
+    string fullpath =
+        SCRIPT_MANAGER()->scripts_path() + SCRIPT_MANAGER()->ConvertDottedNotationToPath(name) +
+        "." + file_extension();
     return VirtualObj(LoadChunk(fullpath, DataGear::DoFile));
 }
 

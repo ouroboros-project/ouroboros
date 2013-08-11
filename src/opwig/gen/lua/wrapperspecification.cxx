@@ -120,12 +120,12 @@ string WrapperSpecification::FinishFile () const {
             "    L.newtable();\n"
             "    L.pushvalue(-1);\n"
             "    // Module table is at index 2 and 3.\n"
-            // TODO
-            "    luaL_register(L, NULL, "+module->path+module->name+"_functions);\n"
             "    L.setfield(1, MODULE_NAME);\n"
             "    // Leave only the module table in the stack\n"
             "    L.remove(1);\n"
-            "    L.settop(1);\n";
+            "    L.settop(1);\n"
+            // TODO
+            "    luaL_register(L, NULL, "+module->path+module->name+"_functions);\n";
         for (auto submodule : module->children) {
             init_functions_code +=
                 "    OPWIG_Lua_ExportSubmodule("
