@@ -1,11 +1,25 @@
 
 #include <opwig/gen/lua/codes.h>
 
+#include <sstream>
+
 namespace opwig {
 namespace gen {
 namespace lua {
 
 using std::string;
+using std::stringstream;
+
+string WrapList (const md::Ptr<Module>& module, WrappedMember member, const string& type) {
+    stringstream code;
+    code  << "luaL_Reg "<< module->path+module->name << "_" << type << "s[] = {\n";
+    for (auto wrap : (*module).*member)
+        code 
+          << "    { \"" + wrap.name + "\", " + wrap.nesting + "OPWIG_wrap_" + wrap.name + " },\n";
+    code  << "    { nullptr, nullptr }\n"
+             "};\n\n";
+    return code.str();
+}
 
 string Utilities () {
     return

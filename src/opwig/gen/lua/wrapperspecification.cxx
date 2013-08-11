@@ -59,14 +59,7 @@ string WrapperSpecification::FinishFile () const {
         "namespace {\n\n"
         "// List of wrapped functions\n";
     for (auto module : modules_) {
-        functions_wrap_code +=
-            "luaL_Reg "+module->path+module->name+"_functions[] = {\n";
-        for (auto func : module->functions)
-            functions_wrap_code +=
-                "    { \""+func.name+"\", "+func.nesting+"OPWIG_wrap_"+func.name+" },\n";
-        functions_wrap_code +=
-            "    { nullptr, nullptr }\n"
-            "};\n\n";
+        functions_wrap_code += WrapList(module, &Module::functions, "function");
     }
     functions_wrap_code +=
         Utilities()+
