@@ -7,6 +7,7 @@
 #include <opwig/md/ptr.h>
 #include <list>
 #include <string>
+#include <ostream>
 
 namespace opwig {
 namespace gen {
@@ -42,6 +43,8 @@ class WrapperSpecification final : public ::opwig::gen::WrapperSpecification {
 
     md::Ptr<Module> current_module () const;
 
+    void CheckAndOpenNamespace (std::ostream& output);
+
 };
 
 inline std::string WrapperSpecification::wrapper_name () const {
@@ -54,6 +57,13 @@ inline std::string WrapperSpecification::LoadFuncSignature () const {
 
 inline md::Ptr<Module> WrapperSpecification::current_module () const {
     return module_stack_.back();
+}
+
+inline void WrapperSpecification::CheckAndOpenNamespace (std::ostream& output) {
+    if (!current_module()->open) {
+        output << "namespace generated {\n\n";
+        current_module()->open = true;
+    }
 }
 
 } // namespace lua

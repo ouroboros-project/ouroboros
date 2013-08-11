@@ -12,6 +12,10 @@ namespace lua {
 
 using WrappedMember = std::list<DataWrap> (Module::*);
 
+inline std::string WrapName (const std::string& type, const std::string& name) {
+    return "OPWIG_wrap_"+type+"_"+name;
+}
+
 std::string WrapList (const md::Ptr<Module>& module, WrappedMember member, const std::string& type);
 
 std::string Utilities ();

@@ -60,6 +60,7 @@ string WrapperSpecification::FinishFile () const {
         "// List of wrapped functions\n";
     for (auto module : modules_) {
         functions_wrap_code += WrapList(module, &Module::functions, "function");
+        functions_wrap_code += WrapList(module, &Module::getters, "getter");
     }
     functions_wrap_code +=
         Utilities()+
@@ -132,12 +133,8 @@ string WrapperSpecification::WrapFunction (const md::Ptr<const md::Function>& ob
     current_module()->functions.push_back({obj->name(), DumpNamespaceNesting()+"generated::"});
     stringstream func_code, args_code, call_code;
     size_t       num_params = obj->num_parameters();
-    if (!current_module()->open) {
-      func_code
-              << "namespace generated {\n\n";
-      current_module()->open = true;
-    }
-    func_code << "int OPWIG_wrap_" << obj->name() << " (lua_State* L) {\n";
+    CheckAndOpenNamespace(func_code);
+    func_code << "int " << WrapName("function", obj->name()) << " (lua_State* L) {\n";
     if (num_params > 0)
         func_code
               << "    int args = 0;\n"
@@ -196,7 +193,12 @@ string WrapperSpecification::WrapFunction (const md::Ptr<const md::Function>& ob
 
 string WrapperSpecification::WrapVariable (const md::Ptr<const md::Variable>& obj) {
     current_module()->getters.push_back({obj->name(), DumpNamespaceNesting()+"generated::"});
-    return "// SOON: Variable getter and setter.\n\n";
+    stringstream code;
+    CheckAndOpenNamespace(code);
+    code  << "int " << WrapName("getter", obj->name()) << " (lua_State* L) {\n"
+          << "    return 0;\n"
+          << "}\n";
+    return code.str();
 }
 
 string WrapperSpecification::WrapClass (const md::Ptr<const md::Class>& obj) {
