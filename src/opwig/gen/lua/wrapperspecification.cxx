@@ -203,7 +203,9 @@ string WrapperSpecification::WrapClass (const md::Ptr<const md::Class>& obj) {
 }
 
 string WrapperSpecification::WrapNamespace (const md::Ptr<const md::Namespace>& obj, bool closing) {
+    bool open = current_module()->open;
     if (!closing) {
+        if (open) current_module()->open = false;
         Ptr<Module> new_module(new Module);
 
         new_module->name = obj->name();
@@ -217,9 +219,9 @@ string WrapperSpecification::WrapNamespace (const md::Ptr<const md::Namespace>& 
         module_stack_.push_back(new_module);
 
         return
+            string(open ? "} // namespace generated\n\n" : "")+
             "namespace "+new_module->name+" {\n";
     } else {
-        bool open = current_module()->open;
         module_stack_.pop_back();
 
         return
