@@ -8,6 +8,8 @@ namespace opwig {
 namespace gen {
 namespace lua {
 
+std::string WrapList ();
+
 std::string Utilities ();
 
 } // namespace lua

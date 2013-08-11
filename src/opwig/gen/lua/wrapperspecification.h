@@ -3,6 +3,7 @@
 #define OPWIG_GEN_LUA_WRAPPERSPECIFICATION_H_
 
 #include <opwig/gen/wrapperspecification.h>
+#include <opwig/gen/lua/wraps.h>
 #include <opwig/md/ptr.h>
 #include <list>
 #include <string>
@@ -34,20 +35,6 @@ class WrapperSpecification final : public ::opwig::gen::WrapperSpecification {
     
   private:
 
-    struct DataWrap {
-        std::string name;
-        std::string nesting;
-    };
-
-    struct Module {
-        std::string                 name, path;
-        std::list<DataWrap>         functions;
-        std::list<DataWrap>         getters;
-        std::list<md::Ptr<Module>>  children;
-        md::WeakPtr<Module>         parent;
-        bool                        open;
-    };
-
     std::list<md::Ptr<Module>>  modules_;
     std::list<md::Ptr<Module>>  module_stack_;
 
@@ -65,7 +52,7 @@ inline std::string WrapperSpecification::LoadFuncSignature () const {
     return "int(*)(lua_State*)";
 }
 
-inline md::Ptr<WrapperSpecification::Module> WrapperSpecification::current_module () const {
+inline md::Ptr<Module> WrapperSpecification::current_module () const {
     return module_stack_.back();
 }
 

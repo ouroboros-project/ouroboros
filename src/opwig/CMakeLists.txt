@@ -34,6 +34,7 @@ set (
   ${CMAKE_CURRENT_BINARY_DIR}/gen/lua/wrapperspecification.cxx
   ${CMAKE_CURRENT_BINARY_DIR}/gen/lua/codes.h
   ${CMAKE_CURRENT_BINARY_DIR}/gen/lua/codes.cxx
+  ${CMAKE_CURRENT_BINARY_DIR}/gen/lua/wraps.h
   ${CMAKE_CURRENT_BINARY_DIR}/gen/python/pythonspecification.h
   ${CMAKE_CURRENT_BINARY_DIR}/gen/python/pythonspecification.cxx
   ${CMAKE_CURRENT_BINARY_DIR}/gen/python/wrapmodule.h
