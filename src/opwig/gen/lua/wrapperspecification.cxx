@@ -90,8 +90,16 @@ string WrapperSpecification::FinishFile () const {
         "    // Stack: [module, submodule]\n"
         "    L.setfield(1, name);\n"
         "}\n\n"
-        "int OPWIG_Lua_UniversalGetter (lua_State *L) {\n"
-        "    return 0;\n"
+        "int OPWIG_Lua_UniversalGetter (lua_State *L_) {\n"
+        "    State L(L_);\n"
+        "    L.pushvalue(lua_upvalueindex(1));\n"
+        "    if (L.isnil(-1))\n"
+        "       return luaL_error(L, \"Universal getter failed.\");\n"
+        "    L.pushvalue(1);\n"
+        "    L.gettable(2);\n"
+        "    L.insert(1);\n"
+        "    L.settop(1);\n"
+        "    return 1;\n"
         "}\n"
         "} // unnamed namespace\n\n";
     string init_functions_code =
