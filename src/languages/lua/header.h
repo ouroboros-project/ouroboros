@@ -25,7 +25,7 @@ class Constant {
 
   public:
 
-    /// Constructs a Lua constant frm the result of a call to <i>c</i>.
+    /// Constructs a Lua constant from the result of a call to <i>c</i>.
     /**
      **  @param c - A callable object which must return <b>int</b> when called
      **             with zero arguments.

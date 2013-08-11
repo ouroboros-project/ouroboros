@@ -2,10 +2,10 @@
 #ifndef OUROBOROS_SCRIPT_LUA_AUXLIB_H_
 #define OUROBOROS_SCRIPT_LUA_AUXLIB_H_
 
-#include <functional>
-
 #include <languages/lua/header.h>
 #include <languages/lua/primitive.h>
+
+#include <functional>
 
 namespace opa {
 namespace lua {

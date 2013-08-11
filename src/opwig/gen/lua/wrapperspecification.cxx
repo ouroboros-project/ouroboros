@@ -44,6 +44,8 @@ string WrapperSpecification::MiddleBlock() const {
         "using std::runtime_error;\n"
         "using opa::Module;\n"
         "using opa::lua::LuaWrapper;\n"
+        "using opa::lua::State;\n"
+        "using opa::lua::Constant;\n"
         "\n"
         "namespace {\n\n"
         "const char *MODULE_NAME = \""+module_name_+"\";\n\n"
@@ -65,6 +67,29 @@ string WrapperSpecification::FinishFile () const {
             "};\n\n";
     }
     functions_wrap_code +=
+        " void OPWIG_Lua_MakeParentModule (State& L, const string& parent_name) {\n"
+        "     // This functions uses the table on top of the stack to check for the parent module.\n"
+        "     // If it is not there, the function creates it.\n"
+        "     L.getfield(-1, parent_name);\n"
+        "     if (L.isnil(-1)) {\n"
+        "         L.pop(1);\n"
+        "         L.newtable();\n"
+        "         L.pushvalue(-1);\n"
+        "         L.setfield(-3, parent_name);\n"
+        "     }\n"
+        "     L.remove(-2);\n"
+        " }\n\n"
+        "void OPWIG_Lua_ExportSubmodule (State& L, const string& name, lua_CFunction init) {\n"
+        "    // This function exports the given submodule into the table at the stack's top.\n"
+        "    // Stack: [module]\n"
+        "    L.pushcfunction(init);\n"
+        "    L.pushprimitive(name);\n"
+        "    L.pushvalue(1);\n"
+        "    // Stack: [module, cfunction, string, module]\n"
+        "    L.call(2, 1);\n"
+        "    // Stack: [module, submodule]\n"
+        "    L.setfield(1, name);\n"
+        "}\n\n"
         "} // unnamed namespace\n\n";
     string init_functions_code =
         // Loader function
@@ -77,45 +102,37 @@ string WrapperSpecification::FinishFile () const {
         string nesting_modules;
         for (auto parent = module->parent.lock(); parent; parent = parent->parent.lock())
             nesting_modules =
-                "        lua_getfield(L, -1, \""+parent->name+"\");\n"
-                "        if (lua_isnil(L, -1)) {\n"
-                "            lua_pop(L, 1);\n"
-                "            lua_newtable(L);\n"
-                "            lua_pushvalue(L, -1);\n"
-                "            lua_setfield(L, -3, \""+parent->name+"\");\n"
-                "        }\n"
-                "        lua_remove(L, -2);\n"
+                "        OPWIG_Lua_MakeParentModule(L, \""+parent->name+"\");\n"
                 + nesting_modules;
         init_functions_code +=
             "/// [-(1|2),+1,e]\n"
-            "int luaopen_"+module->path+module->name+" (lua_State* L) {\n"
-            "    if (lua_gettop(L) > 1) {\n"
-            "        lua_remove(L, 1);\n"
-            "        lua_settop(L, 1);\n"
+            "int luaopen_"+module->path+module->name+" (lua_State* L_) {\n"
+            "    State L(L_);\n"
+            "    if (L.gettop() > 1) {\n"
+            "        L.remove(1);\n"
+            "        L.settop(1);\n"
             "    } else {\n"
-            "        lua_settop(L, 0);\n"
-            "        lua_pushvalue(L, LUA_GLOBALSINDEX);\n"
+            "        L.settop(0);\n"
+            "        L.pushvalue(Constant::GLOBALSINDEX());\n"
             + nesting_modules +
             "    }\n"
             "    // Nesting table is at index 1.\n"
-            "    lua_newtable(L);\n"
-            "    lua_pushvalue(L, -1);\n"
+            "    L.newtable();\n"
+            "    L.pushvalue(-1);\n"
             "    // Module table is at index 2 and 3.\n"
+            // TODO
             "    luaL_register(L, NULL, "+module->path+module->name+"_functions);\n"
-            "    lua_setfield(L, 1, MODULE_NAME);\n"
+            "    L.setfield(1, MODULE_NAME);\n"
             "    // Leave only the module table in the stack\n"
-            "    lua_remove(L, 1);\n"
-            "    lua_settop(L, 1);\n";
+            "    L.remove(1);\n"
+            "    L.settop(1);\n";
         for (auto submodule : module->children) {
             init_functions_code +=
-                "    // Add submodule \""+submodule->name+"\"\n"
-                "    lua_pushcfunction(L, luaopen_"+submodule->path+submodule->name+");\n"
-                "    lua_pushstring(L, \""+submodule->name+"\");\n"
-                "    lua_pushvalue(L, 1);\n"
-                "    // Stack: [module, cfunction, string, module]\n"
-                "    lua_call(L, 2, 1);\n"
-                "    // Stack: [module, submodule]\n"
-                "    lua_setfield(L, 1, \""+submodule->name+"\");\n"
+                "    OPWIG_Lua_ExportSubmodule("
+                         "L, "
+                         "\""+submodule->name+"\", "
+                         "luaopen_"+submodule->path+submodule->name+
+                     ");\n"
                 ;
         }
         init_functions_code +=
