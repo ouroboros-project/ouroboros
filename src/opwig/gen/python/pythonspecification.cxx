@@ -92,10 +92,11 @@ void TEST(stringstream& block, const Ptr<WrapModule>& module) {
         block << "PyObject* " << module->name() << "_mod = ";
     block << "Py_InitModule(\"" << module->full_dotted_name() << "\", " << module->GetMethodTableName() << ");" << endl;
     
+    block << TAB << "cout << \"Initializing '" << module->name() << "'\" << endl;" << endl;
     for (auto subm : module->sub_modules() ) {
-        block << TAB << "PyObject* "<< subm->name() <<"_mod = PyImport_ImportModule(\""<< subm->full_dotted_name() << "\");" << endl;
+        block << TAB << "PyObject* "<< subm->name() <<"_mod = PyImport_AddModule(\""<< subm->full_dotted_name() << "\");" << endl;
         block << TAB << "if ("<< subm->name() <<"_mod == nullptr) {" << endl;
-        block << TAB << TAB << "cout << \"Initializing " << module->name() << ", could not import "<< subm->name() <<"\" << endl;" << endl;
+        block << TAB << TAB << "cout << \"Initializing '" << module->name() << "', could not import '"<< subm->name() <<"'\" << endl;" << endl;
         block << TAB << TAB << "PyErr_SetString(PyExc_RuntimeError, \"Initializing '" << module->name() << "', could not import '"<< subm->name() <<"'\");" << endl;
         //block << TAB << TAB << "return;" << endl;
         block << TAB << "}" << endl;
