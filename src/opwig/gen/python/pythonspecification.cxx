@@ -2,6 +2,7 @@
 #include <opwig/gen/python/wrapmodule.h>
 #include <opwig/gen/python/utilities.h>
 #include <opwig/md/function.h>
+#include <opwig/md/variable.h>
 #include <opwig/md/namespace.h>
 #include <opwig/md/type.h>
 
@@ -53,28 +54,27 @@ string PythonSpecification::MiddleBlock() const {
         "        return false;\n"
         "    }\n"
         "    return true;\n"
+        "}\n\n"
+        "void AddToParentModule(PyObject* mChild, const string& childName, const string& fullParentName) {\n"
+        "    PyObject* mParent = PyImport_ImportModule(fullParentName.c_str()); //newref\n"
+        "    if (mParent == nullptr) {\n"
+        "        string msg = \"Initializing '\"+childName+\"', could not import '\"+fullParentName+\"'\";\n"
+        "        PyErr_SetString(PyExc_RuntimeError, msg.c_str());\n"
+        "    }\n"
+        "    else {\n"
+        "        Py_INCREF(mChild);\n"
+        "        if (PyModule_AddObject(mParent, childName.c_str(), mChild) == -1) {\n"
+        "            string msg = \"could not add submodule '\"+childName+\"' to module '\"+fullParentName+\"'\";\n"
+        "            PyErr_SetString(PyExc_RuntimeError, msg.c_str());\n"
+        "        }\n"
+        "        Py_DECREF(mParent);\n"
+        "    }\n"
         "}\n"
         "} // unnamed namespace\n\n"
         "namespace "+BASE_NSPACE+" {\n\n";
 }
 
 // FINISH BLOCK
-void HandleWrapModuleForInitFunc(stringstream& block, const Ptr<WrapModule>& module) {
-    block << TAB << "PyObject* " << module->name() << "_mod = Py_InitModule(\"" << module->name();
-    block << "\", " << module->GetMethodTableName() << ");" << endl;
-    
-    if (module->parent()) {
-        block << TAB << "if (PyModule_AddObject(" << module->parent()->name() << "_mod, \"";
-        block << module->name() << "\", " << module->name() << "_mod) == -1) {" << endl;
-        block << TAB << TAB << "PyErr_SetString(PyExc_RuntimeError, \"could not add submodule ";
-        block << module->name() << " to module " << module->parent()->name() << "\");" << endl;
-        block << TAB << "}" << endl;
-    }
-
-    for (auto subm : module->sub_modules() )
-        HandleWrapModuleForInitFunc(block, subm);
-}
-
 void HandleModuleMethodTables(stringstream& block, const Ptr<WrapModule>& module) {
     block << "//module " << module->name() << " method table" << endl;
     block << module->GenerateMethodTable(BASE_NSPACE) << endl;
@@ -82,14 +82,30 @@ void HandleModuleMethodTables(stringstream& block, const Ptr<WrapModule>& module
         HandleModuleMethodTables(block, subm);
 }
 
+void HandleWrapModuleForInitFunc(stringstream& block, const Ptr<WrapModule>& module) {
+    block << "PyMODINIT_FUNC" << endl;
+    block << GetInitFuncNameForModule(module->name()) << "(void) {" << endl;
+    block << TAB;
+    if (module->parent())
+        block << "PyObject* " << module->name() << "_mod = ";
+    block << "Py_InitModule(\"" << module->full_dotted_name() << "\", " << module->GetMethodTableName() << ");" << endl;
+
+    if (module->parent()) {
+        block << TAB << "AddToParentModule(" << module->name() << "_mod, \"" << module->name();
+        block << "\", \"" << module->parent()->full_dotted_name() << "\");" << endl;
+    }
+
+    block << "}" << endl;
+
+    for (auto subm : module->sub_modules() )
+        HandleWrapModuleForInitFunc(block, subm);
+}
+
 string PythonSpecification::FinishFile() const {
     stringstream block;
     block << endl << "} //namespace " << BASE_NSPACE << endl << endl;
     HandleModuleMethodTables(block, root_module_);
-    block << "PyMODINIT_FUNC" << endl;
-    block << GetInitFuncNameForModule(module_name_) << "(void) {" << endl;
     HandleWrapModuleForInitFunc(block, root_module_);
-    block << "}" << endl;
     return block.str();
 }
 
@@ -125,7 +141,23 @@ string PythonSpecification::WrapFunction(const Ptr<const md::Function>& obj) {
 
 // WRAP VARIABLE
 string PythonSpecification::WrapVariable(const Ptr<const md::Variable>& obj) {
-    return "";
+    current_->AddVariable(obj);
+    stringstream func;
+    func << "PyObject* " << FUNC_PREFIX << obj->name() << "(PyObject* self, PyObject* args) {" << std::endl;
+    func << TAB << "PythonConverter converter;" << std::endl;
+    func << TAB << obj->type()->full_type() << " oldValue = " << obj->nested_name() << ";" << endl;
+    if (!obj->type()->is_const()) {
+        func << TAB << "if (static_cast<int>(PyTuple_Size(args)) == 1) {" << endl;
+        func << TAB << TAB << obj->type()->full_type() <<" newValue;" << endl;
+        func << TAB << TAB << "try { newValue = converter.PyArgToType<"<< obj->type()->full_type() <<">(args, 0); }" << endl;
+        func << TAB << TAB << "catch (std::exception& e) { cout << e.what() << endl; return nullptr; }" << endl;
+        func << TAB << TAB << obj->nested_name() << " = newValue;" << endl;
+        func << TAB << "}" << endl;
+        func << TAB << "else if (!NumArgsOk(args, 0)) return nullptr;" << endl;
+    }
+    func << TAB << "return converter.TypeToScript<" << obj->type()->full_type() <<">(oldValue);" << endl;
+    func << "}";
+    return func.str();
 }
 
 // WRAP CLASS
