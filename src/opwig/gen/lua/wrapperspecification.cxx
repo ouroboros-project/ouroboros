@@ -191,7 +191,8 @@ string WrapperSpecification::WrapFunction (const md::Ptr<const md::Function>& ob
               << "    int stack = 0;\n";
     } else {
         func_code
-              << "    " << obj->return_type()->full_type() << " result = " << call_code.str() << ";\n"
+              << "    " << obj->return_type()->full_type() << " result = "
+                  << call_code.str() << ";\n"
               << "    convert.TypeToScript<" << obj->return_type()->full_type() << ">(result);\n"
               << "    int stack = 1;\n";
     }
@@ -207,7 +208,9 @@ string WrapperSpecification::WrapVariable (const md::Ptr<const md::Variable>& ob
     CheckAndOpenNamespace(code);
     code  << "int " << GetWrapName("getter", obj->name()) << " (lua_State* L) {\n"
           << "    opa::lua::Converter convert(L);\n"
-          << "    convert.TypeToScript<" << obj->type()->full_type() << ">(" << obj->name() << ");\n"
+          << "    convert.TypeToScript<" << obj->type()->full_type() << ">("
+              << obj->name()
+          << ");\n"
           << "    return 1;\n"
           << "}\n\n";
     return code.str();
