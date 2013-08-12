@@ -193,14 +193,34 @@ string WrapperSpecification::WrapFunction (const md::Ptr<const md::Function>& ob
 string WrapperSpecification::WrapVariable (const md::Ptr<const md::Variable>& obj) {
     current_module()->getters.push_back({obj->name(), DumpNamespaceNesting()+"generated::"});
     stringstream code;
+    const string type = obj->type()->full_type();
     CheckAndOpenNamespace(code);
     code  << "int " << GetWrapName("getter", obj->name()) << " (lua_State* L) {\n"
           << "    opa::lua::Converter convert(L);\n"
-          << "    convert.TypeToScript<" << obj->type()->full_type() << ">("
-              << obj->name()
+          << "    convert.TypeToScript<" << type << ">(" << obj->name()
           << ");\n"
           << "    return 1;\n"
           << "}\n\n";
+    if (!obj->type()->is_const()) {
+        current_module()->setters.push_back({obj->name(), DumpNamespaceNesting()+"generated::"});
+        code
+          << "int " << GetWrapName("setter", obj->name()) << " (lua_State* L) {\n"
+          << "    opa::lua::Converter convert(L);\n"
+          << "    " << type << " value;\n"
+          << "    try {\n"
+          << "        value = convert.ScriptToType<" << type << ">(1);\n"
+          << "    } catch (runtime_error e) {\n"
+          << "        return luaL_error(\n"
+          << "            L,\n"
+          << "            \"Error: could not convert value to %s's type (%s).\\n\",\n"
+          << "            \"" << DumpNamespaceNesting() << obj->name() << "\",\n"
+          << "            e.what()\n"
+          << "        );\n"
+          << "    }\n"
+          << "    " << obj->name() << " = value;\n"
+          << "    return 0;\n"
+          << "}\n\n";
+    }
     return code.str();
 }
 
