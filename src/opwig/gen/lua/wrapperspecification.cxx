@@ -113,16 +113,23 @@ string WrapperSpecification::FinishFile () const {
         init_functions_code +=
             "    // Set module metatable.\n"
             "    L.newtable();\n"
+            "    // Stack: [module, mttable]\n"
             "    L.pushvalue(-1);\n"
+            "    // Stack: [module, mttable, mttable]\n"
             "    L.setmetatable(1);\n"
+            "    // Stack: [module, mttable]\n"
             "    // Populate metatable.\n"
-            "    L.pushcfunction(OPWIG_Lua_UniversalGetter, 0);\n"
             "    L.newtable();\n"
+            "    // Stack: [module, mttable, getters]\n"
             "    luaL_register(L, NULL, "+module->path+module->name+"_getters);\n"
-            "    lua_setupvalue(L, -2, 1);\n"
+            "    // Stack: [module, mttable, getters]\n"
+            "    L.pushcfunction(OPWIG_Lua_UniversalGetter, 1);\n"
+            "    // Stack: [module, mttable, __index]\n"
             "    L.setfield(2, \"__index\");\n"
+            "    // Stack: [module, mttable]\n"
             "    // Leave only the module table in the stack.\n"
             "    L.settop(1);\n"
+            "    // Stack: [module]\n"
             "    // Return de module itself\n"
             "    return 1;\n"
             "}\n\n";
@@ -199,8 +206,10 @@ string WrapperSpecification::WrapVariable (const md::Ptr<const md::Variable>& ob
     stringstream code;
     CheckAndOpenNamespace(code);
     code  << "int " << WrapName("getter", obj->name()) << " (lua_State* L) {\n"
-          << "    return 0;\n"
-          << "}\n";
+          << "    opa::lua::Converter convert(L);\n"
+          << "    convert.TypeToScript<" << obj->type()->full_type() << ">(" << obj->name() << ");\n"
+          << "    return 1;\n"
+          << "}\n\n";
     return code.str();
 }
 
