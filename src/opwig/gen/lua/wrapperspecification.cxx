@@ -144,7 +144,7 @@ string WrapperSpecification::WrapFunction (const md::Ptr<const md::Function>& ob
     stringstream func_code, args_code, call_code;
     size_t       num_params = obj->num_parameters();
     CheckAndOpenNamespace(func_code);
-    func_code << "int " << WrapName("function", obj->name()) << " (lua_State* L) {\n";
+    func_code << "int " << GetWrapName("function", obj->name()) << " (lua_State* L) {\n";
     if (num_params > 0)
         func_code
               << "    int args = 0;\n"
@@ -205,7 +205,7 @@ string WrapperSpecification::WrapVariable (const md::Ptr<const md::Variable>& ob
     current_module()->getters.push_back({obj->name(), DumpNamespaceNesting()+"generated::"});
     stringstream code;
     CheckAndOpenNamespace(code);
-    code  << "int " << WrapName("getter", obj->name()) << " (lua_State* L) {\n"
+    code  << "int " << GetWrapName("getter", obj->name()) << " (lua_State* L) {\n"
           << "    opa::lua::Converter convert(L);\n"
           << "    convert.TypeToScript<" << obj->type()->full_type() << ">(" << obj->name() << ");\n"
           << "    return 1;\n"

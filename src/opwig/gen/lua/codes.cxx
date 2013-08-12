@@ -17,7 +17,10 @@ string WrapList (const md::Ptr<Module>& module, WrappedMember member, const stri
     code  << "luaL_Reg "<< module->path+module->name << "_" << type << "s[] = {\n";
     for (auto wrap : wraps)
         code 
-          << "    { \"" + wrap.name + "\", " + wrap.nesting + WrapName(type, wrap.name) + " },\n";
+          << "    { "
+              << "\"" + wrap.name + "\", "
+              <<  wrap.nesting + GetWrapName(type, wrap.name)
+          << " },\n";
     code  << "    { nullptr, nullptr }\n"
              "};\n\n";
     return code.str();
@@ -51,19 +54,16 @@ string Utilities () {
         "int OPWIG_Lua_UniversalGetter (lua_State *L_) {\n"
         "    // Stack: [table, key]\n"
         "    State L(L_);\n"
+        "    L.remove(1);\n"
+        "    // Stack: [key]\n"
         "    L.pushvalue(lua_upvalueindex(1));\n"
-        "    // Stack: [table. key, getters]\n"
-        "    if (L.isnil(-1))\n"
-        "       return luaL_error(L, \"Universal getter failed.\");\n"
-        "    L.pushvalue(2);\n"
-        "    // Stack: [table, key, getters, key]\n"
-        "    L.gettable(3);\n"
-        "    // Stack: [table, key, getters, getter]\n"
+        "    // Stack: [key, getters]\n"
         "    L.insert(1);\n"
-        "    // Stack: [getter, table, key, getters]\n"
-        "    L.settop(1);\n"
+        "    // Stack: [getters, key]\n"
+        "    L.gettable(1);\n"
+        "    // Stack: [getters, getter]\n"
+        "    L.remove(1);\n"
         "    // Stack: [getter]\n"
-        "    cout << \"HUH!?\\n\";\n"
         "    L.call(0, 1);\n"
         "    // Stack: [value]\n"
         "    return 1;\n"
