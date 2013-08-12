@@ -2,6 +2,7 @@
 #include <opwig/gen/python/wrapmodule.h>
 #include <opwig/gen/python/utilities.h>
 #include <opwig/md/function.h>
+#include <opwig/md/variable.h>
 #include <opwig/md/namespace.h>
 #include <opwig/md/type.h>
 
@@ -64,10 +65,11 @@ void HandleWrapModuleForInitFunc(stringstream& block, const Ptr<WrapModule>& mod
     block << "\", " << module->GetMethodTableName() << ");" << endl;
     
     if (module->parent()) {
+        block << TAB << "Py_INCREF(" << module->name() << "_mod);" << endl;
         block << TAB << "if (PyModule_AddObject(" << module->parent()->name() << "_mod, \"";
         block << module->name() << "\", " << module->name() << "_mod) == -1) {" << endl;
-        block << TAB << TAB << "PyErr_SetString(PyExc_RuntimeError, \"could not add submodule ";
-        block << module->name() << " to module " << module->parent()->name() << "\");" << endl;
+        block << TAB << TAB << "PyErr_SetString(PyExc_RuntimeError, \"could not add submodule '";
+        block << module->name() << "' to module '" << module->parent()->name() << "'\");" << endl;
         block << TAB << "}" << endl;
     }
 
@@ -82,14 +84,45 @@ void HandleModuleMethodTables(stringstream& block, const Ptr<WrapModule>& module
         HandleModuleMethodTables(block, subm);
 }
 
+void TEST(stringstream& block, const Ptr<WrapModule>& module) {
+    block << "PyMODINIT_FUNC" << endl;
+    block << GetInitFuncNameForModule(module->name()) << "(void) {" << endl;
+    block << TAB;
+    if (module->sub_modules().size() > 0)
+        block << "PyObject* " << module->name() << "_mod = ";
+    block << "Py_InitModule(\"" << module->full_dotted_name() << "\", " << module->GetMethodTableName() << ");" << endl;
+    
+    for (auto subm : module->sub_modules() ) {
+        block << TAB << "PyObject* "<< subm->name() <<"_mod = PyImport_ImportModule(\""<< subm->full_dotted_name() << "\");" << endl;
+        block << TAB << "if ("<< subm->name() <<"_mod == nullptr) {" << endl;
+        block << TAB << TAB << "cout << \"Initializing " << module->name() << ", could not import "<< subm->name() <<"\" << endl;" << endl;
+        block << TAB << TAB << "PyErr_SetString(PyExc_RuntimeError, \"Initializing '" << module->name() << "', could not import '"<< subm->name() <<"'\");" << endl;
+        //block << TAB << TAB << "return;" << endl;
+        block << TAB << "}" << endl;
+        
+        block << TAB << "Py_INCREF(" << subm->name() << "_mod);" << endl;
+        block << TAB << "if (PyModule_AddObject(" << module->name() << "_mod, \"";
+        block << subm->name() << "\", " << subm->name() << "_mod) == -1) {" << endl;
+        block << TAB << TAB << "PyErr_SetString(PyExc_RuntimeError, \"could not add submodule '";
+        block << subm->name() << "' to module '" << module->name() << "'\");" << endl;
+        block << TAB << "}" << endl;
+    }
+
+    block << "}" << endl;
+
+    for (auto subm : module->sub_modules() )
+        TEST(block, subm);
+}
+
 string PythonSpecification::FinishFile() const {
     stringstream block;
     block << endl << "} //namespace " << BASE_NSPACE << endl << endl;
     HandleModuleMethodTables(block, root_module_);
-    block << "PyMODINIT_FUNC" << endl;
+    /*block << "PyMODINIT_FUNC" << endl;
     block << GetInitFuncNameForModule(module_name_) << "(void) {" << endl;
     HandleWrapModuleForInitFunc(block, root_module_);
-    block << "}" << endl;
+    block << "}" << endl;*/
+    TEST(block, root_module_);
     return block.str();
 }
 
@@ -125,7 +158,23 @@ string PythonSpecification::WrapFunction(const Ptr<const md::Function>& obj) {
 
 // WRAP VARIABLE
 string PythonSpecification::WrapVariable(const Ptr<const md::Variable>& obj) {
-    return "";
+    current_->AddVariable(obj);
+    stringstream func;
+    func << "PyObject* " << FUNC_PREFIX << obj->name() << "(PyObject* self, PyObject* args) {" << std::endl;
+    func << TAB << "PythonConverter converter;" << std::endl;
+    func << TAB << obj->type()->full_type() << " oldValue = " << obj->nested_name() << ";" << endl;
+    if (!obj->type()->is_const()) {
+        func << TAB << "if (static_cast<int>(PyTuple_Size(args)) == 1) {" << endl;
+        func << TAB << TAB << obj->type()->full_type() <<" newValue;" << endl;
+        func << TAB << TAB << "try { newValue = converter.PyArgToType<"<< obj->type()->full_type() <<">(args, 0); }" << endl;
+        func << TAB << TAB << "catch (std::exception& e) { cout << e.what() << endl; return nullptr; }" << endl;
+        func << TAB << TAB << obj->nested_name() << " = newValue;" << endl;
+        func << TAB << "}" << endl;
+        func << TAB << "else if (!NumArgsOk(args, 0)) return nullptr;" << endl;
+    }
+    func << TAB << "return converter.TypeToScript<" << obj->type()->full_type() <<">(oldValue);" << endl;
+    func << "}";
+    return func.str();
 }
 
 // WRAP CLASS

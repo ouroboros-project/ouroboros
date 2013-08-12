@@ -8,6 +8,8 @@ namespace opwig {
 
 namespace md{
 class Function;
+class Variable;
+class MetadataObject;
 }
 
 namespace gen {
@@ -19,11 +21,16 @@ const std::string BASE_NSPACE = "opwig_py_generated";
 
 const std::string FUNC_PREFIX = "OPWIG_wrap_";
 
-std::string GetWrappedFunctionNestedName(const md::Ptr<const md::Function>& func);
+std::string GetWrappedNestedName(const md::Ptr<const md::MetadataObject>& func);
 
 std::string GetMETHARGSforFunction(const md::Ptr<const md::Function>& func);
 
 std::string GetInitFuncNameForModule(const std::string& module_name);
+
+namespace METHARGS {
+std::string ForFunction(const md::Ptr<const md::Function>& func);
+std::string ForVariable(const md::Ptr<const md::Variable>& var);
+}
 
 } // namespace python
 } // namespace gen

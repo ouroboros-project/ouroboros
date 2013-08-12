@@ -9,6 +9,7 @@ namespace opwig {
 
 namespace md {
 class Function;
+class Variable;
 }
 
 namespace gen {
@@ -24,13 +25,15 @@ class WrapModule final {
     ~WrapModule() {}
 
     void AddFunction(const md::Ptr<const md::Function>& func);
+    void AddVariable(const md::Ptr<const md::Variable>& var);
 
     std::string GetMethodTableName() const;
     std::string GenerateMethodTable(const std::string& base_nspace) const;
 
     void AddSubModule(const md::Ptr<WrapModule>& subm) { sub_modules_.push_back(subm); }
     
-    std::string name() { return name_; }
+    std::string name() const { return name_; }
+    std::string full_dotted_name() const;
     void set_name(const std::string& name) { name_ = name; }
     const md::Ptr<WrapModule>& parent() const { return parent_; }
     const std::list<md::Ptr<WrapModule>>& sub_modules() const { return sub_modules_; }
@@ -40,6 +43,7 @@ class WrapModule final {
   private:
     std::string name_;
     std::list<md::Ptr<const md::Function>> functions_;
+    std::list<md::Ptr<const md::Variable>> variables_;
     md::Ptr<WrapModule> parent_;
     std::list<md::Ptr<WrapModule>> sub_modules_;
 
