@@ -61,6 +61,7 @@ string WrapperSpecification::FinishFile () const {
     for (auto module : modules_) {
         functions_wrap_code += WrapList(module, &Module::functions, "function");
         functions_wrap_code += WrapList(module, &Module::getters, "getter");
+        functions_wrap_code += WrapList(module, &Module::setters, "setter");
     }
     functions_wrap_code +=
         Utilities()+
@@ -112,7 +113,11 @@ string WrapperSpecification::FinishFile () const {
         }
         init_functions_code +=
             "    // Set module metatable.\n"
-            "    OPWIG_Lua_PrepareMetatable(L, "+module->path+module->name+"_getters);\n"
+            "    OPWIG_Lua_PrepareMetatable(\n"
+            "        L,\n"
+            "        "+module->path+module->name+"_getters,\n"
+            "        "+module->path+module->name+"_setters\n"
+            "    );\n"
             "    // Return de module itself\n"
             "    return 1;\n"
             "}\n\n";
