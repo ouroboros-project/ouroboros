@@ -1,8 +1,8 @@
 
-require 'prompt'
+--require 'prompt'
 
-local out = prompt.out
-local input = prompt.input
+local out = require 'prompt.out'
+local input = require 'prompt.input'
 
 local function wrongnumtest ()
   local check, err = pcall(function () out.send_message() end)
@@ -24,7 +24,8 @@ local function wrongtypetest ()
   return true
 end
 
-function main (name)
+function main ()
+  local name = out.constants.TALKER_NAME
   print(name..": Let's check some things first...")
   if not wrongnumtest() or not wrongtypetest() then
     return false
@@ -41,8 +42,10 @@ function main (name)
       local arg = input.receive_number()
       out.send_message(name..": 'Tis "..math.sqrt(arg))
     elseif msg == "My favorite color is blue." then
-      out.send_message(name..": You sure?")
+      out.BREAK_LINE = false
+      out.send_message(name..": You sure? ")
       local answer = input.receive_confirmation()
+      out.BREAK_LINE = true
       if answer then
         out.send_message(name..": Lame.")
       else

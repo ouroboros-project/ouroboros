@@ -57,6 +57,8 @@ DEFINE_LUA_PRIMITIVE_OP(push);
 
 DEFINE_LUA_PARTIAL_PUSH(class T, T*, lua_pushlightuserdata(L, AsUData<T>(val)));
 DEFINE_LUA_FULL_PUSH(lua_CFunction, lua_pushcclosure(L, val, 0));
+DEFINE_LUA_PRIMITIVE_OPCASE(push, , std::string, void, const std::string& val,
+                            lua_pushstring(L, val.c_str()));
 DEFINE_LUA_SIMPLE_PUSH(const char*, string);
 DEFINE_LUA_SIMPLE_PUSH(bool, boolean);
 DEFINE_LUA_SIMPLE_PUSH(int, integer);

@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <cstdio>
 
+#include <string>
 #include <functional>
 
 #include <languages/lua/header.h>
@@ -58,7 +59,9 @@ class State {
 
     void getglobal (const char* name) { lua_getglobal(L_, name); }
     void getfield (int index, const char* k) { lua_getfield(L_, index, k); }
+    void getfield (int index, const std::string& k) { getfield(index, k.c_str()); }
     void setfield (int index, const char* k) { lua_setfield(L_, index, k); }
+    void setfield (int index, const std::string& k) { setfield(index, k.c_str()); }
 
     void gettable (int index) { lua_gettable(L_, index); }
     void settable (int index) { lua_settable(L_, index); }

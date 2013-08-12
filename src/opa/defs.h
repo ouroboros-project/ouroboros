@@ -3,6 +3,8 @@
 #ifndef OUROBOROS_SCRIPT_DEFS_H_
 #define OUROBOROS_SCRIPT_DEFS_H_
 
+#include <cstdlib>
+
 /// The ID, if defined, of the script language called 'name'.
 #define LANG(name) name##Lang
 

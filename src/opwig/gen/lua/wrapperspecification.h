@@ -3,9 +3,11 @@
 #define OPWIG_GEN_LUA_WRAPPERSPECIFICATION_H_
 
 #include <opwig/gen/wrapperspecification.h>
+#include <opwig/gen/lua/wraps.h>
 #include <opwig/md/ptr.h>
 #include <list>
 #include <string>
+#include <ostream>
 
 namespace opwig {
 namespace gen {
@@ -34,23 +36,14 @@ class WrapperSpecification final : public ::opwig::gen::WrapperSpecification {
     
   private:
 
-    struct FuncWrap {
-        std::string name;
-        std::string nesting;
-    };
-
-    struct Module {
-        std::string                 name, path;
-        std::list<FuncWrap>         functions;
-        std::list<md::Ptr<Module>>  children;
-    };
-
     std::list<md::Ptr<Module>>  modules_;
     std::list<md::Ptr<Module>>  module_stack_;
 
     std::string DumpNamespaceNesting () const;
 
     md::Ptr<Module> current_module () const;
+
+    void CheckAndOpenNamespace (std::ostream& output);
 
 };
 
@@ -62,14 +55,15 @@ inline std::string WrapperSpecification::LoadFuncSignature () const {
     return "int(*)(lua_State*)";
 }
 
-inline std::list<ScriptModule> WrapperSpecification::GetGeneratedModules () const {
-    //return "luaopen_"+module_name();
-    std::list<ScriptModule> lista;
-    return lista;
+inline md::Ptr<Module> WrapperSpecification::current_module () const {
+    return module_stack_.back();
 }
 
-inline md::Ptr<WrapperSpecification::Module> WrapperSpecification::current_module () const {
-    return module_stack_.back();
+inline void WrapperSpecification::CheckAndOpenNamespace (std::ostream& output) {
+    if (!current_module()->open) {
+        output << "namespace generated {\n\n";
+        current_module()->open = true;
+    }
 }
 
 } // namespace lua
