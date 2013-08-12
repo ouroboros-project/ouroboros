@@ -1,5 +1,6 @@
 #!/usr/bin/python
-# -*- coding: UTF-8 -*-
+# -*- coding: UTF-8 -*-    
+
 from prompt.input import receive_message, receive_number, receive_confirmation
 from prompt.out.constants import TALKER_NAME
 from prompt import out
