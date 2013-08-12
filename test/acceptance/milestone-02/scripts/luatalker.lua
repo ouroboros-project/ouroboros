@@ -42,8 +42,10 @@ function main ()
       local arg = input.receive_number()
       out.send_message(name..": 'Tis "..math.sqrt(arg))
     elseif msg == "My favorite color is blue." then
+      out.BREAK_LINE = false
       out.send_message(name..": You sure?")
       local answer = input.receive_confirmation()
+      out.BREAK_LINE = true
       if answer then
         out.send_message(name..": Lame.")
       else
