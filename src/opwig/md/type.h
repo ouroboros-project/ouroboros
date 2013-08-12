@@ -10,7 +10,7 @@ namespace opwig {
 namespace md {
 
 /// Class representing a C++ type in the metadatas.
-class Type {
+class Type : public std::enable_shared_from_this<Type> {
 
   public:
     static Ptr<Type> Create (const std::string& base, bool is_const);
@@ -20,11 +20,14 @@ class Type {
     bool is_const() const { return const_; }
 
     void set_pointee(const Ptr<Type>& pointee) { pointee_ = pointee; }
+    Ptr<Type> pointee() const { return pointee_; }
 
     bool operator ==(const Type& rhs) const;
     bool operator !=(const Type& rhs) const;
 
     std::string full_type() const;
+
+    Ptr<const Type> actual_base_type() const;
 
   private:
     std::string base_;
@@ -57,12 +60,15 @@ inline bool Type::operator !=(const Type& rhs) const {
 }
 
 inline std::string Type::full_type() const {
-    if (pointee_) {
+    if (pointee_)
         return pointee_->full_type() + " " + base_ + ((const_) ? " const" : "");
-    }
-    else {
-        return ((const_) ? "const " : "") + base_;
-    }
+    return ((const_) ? "const " : "") + base_;
+}
+
+inline Ptr<const Type> Type::actual_base_type() const {
+    if (pointee_)
+        return pointee_->actual_base_type();
+    return shared_from_this();
 }
 
 } // namespace md
