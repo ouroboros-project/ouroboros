@@ -149,20 +149,20 @@ string PythonSpecification::WrapFunction(const Ptr<const md::Function>& obj) {
 string PythonSpecification::WrapVariable(const Ptr<const md::Variable>& obj) {
     current_->AddVariable(obj);
     stringstream func;
-    func << "PyObject* " << FUNC_PREFIX << obj->name() << "(PyObject* self, PyObject* args) {" << std::endl;
+    func << "PyObject* " << FUNC_PREFIX << obj->name() << "(PyObject* self, PyObject* args)" << std::endl;
+    func << "try {" << endl;
     func << TAB << "PythonConverter converter;" << std::endl;
     func << TAB << obj->type()->full_type() << " oldValue = " << obj->nested_name() << ";" << endl;
     if (!obj->type()->is_const()) {
         func << TAB << "if (static_cast<int>(PyTuple_Size(args)) == 1) {" << endl;
-        func << TAB << TAB << obj->type()->full_type() <<" newValue;" << endl;
-        func << TAB << TAB << "try { newValue = converter.PyArgToType<"<< obj->type()->full_type() <<">(args, 0); }" << endl;
-        func << TAB << TAB << "catch (std::exception& e) { cout << e.what() << endl; return nullptr; }" << endl;
-        func << TAB << TAB << obj->nested_name() << " = newValue;" << endl;
+        func << TAB << TAB << obj->nested_name() << " = ";
+        func << "converter.PyArgToType<"<< obj->type()->full_type() <<">(args, 0);" << endl;
         func << TAB << "}" << endl;
         func << TAB << "else if (!NumArgsOk(args, 0)) return nullptr;" << endl;
     }
     func << TAB << "return converter.TypeToScript<" << obj->type()->full_type() <<">(oldValue);" << endl;
-    func << "}";
+    func << "}" << endl;
+    func << "catch (std::exception& e) { return FuncErrorHandling(e); }" << endl;
     return func.str();
 }
 
