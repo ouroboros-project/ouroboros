@@ -69,6 +69,11 @@ string PythonSpecification::MiddleBlock() const {
         "        }\n"
         "        Py_DECREF(mParent);\n"
         "    }\n"
+        "}\n\n"
+        "PyObject* FuncErrorHandling(const std::exception& e) {\n"
+        "    cout << \"[ERROR IN C++]\" << e.what() << endl;\n"
+        "    if (PyErr_Occurred()==nullptr)   PyErr_SetString(PyExc_RuntimeError, e.what());\n"
+        "    return nullptr;\n"
         "}\n"
         "} // unnamed namespace\n\n"
         "namespace "+BASE_NSPACE+" {\n\n";
@@ -114,15 +119,15 @@ string PythonSpecification::WrapFunction(const Ptr<const md::Function>& obj) {
     current_->AddFunction(obj);
         
     stringstream func;
-    func << "PyObject* " << FUNC_PREFIX << obj->name() << "(PyObject* self, PyObject* args) {" << std::endl;
+    func << "PyObject* " << FUNC_PREFIX << obj->name() << "(PyObject* self, PyObject* args)" << endl;
+    func << "try {" << endl;
     if (obj->num_parameters() > 0)
         func << TAB << "if (!NumArgsOk(args, " << obj->num_parameters() << ")) return nullptr;" << endl;
-    func << TAB << "PythonConverter converter;" << std::endl;
+    func << TAB << "PythonConverter converter (true);" << std::endl;
     stringstream args ("");
     for (unsigned i=0; i<obj->num_parameters(); i++) {
-        func << TAB << obj->parameter_type(i)->full_type() <<" fArg"<< i << ";" << endl;
-        func << TAB << "try { fArg"<< i <<" = converter.PyArgToType<"<< obj->parameter_type(i)->full_type() <<">(args, " << i << "); }" << endl;
-        func << TAB << "catch (std::exception& e) { cout << e.what() << endl; return nullptr; }" << endl;
+        func << TAB << obj->parameter_type(i)->full_type() <<" fArg"<< i;
+        func << " = converter.PyArgToType<"<< obj->parameter_type(i)->full_type() <<">(args, " << i << ");" << endl;
         if (i > 0)
             args << ", ";
         args << "fArg" << i;
@@ -135,7 +140,8 @@ string PythonSpecification::WrapFunction(const Ptr<const md::Function>& obj) {
         func << TAB << obj->return_type()->full_type() << " fValue = " << obj->nested_name() << "("<< args.str() << ");" << endl;
         func << TAB << "return converter.TypeToScript<"<< obj->return_type()->full_type() <<">(fValue);" << endl;
     }
-    func << "}";
+    func << "}" << endl;
+    func << "catch (std::exception& e) { return FuncErrorHandling(e); }" << endl;
     return func.str();
 }
 
@@ -143,20 +149,20 @@ string PythonSpecification::WrapFunction(const Ptr<const md::Function>& obj) {
 string PythonSpecification::WrapVariable(const Ptr<const md::Variable>& obj) {
     current_->AddVariable(obj);
     stringstream func;
-    func << "PyObject* " << FUNC_PREFIX << obj->name() << "(PyObject* self, PyObject* args) {" << std::endl;
-    func << TAB << "PythonConverter converter;" << std::endl;
+    func << "PyObject* " << FUNC_PREFIX << obj->name() << "(PyObject* self, PyObject* args)" << std::endl;
+    func << "try {" << endl;
+    func << TAB << "PythonConverter converter (true);" << std::endl;
     func << TAB << obj->type()->full_type() << " oldValue = " << obj->nested_name() << ";" << endl;
     if (!obj->type()->is_const()) {
         func << TAB << "if (static_cast<int>(PyTuple_Size(args)) == 1) {" << endl;
-        func << TAB << TAB << obj->type()->full_type() <<" newValue;" << endl;
-        func << TAB << TAB << "try { newValue = converter.PyArgToType<"<< obj->type()->full_type() <<">(args, 0); }" << endl;
-        func << TAB << TAB << "catch (std::exception& e) { cout << e.what() << endl; return nullptr; }" << endl;
-        func << TAB << TAB << obj->nested_name() << " = newValue;" << endl;
+        func << TAB << TAB << obj->nested_name() << " = ";
+        func << "converter.PyArgToType<"<< obj->type()->full_type() <<">(args, 0);" << endl;
         func << TAB << "}" << endl;
         func << TAB << "else if (!NumArgsOk(args, 0)) return nullptr;" << endl;
     }
     func << TAB << "return converter.TypeToScript<" << obj->type()->full_type() <<">(oldValue);" << endl;
-    func << "}";
+    func << "}" << endl;
+    func << "catch (std::exception& e) { return FuncErrorHandling(e); }" << endl;
     return func.str();
 }
 
@@ -171,7 +177,7 @@ string PythonSpecification::WrapNamespace(const Ptr<const md::Namespace>& obj, b
         Ptr<WrapModule> newm = Ptr<WrapModule>(new WrapModule(obj->name(), current_));
         current_->AddSubModule(newm);
         current_ = newm;
-        return "namespace "+obj->name()+" {\n";
+        return "namespace "+obj->name()+" { //entering namespace "+obj->name()+"\n";
     }
     else {
         current_ = current_->parent();
