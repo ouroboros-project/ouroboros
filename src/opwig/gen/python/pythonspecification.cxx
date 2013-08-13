@@ -69,6 +69,11 @@ string PythonSpecification::MiddleBlock() const {
         "        }\n"
         "        Py_DECREF(mParent);\n"
         "    }\n"
+        "}\n\n"
+        "PyObject* FuncErrorHandling(const std::exception& e) {\n"
+        "    cout << \"[ERROR IN C++]\" << e.what() << endl;\n"
+        "    if (!PyErr_Occurred())   PyErr_SetString(PyExc_RuntimeError, e.what());\n"
+        "    return nullptr;\n"
         "}\n"
         "} // unnamed namespace\n\n"
         "namespace "+BASE_NSPACE+" {\n\n";
@@ -114,15 +119,15 @@ string PythonSpecification::WrapFunction(const Ptr<const md::Function>& obj) {
     current_->AddFunction(obj);
         
     stringstream func;
-    func << "PyObject* " << FUNC_PREFIX << obj->name() << "(PyObject* self, PyObject* args) {" << std::endl;
+    func << "PyObject* " << FUNC_PREFIX << obj->name() << "(PyObject* self, PyObject* args)" << endl;
+    func << "try {" << endl;
     if (obj->num_parameters() > 0)
         func << TAB << "if (!NumArgsOk(args, " << obj->num_parameters() << ")) return nullptr;" << endl;
     func << TAB << "PythonConverter converter;" << std::endl;
     stringstream args ("");
     for (unsigned i=0; i<obj->num_parameters(); i++) {
-        func << TAB << obj->parameter_type(i)->full_type() <<" fArg"<< i << ";" << endl;
-        func << TAB << "try { fArg"<< i <<" = converter.PyArgToType<"<< obj->parameter_type(i)->full_type() <<">(args, " << i << "); }" << endl;
-        func << TAB << "catch (std::exception& e) { cout << e.what() << endl; return nullptr; }" << endl;
+        func << TAB << obj->parameter_type(i)->full_type() <<" fArg"<< i;
+        func << " = converter.PyArgToType<"<< obj->parameter_type(i)->full_type() <<">(args, " << i << ");" << endl;
         if (i > 0)
             args << ", ";
         args << "fArg" << i;
@@ -135,7 +140,8 @@ string PythonSpecification::WrapFunction(const Ptr<const md::Function>& obj) {
         func << TAB << obj->return_type()->full_type() << " fValue = " << obj->nested_name() << "("<< args.str() << ");" << endl;
         func << TAB << "return converter.TypeToScript<"<< obj->return_type()->full_type() <<">(fValue);" << endl;
     }
-    func << "}";
+    func << "}" << endl;
+    func << "catch (std::exception& e) { return FuncErrorHandling(e); }" << endl;
     return func.str();
 }
 
