@@ -72,7 +72,7 @@ string PythonSpecification::MiddleBlock() const {
         "}\n\n"
         "PyObject* FuncErrorHandling(const std::exception& e) {\n"
         "    cout << \"[ERROR IN C++]\" << e.what() << endl;\n"
-        "    if (!PyErr_Occurred())   PyErr_SetString(PyExc_RuntimeError, e.what());\n"
+        "    if (PyErr_Occurred()==nullptr)   PyErr_SetString(PyExc_RuntimeError, e.what());\n"
         "    return nullptr;\n"
         "}\n"
         "} // unnamed namespace\n\n"
@@ -123,7 +123,7 @@ string PythonSpecification::WrapFunction(const Ptr<const md::Function>& obj) {
     func << "try {" << endl;
     if (obj->num_parameters() > 0)
         func << TAB << "if (!NumArgsOk(args, " << obj->num_parameters() << ")) return nullptr;" << endl;
-    func << TAB << "PythonConverter converter;" << std::endl;
+    func << TAB << "PythonConverter converter (true);" << std::endl;
     stringstream args ("");
     for (unsigned i=0; i<obj->num_parameters(); i++) {
         func << TAB << obj->parameter_type(i)->full_type() <<" fArg"<< i;
@@ -151,7 +151,7 @@ string PythonSpecification::WrapVariable(const Ptr<const md::Variable>& obj) {
     stringstream func;
     func << "PyObject* " << FUNC_PREFIX << obj->name() << "(PyObject* self, PyObject* args)" << std::endl;
     func << "try {" << endl;
-    func << TAB << "PythonConverter converter;" << std::endl;
+    func << TAB << "PythonConverter converter (true);" << std::endl;
     func << TAB << obj->type()->full_type() << " oldValue = " << obj->nested_name() << ";" << endl;
     if (!obj->type()->is_const()) {
         func << TAB << "if (static_cast<int>(PyTuple_Size(args)) == 1) {" << endl;
@@ -177,7 +177,7 @@ string PythonSpecification::WrapNamespace(const Ptr<const md::Namespace>& obj, b
         Ptr<WrapModule> newm = Ptr<WrapModule>(new WrapModule(obj->name(), current_));
         current_->AddSubModule(newm);
         current_ = newm;
-        return "namespace "+obj->name()+" {\n";
+        return "namespace "+obj->name()+" { //entering namespace "+obj->name()+"\n";
     }
     else {
         current_ = current_->parent();

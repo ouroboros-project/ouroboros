@@ -11,7 +11,7 @@ namespace python {
 
 class PythonConverter : public Converter<PyObject*> {
 public:
-    PythonConverter() {}
+    PythonConverter(bool in_wrapper_code=false) : in_wrapper_(in_wrapper_code) {}
     virtual ~PythonConverter() {}
 
     virtual bool        ScriptToBool    (PyObject* value);
@@ -48,10 +48,14 @@ public:
     template <typename T>
     T PyArgToType(PyObject* args, int index) {
         PyObject* arg = PyTuple_GetItem(args, static_cast<Py_ssize_t>(index));
-        std::string i;
         if (arg == nullptr) throw ConversionError("Python", "Failed to get ARGS tuple element at index "+std::to_string(index));
+        arg_index_ = index;
         return ScriptToType<T>(arg);
     }
+
+private:
+    bool in_wrapper_;
+    int arg_index_;
 };
 
 PRIMITIVE_CONVERTER_TEMPLATES(PythonConverter, PyObject*)
