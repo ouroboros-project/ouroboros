@@ -198,3 +198,20 @@ TEST_F (MDFunctionTest, FunctionOverload2) {
     f = TestFunction("func()", "func", "void", AccessSpecifier::PUBLIC, false);
     TestFunctionNoParameters(f);
 }
+
+TEST_F (MDFunctionTest, FunctionWithParamInitializer) {
+    ASSERT_EQ(RunParse("rtype* func (type0 arg1 = blabla);"), 0);
+    TestScopeChildNums(global_, 0u, 1u, 0u, 0u);
+
+    auto f = TestFunction("func(type0)", "func", "rtype *", AccessSpecifier::PUBLIC, false);
+    TestFunctionParameter(f, 0, "arg1", "type0");
+}
+
+TEST_F (MDFunctionTest, FunctionWithMultiParamInitializer) {
+    ASSERT_EQ(RunParse("rtype* func (type0 arg1 = blabla, const char *const arg2 = \"tralala\");"), 0);
+    TestScopeChildNums(global_, 0u, 1u, 0u, 0u);
+
+    auto f = TestFunction("func(type0,const char * const)", "func", "rtype *", AccessSpecifier::PUBLIC, false);
+    TestFunctionParameter(f, 0, "arg1", "type0");
+    TestFunctionParameter(f, 1, "arg2", "const char * const");
+}

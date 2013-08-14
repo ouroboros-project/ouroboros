@@ -3,6 +3,7 @@
   DeclarationSeq:   std::shared_ptr<ScopeActionList>;
   Type:             TypeAction;
   TypeSeq:          std::shared_ptr<TypeActionList>;
+  TypePtr:          std::shared_ptr<md::Type>;
   ClassHead:        parser::ClassHeadPair;
   EnumHead:         parser::EnumHeadPair;
   BaseSpecifier:    parser::BaseSpecifier;
@@ -95,6 +96,8 @@
 %type<Type>                 class_specifier
 %type<Type>                 enum_specifier
 
+%type<TypePtr>              ptr_operator
+
 %type<ClassHead>            class_head
 %type<EnumHead>             enum_head
 
@@ -113,6 +116,7 @@
 %type<String>         enumerator_definition
 %type<String>         enum_base
 %type<String>         primitive
+%type<String>         cv_qualifier
 
 %type<StringSeq>      enumerator_list
 
@@ -123,7 +127,6 @@
 %type<Declarator>     member_declarator
 %type<Declarator>     ptr_declarator
 %type<Declarator>     noptr_declarator
-%type<String>         ptr_operator
 
 %type<ParameterSeq>   parameters_and_qualifiers
 %type<ParameterSeq>   parameter_declaration_clause
@@ -138,5 +141,4 @@
 %type<NestedNameSpec>   base_type_specifier
 %type<NestedNameSpec>   simple_type_specifier
 %type<NestedNameSpec>   class_or_decltype
-%type<String>           cv_qualifier
 

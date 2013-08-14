@@ -89,6 +89,13 @@ parameter_declaration:
                             ($2).pointer_type()), 
                         ($2).nested_name().name() );
   }
+|
+  decl_specifier_seq declarator '=' initializer_clause {
+    $$ = md::Parameter(md::Type::ChainTypes(
+                            ($1)(md::Ptr<md::Scope>()).type(), 
+                            ($2).pointer_type()), 
+                        ($2).nested_name().name() );
+  }
 ;
 
 //cv_qualifier_seq:
@@ -100,9 +107,13 @@ parameter_declaration:
 //;
 
 ptr_operator:
-  '*' cv_qualifier { $$ = d_scanner.matched(); }
+  '*' { $$ = md::Type::Create("*", false); }
 |
-  '&' { $$ = d_scanner.matched(); }
+  '*' cv_qualifier { $$ = md::Type::Create("*", (($2)=="const")); }
+|
+  '&' { $$ = md::Type::Create("&", false); }
+|
+  '&' cv_qualifier { $$ = md::Type::Create("&", (($2)=="const")); }
 ;
 
 declarator_id:

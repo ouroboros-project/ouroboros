@@ -37,7 +37,7 @@ class Declarator final {
 
     md::Ptr<md::Type> pointer_type () const;
 
-    void set_pointer_type (const std::string& the_pointer_type);
+    void set_pointer_type (const md::Ptr<md::Type>& the_pointer_type);
     
     bool is_pure () const;
     
@@ -86,8 +86,8 @@ inline md::Ptr<md::Type> Declarator::pointer_type () const {
     return pointer_type_;
 }
 
-inline void Declarator::set_pointer_type (const std::string& the_pointer_type) {
-    pointer_type_ = md::Type::Create(the_pointer_type, false);
+inline void Declarator::set_pointer_type (const md::Ptr<md::Type>& the_pointer_type) {
+    pointer_type_ = the_pointer_type;
 }
 
 inline bool Declarator::is_pure () const {
