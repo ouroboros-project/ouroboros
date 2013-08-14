@@ -25,41 +25,41 @@ namespace python {
 
 //////////////////
 // script -> C++ methods
-bool PythonConverter::ScriptToBool(PyObject* value) {
+bool PythonConverter::ScriptToBool(PyObject* value) const {
     return !!PyObject_IsTrue(value);
 }
 
-short PythonConverter::ScriptToShort(PyObject* value) {
+short PythonConverter::ScriptToShort(PyObject* value) const {
     return static_cast<short>(ScriptToInt(value));
 }
 
-int PythonConverter::ScriptToInt(PyObject* value) {
+int PythonConverter::ScriptToInt(PyObject* value) const {
     int v = static_cast<int>(PyInt_AsLong(value));
     CHECK_PY_ERROR("error occurred while trying to get int value from script");
     return v;
 }
 
-long PythonConverter::ScriptToLong(PyObject* value) {
+long PythonConverter::ScriptToLong(PyObject* value) const {
     long v = PyLong_AsLong(value);
     CHECK_PY_ERROR("error occurred while trying to get long value from script");
     return v;
 }
 
-float PythonConverter::ScriptToFloat(PyObject* value) {
+float PythonConverter::ScriptToFloat(PyObject* value) const {
     return static_cast<float>(ScriptToDouble(value));
 }
 
-double PythonConverter::ScriptToDouble(PyObject* value) {
+double PythonConverter::ScriptToDouble(PyObject* value) const {
     double d = PyFloat_AsDouble(value);
     CHECK_PY_ERROR("error occurred while trying to get double value from script");
     return d;
 }
 
-char PythonConverter::ScriptToChar(PyObject* value) {
+char PythonConverter::ScriptToChar(PyObject* value) const {
     return static_cast<char>(ScriptToInt(value));
 }
 
-const char* PythonConverter::ScriptToCStr(PyObject* value) {
+const char* PythonConverter::ScriptToCStr(PyObject* value) const {
     char* s = PyString_AsString(value);
     CHECK_NULL(s, "error getting string value from script");
     return s;

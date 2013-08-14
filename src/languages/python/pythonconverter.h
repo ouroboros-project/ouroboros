@@ -14,14 +14,14 @@ public:
     PythonConverter(bool in_wrapper_code=false) : in_wrapper_(in_wrapper_code) {}
     virtual ~PythonConverter() {}
 
-    virtual bool        ScriptToBool    (PyObject* value);
-    virtual short       ScriptToShort   (PyObject* value);
-    virtual int         ScriptToInt     (PyObject* value);
-    virtual long        ScriptToLong    (PyObject* value);
-    virtual float       ScriptToFloat   (PyObject* value);
-    virtual double      ScriptToDouble  (PyObject* value);
-    virtual char        ScriptToChar    (PyObject* value);
-    virtual const char* ScriptToCStr    (PyObject* value);
+    virtual bool        ScriptToBool    (PyObject* value) const;
+    virtual short       ScriptToShort   (PyObject* value) const;
+    virtual int         ScriptToInt     (PyObject* value) const;
+    virtual long        ScriptToLong    (PyObject* value) const;
+    virtual float       ScriptToFloat   (PyObject* value) const;
+    virtual double      ScriptToDouble  (PyObject* value) const;
+    virtual char        ScriptToChar    (PyObject* value) const;
+    virtual const char* ScriptToCStr    (PyObject* value) const;
     
     virtual PyObject* BoolToScript      (bool value);
     virtual PyObject* ShortToScript     (short value);
