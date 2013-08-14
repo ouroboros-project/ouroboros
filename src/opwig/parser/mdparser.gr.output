@@ -41,7 +41,7 @@ Production Rules
 38: parameter_declaration_list (',') ->  parameter_declaration_list ',' parameter_declaration
 39: parameter_declaration ->  decl_specifier_seq
 40: parameter_declaration ->  decl_specifier_seq declarator
-41: ptr_operator ('*') ->  '*'
+41: ptr_operator ('*') ->  '*' cv_qualifier
 42: ptr_operator ('&') ->  '&'
 43: declarator_id ->  id_expression
 44: declarator_id ->  constructor_name
@@ -688,8 +688,10 @@ State 34:
 
 
 State 35:
-41: ptr_operator -> '*'  . 
-  Reduce by 41: ptr_operator -> '*'  . 
+41: ptr_operator -> '*'  . cv_qualifier 
+  0:   On cv_qualifier to state 97
+  1:   On CONST to state 40
+  2:   On VOLATILE to state 41
 
 
 State 36:
@@ -705,14 +707,14 @@ State 37:
 State 38:
 73: class_specifier -> class_head  . '{' #0001 '}' 
 75: class_specifier -> class_head  . '{' member_specification #0002 '}' 
-  0:   On '{' to state 97
+  0:   On '{' to state 98
 
 
 State 39:
 116: enum_specifier -> enum_head  . '{' '}' 
 117: enum_specifier -> enum_head  . '{' enumerator_list '}' 
 118: enum_specifier -> enum_head  . '{' enumerator_list ',' '}' 
-  0:   On '{' to state 98
+  0:   On '{' to state 99
 
 
 State 40:
@@ -742,10 +744,10 @@ State 44:
 68: simple_type_specifier -> SCOPE_OPERATOR  . nested_name_specifier type_name 
 226: qualified_id -> SCOPE_OPERATOR  . unqualified_id 
 228: qualified_id -> SCOPE_OPERATOR  . nested_name_specifier unqualified_id 
-  0:   On constructor_name to state 99
-  1:   On nested_name_specifier to state 100
-  2:   On type_name to state 101
-  3:   On unqualified_id to state 102
+  0:   On constructor_name to state 100
+  1:   On nested_name_specifier to state 101
+  2:   On type_name to state 102
+  3:   On unqualified_id to state 103
   4:   On CONSTRUCTOR_NAME to state 51
   5:   On identifier to state 52
   6:   On TYPE_NAME to state 53
@@ -758,10 +760,10 @@ State 45:
 67: simple_type_specifier -> nested_name_specifier  . type_name 
 230: nested_name_specifier -> nested_name_specifier  . identifier SCOPE_OPERATOR 
 227: qualified_id -> nested_name_specifier  . unqualified_id 
-  0:   On constructor_name to state 103
-  1:   On type_name to state 104
-  2:   On identifier to state 105
-  3:   On unqualified_id to state 106
+  0:   On constructor_name to state 104
+  1:   On type_name to state 105
+  2:   On identifier to state 106
+  3:   On unqualified_id to state 107
   4:   On CONSTRUCTOR_NAME to state 51
   5:   On TYPE_NAME to state 53
   6:   On IDENTIFIER to state 58
@@ -788,12 +790,12 @@ State 49:
 78: class_head -> class_key  . base_clause 
 79: class_head -> class_key  . class_head_name 
 80: class_head -> class_key  . class_head_name base_clause 
-  0:   On base_clause to state 107
-  1:   On class_head_name to state 108
-  2:   On ':' to state 109
-  3:   On class_name to state 110
-  4:   On nested_name_specifier to state 111
-  5:   On identifier to state 112
+  0:   On base_clause to state 108
+  1:   On class_head_name to state 109
+  2:   On ':' to state 110
+  3:   On class_name to state 111
+  4:   On nested_name_specifier to state 112
+  5:   On identifier to state 113
   6:   On IDENTIFIER to state 58
   Reduce by 77: class_head -> class_key  . 
 
@@ -811,7 +813,7 @@ State 51:
 State 52:
 229: nested_name_specifier -> identifier  . SCOPE_OPERATOR 
 223: unqualified_id -> identifier  . 
-  0:   On SCOPE_OPERATOR to state 113
+  0:   On SCOPE_OPERATOR to state 114
   Reduce by 223: unqualified_id -> identifier  . 
 
 
@@ -847,7 +849,7 @@ State 58:
 
 State 59:
 224: unqualified_id -> '~'  . constructor_name 
-  0:   On constructor_name to state 114
+  0:   On constructor_name to state 115
   1:   On CONSTRUCTOR_NAME to state 51
 
 
@@ -860,64 +862,64 @@ State 61:
 138: function_definition -> declarator '='  . DEFAULT ';' 
 140: function_definition -> declarator '='  . DELETE ';' 
 49: brace_or_equal_initializer -> '='  . initializer_clause 
-  0:   On DEFAULT to state 115
-  1:   On DELETE to state 116
-  2:   On initializer_clause to state 117
-  3:   On expression to state 118
-  4:   On term to state 119
-  5:   On literal to state 120
-  6:   On identifier to state 121
-  7:   On PRIMITIVE to state 122
-  8:   On VOID to state 123
-  9:   On TYPE_NAME to state 124
-  10:   On CONSTRUCTOR_NAME to state 125
-  11:   On operand to state 126
-  12:   On SCOPE_OPERATOR to state 127
-  13:   On ASSIGNMENT_OPERATOR to state 128
-  14:   On EXPRESSION_OPERATOR to state 129
-  15:   On WHILE to state 130
-  16:   On FOR to state 131
-  17:   On IF to state 132
-  18:   On TRY to state 133
-  19:   On CATCH to state 134
-  20:   On THROW to state 135
-  21:   On USING to state 136
-  22:   On TRUE to state 137
-  23:   On FALSE to state 138
-  24:   On SIZEOF to state 139
-  25:   On SIGNED to state 140
-  26:   On UNSIGNED to state 141
-  27:   On REGISTER to state 142
-  28:   On RETURN to state 143
-  29:   On CONST to state 144
-  30:   On STATIC to state 145
-  31:   On VOLATILE to state 146
-  32:   On ASM to state 147
-  33:   On AUTO to state 148
-  34:   On '(' to state 149
-  35:   On '[' to state 150
-  36:   On '{' to state 151
-  37:   On STRING_LITERAL to state 152
-  38:   On CHARACTER_LITERAL to state 153
-  39:   On INTEGER_LITERAL to state 154
-  40:   On HEXADECIMAL_LITERAL to state 155
-  41:   On OCTAL_LITERAL to state 156
-  42:   On FLOAT_LITERAL to state 157
+  0:   On DEFAULT to state 116
+  1:   On DELETE to state 117
+  2:   On initializer_clause to state 118
+  3:   On expression to state 119
+  4:   On term to state 120
+  5:   On literal to state 121
+  6:   On identifier to state 122
+  7:   On PRIMITIVE to state 123
+  8:   On VOID to state 124
+  9:   On TYPE_NAME to state 125
+  10:   On CONSTRUCTOR_NAME to state 126
+  11:   On operand to state 127
+  12:   On SCOPE_OPERATOR to state 128
+  13:   On ASSIGNMENT_OPERATOR to state 129
+  14:   On EXPRESSION_OPERATOR to state 130
+  15:   On WHILE to state 131
+  16:   On FOR to state 132
+  17:   On IF to state 133
+  18:   On TRY to state 134
+  19:   On CATCH to state 135
+  20:   On THROW to state 136
+  21:   On USING to state 137
+  22:   On TRUE to state 138
+  23:   On FALSE to state 139
+  24:   On SIZEOF to state 140
+  25:   On SIGNED to state 141
+  26:   On UNSIGNED to state 142
+  27:   On REGISTER to state 143
+  28:   On RETURN to state 144
+  29:   On CONST to state 145
+  30:   On STATIC to state 146
+  31:   On VOLATILE to state 147
+  32:   On ASM to state 148
+  33:   On AUTO to state 149
+  34:   On '(' to state 150
+  35:   On '[' to state 151
+  36:   On '{' to state 152
+  37:   On STRING_LITERAL to state 153
+  38:   On CHARACTER_LITERAL to state 154
+  39:   On INTEGER_LITERAL to state 155
+  40:   On HEXADECIMAL_LITERAL to state 156
+  41:   On OCTAL_LITERAL to state 157
+  42:   On FLOAT_LITERAL to state 158
   43:   On IDENTIFIER to state 58
-  44:   On '+' to state 158
-  45:   On '-' to state 159
-  46:   On '*' to state 160
-  47:   On '/' to state 161
-  48:   On '%' to state 162
-  49:   On '^' to state 163
-  50:   On '?' to state 164
-  51:   On ':' to state 165
-  52:   On '|' to state 166
-  53:   On '&' to state 167
-  54:   On '>' to state 168
-  55:   On '<' to state 169
-  56:   On '!' to state 170
-  57:   On '~' to state 171
+  44:   On '+' to state 159
+  45:   On '-' to state 160
+  46:   On '*' to state 161
+  47:   On '/' to state 162
+  48:   On '%' to state 163
+  49:   On '^' to state 164
+  50:   On '?' to state 165
+  51:   On ':' to state 166
+  52:   On '|' to state 167
+  53:   On '&' to state 168
+  54:   On '>' to state 169
+  55:   On '<' to state 170
+  56:   On '!' to state 171
+  57:   On '~' to state 172
 
 
 State 62:
@@ -932,7 +934,7 @@ State 63:
 
 State 64:
 143: function_body -> ctor_initializer  . compound_statement 
-  0:   On compound_statement to state 172
+  0:   On compound_statement to state 173
   1:   On '{' to state 67
 
 
@@ -948,84 +950,84 @@ State 66:
 
 State 67:
 145: compound_statement -> '{'  . ignored_code '}' 
-  0:   On ignored_code to state 173
-  1:   On expression to state 174
-  2:   On term to state 119
-  3:   On literal to state 120
-  4:   On identifier to state 121
-  5:   On PRIMITIVE to state 122
-  6:   On VOID to state 123
-  7:   On TYPE_NAME to state 124
-  8:   On CONSTRUCTOR_NAME to state 125
-  9:   On operand to state 126
-  10:   On SCOPE_OPERATOR to state 127
-  11:   On ASSIGNMENT_OPERATOR to state 128
-  12:   On EXPRESSION_OPERATOR to state 129
-  13:   On WHILE to state 130
-  14:   On FOR to state 131
-  15:   On IF to state 132
-  16:   On TRY to state 133
-  17:   On CATCH to state 134
-  18:   On THROW to state 135
-  19:   On USING to state 136
-  20:   On TRUE to state 137
-  21:   On FALSE to state 138
-  22:   On SIZEOF to state 139
-  23:   On SIGNED to state 140
-  24:   On UNSIGNED to state 141
-  25:   On REGISTER to state 142
-  26:   On DELETE to state 175
-  27:   On RETURN to state 143
-  28:   On CONST to state 144
-  29:   On STATIC to state 145
-  30:   On VOLATILE to state 146
-  31:   On ASM to state 147
-  32:   On AUTO to state 148
-  33:   On '(' to state 149
-  34:   On '[' to state 150
-  35:   On '{' to state 151
-  36:   On STRING_LITERAL to state 152
-  37:   On CHARACTER_LITERAL to state 153
-  38:   On INTEGER_LITERAL to state 154
-  39:   On HEXADECIMAL_LITERAL to state 155
-  40:   On OCTAL_LITERAL to state 156
-  41:   On FLOAT_LITERAL to state 157
+  0:   On ignored_code to state 174
+  1:   On expression to state 175
+  2:   On term to state 120
+  3:   On literal to state 121
+  4:   On identifier to state 122
+  5:   On PRIMITIVE to state 123
+  6:   On VOID to state 124
+  7:   On TYPE_NAME to state 125
+  8:   On CONSTRUCTOR_NAME to state 126
+  9:   On operand to state 127
+  10:   On SCOPE_OPERATOR to state 128
+  11:   On ASSIGNMENT_OPERATOR to state 129
+  12:   On EXPRESSION_OPERATOR to state 130
+  13:   On WHILE to state 131
+  14:   On FOR to state 132
+  15:   On IF to state 133
+  16:   On TRY to state 134
+  17:   On CATCH to state 135
+  18:   On THROW to state 136
+  19:   On USING to state 137
+  20:   On TRUE to state 138
+  21:   On FALSE to state 139
+  22:   On SIZEOF to state 140
+  23:   On SIGNED to state 141
+  24:   On UNSIGNED to state 142
+  25:   On REGISTER to state 143
+  26:   On DELETE to state 176
+  27:   On RETURN to state 144
+  28:   On CONST to state 145
+  29:   On STATIC to state 146
+  30:   On VOLATILE to state 147
+  31:   On ASM to state 148
+  32:   On AUTO to state 149
+  33:   On '(' to state 150
+  34:   On '[' to state 151
+  35:   On '{' to state 152
+  36:   On STRING_LITERAL to state 153
+  37:   On CHARACTER_LITERAL to state 154
+  38:   On INTEGER_LITERAL to state 155
+  39:   On HEXADECIMAL_LITERAL to state 156
+  40:   On OCTAL_LITERAL to state 157
+  41:   On FLOAT_LITERAL to state 158
   42:   On IDENTIFIER to state 58
-  43:   On '+' to state 158
-  44:   On '-' to state 159
-  45:   On '*' to state 160
-  46:   On '/' to state 161
-  47:   On '%' to state 162
-  48:   On '^' to state 163
-  49:   On '?' to state 164
-  50:   On ':' to state 165
-  51:   On '|' to state 166
-  52:   On '&' to state 167
-  53:   On '>' to state 168
-  54:   On '<' to state 169
-  55:   On '!' to state 170
-  56:   On '~' to state 171
+  43:   On '+' to state 159
+  44:   On '-' to state 160
+  45:   On '*' to state 161
+  46:   On '/' to state 162
+  47:   On '%' to state 163
+  48:   On '^' to state 164
+  49:   On '?' to state 165
+  50:   On ':' to state 166
+  51:   On '|' to state 167
+  52:   On '&' to state 168
+  53:   On '>' to state 169
+  54:   On '<' to state 170
+  55:   On '!' to state 171
+  56:   On '~' to state 172
   Reduce by 158: ignored_code ->  . 
 
 
 State 68:
 146: ctor_initializer -> ':'  . mem_initializer_list 
-  0:   On mem_initializer_list to state 176
-  1:   On mem_initializer to state 177
-  2:   On mem_initializer_id to state 178
-  3:   On class_or_decltype to state 179
-  4:   On class_name to state 180
-  5:   On SCOPE_OPERATOR to state 181
-  6:   On nested_name_specifier to state 182
-  7:   On identifier to state 112
+  0:   On mem_initializer_list to state 177
+  1:   On mem_initializer to state 178
+  2:   On mem_initializer_id to state 179
+  3:   On class_or_decltype to state 180
+  4:   On class_name to state 181
+  5:   On SCOPE_OPERATOR to state 182
+  6:   On nested_name_specifier to state 183
+  7:   On identifier to state 113
   8:   On IDENTIFIER to state 58
 
 
 State 69:
 151: function_try_block -> TRY  . compound_statement handler_seq 
 152: function_try_block -> TRY  . ctor_initializer compound_statement handler_seq 
-  0:   On compound_statement to state 183
-  1:   On ctor_initializer to state 184
+  0:   On compound_statement to state 184
+  1:   On ctor_initializer to state 185
   2:   On '{' to state 67
   3:   On ':' to state 68
 
@@ -1036,8 +1038,8 @@ State 70:
 141: function_definition -> decl_specifier_seq declarator  . '=' DELETE ';' 
 24: init_declarator -> declarator  . 
 25: init_declarator -> declarator  . initializer 
-  0:   On function_body to state 185
-  1:   On '=' to state 186
+  0:   On function_body to state 186
+  1:   On '=' to state 187
   2:   On initializer to state 62
   3:   On compound_statement to state 63
   4:   On ctor_initializer to state 64
@@ -1052,7 +1054,7 @@ State 70:
 State 71:
 10: simple_declaration -> decl_specifier_seq init_declarator_list  . ';' 
 23: init_declarator_list -> init_declarator_list  . ',' init_declarator 
-  0:   On ';' to state 187
+  0:   On ';' to state 188
   1:   On ',' to state 76
 
 
@@ -1066,9 +1068,9 @@ State 73:
 47: declarator_id -> SCOPE_OPERATOR  . nested_name_specifier constructor_name 
 226: qualified_id -> SCOPE_OPERATOR  . unqualified_id 
 228: qualified_id -> SCOPE_OPERATOR  . nested_name_specifier unqualified_id 
-  0:   On constructor_name to state 99
-  1:   On nested_name_specifier to state 188
-  2:   On unqualified_id to state 102
+  0:   On constructor_name to state 100
+  1:   On nested_name_specifier to state 189
+  2:   On unqualified_id to state 103
   3:   On CONSTRUCTOR_NAME to state 51
   4:   On identifier to state 52
   5:   On '~' to state 59
@@ -1079,9 +1081,9 @@ State 74:
 46: declarator_id -> nested_name_specifier  . constructor_name 
 230: nested_name_specifier -> nested_name_specifier  . identifier SCOPE_OPERATOR 
 227: qualified_id -> nested_name_specifier  . unqualified_id 
-  0:   On constructor_name to state 103
-  1:   On identifier to state 105
-  2:   On unqualified_id to state 106
+  0:   On constructor_name to state 104
+  1:   On identifier to state 106
+  2:   On unqualified_id to state 107
   3:   On CONSTRUCTOR_NAME to state 51
   4:   On IDENTIFIER to state 58
   5:   On '~' to state 59
@@ -1094,8 +1096,8 @@ State 75:
 
 State 76:
 23: init_declarator_list -> init_declarator_list ','  . init_declarator 
-  0:   On init_declarator to state 189
-  1:   On declarator to state 190
+  0:   On init_declarator to state 190
+  1:   On declarator to state 191
   2:   On ptr_declarator to state 18
   3:   On noptr_declarator to state 23
   4:   On ptr_operator to state 24
@@ -1121,9 +1123,9 @@ State 77:
 120: enum_head -> enum_key identifier  . 
 122: enum_head -> enum_key identifier  . enum_base 
 229: nested_name_specifier -> identifier  . SCOPE_OPERATOR 
-  0:   On ';' to state 191
-  1:   On enum_base to state 192
-  2:   On SCOPE_OPERATOR to state 113
+  0:   On ';' to state 192
+  1:   On enum_base to state 193
+  2:   On SCOPE_OPERATOR to state 114
   3:   On ':' to state 80
   Reduce by 120: enum_head -> enum_key identifier  . 
 
@@ -1137,32 +1139,32 @@ State 79:
 123: enum_head -> enum_key nested_name_specifier  . identifier 
 124: enum_head -> enum_key nested_name_specifier  . identifier enum_base 
 230: nested_name_specifier -> nested_name_specifier  . identifier SCOPE_OPERATOR 
-  0:   On identifier to state 193
+  0:   On identifier to state 194
   1:   On IDENTIFIER to state 58
 
 
 State 80:
 127: enum_base -> ':'  . primitive 
-  0:   On primitive to state 194
-  1:   On PRIMITIVE to state 195
+  0:   On primitive to state 195
+  1:   On PRIMITIVE to state 196
 
 
 State 81:
 53: named_namespace_definition -> NAMESPACE identifier  . '{' declaration_seq '}' 
-  0:   On '{' to state 196
+  0:   On '{' to state 197
 
 
 State 82:
 55: unnamed_namespace_definition -> NAMESPACE '{'  . declaration_seq '}' 
-  0:   On declaration_seq to state 197
+  0:   On declaration_seq to state 198
   Reduce by 2: declaration_seq ->  . 
 
 
 State 83:
 54: named_namespace_definition -> INLINE NAMESPACE  . identifier '{' declaration_seq '}' 
 56: unnamed_namespace_definition -> INLINE NAMESPACE  . '{' declaration_seq '}' 
-  0:   On identifier to state 198
-  1:   On '{' to state 199
+  0:   On identifier to state 199
+  1:   On '{' to state 200
   2:   On IDENTIFIER to state 58
 
 
@@ -1179,8 +1181,8 @@ State 85:
 State 86:
 66: simple_type_specifier -> SCOPE_OPERATOR  . type_name 
 68: simple_type_specifier -> SCOPE_OPERATOR  . nested_name_specifier type_name 
-  0:   On type_name to state 101
-  1:   On nested_name_specifier to state 200
+  0:   On type_name to state 102
+  1:   On nested_name_specifier to state 201
   2:   On TYPE_NAME to state 53
   3:   On identifier to state 89
   4:   On IDENTIFIER to state 58
@@ -1189,8 +1191,8 @@ State 86:
 State 87:
 67: simple_type_specifier -> nested_name_specifier  . type_name 
 230: nested_name_specifier -> nested_name_specifier  . identifier SCOPE_OPERATOR 
-  0:   On type_name to state 104
-  1:   On identifier to state 201
+  0:   On type_name to state 105
+  1:   On identifier to state 202
   2:   On TYPE_NAME to state 53
   3:   On IDENTIFIER to state 58
 
@@ -1202,7 +1204,7 @@ State 88:
 122: enum_head -> enum_key  . identifier enum_base 
 123: enum_head -> enum_key  . nested_name_specifier identifier 
 124: enum_head -> enum_key  . nested_name_specifier identifier enum_base 
-  0:   On identifier to state 202
+  0:   On identifier to state 203
   1:   On enum_base to state 78
   2:   On nested_name_specifier to state 79
   3:   On IDENTIFIER to state 58
@@ -1212,7 +1214,7 @@ State 88:
 
 State 89:
 229: nested_name_specifier -> identifier  . SCOPE_OPERATOR 
-  0:   On SCOPE_OPERATOR to state 113
+  0:   On SCOPE_OPERATOR to state 114
 
 
 State 90:
@@ -1233,71 +1235,71 @@ State 92:
 State 93:
 31: noptr_declarator -> noptr_declarator '['  . expression ']' 
 32: noptr_declarator -> noptr_declarator '['  . ']' 
-  0:   On expression to state 203
-  1:   On ']' to state 204
-  2:   On term to state 119
-  3:   On literal to state 120
-  4:   On identifier to state 121
-  5:   On PRIMITIVE to state 122
-  6:   On VOID to state 123
-  7:   On TYPE_NAME to state 124
-  8:   On CONSTRUCTOR_NAME to state 125
-  9:   On operand to state 126
-  10:   On SCOPE_OPERATOR to state 127
-  11:   On ASSIGNMENT_OPERATOR to state 128
-  12:   On EXPRESSION_OPERATOR to state 129
-  13:   On WHILE to state 130
-  14:   On FOR to state 131
-  15:   On IF to state 132
-  16:   On TRY to state 133
-  17:   On CATCH to state 134
-  18:   On THROW to state 135
-  19:   On USING to state 136
-  20:   On TRUE to state 137
-  21:   On FALSE to state 138
-  22:   On SIZEOF to state 139
-  23:   On SIGNED to state 140
-  24:   On UNSIGNED to state 141
-  25:   On REGISTER to state 142
-  26:   On DELETE to state 175
-  27:   On RETURN to state 143
-  28:   On CONST to state 144
-  29:   On STATIC to state 145
-  30:   On VOLATILE to state 146
-  31:   On ASM to state 147
-  32:   On AUTO to state 148
-  33:   On '(' to state 149
-  34:   On '[' to state 150
-  35:   On '{' to state 151
-  36:   On STRING_LITERAL to state 152
-  37:   On CHARACTER_LITERAL to state 153
-  38:   On INTEGER_LITERAL to state 154
-  39:   On HEXADECIMAL_LITERAL to state 155
-  40:   On OCTAL_LITERAL to state 156
-  41:   On FLOAT_LITERAL to state 157
+  0:   On expression to state 204
+  1:   On ']' to state 205
+  2:   On term to state 120
+  3:   On literal to state 121
+  4:   On identifier to state 122
+  5:   On PRIMITIVE to state 123
+  6:   On VOID to state 124
+  7:   On TYPE_NAME to state 125
+  8:   On CONSTRUCTOR_NAME to state 126
+  9:   On operand to state 127
+  10:   On SCOPE_OPERATOR to state 128
+  11:   On ASSIGNMENT_OPERATOR to state 129
+  12:   On EXPRESSION_OPERATOR to state 130
+  13:   On WHILE to state 131
+  14:   On FOR to state 132
+  15:   On IF to state 133
+  16:   On TRY to state 134
+  17:   On CATCH to state 135
+  18:   On THROW to state 136
+  19:   On USING to state 137
+  20:   On TRUE to state 138
+  21:   On FALSE to state 139
+  22:   On SIZEOF to state 140
+  23:   On SIGNED to state 141
+  24:   On UNSIGNED to state 142
+  25:   On REGISTER to state 143
+  26:   On DELETE to state 176
+  27:   On RETURN to state 144
+  28:   On CONST to state 145
+  29:   On STATIC to state 146
+  30:   On VOLATILE to state 147
+  31:   On ASM to state 148
+  32:   On AUTO to state 149
+  33:   On '(' to state 150
+  34:   On '[' to state 151
+  35:   On '{' to state 152
+  36:   On STRING_LITERAL to state 153
+  37:   On CHARACTER_LITERAL to state 154
+  38:   On INTEGER_LITERAL to state 155
+  39:   On HEXADECIMAL_LITERAL to state 156
+  40:   On OCTAL_LITERAL to state 157
+  41:   On FLOAT_LITERAL to state 158
   42:   On IDENTIFIER to state 58
-  43:   On '+' to state 158
-  44:   On '-' to state 159
-  45:   On '*' to state 160
-  46:   On '/' to state 161
-  47:   On '%' to state 162
-  48:   On '^' to state 163
-  49:   On '?' to state 164
-  50:   On ':' to state 165
-  51:   On '|' to state 166
-  52:   On '&' to state 167
-  53:   On '>' to state 168
-  54:   On '<' to state 169
-  55:   On '!' to state 170
-  56:   On '~' to state 171
+  43:   On '+' to state 159
+  44:   On '-' to state 160
+  45:   On '*' to state 161
+  46:   On '/' to state 162
+  47:   On '%' to state 163
+  48:   On '^' to state 164
+  49:   On '?' to state 165
+  50:   On ':' to state 166
+  51:   On '|' to state 167
+  52:   On '&' to state 168
+  53:   On '>' to state 169
+  54:   On '<' to state 170
+  55:   On '!' to state 171
+  56:   On '~' to state 172
 
 
 State 94:
 34: parameters_and_qualifiers -> '('  . parameter_declaration_clause ')' 
-  0:   On parameter_declaration_clause to state 205
-  1:   On parameter_declaration_list to state 206
-  2:   On parameter_declaration to state 207
-  3:   On decl_specifier_seq to state 208
+  0:   On parameter_declaration_clause to state 206
+  1:   On parameter_declaration_list to state 207
+  2:   On parameter_declaration to state 208
+  3:   On decl_specifier_seq to state 209
   4:   On type_specifier to state 19
   5:   On decl_specifier to state 20
   6:   On trailing_type_specifier to state 25
@@ -1337,28 +1339,33 @@ State 95:
 
 State 96:
 33: noptr_declarator -> '(' ptr_declarator  . ')' 
-  0:   On ')' to state 209
+  0:   On ')' to state 210
 
 
 State 97:
+41: ptr_operator -> '*' cv_qualifier  . 
+  Reduce by 41: ptr_operator -> '*' cv_qualifier  . 
+
+
+State 98:
 73: class_specifier -> class_head '{'  . #0001 '}' 
 75: class_specifier -> class_head '{'  . member_specification #0002 '}' 
-  0:   On #0001 to state 210
-  1:   On member_specification to state 211
-  2:   On member_declaration to state 212
-  3:   On access_specifier to state 213
-  4:   On member_declarator_list to state 214
-  5:   On decl_specifier_seq to state 215
-  6:   On function_definition to state 216
-  7:   On PRIVATE to state 217
-  8:   On PROTECTED to state 218
-  9:   On PUBLIC to state 219
-  10:   On member_declarator to state 220
+  0:   On #0001 to state 211
+  1:   On member_specification to state 212
+  2:   On member_declaration to state 213
+  3:   On access_specifier to state 214
+  4:   On member_declarator_list to state 215
+  5:   On decl_specifier_seq to state 216
+  6:   On function_definition to state 217
+  7:   On PRIVATE to state 218
+  8:   On PROTECTED to state 219
+  9:   On PUBLIC to state 220
+  10:   On member_declarator to state 221
   11:   On type_specifier to state 19
   12:   On decl_specifier to state 20
-  13:   On declarator to state 221
-  14:   On ':' to state 222
-  15:   On identifier to state 223
+  13:   On declarator to state 222
+  14:   On ':' to state 223
+  15:   On identifier to state 224
   16:   On trailing_type_specifier to state 25
   17:   On class_specifier to state 26
   18:   On enum_specifier to state 27
@@ -1401,1032 +1408,1032 @@ State 97:
   Reduce by 74: #0001 ->  . 
 
 
-State 98:
+State 99:
 116: enum_specifier -> enum_head '{'  . '}' 
 117: enum_specifier -> enum_head '{'  . enumerator_list '}' 
 118: enum_specifier -> enum_head '{'  . enumerator_list ',' '}' 
-  0:   On '}' to state 224
-  1:   On enumerator_list to state 225
-  2:   On enumerator_definition to state 226
-  3:   On enumerator to state 227
-  4:   On identifier to state 228
+  0:   On '}' to state 225
+  1:   On enumerator_list to state 226
+  2:   On enumerator_definition to state 227
+  3:   On enumerator to state 228
+  4:   On identifier to state 229
   5:   On IDENTIFIER to state 58
 
 
-State 99:
+State 100:
 45: declarator_id -> SCOPE_OPERATOR constructor_name  . 
   Reduce by 45: declarator_id -> SCOPE_OPERATOR constructor_name  . 
 
 
-State 100:
+State 101:
 47: declarator_id -> SCOPE_OPERATOR nested_name_specifier  . constructor_name 
 68: simple_type_specifier -> SCOPE_OPERATOR nested_name_specifier  . type_name 
 228: qualified_id -> SCOPE_OPERATOR nested_name_specifier  . unqualified_id 
 230: nested_name_specifier -> nested_name_specifier  . identifier SCOPE_OPERATOR 
-  0:   On constructor_name to state 229
-  1:   On type_name to state 230
-  2:   On unqualified_id to state 231
-  3:   On identifier to state 105
+  0:   On constructor_name to state 230
+  1:   On type_name to state 231
+  2:   On unqualified_id to state 232
+  3:   On identifier to state 106
   4:   On CONSTRUCTOR_NAME to state 51
   5:   On TYPE_NAME to state 53
   6:   On '~' to state 59
   7:   On IDENTIFIER to state 58
 
 
-State 101:
+State 102:
 66: simple_type_specifier -> SCOPE_OPERATOR type_name  . 
   Reduce by 66: simple_type_specifier -> SCOPE_OPERATOR type_name  . 
 
 
-State 102:
+State 103:
 226: qualified_id -> SCOPE_OPERATOR unqualified_id  . 
   Reduce by 226: qualified_id -> SCOPE_OPERATOR unqualified_id  . 
 
 
-State 103:
+State 104:
 46: declarator_id -> nested_name_specifier constructor_name  . 
   Reduce by 46: declarator_id -> nested_name_specifier constructor_name  . 
 
 
-State 104:
+State 105:
 67: simple_type_specifier -> nested_name_specifier type_name  . 
   Reduce by 67: simple_type_specifier -> nested_name_specifier type_name  . 
 
 
-State 105:
+State 106:
 230: nested_name_specifier -> nested_name_specifier identifier  . SCOPE_OPERATOR 
 223: unqualified_id -> identifier  . 
-  0:   On SCOPE_OPERATOR to state 232
+  0:   On SCOPE_OPERATOR to state 233
   Reduce by 223: unqualified_id -> identifier  . 
 
 
-State 106:
+State 107:
 227: qualified_id -> nested_name_specifier unqualified_id  . 
   Reduce by 227: qualified_id -> nested_name_specifier unqualified_id  . 
 
 
-State 107:
+State 108:
 78: class_head -> class_key base_clause  . 
   Reduce by 78: class_head -> class_key base_clause  . 
 
 
-State 108:
+State 109:
 79: class_head -> class_key class_head_name  . 
 80: class_head -> class_key class_head_name  . base_clause 
-  0:   On base_clause to state 233
-  1:   On ':' to state 109
+  0:   On base_clause to state 234
+  1:   On ':' to state 110
   Reduce by 79: class_head -> class_key class_head_name  . 
 
 
-State 109:
+State 110:
 83: base_clause -> ':'  . base_specifier_list 
-  0:   On base_specifier_list to state 234
-  1:   On base_specifier to state 235
-  2:   On base_type_specifier to state 236
-  3:   On VIRTUAL to state 237
-  4:   On access_specifier to state 238
-  5:   On class_or_decltype to state 239
-  6:   On PRIVATE to state 217
-  7:   On PROTECTED to state 218
-  8:   On PUBLIC to state 219
-  9:   On class_name to state 180
-  10:   On SCOPE_OPERATOR to state 181
-  11:   On nested_name_specifier to state 182
-  12:   On identifier to state 112
+  0:   On base_specifier_list to state 235
+  1:   On base_specifier to state 236
+  2:   On base_type_specifier to state 237
+  3:   On VIRTUAL to state 238
+  4:   On access_specifier to state 239
+  5:   On class_or_decltype to state 240
+  6:   On PRIVATE to state 218
+  7:   On PROTECTED to state 219
+  8:   On PUBLIC to state 220
+  9:   On class_name to state 181
+  10:   On SCOPE_OPERATOR to state 182
+  11:   On nested_name_specifier to state 183
+  12:   On identifier to state 113
   13:   On IDENTIFIER to state 58
 
 
-State 110:
+State 111:
 81: class_head_name -> class_name  . 
   Reduce by 81: class_head_name -> class_name  . 
 
 
-State 111:
+State 112:
 82: class_head_name -> nested_name_specifier  . class_name 
 230: nested_name_specifier -> nested_name_specifier  . identifier SCOPE_OPERATOR 
-  0:   On class_name to state 240
-  1:   On identifier to state 241
+  0:   On class_name to state 241
+  1:   On identifier to state 242
   2:   On IDENTIFIER to state 58
 
 
-State 112:
+State 113:
 96: class_name -> identifier  . 
 229: nested_name_specifier -> identifier  . SCOPE_OPERATOR 
-  0:   On SCOPE_OPERATOR to state 113
+  0:   On SCOPE_OPERATOR to state 114
   Reduce by 96: class_name -> identifier  . 
 
 
-State 113:
+State 114:
 229: nested_name_specifier -> identifier SCOPE_OPERATOR  . 
   Reduce by 229: nested_name_specifier -> identifier SCOPE_OPERATOR  . 
 
 
-State 114:
+State 115:
 224: unqualified_id -> '~' constructor_name  . 
   Reduce by 224: unqualified_id -> '~' constructor_name  . 
 
 
-State 115:
-138: function_definition -> declarator '=' DEFAULT  . ';' 
-  0:   On ';' to state 242
-
-
 State 116:
-140: function_definition -> declarator '=' DELETE  . ';' 
-189: term -> DELETE  . 
+138: function_definition -> declarator '=' DEFAULT  . ';' 
   0:   On ';' to state 243
-  Reduce by 189: term -> DELETE  . 
-Solved SR CONFLICT on ';':
-	shift to state 243, removed ';' from LA-set of rule 189)
 
 
 State 117:
+140: function_definition -> declarator '=' DELETE  . ';' 
+189: term -> DELETE  . 
+  0:   On ';' to state 244
+  Reduce by 189: term -> DELETE  . 
+Solved SR CONFLICT on ';':
+	shift to state 244, removed ';' from LA-set of rule 189)
+
+
+State 118:
 49: brace_or_equal_initializer -> '=' initializer_clause  . 
   Reduce by 49: brace_or_equal_initializer -> '=' initializer_clause  . 
 
 
-State 118:
+State 119:
 50: initializer_clause -> expression  . 
 165: expression -> expression  . term 
-  0:   On term to state 244
-  1:   On literal to state 120
-  2:   On identifier to state 121
-  3:   On PRIMITIVE to state 122
-  4:   On VOID to state 123
-  5:   On TYPE_NAME to state 124
-  6:   On CONSTRUCTOR_NAME to state 125
-  7:   On operand to state 126
-  8:   On SCOPE_OPERATOR to state 127
-  9:   On ASSIGNMENT_OPERATOR to state 128
-  10:   On EXPRESSION_OPERATOR to state 129
-  11:   On WHILE to state 130
-  12:   On FOR to state 131
-  13:   On IF to state 132
-  14:   On TRY to state 133
-  15:   On CATCH to state 134
-  16:   On THROW to state 135
-  17:   On USING to state 136
-  18:   On TRUE to state 137
-  19:   On FALSE to state 138
-  20:   On SIZEOF to state 139
-  21:   On SIGNED to state 140
-  22:   On UNSIGNED to state 141
-  23:   On REGISTER to state 142
-  24:   On DELETE to state 175
-  25:   On RETURN to state 143
-  26:   On CONST to state 144
-  27:   On STATIC to state 145
-  28:   On VOLATILE to state 146
-  29:   On ASM to state 147
-  30:   On AUTO to state 148
-  31:   On '(' to state 149
-  32:   On '[' to state 150
-  33:   On '{' to state 151
-  34:   On STRING_LITERAL to state 152
-  35:   On CHARACTER_LITERAL to state 153
-  36:   On INTEGER_LITERAL to state 154
-  37:   On HEXADECIMAL_LITERAL to state 155
-  38:   On OCTAL_LITERAL to state 156
-  39:   On FLOAT_LITERAL to state 157
+  0:   On term to state 245
+  1:   On literal to state 121
+  2:   On identifier to state 122
+  3:   On PRIMITIVE to state 123
+  4:   On VOID to state 124
+  5:   On TYPE_NAME to state 125
+  6:   On CONSTRUCTOR_NAME to state 126
+  7:   On operand to state 127
+  8:   On SCOPE_OPERATOR to state 128
+  9:   On ASSIGNMENT_OPERATOR to state 129
+  10:   On EXPRESSION_OPERATOR to state 130
+  11:   On WHILE to state 131
+  12:   On FOR to state 132
+  13:   On IF to state 133
+  14:   On TRY to state 134
+  15:   On CATCH to state 135
+  16:   On THROW to state 136
+  17:   On USING to state 137
+  18:   On TRUE to state 138
+  19:   On FALSE to state 139
+  20:   On SIZEOF to state 140
+  21:   On SIGNED to state 141
+  22:   On UNSIGNED to state 142
+  23:   On REGISTER to state 143
+  24:   On DELETE to state 176
+  25:   On RETURN to state 144
+  26:   On CONST to state 145
+  27:   On STATIC to state 146
+  28:   On VOLATILE to state 147
+  29:   On ASM to state 148
+  30:   On AUTO to state 149
+  31:   On '(' to state 150
+  32:   On '[' to state 151
+  33:   On '{' to state 152
+  34:   On STRING_LITERAL to state 153
+  35:   On CHARACTER_LITERAL to state 154
+  36:   On INTEGER_LITERAL to state 155
+  37:   On HEXADECIMAL_LITERAL to state 156
+  38:   On OCTAL_LITERAL to state 157
+  39:   On FLOAT_LITERAL to state 158
   40:   On IDENTIFIER to state 58
-  41:   On '+' to state 158
-  42:   On '-' to state 159
-  43:   On '*' to state 160
-  44:   On '/' to state 161
-  45:   On '%' to state 162
-  46:   On '^' to state 163
-  47:   On '?' to state 164
-  48:   On ':' to state 165
-  49:   On '|' to state 166
-  50:   On '&' to state 167
-  51:   On '>' to state 168
-  52:   On '<' to state 169
-  53:   On '!' to state 170
-  54:   On '~' to state 171
+  41:   On '+' to state 159
+  42:   On '-' to state 160
+  43:   On '*' to state 161
+  44:   On '/' to state 162
+  45:   On '%' to state 163
+  46:   On '^' to state 164
+  47:   On '?' to state 165
+  48:   On ':' to state 166
+  49:   On '|' to state 167
+  50:   On '&' to state 168
+  51:   On '>' to state 169
+  52:   On '<' to state 170
+  53:   On '!' to state 171
+  54:   On '~' to state 172
   Reduce by 50: initializer_clause -> expression  . 
 
 
-State 119:
+State 120:
 164: expression -> term  . 
   Reduce by 164: expression -> term  . 
 
 
-State 120:
+State 121:
 166: term -> literal  . 
   Reduce by 166: term -> literal  . 
 
 
-State 121:
+State 122:
 167: term -> identifier  . 
   Reduce by 167: term -> identifier  . 
 
 
-State 122:
+State 123:
 168: term -> PRIMITIVE  . 
   Reduce by 168: term -> PRIMITIVE  . 
 
 
-State 123:
+State 124:
 169: term -> VOID  . 
   Reduce by 169: term -> VOID  . 
 
 
-State 124:
+State 125:
 170: term -> TYPE_NAME  . 
   Reduce by 170: term -> TYPE_NAME  . 
 
 
-State 125:
+State 126:
 171: term -> CONSTRUCTOR_NAME  . 
   Reduce by 171: term -> CONSTRUCTOR_NAME  . 
 
 
-State 126:
+State 127:
 172: term -> operand  . 
   Reduce by 172: term -> operand  . 
 
 
-State 127:
+State 128:
 173: term -> SCOPE_OPERATOR  . 
   Reduce by 173: term -> SCOPE_OPERATOR  . 
 
 
-State 128:
+State 129:
 174: term -> ASSIGNMENT_OPERATOR  . 
   Reduce by 174: term -> ASSIGNMENT_OPERATOR  . 
 
 
-State 129:
+State 130:
 175: term -> EXPRESSION_OPERATOR  . 
   Reduce by 175: term -> EXPRESSION_OPERATOR  . 
 
 
-State 130:
+State 131:
 176: term -> WHILE  . 
   Reduce by 176: term -> WHILE  . 
 
 
-State 131:
+State 132:
 177: term -> FOR  . 
   Reduce by 177: term -> FOR  . 
 
 
-State 132:
+State 133:
 178: term -> IF  . 
   Reduce by 178: term -> IF  . 
 
 
-State 133:
+State 134:
 179: term -> TRY  . 
   Reduce by 179: term -> TRY  . 
 
 
-State 134:
+State 135:
 180: term -> CATCH  . 
   Reduce by 180: term -> CATCH  . 
 
 
-State 135:
+State 136:
 181: term -> THROW  . 
   Reduce by 181: term -> THROW  . 
 
 
-State 136:
+State 137:
 182: term -> USING  . 
   Reduce by 182: term -> USING  . 
 
 
-State 137:
+State 138:
 183: term -> TRUE  . 
   Reduce by 183: term -> TRUE  . 
 
 
-State 138:
+State 139:
 184: term -> FALSE  . 
   Reduce by 184: term -> FALSE  . 
 
 
-State 139:
+State 140:
 185: term -> SIZEOF  . 
   Reduce by 185: term -> SIZEOF  . 
 
 
-State 140:
+State 141:
 186: term -> SIGNED  . 
   Reduce by 186: term -> SIGNED  . 
 
 
-State 141:
+State 142:
 187: term -> UNSIGNED  . 
   Reduce by 187: term -> UNSIGNED  . 
 
 
-State 142:
+State 143:
 188: term -> REGISTER  . 
   Reduce by 188: term -> REGISTER  . 
 
 
-State 143:
+State 144:
 190: term -> RETURN  . 
   Reduce by 190: term -> RETURN  . 
 
 
-State 144:
+State 145:
 191: term -> CONST  . 
   Reduce by 191: term -> CONST  . 
 
 
-State 145:
+State 146:
 192: term -> STATIC  . 
   Reduce by 192: term -> STATIC  . 
 
 
-State 146:
+State 147:
 193: term -> VOLATILE  . 
   Reduce by 193: term -> VOLATILE  . 
 
 
-State 147:
+State 148:
 194: term -> ASM  . 
   Reduce by 194: term -> ASM  . 
 
 
-State 148:
+State 149:
 195: term -> AUTO  . 
   Reduce by 195: term -> AUTO  . 
 
 
-State 149:
-196: term -> '('  . ignored_code ')' 
-  0:   On ignored_code to state 245
-  1:   On expression to state 174
-  2:   On term to state 119
-  3:   On literal to state 120
-  4:   On identifier to state 121
-  5:   On PRIMITIVE to state 122
-  6:   On VOID to state 123
-  7:   On TYPE_NAME to state 124
-  8:   On CONSTRUCTOR_NAME to state 125
-  9:   On operand to state 126
-  10:   On SCOPE_OPERATOR to state 127
-  11:   On ASSIGNMENT_OPERATOR to state 128
-  12:   On EXPRESSION_OPERATOR to state 129
-  13:   On WHILE to state 130
-  14:   On FOR to state 131
-  15:   On IF to state 132
-  16:   On TRY to state 133
-  17:   On CATCH to state 134
-  18:   On THROW to state 135
-  19:   On USING to state 136
-  20:   On TRUE to state 137
-  21:   On FALSE to state 138
-  22:   On SIZEOF to state 139
-  23:   On SIGNED to state 140
-  24:   On UNSIGNED to state 141
-  25:   On REGISTER to state 142
-  26:   On DELETE to state 175
-  27:   On RETURN to state 143
-  28:   On CONST to state 144
-  29:   On STATIC to state 145
-  30:   On VOLATILE to state 146
-  31:   On ASM to state 147
-  32:   On AUTO to state 148
-  33:   On '(' to state 149
-  34:   On '[' to state 150
-  35:   On '{' to state 151
-  36:   On STRING_LITERAL to state 152
-  37:   On CHARACTER_LITERAL to state 153
-  38:   On INTEGER_LITERAL to state 154
-  39:   On HEXADECIMAL_LITERAL to state 155
-  40:   On OCTAL_LITERAL to state 156
-  41:   On FLOAT_LITERAL to state 157
-  42:   On IDENTIFIER to state 58
-  43:   On '+' to state 158
-  44:   On '-' to state 159
-  45:   On '*' to state 160
-  46:   On '/' to state 161
-  47:   On '%' to state 162
-  48:   On '^' to state 163
-  49:   On '?' to state 164
-  50:   On ':' to state 165
-  51:   On '|' to state 166
-  52:   On '&' to state 167
-  53:   On '>' to state 168
-  54:   On '<' to state 169
-  55:   On '!' to state 170
-  56:   On '~' to state 171
-  Reduce by 158: ignored_code ->  . 
-
-
 State 150:
-197: term -> '['  . ignored_code ']' 
+196: term -> '('  . ignored_code ')' 
   0:   On ignored_code to state 246
-  1:   On expression to state 174
-  2:   On term to state 119
-  3:   On literal to state 120
-  4:   On identifier to state 121
-  5:   On PRIMITIVE to state 122
-  6:   On VOID to state 123
-  7:   On TYPE_NAME to state 124
-  8:   On CONSTRUCTOR_NAME to state 125
-  9:   On operand to state 126
-  10:   On SCOPE_OPERATOR to state 127
-  11:   On ASSIGNMENT_OPERATOR to state 128
-  12:   On EXPRESSION_OPERATOR to state 129
-  13:   On WHILE to state 130
-  14:   On FOR to state 131
-  15:   On IF to state 132
-  16:   On TRY to state 133
-  17:   On CATCH to state 134
-  18:   On THROW to state 135
-  19:   On USING to state 136
-  20:   On TRUE to state 137
-  21:   On FALSE to state 138
-  22:   On SIZEOF to state 139
-  23:   On SIGNED to state 140
-  24:   On UNSIGNED to state 141
-  25:   On REGISTER to state 142
-  26:   On DELETE to state 175
-  27:   On RETURN to state 143
-  28:   On CONST to state 144
-  29:   On STATIC to state 145
-  30:   On VOLATILE to state 146
-  31:   On ASM to state 147
-  32:   On AUTO to state 148
-  33:   On '(' to state 149
-  34:   On '[' to state 150
-  35:   On '{' to state 151
-  36:   On STRING_LITERAL to state 152
-  37:   On CHARACTER_LITERAL to state 153
-  38:   On INTEGER_LITERAL to state 154
-  39:   On HEXADECIMAL_LITERAL to state 155
-  40:   On OCTAL_LITERAL to state 156
-  41:   On FLOAT_LITERAL to state 157
+  1:   On expression to state 175
+  2:   On term to state 120
+  3:   On literal to state 121
+  4:   On identifier to state 122
+  5:   On PRIMITIVE to state 123
+  6:   On VOID to state 124
+  7:   On TYPE_NAME to state 125
+  8:   On CONSTRUCTOR_NAME to state 126
+  9:   On operand to state 127
+  10:   On SCOPE_OPERATOR to state 128
+  11:   On ASSIGNMENT_OPERATOR to state 129
+  12:   On EXPRESSION_OPERATOR to state 130
+  13:   On WHILE to state 131
+  14:   On FOR to state 132
+  15:   On IF to state 133
+  16:   On TRY to state 134
+  17:   On CATCH to state 135
+  18:   On THROW to state 136
+  19:   On USING to state 137
+  20:   On TRUE to state 138
+  21:   On FALSE to state 139
+  22:   On SIZEOF to state 140
+  23:   On SIGNED to state 141
+  24:   On UNSIGNED to state 142
+  25:   On REGISTER to state 143
+  26:   On DELETE to state 176
+  27:   On RETURN to state 144
+  28:   On CONST to state 145
+  29:   On STATIC to state 146
+  30:   On VOLATILE to state 147
+  31:   On ASM to state 148
+  32:   On AUTO to state 149
+  33:   On '(' to state 150
+  34:   On '[' to state 151
+  35:   On '{' to state 152
+  36:   On STRING_LITERAL to state 153
+  37:   On CHARACTER_LITERAL to state 154
+  38:   On INTEGER_LITERAL to state 155
+  39:   On HEXADECIMAL_LITERAL to state 156
+  40:   On OCTAL_LITERAL to state 157
+  41:   On FLOAT_LITERAL to state 158
   42:   On IDENTIFIER to state 58
-  43:   On '+' to state 158
-  44:   On '-' to state 159
-  45:   On '*' to state 160
-  46:   On '/' to state 161
-  47:   On '%' to state 162
-  48:   On '^' to state 163
-  49:   On '?' to state 164
-  50:   On ':' to state 165
-  51:   On '|' to state 166
-  52:   On '&' to state 167
-  53:   On '>' to state 168
-  54:   On '<' to state 169
-  55:   On '!' to state 170
-  56:   On '~' to state 171
+  43:   On '+' to state 159
+  44:   On '-' to state 160
+  45:   On '*' to state 161
+  46:   On '/' to state 162
+  47:   On '%' to state 163
+  48:   On '^' to state 164
+  49:   On '?' to state 165
+  50:   On ':' to state 166
+  51:   On '|' to state 167
+  52:   On '&' to state 168
+  53:   On '>' to state 169
+  54:   On '<' to state 170
+  55:   On '!' to state 171
+  56:   On '~' to state 172
   Reduce by 158: ignored_code ->  . 
 
 
 State 151:
-198: term -> '{'  . ignored_code '}' 
+197: term -> '['  . ignored_code ']' 
   0:   On ignored_code to state 247
-  1:   On expression to state 174
-  2:   On term to state 119
-  3:   On literal to state 120
-  4:   On identifier to state 121
-  5:   On PRIMITIVE to state 122
-  6:   On VOID to state 123
-  7:   On TYPE_NAME to state 124
-  8:   On CONSTRUCTOR_NAME to state 125
-  9:   On operand to state 126
-  10:   On SCOPE_OPERATOR to state 127
-  11:   On ASSIGNMENT_OPERATOR to state 128
-  12:   On EXPRESSION_OPERATOR to state 129
-  13:   On WHILE to state 130
-  14:   On FOR to state 131
-  15:   On IF to state 132
-  16:   On TRY to state 133
-  17:   On CATCH to state 134
-  18:   On THROW to state 135
-  19:   On USING to state 136
-  20:   On TRUE to state 137
-  21:   On FALSE to state 138
-  22:   On SIZEOF to state 139
-  23:   On SIGNED to state 140
-  24:   On UNSIGNED to state 141
-  25:   On REGISTER to state 142
-  26:   On DELETE to state 175
-  27:   On RETURN to state 143
-  28:   On CONST to state 144
-  29:   On STATIC to state 145
-  30:   On VOLATILE to state 146
-  31:   On ASM to state 147
-  32:   On AUTO to state 148
-  33:   On '(' to state 149
-  34:   On '[' to state 150
-  35:   On '{' to state 151
-  36:   On STRING_LITERAL to state 152
-  37:   On CHARACTER_LITERAL to state 153
-  38:   On INTEGER_LITERAL to state 154
-  39:   On HEXADECIMAL_LITERAL to state 155
-  40:   On OCTAL_LITERAL to state 156
-  41:   On FLOAT_LITERAL to state 157
+  1:   On expression to state 175
+  2:   On term to state 120
+  3:   On literal to state 121
+  4:   On identifier to state 122
+  5:   On PRIMITIVE to state 123
+  6:   On VOID to state 124
+  7:   On TYPE_NAME to state 125
+  8:   On CONSTRUCTOR_NAME to state 126
+  9:   On operand to state 127
+  10:   On SCOPE_OPERATOR to state 128
+  11:   On ASSIGNMENT_OPERATOR to state 129
+  12:   On EXPRESSION_OPERATOR to state 130
+  13:   On WHILE to state 131
+  14:   On FOR to state 132
+  15:   On IF to state 133
+  16:   On TRY to state 134
+  17:   On CATCH to state 135
+  18:   On THROW to state 136
+  19:   On USING to state 137
+  20:   On TRUE to state 138
+  21:   On FALSE to state 139
+  22:   On SIZEOF to state 140
+  23:   On SIGNED to state 141
+  24:   On UNSIGNED to state 142
+  25:   On REGISTER to state 143
+  26:   On DELETE to state 176
+  27:   On RETURN to state 144
+  28:   On CONST to state 145
+  29:   On STATIC to state 146
+  30:   On VOLATILE to state 147
+  31:   On ASM to state 148
+  32:   On AUTO to state 149
+  33:   On '(' to state 150
+  34:   On '[' to state 151
+  35:   On '{' to state 152
+  36:   On STRING_LITERAL to state 153
+  37:   On CHARACTER_LITERAL to state 154
+  38:   On INTEGER_LITERAL to state 155
+  39:   On HEXADECIMAL_LITERAL to state 156
+  40:   On OCTAL_LITERAL to state 157
+  41:   On FLOAT_LITERAL to state 158
   42:   On IDENTIFIER to state 58
-  43:   On '+' to state 158
-  44:   On '-' to state 159
-  45:   On '*' to state 160
-  46:   On '/' to state 161
-  47:   On '%' to state 162
-  48:   On '^' to state 163
-  49:   On '?' to state 164
-  50:   On ':' to state 165
-  51:   On '|' to state 166
-  52:   On '&' to state 167
-  53:   On '>' to state 168
-  54:   On '<' to state 169
-  55:   On '!' to state 170
-  56:   On '~' to state 171
+  43:   On '+' to state 159
+  44:   On '-' to state 160
+  45:   On '*' to state 161
+  46:   On '/' to state 162
+  47:   On '%' to state 163
+  48:   On '^' to state 164
+  49:   On '?' to state 165
+  50:   On ':' to state 166
+  51:   On '|' to state 167
+  52:   On '&' to state 168
+  53:   On '>' to state 169
+  54:   On '<' to state 170
+  55:   On '!' to state 171
+  56:   On '~' to state 172
   Reduce by 158: ignored_code ->  . 
 
 
 State 152:
+198: term -> '{'  . ignored_code '}' 
+  0:   On ignored_code to state 248
+  1:   On expression to state 175
+  2:   On term to state 120
+  3:   On literal to state 121
+  4:   On identifier to state 122
+  5:   On PRIMITIVE to state 123
+  6:   On VOID to state 124
+  7:   On TYPE_NAME to state 125
+  8:   On CONSTRUCTOR_NAME to state 126
+  9:   On operand to state 127
+  10:   On SCOPE_OPERATOR to state 128
+  11:   On ASSIGNMENT_OPERATOR to state 129
+  12:   On EXPRESSION_OPERATOR to state 130
+  13:   On WHILE to state 131
+  14:   On FOR to state 132
+  15:   On IF to state 133
+  16:   On TRY to state 134
+  17:   On CATCH to state 135
+  18:   On THROW to state 136
+  19:   On USING to state 137
+  20:   On TRUE to state 138
+  21:   On FALSE to state 139
+  22:   On SIZEOF to state 140
+  23:   On SIGNED to state 141
+  24:   On UNSIGNED to state 142
+  25:   On REGISTER to state 143
+  26:   On DELETE to state 176
+  27:   On RETURN to state 144
+  28:   On CONST to state 145
+  29:   On STATIC to state 146
+  30:   On VOLATILE to state 147
+  31:   On ASM to state 148
+  32:   On AUTO to state 149
+  33:   On '(' to state 150
+  34:   On '[' to state 151
+  35:   On '{' to state 152
+  36:   On STRING_LITERAL to state 153
+  37:   On CHARACTER_LITERAL to state 154
+  38:   On INTEGER_LITERAL to state 155
+  39:   On HEXADECIMAL_LITERAL to state 156
+  40:   On OCTAL_LITERAL to state 157
+  41:   On FLOAT_LITERAL to state 158
+  42:   On IDENTIFIER to state 58
+  43:   On '+' to state 159
+  44:   On '-' to state 160
+  45:   On '*' to state 161
+  46:   On '/' to state 162
+  47:   On '%' to state 163
+  48:   On '^' to state 164
+  49:   On '?' to state 165
+  50:   On ':' to state 166
+  51:   On '|' to state 167
+  52:   On '&' to state 168
+  53:   On '>' to state 169
+  54:   On '<' to state 170
+  55:   On '!' to state 171
+  56:   On '~' to state 172
+  Reduce by 158: ignored_code ->  . 
+
+
+State 153:
 199: literal -> STRING_LITERAL  . 
   Reduce by 199: literal -> STRING_LITERAL  . 
 
 
-State 153:
+State 154:
 200: literal -> CHARACTER_LITERAL  . 
   Reduce by 200: literal -> CHARACTER_LITERAL  . 
 
 
-State 154:
+State 155:
 201: literal -> INTEGER_LITERAL  . 
   Reduce by 201: literal -> INTEGER_LITERAL  . 
 
 
-State 155:
+State 156:
 202: literal -> HEXADECIMAL_LITERAL  . 
   Reduce by 202: literal -> HEXADECIMAL_LITERAL  . 
 
 
-State 156:
+State 157:
 203: literal -> OCTAL_LITERAL  . 
   Reduce by 203: literal -> OCTAL_LITERAL  . 
 
 
-State 157:
+State 158:
 204: literal -> FLOAT_LITERAL  . 
   Reduce by 204: literal -> FLOAT_LITERAL  . 
 
 
-State 158:
+State 159:
 205: operand -> '+'  . 
   Reduce by 205: operand -> '+'  . 
 
 
-State 159:
+State 160:
 206: operand -> '-'  . 
   Reduce by 206: operand -> '-'  . 
 
 
-State 160:
+State 161:
 207: operand -> '*'  . 
   Reduce by 207: operand -> '*'  . 
 
 
-State 161:
+State 162:
 208: operand -> '/'  . 
   Reduce by 208: operand -> '/'  . 
 
 
-State 162:
+State 163:
 209: operand -> '%'  . 
   Reduce by 209: operand -> '%'  . 
 
 
-State 163:
+State 164:
 210: operand -> '^'  . 
   Reduce by 210: operand -> '^'  . 
 
 
-State 164:
+State 165:
 211: operand -> '?'  . 
   Reduce by 211: operand -> '?'  . 
 
 
-State 165:
+State 166:
 212: operand -> ':'  . 
   Reduce by 212: operand -> ':'  . 
 
 
-State 166:
+State 167:
 213: operand -> '|'  . 
   Reduce by 213: operand -> '|'  . 
 
 
-State 167:
+State 168:
 214: operand -> '&'  . 
   Reduce by 214: operand -> '&'  . 
 
 
-State 168:
+State 169:
 215: operand -> '>'  . 
   Reduce by 215: operand -> '>'  . 
 
 
-State 169:
+State 170:
 216: operand -> '<'  . 
   Reduce by 216: operand -> '<'  . 
 
 
-State 170:
+State 171:
 217: operand -> '!'  . 
   Reduce by 217: operand -> '!'  . 
 
 
-State 171:
+State 172:
 218: operand -> '~'  . 
   Reduce by 218: operand -> '~'  . 
 
 
-State 172:
+State 173:
 143: function_body -> ctor_initializer compound_statement  . 
   Reduce by 143: function_body -> ctor_initializer compound_statement  . 
 
 
-State 173:
-145: compound_statement -> '{' ignored_code  . '}' 
-  0:   On '}' to state 248
-
-
 State 174:
-159: ignored_code -> expression  . separator ignored_code 
-165: expression -> expression  . term 
-  0:   On separator to state 249
-  1:   On term to state 244
-  2:   On ';' to state 250
-  3:   On ',' to state 251
-  4:   On '=' to state 252
-  5:   On literal to state 120
-  6:   On identifier to state 121
-  7:   On PRIMITIVE to state 122
-  8:   On VOID to state 123
-  9:   On TYPE_NAME to state 124
-  10:   On CONSTRUCTOR_NAME to state 125
-  11:   On operand to state 126
-  12:   On SCOPE_OPERATOR to state 127
-  13:   On ASSIGNMENT_OPERATOR to state 128
-  14:   On EXPRESSION_OPERATOR to state 129
-  15:   On WHILE to state 130
-  16:   On FOR to state 131
-  17:   On IF to state 132
-  18:   On TRY to state 133
-  19:   On CATCH to state 134
-  20:   On THROW to state 135
-  21:   On USING to state 136
-  22:   On TRUE to state 137
-  23:   On FALSE to state 138
-  24:   On SIZEOF to state 139
-  25:   On SIGNED to state 140
-  26:   On UNSIGNED to state 141
-  27:   On REGISTER to state 142
-  28:   On DELETE to state 175
-  29:   On RETURN to state 143
-  30:   On CONST to state 144
-  31:   On STATIC to state 145
-  32:   On VOLATILE to state 146
-  33:   On ASM to state 147
-  34:   On AUTO to state 148
-  35:   On '(' to state 149
-  36:   On '[' to state 150
-  37:   On '{' to state 151
-  38:   On STRING_LITERAL to state 152
-  39:   On CHARACTER_LITERAL to state 153
-  40:   On INTEGER_LITERAL to state 154
-  41:   On HEXADECIMAL_LITERAL to state 155
-  42:   On OCTAL_LITERAL to state 156
-  43:   On FLOAT_LITERAL to state 157
-  44:   On IDENTIFIER to state 58
-  45:   On '+' to state 158
-  46:   On '-' to state 159
-  47:   On '*' to state 160
-  48:   On '/' to state 161
-  49:   On '%' to state 162
-  50:   On '^' to state 163
-  51:   On '?' to state 164
-  52:   On ':' to state 165
-  53:   On '|' to state 166
-  54:   On '&' to state 167
-  55:   On '>' to state 168
-  56:   On '<' to state 169
-  57:   On '!' to state 170
-  58:   On '~' to state 171
-  Reduce by 160: separator ->  . 
-Solved SR CONFLICT on ';':
-	shift to state 250, removed ';' from LA-set of rule 160)
-Solved SR CONFLICT on ',':
-	shift to state 251, removed ',' from LA-set of rule 160)
-Solved SR CONFLICT on PRIMITIVE:
-	shift to state 122, removed PRIMITIVE from LA-set of rule 160)
-Solved SR CONFLICT on VOID:
-	shift to state 123, removed VOID from LA-set of rule 160)
-Solved SR CONFLICT on TYPE_NAME:
-	shift to state 124, removed TYPE_NAME from LA-set of rule 160)
-Solved SR CONFLICT on CONSTRUCTOR_NAME:
-	shift to state 125, removed CONSTRUCTOR_NAME from LA-set of rule 160)
-Solved SR CONFLICT on SCOPE_OPERATOR:
-	shift to state 127, removed SCOPE_OPERATOR from LA-set of rule 160)
-Solved SR CONFLICT on ASSIGNMENT_OPERATOR:
-	shift to state 128, removed ASSIGNMENT_OPERATOR from LA-set of rule 160)
-Solved SR CONFLICT on EXPRESSION_OPERATOR:
-	shift to state 129, removed EXPRESSION_OPERATOR from LA-set of rule 160)
-Solved SR CONFLICT on WHILE:
-	shift to state 130, removed WHILE from LA-set of rule 160)
-Solved SR CONFLICT on FOR:
-	shift to state 131, removed FOR from LA-set of rule 160)
-Solved SR CONFLICT on IF:
-	shift to state 132, removed IF from LA-set of rule 160)
-Solved SR CONFLICT on TRY:
-	shift to state 133, removed TRY from LA-set of rule 160)
-Solved SR CONFLICT on CATCH:
-	shift to state 134, removed CATCH from LA-set of rule 160)
-Solved SR CONFLICT on THROW:
-	shift to state 135, removed THROW from LA-set of rule 160)
-Solved SR CONFLICT on USING:
-	shift to state 136, removed USING from LA-set of rule 160)
-Solved SR CONFLICT on TRUE:
-	shift to state 137, removed TRUE from LA-set of rule 160)
-Solved SR CONFLICT on FALSE:
-	shift to state 138, removed FALSE from LA-set of rule 160)
-Solved SR CONFLICT on SIZEOF:
-	shift to state 139, removed SIZEOF from LA-set of rule 160)
-Solved SR CONFLICT on SIGNED:
-	shift to state 140, removed SIGNED from LA-set of rule 160)
-Solved SR CONFLICT on UNSIGNED:
-	shift to state 141, removed UNSIGNED from LA-set of rule 160)
-Solved SR CONFLICT on REGISTER:
-	shift to state 142, removed REGISTER from LA-set of rule 160)
-Solved SR CONFLICT on DELETE:
-	shift to state 175, removed DELETE from LA-set of rule 160)
-Solved SR CONFLICT on RETURN:
-	shift to state 143, removed RETURN from LA-set of rule 160)
-Solved SR CONFLICT on CONST:
-	shift to state 144, removed CONST from LA-set of rule 160)
-Solved SR CONFLICT on STATIC:
-	shift to state 145, removed STATIC from LA-set of rule 160)
-Solved SR CONFLICT on VOLATILE:
-	shift to state 146, removed VOLATILE from LA-set of rule 160)
-Solved SR CONFLICT on ASM:
-	shift to state 147, removed ASM from LA-set of rule 160)
-Solved SR CONFLICT on AUTO:
-	shift to state 148, removed AUTO from LA-set of rule 160)
-Solved SR CONFLICT on '(':
-	shift to state 149, removed '(' from LA-set of rule 160)
-Solved SR CONFLICT on '[':
-	shift to state 150, removed '[' from LA-set of rule 160)
-Solved SR CONFLICT on '{':
-	shift to state 151, removed '{' from LA-set of rule 160)
-Solved SR CONFLICT on STRING_LITERAL:
-	shift to state 152, removed STRING_LITERAL from LA-set of rule 160)
-Solved SR CONFLICT on CHARACTER_LITERAL:
-	shift to state 153, removed CHARACTER_LITERAL from LA-set of rule 160)
-Solved SR CONFLICT on INTEGER_LITERAL:
-	shift to state 154, removed INTEGER_LITERAL from LA-set of rule 160)
-Solved SR CONFLICT on HEXADECIMAL_LITERAL:
-	shift to state 155, removed HEXADECIMAL_LITERAL from LA-set of rule 160)
-Solved SR CONFLICT on OCTAL_LITERAL:
-	shift to state 156, removed OCTAL_LITERAL from LA-set of rule 160)
-Solved SR CONFLICT on FLOAT_LITERAL:
-	shift to state 157, removed FLOAT_LITERAL from LA-set of rule 160)
-Solved SR CONFLICT on IDENTIFIER:
-	shift to state 58, removed IDENTIFIER from LA-set of rule 160)
-Solved SR CONFLICT on '+':
-	shift to state 158, removed '+' from LA-set of rule 160)
-Solved SR CONFLICT on '-':
-	shift to state 159, removed '-' from LA-set of rule 160)
-Solved SR CONFLICT on '*':
-	shift to state 160, removed '*' from LA-set of rule 160)
-Solved SR CONFLICT on '/':
-	shift to state 161, removed '/' from LA-set of rule 160)
-Solved SR CONFLICT on '%':
-	shift to state 162, removed '%' from LA-set of rule 160)
-Solved SR CONFLICT on '^':
-	shift to state 163, removed '^' from LA-set of rule 160)
-Solved SR CONFLICT on '?':
-	shift to state 164, removed '?' from LA-set of rule 160)
-Solved SR CONFLICT on ':':
-	shift to state 165, removed ':' from LA-set of rule 160)
-Solved SR CONFLICT on '|':
-	shift to state 166, removed '|' from LA-set of rule 160)
-Solved SR CONFLICT on '&':
-	shift to state 167, removed '&' from LA-set of rule 160)
-Solved SR CONFLICT on '>':
-	shift to state 168, removed '>' from LA-set of rule 160)
-Solved SR CONFLICT on '<':
-	shift to state 169, removed '<' from LA-set of rule 160)
-Solved SR CONFLICT on '!':
-	shift to state 170, removed '!' from LA-set of rule 160)
-Solved SR CONFLICT on '~':
-	shift to state 171, removed '~' from LA-set of rule 160)
+145: compound_statement -> '{' ignored_code  . '}' 
+  0:   On '}' to state 249
 
 
 State 175:
+159: ignored_code -> expression  . separator ignored_code 
+165: expression -> expression  . term 
+  0:   On separator to state 250
+  1:   On term to state 245
+  2:   On ';' to state 251
+  3:   On ',' to state 252
+  4:   On '=' to state 253
+  5:   On literal to state 121
+  6:   On identifier to state 122
+  7:   On PRIMITIVE to state 123
+  8:   On VOID to state 124
+  9:   On TYPE_NAME to state 125
+  10:   On CONSTRUCTOR_NAME to state 126
+  11:   On operand to state 127
+  12:   On SCOPE_OPERATOR to state 128
+  13:   On ASSIGNMENT_OPERATOR to state 129
+  14:   On EXPRESSION_OPERATOR to state 130
+  15:   On WHILE to state 131
+  16:   On FOR to state 132
+  17:   On IF to state 133
+  18:   On TRY to state 134
+  19:   On CATCH to state 135
+  20:   On THROW to state 136
+  21:   On USING to state 137
+  22:   On TRUE to state 138
+  23:   On FALSE to state 139
+  24:   On SIZEOF to state 140
+  25:   On SIGNED to state 141
+  26:   On UNSIGNED to state 142
+  27:   On REGISTER to state 143
+  28:   On DELETE to state 176
+  29:   On RETURN to state 144
+  30:   On CONST to state 145
+  31:   On STATIC to state 146
+  32:   On VOLATILE to state 147
+  33:   On ASM to state 148
+  34:   On AUTO to state 149
+  35:   On '(' to state 150
+  36:   On '[' to state 151
+  37:   On '{' to state 152
+  38:   On STRING_LITERAL to state 153
+  39:   On CHARACTER_LITERAL to state 154
+  40:   On INTEGER_LITERAL to state 155
+  41:   On HEXADECIMAL_LITERAL to state 156
+  42:   On OCTAL_LITERAL to state 157
+  43:   On FLOAT_LITERAL to state 158
+  44:   On IDENTIFIER to state 58
+  45:   On '+' to state 159
+  46:   On '-' to state 160
+  47:   On '*' to state 161
+  48:   On '/' to state 162
+  49:   On '%' to state 163
+  50:   On '^' to state 164
+  51:   On '?' to state 165
+  52:   On ':' to state 166
+  53:   On '|' to state 167
+  54:   On '&' to state 168
+  55:   On '>' to state 169
+  56:   On '<' to state 170
+  57:   On '!' to state 171
+  58:   On '~' to state 172
+  Reduce by 160: separator ->  . 
+Solved SR CONFLICT on ';':
+	shift to state 251, removed ';' from LA-set of rule 160)
+Solved SR CONFLICT on ',':
+	shift to state 252, removed ',' from LA-set of rule 160)
+Solved SR CONFLICT on PRIMITIVE:
+	shift to state 123, removed PRIMITIVE from LA-set of rule 160)
+Solved SR CONFLICT on VOID:
+	shift to state 124, removed VOID from LA-set of rule 160)
+Solved SR CONFLICT on TYPE_NAME:
+	shift to state 125, removed TYPE_NAME from LA-set of rule 160)
+Solved SR CONFLICT on CONSTRUCTOR_NAME:
+	shift to state 126, removed CONSTRUCTOR_NAME from LA-set of rule 160)
+Solved SR CONFLICT on SCOPE_OPERATOR:
+	shift to state 128, removed SCOPE_OPERATOR from LA-set of rule 160)
+Solved SR CONFLICT on ASSIGNMENT_OPERATOR:
+	shift to state 129, removed ASSIGNMENT_OPERATOR from LA-set of rule 160)
+Solved SR CONFLICT on EXPRESSION_OPERATOR:
+	shift to state 130, removed EXPRESSION_OPERATOR from LA-set of rule 160)
+Solved SR CONFLICT on WHILE:
+	shift to state 131, removed WHILE from LA-set of rule 160)
+Solved SR CONFLICT on FOR:
+	shift to state 132, removed FOR from LA-set of rule 160)
+Solved SR CONFLICT on IF:
+	shift to state 133, removed IF from LA-set of rule 160)
+Solved SR CONFLICT on TRY:
+	shift to state 134, removed TRY from LA-set of rule 160)
+Solved SR CONFLICT on CATCH:
+	shift to state 135, removed CATCH from LA-set of rule 160)
+Solved SR CONFLICT on THROW:
+	shift to state 136, removed THROW from LA-set of rule 160)
+Solved SR CONFLICT on USING:
+	shift to state 137, removed USING from LA-set of rule 160)
+Solved SR CONFLICT on TRUE:
+	shift to state 138, removed TRUE from LA-set of rule 160)
+Solved SR CONFLICT on FALSE:
+	shift to state 139, removed FALSE from LA-set of rule 160)
+Solved SR CONFLICT on SIZEOF:
+	shift to state 140, removed SIZEOF from LA-set of rule 160)
+Solved SR CONFLICT on SIGNED:
+	shift to state 141, removed SIGNED from LA-set of rule 160)
+Solved SR CONFLICT on UNSIGNED:
+	shift to state 142, removed UNSIGNED from LA-set of rule 160)
+Solved SR CONFLICT on REGISTER:
+	shift to state 143, removed REGISTER from LA-set of rule 160)
+Solved SR CONFLICT on DELETE:
+	shift to state 176, removed DELETE from LA-set of rule 160)
+Solved SR CONFLICT on RETURN:
+	shift to state 144, removed RETURN from LA-set of rule 160)
+Solved SR CONFLICT on CONST:
+	shift to state 145, removed CONST from LA-set of rule 160)
+Solved SR CONFLICT on STATIC:
+	shift to state 146, removed STATIC from LA-set of rule 160)
+Solved SR CONFLICT on VOLATILE:
+	shift to state 147, removed VOLATILE from LA-set of rule 160)
+Solved SR CONFLICT on ASM:
+	shift to state 148, removed ASM from LA-set of rule 160)
+Solved SR CONFLICT on AUTO:
+	shift to state 149, removed AUTO from LA-set of rule 160)
+Solved SR CONFLICT on '(':
+	shift to state 150, removed '(' from LA-set of rule 160)
+Solved SR CONFLICT on '[':
+	shift to state 151, removed '[' from LA-set of rule 160)
+Solved SR CONFLICT on '{':
+	shift to state 152, removed '{' from LA-set of rule 160)
+Solved SR CONFLICT on STRING_LITERAL:
+	shift to state 153, removed STRING_LITERAL from LA-set of rule 160)
+Solved SR CONFLICT on CHARACTER_LITERAL:
+	shift to state 154, removed CHARACTER_LITERAL from LA-set of rule 160)
+Solved SR CONFLICT on INTEGER_LITERAL:
+	shift to state 155, removed INTEGER_LITERAL from LA-set of rule 160)
+Solved SR CONFLICT on HEXADECIMAL_LITERAL:
+	shift to state 156, removed HEXADECIMAL_LITERAL from LA-set of rule 160)
+Solved SR CONFLICT on OCTAL_LITERAL:
+	shift to state 157, removed OCTAL_LITERAL from LA-set of rule 160)
+Solved SR CONFLICT on FLOAT_LITERAL:
+	shift to state 158, removed FLOAT_LITERAL from LA-set of rule 160)
+Solved SR CONFLICT on IDENTIFIER:
+	shift to state 58, removed IDENTIFIER from LA-set of rule 160)
+Solved SR CONFLICT on '+':
+	shift to state 159, removed '+' from LA-set of rule 160)
+Solved SR CONFLICT on '-':
+	shift to state 160, removed '-' from LA-set of rule 160)
+Solved SR CONFLICT on '*':
+	shift to state 161, removed '*' from LA-set of rule 160)
+Solved SR CONFLICT on '/':
+	shift to state 162, removed '/' from LA-set of rule 160)
+Solved SR CONFLICT on '%':
+	shift to state 163, removed '%' from LA-set of rule 160)
+Solved SR CONFLICT on '^':
+	shift to state 164, removed '^' from LA-set of rule 160)
+Solved SR CONFLICT on '?':
+	shift to state 165, removed '?' from LA-set of rule 160)
+Solved SR CONFLICT on ':':
+	shift to state 166, removed ':' from LA-set of rule 160)
+Solved SR CONFLICT on '|':
+	shift to state 167, removed '|' from LA-set of rule 160)
+Solved SR CONFLICT on '&':
+	shift to state 168, removed '&' from LA-set of rule 160)
+Solved SR CONFLICT on '>':
+	shift to state 169, removed '>' from LA-set of rule 160)
+Solved SR CONFLICT on '<':
+	shift to state 170, removed '<' from LA-set of rule 160)
+Solved SR CONFLICT on '!':
+	shift to state 171, removed '!' from LA-set of rule 160)
+Solved SR CONFLICT on '~':
+	shift to state 172, removed '~' from LA-set of rule 160)
+
+
+State 176:
 189: term -> DELETE  . 
   Reduce by 189: term -> DELETE  . 
 
 
-State 176:
+State 177:
 146: ctor_initializer -> ':' mem_initializer_list  . 
   Reduce by 146: ctor_initializer -> ':' mem_initializer_list  . 
 
 
-State 177:
+State 178:
 147: mem_initializer_list -> mem_initializer  . 
 148: mem_initializer_list -> mem_initializer  . ',' mem_initializer_list 
-  0:   On ',' to state 253
+  0:   On ',' to state 254
   Reduce by 147: mem_initializer_list -> mem_initializer  . 
 
 
-State 178:
-149: mem_initializer -> mem_initializer_id  . '(' ignored_code ')' 
-  0:   On '(' to state 254
-
-
 State 179:
+149: mem_initializer -> mem_initializer_id  . '(' ignored_code ')' 
+  0:   On '(' to state 255
+
+
+State 180:
 150: mem_initializer_id -> class_or_decltype  . 
   Reduce by 150: mem_initializer_id -> class_or_decltype  . 
 
 
-State 180:
+State 181:
 92: class_or_decltype -> class_name  . 
   Reduce by 92: class_or_decltype -> class_name  . 
 
 
-State 181:
+State 182:
 93: class_or_decltype -> SCOPE_OPERATOR  . class_name 
 95: class_or_decltype -> SCOPE_OPERATOR  . nested_name_specifier class_name 
-  0:   On class_name to state 255
-  1:   On nested_name_specifier to state 256
-  2:   On identifier to state 112
+  0:   On class_name to state 256
+  1:   On nested_name_specifier to state 257
+  2:   On identifier to state 113
   3:   On IDENTIFIER to state 58
 
 
-State 182:
+State 183:
 94: class_or_decltype -> nested_name_specifier  . class_name 
 230: nested_name_specifier -> nested_name_specifier  . identifier SCOPE_OPERATOR 
-  0:   On class_name to state 257
-  1:   On identifier to state 241
+  0:   On class_name to state 258
+  1:   On identifier to state 242
   2:   On IDENTIFIER to state 58
 
 
-State 183:
-151: function_try_block -> TRY compound_statement  . handler_seq 
-  0:   On handler_seq to state 258
-  1:   On handler to state 259
-  2:   On CATCH to state 260
-
-
 State 184:
-152: function_try_block -> TRY ctor_initializer  . compound_statement handler_seq 
-  0:   On compound_statement to state 261
-  1:   On '{' to state 67
+151: function_try_block -> TRY compound_statement  . handler_seq 
+  0:   On handler_seq to state 259
+  1:   On handler to state 260
+  2:   On CATCH to state 261
 
 
 State 185:
+152: function_try_block -> TRY ctor_initializer  . compound_statement handler_seq 
+  0:   On compound_statement to state 262
+  1:   On '{' to state 67
+
+
+State 186:
 137: function_definition -> decl_specifier_seq declarator function_body  . 
   Reduce by 137: function_definition -> decl_specifier_seq declarator function_body  . 
 
 
-State 186:
+State 187:
 139: function_definition -> decl_specifier_seq declarator '='  . DEFAULT ';' 
 141: function_definition -> decl_specifier_seq declarator '='  . DELETE ';' 
 49: brace_or_equal_initializer -> '='  . initializer_clause 
-  0:   On DEFAULT to state 262
-  1:   On DELETE to state 263
-  2:   On initializer_clause to state 117
-  3:   On expression to state 118
-  4:   On term to state 119
-  5:   On literal to state 120
-  6:   On identifier to state 121
-  7:   On PRIMITIVE to state 122
-  8:   On VOID to state 123
-  9:   On TYPE_NAME to state 124
-  10:   On CONSTRUCTOR_NAME to state 125
-  11:   On operand to state 126
-  12:   On SCOPE_OPERATOR to state 127
-  13:   On ASSIGNMENT_OPERATOR to state 128
-  14:   On EXPRESSION_OPERATOR to state 129
-  15:   On WHILE to state 130
-  16:   On FOR to state 131
-  17:   On IF to state 132
-  18:   On TRY to state 133
-  19:   On CATCH to state 134
-  20:   On THROW to state 135
-  21:   On USING to state 136
-  22:   On TRUE to state 137
-  23:   On FALSE to state 138
-  24:   On SIZEOF to state 139
-  25:   On SIGNED to state 140
-  26:   On UNSIGNED to state 141
-  27:   On REGISTER to state 142
-  28:   On RETURN to state 143
-  29:   On CONST to state 144
-  30:   On STATIC to state 145
-  31:   On VOLATILE to state 146
-  32:   On ASM to state 147
-  33:   On AUTO to state 148
-  34:   On '(' to state 149
-  35:   On '[' to state 150
-  36:   On '{' to state 151
-  37:   On STRING_LITERAL to state 152
-  38:   On CHARACTER_LITERAL to state 153
-  39:   On INTEGER_LITERAL to state 154
-  40:   On HEXADECIMAL_LITERAL to state 155
-  41:   On OCTAL_LITERAL to state 156
-  42:   On FLOAT_LITERAL to state 157
+  0:   On DEFAULT to state 263
+  1:   On DELETE to state 264
+  2:   On initializer_clause to state 118
+  3:   On expression to state 119
+  4:   On term to state 120
+  5:   On literal to state 121
+  6:   On identifier to state 122
+  7:   On PRIMITIVE to state 123
+  8:   On VOID to state 124
+  9:   On TYPE_NAME to state 125
+  10:   On CONSTRUCTOR_NAME to state 126
+  11:   On operand to state 127
+  12:   On SCOPE_OPERATOR to state 128
+  13:   On ASSIGNMENT_OPERATOR to state 129
+  14:   On EXPRESSION_OPERATOR to state 130
+  15:   On WHILE to state 131
+  16:   On FOR to state 132
+  17:   On IF to state 133
+  18:   On TRY to state 134
+  19:   On CATCH to state 135
+  20:   On THROW to state 136
+  21:   On USING to state 137
+  22:   On TRUE to state 138
+  23:   On FALSE to state 139
+  24:   On SIZEOF to state 140
+  25:   On SIGNED to state 141
+  26:   On UNSIGNED to state 142
+  27:   On REGISTER to state 143
+  28:   On RETURN to state 144
+  29:   On CONST to state 145
+  30:   On STATIC to state 146
+  31:   On VOLATILE to state 147
+  32:   On ASM to state 148
+  33:   On AUTO to state 149
+  34:   On '(' to state 150
+  35:   On '[' to state 151
+  36:   On '{' to state 152
+  37:   On STRING_LITERAL to state 153
+  38:   On CHARACTER_LITERAL to state 154
+  39:   On INTEGER_LITERAL to state 155
+  40:   On HEXADECIMAL_LITERAL to state 156
+  41:   On OCTAL_LITERAL to state 157
+  42:   On FLOAT_LITERAL to state 158
   43:   On IDENTIFIER to state 58
-  44:   On '+' to state 158
-  45:   On '-' to state 159
-  46:   On '*' to state 160
-  47:   On '/' to state 161
-  48:   On '%' to state 162
-  49:   On '^' to state 163
-  50:   On '?' to state 164
-  51:   On ':' to state 165
-  52:   On '|' to state 166
-  53:   On '&' to state 167
-  54:   On '>' to state 168
-  55:   On '<' to state 169
-  56:   On '!' to state 170
-  57:   On '~' to state 171
+  44:   On '+' to state 159
+  45:   On '-' to state 160
+  46:   On '*' to state 161
+  47:   On '/' to state 162
+  48:   On '%' to state 163
+  49:   On '^' to state 164
+  50:   On '?' to state 165
+  51:   On ':' to state 166
+  52:   On '|' to state 167
+  53:   On '&' to state 168
+  54:   On '>' to state 169
+  55:   On '<' to state 170
+  56:   On '!' to state 171
+  57:   On '~' to state 172
 
 
-State 187:
+State 188:
 10: simple_declaration -> decl_specifier_seq init_declarator_list ';'  . 
   Reduce by 10: simple_declaration -> decl_specifier_seq init_declarator_list ';'  . 
 
 
-State 188:
+State 189:
 47: declarator_id -> SCOPE_OPERATOR nested_name_specifier  . constructor_name 
 228: qualified_id -> SCOPE_OPERATOR nested_name_specifier  . unqualified_id 
 230: nested_name_specifier -> nested_name_specifier  . identifier SCOPE_OPERATOR 
-  0:   On constructor_name to state 229
-  1:   On unqualified_id to state 231
-  2:   On identifier to state 105
+  0:   On constructor_name to state 230
+  1:   On unqualified_id to state 232
+  2:   On identifier to state 106
   3:   On CONSTRUCTOR_NAME to state 51
   4:   On '~' to state 59
   5:   On IDENTIFIER to state 58
 
 
-State 189:
+State 190:
 23: init_declarator_list -> init_declarator_list ',' init_declarator  . 
   Reduce by 23: init_declarator_list -> init_declarator_list ',' init_declarator  . 
 
 
-State 190:
+State 191:
 24: init_declarator -> declarator  . 
 25: init_declarator -> declarator  . initializer 
   0:   On initializer to state 62
   1:   On brace_or_equal_initializer to state 66
-  2:   On '=' to state 264
+  2:   On '=' to state 265
   Reduce by 24: init_declarator -> declarator  . 
 
 
-State 191:
+State 192:
 125: opaque_enum_declaration -> enum_key identifier ';'  . 
   Reduce by 125: opaque_enum_declaration -> enum_key identifier ';'  . 
 
 
-State 192:
+State 193:
 126: opaque_enum_declaration -> enum_key identifier enum_base  . ';' 
 122: enum_head -> enum_key identifier enum_base  . 
-  0:   On ';' to state 265
+  0:   On ';' to state 266
   Reduce by 122: enum_head -> enum_key identifier enum_base  . 
 
 
-State 193:
+State 194:
 123: enum_head -> enum_key nested_name_specifier identifier  . 
 124: enum_head -> enum_key nested_name_specifier identifier  . enum_base 
 230: nested_name_specifier -> nested_name_specifier identifier  . SCOPE_OPERATOR 
-  0:   On enum_base to state 266
-  1:   On SCOPE_OPERATOR to state 232
+  0:   On enum_base to state 267
+  1:   On SCOPE_OPERATOR to state 233
   2:   On ':' to state 80
   Reduce by 123: enum_head -> enum_key nested_name_specifier identifier  . 
 
 
-State 194:
+State 195:
 127: enum_base -> ':' primitive  . 
   Reduce by 127: enum_base -> ':' primitive  . 
 
 
-State 195:
+State 196:
 221: primitive -> PRIMITIVE  . 
   Reduce by 221: primitive -> PRIMITIVE  . 
 
 
-State 196:
+State 197:
 53: named_namespace_definition -> NAMESPACE identifier '{'  . declaration_seq '}' 
-  0:   On declaration_seq to state 267
+  0:   On declaration_seq to state 268
   Reduce by 2: declaration_seq ->  . 
 
 
-State 197:
+State 198:
 55: unnamed_namespace_definition -> NAMESPACE '{' declaration_seq  . '}' 
 3: declaration_seq -> declaration_seq  . declaration 
-  0:   On '}' to state 268
+  0:   On '}' to state 269
   1:   On declaration to state 3
   2:   On block_declaration to state 4
   3:   On namespace_definition to state 5
@@ -2486,128 +2493,128 @@ State 197:
   57:   On '~' to state 59
 
 
-State 198:
-54: named_namespace_definition -> INLINE NAMESPACE identifier  . '{' declaration_seq '}' 
-  0:   On '{' to state 269
-
-
 State 199:
-56: unnamed_namespace_definition -> INLINE NAMESPACE '{'  . declaration_seq '}' 
-  0:   On declaration_seq to state 270
-  Reduce by 2: declaration_seq ->  . 
+54: named_namespace_definition -> INLINE NAMESPACE identifier  . '{' declaration_seq '}' 
+  0:   On '{' to state 270
 
 
 State 200:
+56: unnamed_namespace_definition -> INLINE NAMESPACE '{'  . declaration_seq '}' 
+  0:   On declaration_seq to state 271
+  Reduce by 2: declaration_seq ->  . 
+
+
+State 201:
 68: simple_type_specifier -> SCOPE_OPERATOR nested_name_specifier  . type_name 
 230: nested_name_specifier -> nested_name_specifier  . identifier SCOPE_OPERATOR 
-  0:   On type_name to state 230
-  1:   On identifier to state 201
+  0:   On type_name to state 231
+  1:   On identifier to state 202
   2:   On TYPE_NAME to state 53
   3:   On IDENTIFIER to state 58
 
 
-State 201:
-230: nested_name_specifier -> nested_name_specifier identifier  . SCOPE_OPERATOR 
-  0:   On SCOPE_OPERATOR to state 232
-
-
 State 202:
+230: nested_name_specifier -> nested_name_specifier identifier  . SCOPE_OPERATOR 
+  0:   On SCOPE_OPERATOR to state 233
+
+
+State 203:
 120: enum_head -> enum_key identifier  . 
 122: enum_head -> enum_key identifier  . enum_base 
 229: nested_name_specifier -> identifier  . SCOPE_OPERATOR 
-  0:   On enum_base to state 271
-  1:   On SCOPE_OPERATOR to state 113
+  0:   On enum_base to state 272
+  1:   On SCOPE_OPERATOR to state 114
   2:   On ':' to state 80
   Reduce by 120: enum_head -> enum_key identifier  . 
 
 
-State 203:
+State 204:
 31: noptr_declarator -> noptr_declarator '[' expression  . ']' 
 165: expression -> expression  . term 
-  0:   On ']' to state 272
-  1:   On term to state 244
-  2:   On literal to state 120
-  3:   On identifier to state 121
-  4:   On PRIMITIVE to state 122
-  5:   On VOID to state 123
-  6:   On TYPE_NAME to state 124
-  7:   On CONSTRUCTOR_NAME to state 125
-  8:   On operand to state 126
-  9:   On SCOPE_OPERATOR to state 127
-  10:   On ASSIGNMENT_OPERATOR to state 128
-  11:   On EXPRESSION_OPERATOR to state 129
-  12:   On WHILE to state 130
-  13:   On FOR to state 131
-  14:   On IF to state 132
-  15:   On TRY to state 133
-  16:   On CATCH to state 134
-  17:   On THROW to state 135
-  18:   On USING to state 136
-  19:   On TRUE to state 137
-  20:   On FALSE to state 138
-  21:   On SIZEOF to state 139
-  22:   On SIGNED to state 140
-  23:   On UNSIGNED to state 141
-  24:   On REGISTER to state 142
-  25:   On DELETE to state 175
-  26:   On RETURN to state 143
-  27:   On CONST to state 144
-  28:   On STATIC to state 145
-  29:   On VOLATILE to state 146
-  30:   On ASM to state 147
-  31:   On AUTO to state 148
-  32:   On '(' to state 149
-  33:   On '[' to state 150
-  34:   On '{' to state 151
-  35:   On STRING_LITERAL to state 152
-  36:   On CHARACTER_LITERAL to state 153
-  37:   On INTEGER_LITERAL to state 154
-  38:   On HEXADECIMAL_LITERAL to state 155
-  39:   On OCTAL_LITERAL to state 156
-  40:   On FLOAT_LITERAL to state 157
+  0:   On ']' to state 273
+  1:   On term to state 245
+  2:   On literal to state 121
+  3:   On identifier to state 122
+  4:   On PRIMITIVE to state 123
+  5:   On VOID to state 124
+  6:   On TYPE_NAME to state 125
+  7:   On CONSTRUCTOR_NAME to state 126
+  8:   On operand to state 127
+  9:   On SCOPE_OPERATOR to state 128
+  10:   On ASSIGNMENT_OPERATOR to state 129
+  11:   On EXPRESSION_OPERATOR to state 130
+  12:   On WHILE to state 131
+  13:   On FOR to state 132
+  14:   On IF to state 133
+  15:   On TRY to state 134
+  16:   On CATCH to state 135
+  17:   On THROW to state 136
+  18:   On USING to state 137
+  19:   On TRUE to state 138
+  20:   On FALSE to state 139
+  21:   On SIZEOF to state 140
+  22:   On SIGNED to state 141
+  23:   On UNSIGNED to state 142
+  24:   On REGISTER to state 143
+  25:   On DELETE to state 176
+  26:   On RETURN to state 144
+  27:   On CONST to state 145
+  28:   On STATIC to state 146
+  29:   On VOLATILE to state 147
+  30:   On ASM to state 148
+  31:   On AUTO to state 149
+  32:   On '(' to state 150
+  33:   On '[' to state 151
+  34:   On '{' to state 152
+  35:   On STRING_LITERAL to state 153
+  36:   On CHARACTER_LITERAL to state 154
+  37:   On INTEGER_LITERAL to state 155
+  38:   On HEXADECIMAL_LITERAL to state 156
+  39:   On OCTAL_LITERAL to state 157
+  40:   On FLOAT_LITERAL to state 158
   41:   On IDENTIFIER to state 58
-  42:   On '+' to state 158
-  43:   On '-' to state 159
-  44:   On '*' to state 160
-  45:   On '/' to state 161
-  46:   On '%' to state 162
-  47:   On '^' to state 163
-  48:   On '?' to state 164
-  49:   On ':' to state 165
-  50:   On '|' to state 166
-  51:   On '&' to state 167
-  52:   On '>' to state 168
-  53:   On '<' to state 169
-  54:   On '!' to state 170
-  55:   On '~' to state 171
+  42:   On '+' to state 159
+  43:   On '-' to state 160
+  44:   On '*' to state 161
+  45:   On '/' to state 162
+  46:   On '%' to state 163
+  47:   On '^' to state 164
+  48:   On '?' to state 165
+  49:   On ':' to state 166
+  50:   On '|' to state 167
+  51:   On '&' to state 168
+  52:   On '>' to state 169
+  53:   On '<' to state 170
+  54:   On '!' to state 171
+  55:   On '~' to state 172
 
 
-State 204:
+State 205:
 32: noptr_declarator -> noptr_declarator '[' ']'  . 
   Reduce by 32: noptr_declarator -> noptr_declarator '[' ']'  . 
 
 
-State 205:
-34: parameters_and_qualifiers -> '(' parameter_declaration_clause  . ')' 
-  0:   On ')' to state 273
-
-
 State 206:
-36: parameter_declaration_clause -> parameter_declaration_list  . 
-38: parameter_declaration_list -> parameter_declaration_list  . ',' parameter_declaration 
-  0:   On ',' to state 274
-  Reduce by 36: parameter_declaration_clause -> parameter_declaration_list  . 
+34: parameters_and_qualifiers -> '(' parameter_declaration_clause  . ')' 
+  0:   On ')' to state 274
 
 
 State 207:
+36: parameter_declaration_clause -> parameter_declaration_list  . 
+38: parameter_declaration_list -> parameter_declaration_list  . ',' parameter_declaration 
+  0:   On ',' to state 275
+  Reduce by 36: parameter_declaration_clause -> parameter_declaration_list  . 
+
+
+State 208:
 37: parameter_declaration_list -> parameter_declaration  . 
   Reduce by 37: parameter_declaration_list -> parameter_declaration  . 
 
 
-State 208:
+State 209:
 39: parameter_declaration -> decl_specifier_seq  . 
 40: parameter_declaration -> decl_specifier_seq  . declarator 
-  0:   On declarator to state 275
+  0:   On declarator to state 276
   1:   On ptr_declarator to state 18
   2:   On noptr_declarator to state 23
   3:   On ptr_operator to state 24
@@ -2628,40 +2635,40 @@ State 208:
   Reduce by 39: parameter_declaration -> decl_specifier_seq  . 
 
 
-State 209:
+State 210:
 33: noptr_declarator -> '(' ptr_declarator ')'  . 
   Reduce by 33: noptr_declarator -> '(' ptr_declarator ')'  . 
 
 
-State 210:
-73: class_specifier -> class_head '{' #0001  . '}' 
-  0:   On '}' to state 276
-
-
 State 211:
-75: class_specifier -> class_head '{' member_specification  . #0002 '}' 
-  0:   On #0002 to state 277
-  Reduce by 76: #0002 ->  . 
+73: class_specifier -> class_head '{' #0001  . '}' 
+  0:   On '}' to state 277
 
 
 State 212:
+75: class_specifier -> class_head '{' member_specification  . #0002 '}' 
+  0:   On #0002 to state 278
+  Reduce by 76: #0002 ->  . 
+
+
+State 213:
 100: member_specification -> member_declaration  . 
 101: member_specification -> member_declaration  . member_specification 
-  0:   On member_specification to state 278
-  1:   On member_declaration to state 212
-  2:   On access_specifier to state 213
-  3:   On member_declarator_list to state 214
-  4:   On decl_specifier_seq to state 215
-  5:   On function_definition to state 216
-  6:   On PRIVATE to state 217
-  7:   On PROTECTED to state 218
-  8:   On PUBLIC to state 219
-  9:   On member_declarator to state 220
+  0:   On member_specification to state 279
+  1:   On member_declaration to state 213
+  2:   On access_specifier to state 214
+  3:   On member_declarator_list to state 215
+  4:   On decl_specifier_seq to state 216
+  5:   On function_definition to state 217
+  6:   On PRIVATE to state 218
+  7:   On PROTECTED to state 219
+  8:   On PUBLIC to state 220
+  9:   On member_declarator to state 221
   10:   On type_specifier to state 19
   11:   On decl_specifier to state 20
-  12:   On declarator to state 221
-  13:   On ':' to state 222
-  14:   On identifier to state 223
+  12:   On declarator to state 222
+  13:   On ':' to state 223
+  14:   On identifier to state 224
   15:   On trailing_type_specifier to state 25
   16:   On class_specifier to state 26
   17:   On enum_specifier to state 27
@@ -2704,32 +2711,32 @@ State 212:
   Reduce by 100: member_specification -> member_declaration  . 
 
 
-State 213:
+State 214:
 102: member_specification -> access_specifier  . ':' 
 103: member_specification -> access_specifier  . ':' member_specification 
-  0:   On ':' to state 279
-
-
-State 214:
-104: member_declaration -> member_declarator_list  . ';' 
-109: member_declarator_list -> member_declarator_list  . ',' member_declarator 
-  0:   On ';' to state 280
-  1:   On ',' to state 281
+  0:   On ':' to state 280
 
 
 State 215:
+104: member_declaration -> member_declarator_list  . ';' 
+109: member_declarator_list -> member_declarator_list  . ',' member_declarator 
+  0:   On ';' to state 281
+  1:   On ',' to state 282
+
+
+State 216:
 105: member_declaration -> decl_specifier_seq  . ';' 
 106: member_declaration -> decl_specifier_seq  . member_declarator_list ';' 
 137: function_definition -> decl_specifier_seq  . declarator function_body 
 139: function_definition -> decl_specifier_seq  . declarator '=' DEFAULT ';' 
 141: function_definition -> decl_specifier_seq  . declarator '=' DELETE ';' 
-  0:   On ';' to state 282
-  1:   On member_declarator_list to state 283
-  2:   On declarator to state 284
-  3:   On member_declarator to state 220
+  0:   On ';' to state 283
+  1:   On member_declarator_list to state 284
+  2:   On declarator to state 285
+  3:   On member_declarator to state 221
   4:   On ptr_declarator to state 18
-  5:   On ':' to state 222
-  6:   On identifier to state 223
+  5:   On ':' to state 223
+  6:   On identifier to state 224
   7:   On noptr_declarator to state 23
   8:   On ptr_operator to state 24
   9:   On IDENTIFIER to state 58
@@ -2747,32 +2754,32 @@ State 215:
   21:   On '~' to state 59
 
 
-State 216:
+State 217:
 107: member_declaration -> function_definition  . 
   Reduce by 107: member_declaration -> function_definition  . 
 
 
-State 217:
+State 218:
 70: access_specifier -> PRIVATE  . 
   Reduce by 70: access_specifier -> PRIVATE  . 
 
 
-State 218:
+State 219:
 71: access_specifier -> PROTECTED  . 
   Reduce by 71: access_specifier -> PROTECTED  . 
 
 
-State 219:
+State 220:
 72: access_specifier -> PUBLIC  . 
   Reduce by 72: access_specifier -> PUBLIC  . 
 
 
-State 220:
+State 221:
 108: member_declarator_list -> member_declarator  . 
   Reduce by 108: member_declarator_list -> member_declarator  . 
 
 
-State 221:
+State 222:
 136: function_definition -> declarator  . function_body 
 138: function_definition -> declarator  . '=' DEFAULT ';' 
 140: function_definition -> declarator  . '=' DELETE ';' 
@@ -2780,9 +2787,9 @@ State 221:
 111: member_declarator -> declarator  . pure_specifier 
 112: member_declarator -> declarator  . brace_or_equal_initializer 
   0:   On function_body to state 60
-  1:   On '=' to state 285
-  2:   On pure_specifier to state 286
-  3:   On brace_or_equal_initializer to state 287
+  1:   On '=' to state 286
+  2:   On pure_specifier to state 287
+  3:   On brace_or_equal_initializer to state 288
   4:   On compound_statement to state 63
   5:   On ctor_initializer to state 64
   6:   On function_try_block to state 65
@@ -2792,518 +2799,518 @@ State 221:
   Reduce by 110: member_declarator -> declarator  . 
 
 
-State 222:
+State 223:
 113: member_declarator -> ':'  . constant_expression 
-  0:   On constant_expression to state 288
-  1:   On ignored_code to state 289
-  2:   On expression to state 174
-  3:   On term to state 119
-  4:   On literal to state 120
-  5:   On identifier to state 121
-  6:   On PRIMITIVE to state 122
-  7:   On VOID to state 123
-  8:   On TYPE_NAME to state 124
-  9:   On CONSTRUCTOR_NAME to state 125
-  10:   On operand to state 126
-  11:   On SCOPE_OPERATOR to state 127
-  12:   On ASSIGNMENT_OPERATOR to state 128
-  13:   On EXPRESSION_OPERATOR to state 129
-  14:   On WHILE to state 130
-  15:   On FOR to state 131
-  16:   On IF to state 132
-  17:   On TRY to state 133
-  18:   On CATCH to state 134
-  19:   On THROW to state 135
-  20:   On USING to state 136
-  21:   On TRUE to state 137
-  22:   On FALSE to state 138
-  23:   On SIZEOF to state 139
-  24:   On SIGNED to state 140
-  25:   On UNSIGNED to state 141
-  26:   On REGISTER to state 142
-  27:   On DELETE to state 175
-  28:   On RETURN to state 143
-  29:   On CONST to state 144
-  30:   On STATIC to state 145
-  31:   On VOLATILE to state 146
-  32:   On ASM to state 147
-  33:   On AUTO to state 148
-  34:   On '(' to state 149
-  35:   On '[' to state 150
-  36:   On '{' to state 151
-  37:   On STRING_LITERAL to state 152
-  38:   On CHARACTER_LITERAL to state 153
-  39:   On INTEGER_LITERAL to state 154
-  40:   On HEXADECIMAL_LITERAL to state 155
-  41:   On OCTAL_LITERAL to state 156
-  42:   On FLOAT_LITERAL to state 157
+  0:   On constant_expression to state 289
+  1:   On ignored_code to state 290
+  2:   On expression to state 175
+  3:   On term to state 120
+  4:   On literal to state 121
+  5:   On identifier to state 122
+  6:   On PRIMITIVE to state 123
+  7:   On VOID to state 124
+  8:   On TYPE_NAME to state 125
+  9:   On CONSTRUCTOR_NAME to state 126
+  10:   On operand to state 127
+  11:   On SCOPE_OPERATOR to state 128
+  12:   On ASSIGNMENT_OPERATOR to state 129
+  13:   On EXPRESSION_OPERATOR to state 130
+  14:   On WHILE to state 131
+  15:   On FOR to state 132
+  16:   On IF to state 133
+  17:   On TRY to state 134
+  18:   On CATCH to state 135
+  19:   On THROW to state 136
+  20:   On USING to state 137
+  21:   On TRUE to state 138
+  22:   On FALSE to state 139
+  23:   On SIZEOF to state 140
+  24:   On SIGNED to state 141
+  25:   On UNSIGNED to state 142
+  26:   On REGISTER to state 143
+  27:   On DELETE to state 176
+  28:   On RETURN to state 144
+  29:   On CONST to state 145
+  30:   On STATIC to state 146
+  31:   On VOLATILE to state 147
+  32:   On ASM to state 148
+  33:   On AUTO to state 149
+  34:   On '(' to state 150
+  35:   On '[' to state 151
+  36:   On '{' to state 152
+  37:   On STRING_LITERAL to state 153
+  38:   On CHARACTER_LITERAL to state 154
+  39:   On INTEGER_LITERAL to state 155
+  40:   On HEXADECIMAL_LITERAL to state 156
+  41:   On OCTAL_LITERAL to state 157
+  42:   On FLOAT_LITERAL to state 158
   43:   On IDENTIFIER to state 58
-  44:   On '+' to state 158
-  45:   On '-' to state 159
-  46:   On '*' to state 160
-  47:   On '/' to state 161
-  48:   On '%' to state 162
-  49:   On '^' to state 163
-  50:   On '?' to state 164
-  51:   On ':' to state 165
-  52:   On '|' to state 166
-  53:   On '&' to state 167
-  54:   On '>' to state 168
-  55:   On '<' to state 169
-  56:   On '!' to state 170
-  57:   On '~' to state 171
+  44:   On '+' to state 159
+  45:   On '-' to state 160
+  46:   On '*' to state 161
+  47:   On '/' to state 162
+  48:   On '%' to state 163
+  49:   On '^' to state 164
+  50:   On '?' to state 165
+  51:   On ':' to state 166
+  52:   On '|' to state 167
+  53:   On '&' to state 168
+  54:   On '>' to state 169
+  55:   On '<' to state 170
+  56:   On '!' to state 171
+  57:   On '~' to state 172
   Reduce by 158: ignored_code ->  . 
 
 
-State 223:
+State 224:
 114: member_declarator -> identifier  . ':' constant_expression 
 229: nested_name_specifier -> identifier  . SCOPE_OPERATOR 
 223: unqualified_id -> identifier  . 
-  0:   On ':' to state 290
-  1:   On SCOPE_OPERATOR to state 113
+  0:   On ':' to state 291
+  1:   On SCOPE_OPERATOR to state 114
   Reduce by 223: unqualified_id -> identifier  . 
 Solved SR CONFLICT on ':':
-	shift to state 290, removed ':' from LA-set of rule 223)
+	shift to state 291, removed ':' from LA-set of rule 223)
 
 
-State 224:
+State 225:
 116: enum_specifier -> enum_head '{' '}'  . 
   Reduce by 116: enum_specifier -> enum_head '{' '}'  . 
 
 
-State 225:
+State 226:
 117: enum_specifier -> enum_head '{' enumerator_list  . '}' 
 118: enum_specifier -> enum_head '{' enumerator_list  . ',' '}' 
 129: enumerator_list -> enumerator_list  . ',' enumerator_definition 
-  0:   On '}' to state 291
-  1:   On ',' to state 292
+  0:   On '}' to state 292
+  1:   On ',' to state 293
 
 
-State 226:
+State 227:
 128: enumerator_list -> enumerator_definition  . 
   Reduce by 128: enumerator_list -> enumerator_definition  . 
 
 
-State 227:
+State 228:
 130: enumerator_definition -> enumerator  . 
 131: enumerator_definition -> enumerator  . '=' expression 
-  0:   On '=' to state 293
+  0:   On '=' to state 294
   Reduce by 130: enumerator_definition -> enumerator  . 
 
 
-State 228:
+State 229:
 132: enumerator -> identifier  . 
   Reduce by 132: enumerator -> identifier  . 
 
 
-State 229:
+State 230:
 47: declarator_id -> SCOPE_OPERATOR nested_name_specifier constructor_name  . 
   Reduce by 47: declarator_id -> SCOPE_OPERATOR nested_name_specifier constructor_name  . 
 
 
-State 230:
+State 231:
 68: simple_type_specifier -> SCOPE_OPERATOR nested_name_specifier type_name  . 
   Reduce by 68: simple_type_specifier -> SCOPE_OPERATOR nested_name_specifier type_name  . 
 
 
-State 231:
+State 232:
 228: qualified_id -> SCOPE_OPERATOR nested_name_specifier unqualified_id  . 
   Reduce by 228: qualified_id -> SCOPE_OPERATOR nested_name_specifier unqualified_id  . 
 
 
-State 232:
+State 233:
 230: nested_name_specifier -> nested_name_specifier identifier SCOPE_OPERATOR  . 
   Reduce by 230: nested_name_specifier -> nested_name_specifier identifier SCOPE_OPERATOR  . 
 
 
-State 233:
+State 234:
 80: class_head -> class_key class_head_name base_clause  . 
   Reduce by 80: class_head -> class_key class_head_name base_clause  . 
 
 
-State 234:
+State 235:
 83: base_clause -> ':' base_specifier_list  . 
 85: base_specifier_list -> base_specifier_list  . ',' base_specifier 
-  0:   On ',' to state 294
+  0:   On ',' to state 295
   Reduce by 83: base_clause -> ':' base_specifier_list  . 
 
 
-State 235:
+State 236:
 84: base_specifier_list -> base_specifier  . 
   Reduce by 84: base_specifier_list -> base_specifier  . 
 
 
-State 236:
+State 237:
 86: base_specifier -> base_type_specifier  . 
   Reduce by 86: base_specifier -> base_type_specifier  . 
 
 
-State 237:
+State 238:
 87: base_specifier -> VIRTUAL  . base_type_specifier 
 89: base_specifier -> VIRTUAL  . access_specifier base_type_specifier 
-  0:   On base_type_specifier to state 295
-  1:   On access_specifier to state 296
-  2:   On class_or_decltype to state 239
-  3:   On PRIVATE to state 217
-  4:   On PROTECTED to state 218
-  5:   On PUBLIC to state 219
-  6:   On class_name to state 180
-  7:   On SCOPE_OPERATOR to state 181
-  8:   On nested_name_specifier to state 182
-  9:   On identifier to state 112
+  0:   On base_type_specifier to state 296
+  1:   On access_specifier to state 297
+  2:   On class_or_decltype to state 240
+  3:   On PRIVATE to state 218
+  4:   On PROTECTED to state 219
+  5:   On PUBLIC to state 220
+  6:   On class_name to state 181
+  7:   On SCOPE_OPERATOR to state 182
+  8:   On nested_name_specifier to state 183
+  9:   On identifier to state 113
   10:   On IDENTIFIER to state 58
 
 
-State 238:
+State 239:
 88: base_specifier -> access_specifier  . base_type_specifier 
 90: base_specifier -> access_specifier  . VIRTUAL base_type_specifier 
-  0:   On base_type_specifier to state 297
-  1:   On VIRTUAL to state 298
-  2:   On class_or_decltype to state 239
-  3:   On class_name to state 180
-  4:   On SCOPE_OPERATOR to state 181
-  5:   On nested_name_specifier to state 182
-  6:   On identifier to state 112
+  0:   On base_type_specifier to state 298
+  1:   On VIRTUAL to state 299
+  2:   On class_or_decltype to state 240
+  3:   On class_name to state 181
+  4:   On SCOPE_OPERATOR to state 182
+  5:   On nested_name_specifier to state 183
+  6:   On identifier to state 113
   7:   On IDENTIFIER to state 58
 
 
-State 239:
+State 240:
 91: base_type_specifier -> class_or_decltype  . 
   Reduce by 91: base_type_specifier -> class_or_decltype  . 
 
 
-State 240:
+State 241:
 82: class_head_name -> nested_name_specifier class_name  . 
   Reduce by 82: class_head_name -> nested_name_specifier class_name  . 
 
 
-State 241:
+State 242:
 230: nested_name_specifier -> nested_name_specifier identifier  . SCOPE_OPERATOR 
 96: class_name -> identifier  . 
-  0:   On SCOPE_OPERATOR to state 232
+  0:   On SCOPE_OPERATOR to state 233
   Reduce by 96: class_name -> identifier  . 
 
 
-State 242:
+State 243:
 138: function_definition -> declarator '=' DEFAULT ';'  . 
   Reduce by 138: function_definition -> declarator '=' DEFAULT ';'  . 
 
 
-State 243:
+State 244:
 140: function_definition -> declarator '=' DELETE ';'  . 
   Reduce by 140: function_definition -> declarator '=' DELETE ';'  . 
 
 
-State 244:
+State 245:
 165: expression -> expression term  . 
   Reduce by 165: expression -> expression term  . 
 
 
-State 245:
-196: term -> '(' ignored_code  . ')' 
-  0:   On ')' to state 299
-
-
 State 246:
-197: term -> '[' ignored_code  . ']' 
-  0:   On ']' to state 300
+196: term -> '(' ignored_code  . ')' 
+  0:   On ')' to state 300
 
 
 State 247:
-198: term -> '{' ignored_code  . '}' 
-  0:   On '}' to state 301
+197: term -> '[' ignored_code  . ']' 
+  0:   On ']' to state 301
 
 
 State 248:
+198: term -> '{' ignored_code  . '}' 
+  0:   On '}' to state 302
+
+
+State 249:
 145: compound_statement -> '{' ignored_code '}'  . 
   Reduce by 145: compound_statement -> '{' ignored_code '}'  . 
 
 
-State 249:
+State 250:
 159: ignored_code -> expression separator  . ignored_code 
-  0:   On ignored_code to state 302
-  1:   On expression to state 174
-  2:   On term to state 119
-  3:   On literal to state 120
-  4:   On identifier to state 121
-  5:   On PRIMITIVE to state 122
-  6:   On VOID to state 123
-  7:   On TYPE_NAME to state 124
-  8:   On CONSTRUCTOR_NAME to state 125
-  9:   On operand to state 126
-  10:   On SCOPE_OPERATOR to state 127
-  11:   On ASSIGNMENT_OPERATOR to state 128
-  12:   On EXPRESSION_OPERATOR to state 129
-  13:   On WHILE to state 130
-  14:   On FOR to state 131
-  15:   On IF to state 132
-  16:   On TRY to state 133
-  17:   On CATCH to state 134
-  18:   On THROW to state 135
-  19:   On USING to state 136
-  20:   On TRUE to state 137
-  21:   On FALSE to state 138
-  22:   On SIZEOF to state 139
-  23:   On SIGNED to state 140
-  24:   On UNSIGNED to state 141
-  25:   On REGISTER to state 142
-  26:   On DELETE to state 175
-  27:   On RETURN to state 143
-  28:   On CONST to state 144
-  29:   On STATIC to state 145
-  30:   On VOLATILE to state 146
-  31:   On ASM to state 147
-  32:   On AUTO to state 148
-  33:   On '(' to state 149
-  34:   On '[' to state 150
-  35:   On '{' to state 151
-  36:   On STRING_LITERAL to state 152
-  37:   On CHARACTER_LITERAL to state 153
-  38:   On INTEGER_LITERAL to state 154
-  39:   On HEXADECIMAL_LITERAL to state 155
-  40:   On OCTAL_LITERAL to state 156
-  41:   On FLOAT_LITERAL to state 157
+  0:   On ignored_code to state 303
+  1:   On expression to state 175
+  2:   On term to state 120
+  3:   On literal to state 121
+  4:   On identifier to state 122
+  5:   On PRIMITIVE to state 123
+  6:   On VOID to state 124
+  7:   On TYPE_NAME to state 125
+  8:   On CONSTRUCTOR_NAME to state 126
+  9:   On operand to state 127
+  10:   On SCOPE_OPERATOR to state 128
+  11:   On ASSIGNMENT_OPERATOR to state 129
+  12:   On EXPRESSION_OPERATOR to state 130
+  13:   On WHILE to state 131
+  14:   On FOR to state 132
+  15:   On IF to state 133
+  16:   On TRY to state 134
+  17:   On CATCH to state 135
+  18:   On THROW to state 136
+  19:   On USING to state 137
+  20:   On TRUE to state 138
+  21:   On FALSE to state 139
+  22:   On SIZEOF to state 140
+  23:   On SIGNED to state 141
+  24:   On UNSIGNED to state 142
+  25:   On REGISTER to state 143
+  26:   On DELETE to state 176
+  27:   On RETURN to state 144
+  28:   On CONST to state 145
+  29:   On STATIC to state 146
+  30:   On VOLATILE to state 147
+  31:   On ASM to state 148
+  32:   On AUTO to state 149
+  33:   On '(' to state 150
+  34:   On '[' to state 151
+  35:   On '{' to state 152
+  36:   On STRING_LITERAL to state 153
+  37:   On CHARACTER_LITERAL to state 154
+  38:   On INTEGER_LITERAL to state 155
+  39:   On HEXADECIMAL_LITERAL to state 156
+  40:   On OCTAL_LITERAL to state 157
+  41:   On FLOAT_LITERAL to state 158
   42:   On IDENTIFIER to state 58
-  43:   On '+' to state 158
-  44:   On '-' to state 159
-  45:   On '*' to state 160
-  46:   On '/' to state 161
-  47:   On '%' to state 162
-  48:   On '^' to state 163
-  49:   On '?' to state 164
-  50:   On ':' to state 165
-  51:   On '|' to state 166
-  52:   On '&' to state 167
-  53:   On '>' to state 168
-  54:   On '<' to state 169
-  55:   On '!' to state 170
-  56:   On '~' to state 171
+  43:   On '+' to state 159
+  44:   On '-' to state 160
+  45:   On '*' to state 161
+  46:   On '/' to state 162
+  47:   On '%' to state 163
+  48:   On '^' to state 164
+  49:   On '?' to state 165
+  50:   On ':' to state 166
+  51:   On '|' to state 167
+  52:   On '&' to state 168
+  53:   On '>' to state 169
+  54:   On '<' to state 170
+  55:   On '!' to state 171
+  56:   On '~' to state 172
   Reduce by 158: ignored_code ->  . 
 
 
-State 250:
+State 251:
 161: separator -> ';'  . 
   Reduce by 161: separator -> ';'  . 
 
 
-State 251:
+State 252:
 162: separator -> ','  . 
   Reduce by 162: separator -> ','  . 
 
 
-State 252:
+State 253:
 163: separator -> '='  . 
   Reduce by 163: separator -> '='  . 
 
 
-State 253:
+State 254:
 148: mem_initializer_list -> mem_initializer ','  . mem_initializer_list 
-  0:   On mem_initializer_list to state 303
-  1:   On mem_initializer to state 177
-  2:   On mem_initializer_id to state 178
-  3:   On class_or_decltype to state 179
-  4:   On class_name to state 180
-  5:   On SCOPE_OPERATOR to state 181
-  6:   On nested_name_specifier to state 182
-  7:   On identifier to state 112
+  0:   On mem_initializer_list to state 304
+  1:   On mem_initializer to state 178
+  2:   On mem_initializer_id to state 179
+  3:   On class_or_decltype to state 180
+  4:   On class_name to state 181
+  5:   On SCOPE_OPERATOR to state 182
+  6:   On nested_name_specifier to state 183
+  7:   On identifier to state 113
   8:   On IDENTIFIER to state 58
 
 
-State 254:
+State 255:
 149: mem_initializer -> mem_initializer_id '('  . ignored_code ')' 
-  0:   On ignored_code to state 304
-  1:   On expression to state 174
-  2:   On term to state 119
-  3:   On literal to state 120
-  4:   On identifier to state 121
-  5:   On PRIMITIVE to state 122
-  6:   On VOID to state 123
-  7:   On TYPE_NAME to state 124
-  8:   On CONSTRUCTOR_NAME to state 125
-  9:   On operand to state 126
-  10:   On SCOPE_OPERATOR to state 127
-  11:   On ASSIGNMENT_OPERATOR to state 128
-  12:   On EXPRESSION_OPERATOR to state 129
-  13:   On WHILE to state 130
-  14:   On FOR to state 131
-  15:   On IF to state 132
-  16:   On TRY to state 133
-  17:   On CATCH to state 134
-  18:   On THROW to state 135
-  19:   On USING to state 136
-  20:   On TRUE to state 137
-  21:   On FALSE to state 138
-  22:   On SIZEOF to state 139
-  23:   On SIGNED to state 140
-  24:   On UNSIGNED to state 141
-  25:   On REGISTER to state 142
-  26:   On DELETE to state 175
-  27:   On RETURN to state 143
-  28:   On CONST to state 144
-  29:   On STATIC to state 145
-  30:   On VOLATILE to state 146
-  31:   On ASM to state 147
-  32:   On AUTO to state 148
-  33:   On '(' to state 149
-  34:   On '[' to state 150
-  35:   On '{' to state 151
-  36:   On STRING_LITERAL to state 152
-  37:   On CHARACTER_LITERAL to state 153
-  38:   On INTEGER_LITERAL to state 154
-  39:   On HEXADECIMAL_LITERAL to state 155
-  40:   On OCTAL_LITERAL to state 156
-  41:   On FLOAT_LITERAL to state 157
+  0:   On ignored_code to state 305
+  1:   On expression to state 175
+  2:   On term to state 120
+  3:   On literal to state 121
+  4:   On identifier to state 122
+  5:   On PRIMITIVE to state 123
+  6:   On VOID to state 124
+  7:   On TYPE_NAME to state 125
+  8:   On CONSTRUCTOR_NAME to state 126
+  9:   On operand to state 127
+  10:   On SCOPE_OPERATOR to state 128
+  11:   On ASSIGNMENT_OPERATOR to state 129
+  12:   On EXPRESSION_OPERATOR to state 130
+  13:   On WHILE to state 131
+  14:   On FOR to state 132
+  15:   On IF to state 133
+  16:   On TRY to state 134
+  17:   On CATCH to state 135
+  18:   On THROW to state 136
+  19:   On USING to state 137
+  20:   On TRUE to state 138
+  21:   On FALSE to state 139
+  22:   On SIZEOF to state 140
+  23:   On SIGNED to state 141
+  24:   On UNSIGNED to state 142
+  25:   On REGISTER to state 143
+  26:   On DELETE to state 176
+  27:   On RETURN to state 144
+  28:   On CONST to state 145
+  29:   On STATIC to state 146
+  30:   On VOLATILE to state 147
+  31:   On ASM to state 148
+  32:   On AUTO to state 149
+  33:   On '(' to state 150
+  34:   On '[' to state 151
+  35:   On '{' to state 152
+  36:   On STRING_LITERAL to state 153
+  37:   On CHARACTER_LITERAL to state 154
+  38:   On INTEGER_LITERAL to state 155
+  39:   On HEXADECIMAL_LITERAL to state 156
+  40:   On OCTAL_LITERAL to state 157
+  41:   On FLOAT_LITERAL to state 158
   42:   On IDENTIFIER to state 58
-  43:   On '+' to state 158
-  44:   On '-' to state 159
-  45:   On '*' to state 160
-  46:   On '/' to state 161
-  47:   On '%' to state 162
-  48:   On '^' to state 163
-  49:   On '?' to state 164
-  50:   On ':' to state 165
-  51:   On '|' to state 166
-  52:   On '&' to state 167
-  53:   On '>' to state 168
-  54:   On '<' to state 169
-  55:   On '!' to state 170
-  56:   On '~' to state 171
+  43:   On '+' to state 159
+  44:   On '-' to state 160
+  45:   On '*' to state 161
+  46:   On '/' to state 162
+  47:   On '%' to state 163
+  48:   On '^' to state 164
+  49:   On '?' to state 165
+  50:   On ':' to state 166
+  51:   On '|' to state 167
+  52:   On '&' to state 168
+  53:   On '>' to state 169
+  54:   On '<' to state 170
+  55:   On '!' to state 171
+  56:   On '~' to state 172
   Reduce by 158: ignored_code ->  . 
 
 
-State 255:
+State 256:
 93: class_or_decltype -> SCOPE_OPERATOR class_name  . 
   Reduce by 93: class_or_decltype -> SCOPE_OPERATOR class_name  . 
 
 
-State 256:
+State 257:
 95: class_or_decltype -> SCOPE_OPERATOR nested_name_specifier  . class_name 
 230: nested_name_specifier -> nested_name_specifier  . identifier SCOPE_OPERATOR 
-  0:   On class_name to state 305
-  1:   On identifier to state 241
+  0:   On class_name to state 306
+  1:   On identifier to state 242
   2:   On IDENTIFIER to state 58
 
 
-State 257:
+State 258:
 94: class_or_decltype -> nested_name_specifier class_name  . 
   Reduce by 94: class_or_decltype -> nested_name_specifier class_name  . 
 
 
-State 258:
+State 259:
 151: function_try_block -> TRY compound_statement handler_seq  . 
   Reduce by 151: function_try_block -> TRY compound_statement handler_seq  . 
 
 
-State 259:
+State 260:
 153: handler_seq -> handler  . 
 154: handler_seq -> handler  . handler_seq 
-  0:   On handler_seq to state 306
-  1:   On handler to state 259
-  2:   On CATCH to state 260
+  0:   On handler_seq to state 307
+  1:   On handler to state 260
+  2:   On CATCH to state 261
   Reduce by 153: handler_seq -> handler  . 
 
 
-State 260:
-155: handler -> CATCH  . '(' exception_declaration ')' compound_statement 
-  0:   On '(' to state 307
-
-
 State 261:
-152: function_try_block -> TRY ctor_initializer compound_statement  . handler_seq 
-  0:   On handler_seq to state 308
-  1:   On handler to state 259
-  2:   On CATCH to state 260
+155: handler -> CATCH  . '(' exception_declaration ')' compound_statement 
+  0:   On '(' to state 308
 
 
 State 262:
-139: function_definition -> decl_specifier_seq declarator '=' DEFAULT  . ';' 
-  0:   On ';' to state 309
+152: function_try_block -> TRY ctor_initializer compound_statement  . handler_seq 
+  0:   On handler_seq to state 309
+  1:   On handler to state 260
+  2:   On CATCH to state 261
 
 
 State 263:
-141: function_definition -> decl_specifier_seq declarator '=' DELETE  . ';' 
-189: term -> DELETE  . 
+139: function_definition -> decl_specifier_seq declarator '=' DEFAULT  . ';' 
   0:   On ';' to state 310
-  Reduce by 189: term -> DELETE  . 
-Solved SR CONFLICT on ';':
-	shift to state 310, removed ';' from LA-set of rule 189)
 
 
 State 264:
-49: brace_or_equal_initializer -> '='  . initializer_clause 
-  0:   On initializer_clause to state 117
-  1:   On expression to state 118
-  2:   On term to state 119
-  3:   On literal to state 120
-  4:   On identifier to state 121
-  5:   On PRIMITIVE to state 122
-  6:   On VOID to state 123
-  7:   On TYPE_NAME to state 124
-  8:   On CONSTRUCTOR_NAME to state 125
-  9:   On operand to state 126
-  10:   On SCOPE_OPERATOR to state 127
-  11:   On ASSIGNMENT_OPERATOR to state 128
-  12:   On EXPRESSION_OPERATOR to state 129
-  13:   On WHILE to state 130
-  14:   On FOR to state 131
-  15:   On IF to state 132
-  16:   On TRY to state 133
-  17:   On CATCH to state 134
-  18:   On THROW to state 135
-  19:   On USING to state 136
-  20:   On TRUE to state 137
-  21:   On FALSE to state 138
-  22:   On SIZEOF to state 139
-  23:   On SIGNED to state 140
-  24:   On UNSIGNED to state 141
-  25:   On REGISTER to state 142
-  26:   On DELETE to state 175
-  27:   On RETURN to state 143
-  28:   On CONST to state 144
-  29:   On STATIC to state 145
-  30:   On VOLATILE to state 146
-  31:   On ASM to state 147
-  32:   On AUTO to state 148
-  33:   On '(' to state 149
-  34:   On '[' to state 150
-  35:   On '{' to state 151
-  36:   On STRING_LITERAL to state 152
-  37:   On CHARACTER_LITERAL to state 153
-  38:   On INTEGER_LITERAL to state 154
-  39:   On HEXADECIMAL_LITERAL to state 155
-  40:   On OCTAL_LITERAL to state 156
-  41:   On FLOAT_LITERAL to state 157
-  42:   On IDENTIFIER to state 58
-  43:   On '+' to state 158
-  44:   On '-' to state 159
-  45:   On '*' to state 160
-  46:   On '/' to state 161
-  47:   On '%' to state 162
-  48:   On '^' to state 163
-  49:   On '?' to state 164
-  50:   On ':' to state 165
-  51:   On '|' to state 166
-  52:   On '&' to state 167
-  53:   On '>' to state 168
-  54:   On '<' to state 169
-  55:   On '!' to state 170
-  56:   On '~' to state 171
+141: function_definition -> decl_specifier_seq declarator '=' DELETE  . ';' 
+189: term -> DELETE  . 
+  0:   On ';' to state 311
+  Reduce by 189: term -> DELETE  . 
+Solved SR CONFLICT on ';':
+	shift to state 311, removed ';' from LA-set of rule 189)
 
 
 State 265:
+49: brace_or_equal_initializer -> '='  . initializer_clause 
+  0:   On initializer_clause to state 118
+  1:   On expression to state 119
+  2:   On term to state 120
+  3:   On literal to state 121
+  4:   On identifier to state 122
+  5:   On PRIMITIVE to state 123
+  6:   On VOID to state 124
+  7:   On TYPE_NAME to state 125
+  8:   On CONSTRUCTOR_NAME to state 126
+  9:   On operand to state 127
+  10:   On SCOPE_OPERATOR to state 128
+  11:   On ASSIGNMENT_OPERATOR to state 129
+  12:   On EXPRESSION_OPERATOR to state 130
+  13:   On WHILE to state 131
+  14:   On FOR to state 132
+  15:   On IF to state 133
+  16:   On TRY to state 134
+  17:   On CATCH to state 135
+  18:   On THROW to state 136
+  19:   On USING to state 137
+  20:   On TRUE to state 138
+  21:   On FALSE to state 139
+  22:   On SIZEOF to state 140
+  23:   On SIGNED to state 141
+  24:   On UNSIGNED to state 142
+  25:   On REGISTER to state 143
+  26:   On DELETE to state 176
+  27:   On RETURN to state 144
+  28:   On CONST to state 145
+  29:   On STATIC to state 146
+  30:   On VOLATILE to state 147
+  31:   On ASM to state 148
+  32:   On AUTO to state 149
+  33:   On '(' to state 150
+  34:   On '[' to state 151
+  35:   On '{' to state 152
+  36:   On STRING_LITERAL to state 153
+  37:   On CHARACTER_LITERAL to state 154
+  38:   On INTEGER_LITERAL to state 155
+  39:   On HEXADECIMAL_LITERAL to state 156
+  40:   On OCTAL_LITERAL to state 157
+  41:   On FLOAT_LITERAL to state 158
+  42:   On IDENTIFIER to state 58
+  43:   On '+' to state 159
+  44:   On '-' to state 160
+  45:   On '*' to state 161
+  46:   On '/' to state 162
+  47:   On '%' to state 163
+  48:   On '^' to state 164
+  49:   On '?' to state 165
+  50:   On ':' to state 166
+  51:   On '|' to state 167
+  52:   On '&' to state 168
+  53:   On '>' to state 169
+  54:   On '<' to state 170
+  55:   On '!' to state 171
+  56:   On '~' to state 172
+
+
+State 266:
 126: opaque_enum_declaration -> enum_key identifier enum_base ';'  . 
   Reduce by 126: opaque_enum_declaration -> enum_key identifier enum_base ';'  . 
 
 
-State 266:
+State 267:
 124: enum_head -> enum_key nested_name_specifier identifier enum_base  . 
   Reduce by 124: enum_head -> enum_key nested_name_specifier identifier enum_base  . 
 
 
-State 267:
+State 268:
 53: named_namespace_definition -> NAMESPACE identifier '{' declaration_seq  . '}' 
 3: declaration_seq -> declaration_seq  . declaration 
-  0:   On '}' to state 311
+  0:   On '}' to state 312
   1:   On declaration to state 3
   2:   On block_declaration to state 4
   3:   On namespace_definition to state 5
@@ -3363,21 +3370,21 @@ State 267:
   57:   On '~' to state 59
 
 
-State 268:
+State 269:
 55: unnamed_namespace_definition -> NAMESPACE '{' declaration_seq '}'  . 
   Reduce by 55: unnamed_namespace_definition -> NAMESPACE '{' declaration_seq '}'  . 
 
 
-State 269:
+State 270:
 54: named_namespace_definition -> INLINE NAMESPACE identifier '{'  . declaration_seq '}' 
-  0:   On declaration_seq to state 312
+  0:   On declaration_seq to state 313
   Reduce by 2: declaration_seq ->  . 
 
 
-State 270:
+State 271:
 56: unnamed_namespace_definition -> INLINE NAMESPACE '{' declaration_seq  . '}' 
 3: declaration_seq -> declaration_seq  . declaration 
-  0:   On '}' to state 313
+  0:   On '}' to state 314
   1:   On declaration to state 3
   2:   On block_declaration to state 4
   3:   On namespace_definition to state 5
@@ -3437,25 +3444,25 @@ State 270:
   57:   On '~' to state 59
 
 
-State 271:
+State 272:
 122: enum_head -> enum_key identifier enum_base  . 
   Reduce by 122: enum_head -> enum_key identifier enum_base  . 
 
 
-State 272:
+State 273:
 31: noptr_declarator -> noptr_declarator '[' expression ']'  . 
   Reduce by 31: noptr_declarator -> noptr_declarator '[' expression ']'  . 
 
 
-State 273:
+State 274:
 34: parameters_and_qualifiers -> '(' parameter_declaration_clause ')'  . 
   Reduce by 34: parameters_and_qualifiers -> '(' parameter_declaration_clause ')'  . 
 
 
-State 274:
+State 275:
 38: parameter_declaration_list -> parameter_declaration_list ','  . parameter_declaration 
-  0:   On parameter_declaration to state 314
-  1:   On decl_specifier_seq to state 208
+  0:   On parameter_declaration to state 315
+  1:   On decl_specifier_seq to state 209
   2:   On type_specifier to state 19
   3:   On decl_specifier to state 20
   4:   On trailing_type_specifier to state 25
@@ -3487,44 +3494,44 @@ State 274:
   30:   On IDENTIFIER to state 58
 
 
-State 275:
+State 276:
 40: parameter_declaration -> decl_specifier_seq declarator  . 
   Reduce by 40: parameter_declaration -> decl_specifier_seq declarator  . 
 
 
-State 276:
+State 277:
 73: class_specifier -> class_head '{' #0001 '}'  . 
   Reduce by 73: class_specifier -> class_head '{' #0001 '}'  . 
 
 
-State 277:
-75: class_specifier -> class_head '{' member_specification #0002  . '}' 
-  0:   On '}' to state 315
-
-
 State 278:
+75: class_specifier -> class_head '{' member_specification #0002  . '}' 
+  0:   On '}' to state 316
+
+
+State 279:
 101: member_specification -> member_declaration member_specification  . 
   Reduce by 101: member_specification -> member_declaration member_specification  . 
 
 
-State 279:
+State 280:
 102: member_specification -> access_specifier ':'  . 
 103: member_specification -> access_specifier ':'  . member_specification 
-  0:   On member_specification to state 316
-  1:   On member_declaration to state 212
-  2:   On access_specifier to state 213
-  3:   On member_declarator_list to state 214
-  4:   On decl_specifier_seq to state 215
-  5:   On function_definition to state 216
-  6:   On PRIVATE to state 217
-  7:   On PROTECTED to state 218
-  8:   On PUBLIC to state 219
-  9:   On member_declarator to state 220
+  0:   On member_specification to state 317
+  1:   On member_declaration to state 213
+  2:   On access_specifier to state 214
+  3:   On member_declarator_list to state 215
+  4:   On decl_specifier_seq to state 216
+  5:   On function_definition to state 217
+  6:   On PRIVATE to state 218
+  7:   On PROTECTED to state 219
+  8:   On PUBLIC to state 220
+  9:   On member_declarator to state 221
   10:   On type_specifier to state 19
   11:   On decl_specifier to state 20
-  12:   On declarator to state 221
-  13:   On ':' to state 222
-  14:   On identifier to state 223
+  12:   On declarator to state 222
+  13:   On ':' to state 223
+  14:   On identifier to state 224
   15:   On trailing_type_specifier to state 25
   16:   On class_specifier to state 26
   17:   On enum_specifier to state 27
@@ -3567,17 +3574,17 @@ State 279:
   Reduce by 102: member_specification -> access_specifier ':'  . 
 
 
-State 280:
+State 281:
 104: member_declaration -> member_declarator_list ';'  . 
   Reduce by 104: member_declaration -> member_declarator_list ';'  . 
 
 
-State 281:
+State 282:
 109: member_declarator_list -> member_declarator_list ','  . member_declarator 
-  0:   On member_declarator to state 317
-  1:   On declarator to state 318
-  2:   On ':' to state 222
-  3:   On identifier to state 223
+  0:   On member_declarator to state 318
+  1:   On declarator to state 319
+  2:   On ':' to state 223
+  3:   On identifier to state 224
   4:   On ptr_declarator to state 18
   5:   On IDENTIFIER to state 58
   6:   On noptr_declarator to state 23
@@ -3596,29 +3603,29 @@ State 281:
   19:   On '~' to state 59
 
 
-State 282:
+State 283:
 105: member_declaration -> decl_specifier_seq ';'  . 
   Reduce by 105: member_declaration -> decl_specifier_seq ';'  . 
 
 
-State 283:
+State 284:
 106: member_declaration -> decl_specifier_seq member_declarator_list  . ';' 
 109: member_declarator_list -> member_declarator_list  . ',' member_declarator 
-  0:   On ';' to state 319
-  1:   On ',' to state 281
+  0:   On ';' to state 320
+  1:   On ',' to state 282
 
 
-State 284:
+State 285:
 137: function_definition -> decl_specifier_seq declarator  . function_body 
 139: function_definition -> decl_specifier_seq declarator  . '=' DEFAULT ';' 
 141: function_definition -> decl_specifier_seq declarator  . '=' DELETE ';' 
 110: member_declarator -> declarator  . 
 111: member_declarator -> declarator  . pure_specifier 
 112: member_declarator -> declarator  . brace_or_equal_initializer 
-  0:   On function_body to state 185
-  1:   On '=' to state 320
-  2:   On pure_specifier to state 286
-  3:   On brace_or_equal_initializer to state 287
+  0:   On function_body to state 186
+  1:   On '=' to state 321
+  2:   On pure_specifier to state 287
+  3:   On brace_or_equal_initializer to state 288
   4:   On compound_statement to state 63
   5:   On ctor_initializer to state 64
   6:   On function_try_block to state 65
@@ -3628,322 +3635,322 @@ State 284:
   Reduce by 110: member_declarator -> declarator  . 
 
 
-State 285:
+State 286:
 138: function_definition -> declarator '='  . DEFAULT ';' 
 140: function_definition -> declarator '='  . DELETE ';' 
 115: pure_specifier -> '='  . INTEGER_LITERAL 
 49: brace_or_equal_initializer -> '='  . initializer_clause 
-  0:   On DEFAULT to state 115
-  1:   On DELETE to state 116
-  2:   On INTEGER_LITERAL to state 321
-  3:   On initializer_clause to state 117
-  4:   On expression to state 118
-  5:   On term to state 119
-  6:   On literal to state 120
-  7:   On identifier to state 121
-  8:   On PRIMITIVE to state 122
-  9:   On VOID to state 123
-  10:   On TYPE_NAME to state 124
-  11:   On CONSTRUCTOR_NAME to state 125
-  12:   On operand to state 126
-  13:   On SCOPE_OPERATOR to state 127
-  14:   On ASSIGNMENT_OPERATOR to state 128
-  15:   On EXPRESSION_OPERATOR to state 129
-  16:   On WHILE to state 130
-  17:   On FOR to state 131
-  18:   On IF to state 132
-  19:   On TRY to state 133
-  20:   On CATCH to state 134
-  21:   On THROW to state 135
-  22:   On USING to state 136
-  23:   On TRUE to state 137
-  24:   On FALSE to state 138
-  25:   On SIZEOF to state 139
-  26:   On SIGNED to state 140
-  27:   On UNSIGNED to state 141
-  28:   On REGISTER to state 142
-  29:   On RETURN to state 143
-  30:   On CONST to state 144
-  31:   On STATIC to state 145
-  32:   On VOLATILE to state 146
-  33:   On ASM to state 147
-  34:   On AUTO to state 148
-  35:   On '(' to state 149
-  36:   On '[' to state 150
-  37:   On '{' to state 151
-  38:   On STRING_LITERAL to state 152
-  39:   On CHARACTER_LITERAL to state 153
-  40:   On HEXADECIMAL_LITERAL to state 155
-  41:   On OCTAL_LITERAL to state 156
-  42:   On FLOAT_LITERAL to state 157
+  0:   On DEFAULT to state 116
+  1:   On DELETE to state 117
+  2:   On INTEGER_LITERAL to state 322
+  3:   On initializer_clause to state 118
+  4:   On expression to state 119
+  5:   On term to state 120
+  6:   On literal to state 121
+  7:   On identifier to state 122
+  8:   On PRIMITIVE to state 123
+  9:   On VOID to state 124
+  10:   On TYPE_NAME to state 125
+  11:   On CONSTRUCTOR_NAME to state 126
+  12:   On operand to state 127
+  13:   On SCOPE_OPERATOR to state 128
+  14:   On ASSIGNMENT_OPERATOR to state 129
+  15:   On EXPRESSION_OPERATOR to state 130
+  16:   On WHILE to state 131
+  17:   On FOR to state 132
+  18:   On IF to state 133
+  19:   On TRY to state 134
+  20:   On CATCH to state 135
+  21:   On THROW to state 136
+  22:   On USING to state 137
+  23:   On TRUE to state 138
+  24:   On FALSE to state 139
+  25:   On SIZEOF to state 140
+  26:   On SIGNED to state 141
+  27:   On UNSIGNED to state 142
+  28:   On REGISTER to state 143
+  29:   On RETURN to state 144
+  30:   On CONST to state 145
+  31:   On STATIC to state 146
+  32:   On VOLATILE to state 147
+  33:   On ASM to state 148
+  34:   On AUTO to state 149
+  35:   On '(' to state 150
+  36:   On '[' to state 151
+  37:   On '{' to state 152
+  38:   On STRING_LITERAL to state 153
+  39:   On CHARACTER_LITERAL to state 154
+  40:   On HEXADECIMAL_LITERAL to state 156
+  41:   On OCTAL_LITERAL to state 157
+  42:   On FLOAT_LITERAL to state 158
   43:   On IDENTIFIER to state 58
-  44:   On '+' to state 158
-  45:   On '-' to state 159
-  46:   On '*' to state 160
-  47:   On '/' to state 161
-  48:   On '%' to state 162
-  49:   On '^' to state 163
-  50:   On '?' to state 164
-  51:   On ':' to state 165
-  52:   On '|' to state 166
-  53:   On '&' to state 167
-  54:   On '>' to state 168
-  55:   On '<' to state 169
-  56:   On '!' to state 170
-  57:   On '~' to state 171
+  44:   On '+' to state 159
+  45:   On '-' to state 160
+  46:   On '*' to state 161
+  47:   On '/' to state 162
+  48:   On '%' to state 163
+  49:   On '^' to state 164
+  50:   On '?' to state 165
+  51:   On ':' to state 166
+  52:   On '|' to state 167
+  53:   On '&' to state 168
+  54:   On '>' to state 169
+  55:   On '<' to state 170
+  56:   On '!' to state 171
+  57:   On '~' to state 172
 
 
-State 286:
+State 287:
 111: member_declarator -> declarator pure_specifier  . 
   Reduce by 111: member_declarator -> declarator pure_specifier  . 
 
 
-State 287:
+State 288:
 112: member_declarator -> declarator brace_or_equal_initializer  . 
   Reduce by 112: member_declarator -> declarator brace_or_equal_initializer  . 
 
 
-State 288:
+State 289:
 113: member_declarator -> ':' constant_expression  . 
   Reduce by 113: member_declarator -> ':' constant_expression  . 
 
 
-State 289:
+State 290:
 157: constant_expression -> ignored_code  . 
   Reduce by 157: constant_expression -> ignored_code  . 
 
 
-State 290:
+State 291:
 114: member_declarator -> identifier ':'  . constant_expression 
-  0:   On constant_expression to state 322
-  1:   On ignored_code to state 289
-  2:   On expression to state 174
-  3:   On term to state 119
-  4:   On literal to state 120
-  5:   On identifier to state 121
-  6:   On PRIMITIVE to state 122
-  7:   On VOID to state 123
-  8:   On TYPE_NAME to state 124
-  9:   On CONSTRUCTOR_NAME to state 125
-  10:   On operand to state 126
-  11:   On SCOPE_OPERATOR to state 127
-  12:   On ASSIGNMENT_OPERATOR to state 128
-  13:   On EXPRESSION_OPERATOR to state 129
-  14:   On WHILE to state 130
-  15:   On FOR to state 131
-  16:   On IF to state 132
-  17:   On TRY to state 133
-  18:   On CATCH to state 134
-  19:   On THROW to state 135
-  20:   On USING to state 136
-  21:   On TRUE to state 137
-  22:   On FALSE to state 138
-  23:   On SIZEOF to state 139
-  24:   On SIGNED to state 140
-  25:   On UNSIGNED to state 141
-  26:   On REGISTER to state 142
-  27:   On DELETE to state 175
-  28:   On RETURN to state 143
-  29:   On CONST to state 144
-  30:   On STATIC to state 145
-  31:   On VOLATILE to state 146
-  32:   On ASM to state 147
-  33:   On AUTO to state 148
-  34:   On '(' to state 149
-  35:   On '[' to state 150
-  36:   On '{' to state 151
-  37:   On STRING_LITERAL to state 152
-  38:   On CHARACTER_LITERAL to state 153
-  39:   On INTEGER_LITERAL to state 154
-  40:   On HEXADECIMAL_LITERAL to state 155
-  41:   On OCTAL_LITERAL to state 156
-  42:   On FLOAT_LITERAL to state 157
+  0:   On constant_expression to state 323
+  1:   On ignored_code to state 290
+  2:   On expression to state 175
+  3:   On term to state 120
+  4:   On literal to state 121
+  5:   On identifier to state 122
+  6:   On PRIMITIVE to state 123
+  7:   On VOID to state 124
+  8:   On TYPE_NAME to state 125
+  9:   On CONSTRUCTOR_NAME to state 126
+  10:   On operand to state 127
+  11:   On SCOPE_OPERATOR to state 128
+  12:   On ASSIGNMENT_OPERATOR to state 129
+  13:   On EXPRESSION_OPERATOR to state 130
+  14:   On WHILE to state 131
+  15:   On FOR to state 132
+  16:   On IF to state 133
+  17:   On TRY to state 134
+  18:   On CATCH to state 135
+  19:   On THROW to state 136
+  20:   On USING to state 137
+  21:   On TRUE to state 138
+  22:   On FALSE to state 139
+  23:   On SIZEOF to state 140
+  24:   On SIGNED to state 141
+  25:   On UNSIGNED to state 142
+  26:   On REGISTER to state 143
+  27:   On DELETE to state 176
+  28:   On RETURN to state 144
+  29:   On CONST to state 145
+  30:   On STATIC to state 146
+  31:   On VOLATILE to state 147
+  32:   On ASM to state 148
+  33:   On AUTO to state 149
+  34:   On '(' to state 150
+  35:   On '[' to state 151
+  36:   On '{' to state 152
+  37:   On STRING_LITERAL to state 153
+  38:   On CHARACTER_LITERAL to state 154
+  39:   On INTEGER_LITERAL to state 155
+  40:   On HEXADECIMAL_LITERAL to state 156
+  41:   On OCTAL_LITERAL to state 157
+  42:   On FLOAT_LITERAL to state 158
   43:   On IDENTIFIER to state 58
-  44:   On '+' to state 158
-  45:   On '-' to state 159
-  46:   On '*' to state 160
-  47:   On '/' to state 161
-  48:   On '%' to state 162
-  49:   On '^' to state 163
-  50:   On '?' to state 164
-  51:   On ':' to state 165
-  52:   On '|' to state 166
-  53:   On '&' to state 167
-  54:   On '>' to state 168
-  55:   On '<' to state 169
-  56:   On '!' to state 170
-  57:   On '~' to state 171
+  44:   On '+' to state 159
+  45:   On '-' to state 160
+  46:   On '*' to state 161
+  47:   On '/' to state 162
+  48:   On '%' to state 163
+  49:   On '^' to state 164
+  50:   On '?' to state 165
+  51:   On ':' to state 166
+  52:   On '|' to state 167
+  53:   On '&' to state 168
+  54:   On '>' to state 169
+  55:   On '<' to state 170
+  56:   On '!' to state 171
+  57:   On '~' to state 172
   Reduce by 158: ignored_code ->  . 
 
 
-State 291:
+State 292:
 117: enum_specifier -> enum_head '{' enumerator_list '}'  . 
   Reduce by 117: enum_specifier -> enum_head '{' enumerator_list '}'  . 
 
 
-State 292:
+State 293:
 118: enum_specifier -> enum_head '{' enumerator_list ','  . '}' 
 129: enumerator_list -> enumerator_list ','  . enumerator_definition 
-  0:   On '}' to state 323
-  1:   On enumerator_definition to state 324
-  2:   On enumerator to state 227
-  3:   On identifier to state 228
+  0:   On '}' to state 324
+  1:   On enumerator_definition to state 325
+  2:   On enumerator to state 228
+  3:   On identifier to state 229
   4:   On IDENTIFIER to state 58
 
 
-State 293:
-131: enumerator_definition -> enumerator '='  . expression 
-  0:   On expression to state 325
-  1:   On term to state 119
-  2:   On literal to state 120
-  3:   On identifier to state 121
-  4:   On PRIMITIVE to state 122
-  5:   On VOID to state 123
-  6:   On TYPE_NAME to state 124
-  7:   On CONSTRUCTOR_NAME to state 125
-  8:   On operand to state 126
-  9:   On SCOPE_OPERATOR to state 127
-  10:   On ASSIGNMENT_OPERATOR to state 128
-  11:   On EXPRESSION_OPERATOR to state 129
-  12:   On WHILE to state 130
-  13:   On FOR to state 131
-  14:   On IF to state 132
-  15:   On TRY to state 133
-  16:   On CATCH to state 134
-  17:   On THROW to state 135
-  18:   On USING to state 136
-  19:   On TRUE to state 137
-  20:   On FALSE to state 138
-  21:   On SIZEOF to state 139
-  22:   On SIGNED to state 140
-  23:   On UNSIGNED to state 141
-  24:   On REGISTER to state 142
-  25:   On DELETE to state 175
-  26:   On RETURN to state 143
-  27:   On CONST to state 144
-  28:   On STATIC to state 145
-  29:   On VOLATILE to state 146
-  30:   On ASM to state 147
-  31:   On AUTO to state 148
-  32:   On '(' to state 149
-  33:   On '[' to state 150
-  34:   On '{' to state 151
-  35:   On STRING_LITERAL to state 152
-  36:   On CHARACTER_LITERAL to state 153
-  37:   On INTEGER_LITERAL to state 154
-  38:   On HEXADECIMAL_LITERAL to state 155
-  39:   On OCTAL_LITERAL to state 156
-  40:   On FLOAT_LITERAL to state 157
-  41:   On IDENTIFIER to state 58
-  42:   On '+' to state 158
-  43:   On '-' to state 159
-  44:   On '*' to state 160
-  45:   On '/' to state 161
-  46:   On '%' to state 162
-  47:   On '^' to state 163
-  48:   On '?' to state 164
-  49:   On ':' to state 165
-  50:   On '|' to state 166
-  51:   On '&' to state 167
-  52:   On '>' to state 168
-  53:   On '<' to state 169
-  54:   On '!' to state 170
-  55:   On '~' to state 171
-
-
 State 294:
-85: base_specifier_list -> base_specifier_list ','  . base_specifier 
-  0:   On base_specifier to state 326
-  1:   On base_type_specifier to state 236
-  2:   On VIRTUAL to state 237
-  3:   On access_specifier to state 238
-  4:   On class_or_decltype to state 239
-  5:   On PRIVATE to state 217
-  6:   On PROTECTED to state 218
-  7:   On PUBLIC to state 219
-  8:   On class_name to state 180
-  9:   On SCOPE_OPERATOR to state 181
-  10:   On nested_name_specifier to state 182
-  11:   On identifier to state 112
-  12:   On IDENTIFIER to state 58
+131: enumerator_definition -> enumerator '='  . expression 
+  0:   On expression to state 326
+  1:   On term to state 120
+  2:   On literal to state 121
+  3:   On identifier to state 122
+  4:   On PRIMITIVE to state 123
+  5:   On VOID to state 124
+  6:   On TYPE_NAME to state 125
+  7:   On CONSTRUCTOR_NAME to state 126
+  8:   On operand to state 127
+  9:   On SCOPE_OPERATOR to state 128
+  10:   On ASSIGNMENT_OPERATOR to state 129
+  11:   On EXPRESSION_OPERATOR to state 130
+  12:   On WHILE to state 131
+  13:   On FOR to state 132
+  14:   On IF to state 133
+  15:   On TRY to state 134
+  16:   On CATCH to state 135
+  17:   On THROW to state 136
+  18:   On USING to state 137
+  19:   On TRUE to state 138
+  20:   On FALSE to state 139
+  21:   On SIZEOF to state 140
+  22:   On SIGNED to state 141
+  23:   On UNSIGNED to state 142
+  24:   On REGISTER to state 143
+  25:   On DELETE to state 176
+  26:   On RETURN to state 144
+  27:   On CONST to state 145
+  28:   On STATIC to state 146
+  29:   On VOLATILE to state 147
+  30:   On ASM to state 148
+  31:   On AUTO to state 149
+  32:   On '(' to state 150
+  33:   On '[' to state 151
+  34:   On '{' to state 152
+  35:   On STRING_LITERAL to state 153
+  36:   On CHARACTER_LITERAL to state 154
+  37:   On INTEGER_LITERAL to state 155
+  38:   On HEXADECIMAL_LITERAL to state 156
+  39:   On OCTAL_LITERAL to state 157
+  40:   On FLOAT_LITERAL to state 158
+  41:   On IDENTIFIER to state 58
+  42:   On '+' to state 159
+  43:   On '-' to state 160
+  44:   On '*' to state 161
+  45:   On '/' to state 162
+  46:   On '%' to state 163
+  47:   On '^' to state 164
+  48:   On '?' to state 165
+  49:   On ':' to state 166
+  50:   On '|' to state 167
+  51:   On '&' to state 168
+  52:   On '>' to state 169
+  53:   On '<' to state 170
+  54:   On '!' to state 171
+  55:   On '~' to state 172
 
 
 State 295:
+85: base_specifier_list -> base_specifier_list ','  . base_specifier 
+  0:   On base_specifier to state 327
+  1:   On base_type_specifier to state 237
+  2:   On VIRTUAL to state 238
+  3:   On access_specifier to state 239
+  4:   On class_or_decltype to state 240
+  5:   On PRIVATE to state 218
+  6:   On PROTECTED to state 219
+  7:   On PUBLIC to state 220
+  8:   On class_name to state 181
+  9:   On SCOPE_OPERATOR to state 182
+  10:   On nested_name_specifier to state 183
+  11:   On identifier to state 113
+  12:   On IDENTIFIER to state 58
+
+
+State 296:
 87: base_specifier -> VIRTUAL base_type_specifier  . 
   Reduce by 87: base_specifier -> VIRTUAL base_type_specifier  . 
 
 
-State 296:
+State 297:
 89: base_specifier -> VIRTUAL access_specifier  . base_type_specifier 
-  0:   On base_type_specifier to state 327
-  1:   On class_or_decltype to state 239
-  2:   On class_name to state 180
-  3:   On SCOPE_OPERATOR to state 181
-  4:   On nested_name_specifier to state 182
-  5:   On identifier to state 112
+  0:   On base_type_specifier to state 328
+  1:   On class_or_decltype to state 240
+  2:   On class_name to state 181
+  3:   On SCOPE_OPERATOR to state 182
+  4:   On nested_name_specifier to state 183
+  5:   On identifier to state 113
   6:   On IDENTIFIER to state 58
 
 
-State 297:
+State 298:
 88: base_specifier -> access_specifier base_type_specifier  . 
   Reduce by 88: base_specifier -> access_specifier base_type_specifier  . 
 
 
-State 298:
+State 299:
 90: base_specifier -> access_specifier VIRTUAL  . base_type_specifier 
-  0:   On base_type_specifier to state 328
-  1:   On class_or_decltype to state 239
-  2:   On class_name to state 180
-  3:   On SCOPE_OPERATOR to state 181
-  4:   On nested_name_specifier to state 182
-  5:   On identifier to state 112
+  0:   On base_type_specifier to state 329
+  1:   On class_or_decltype to state 240
+  2:   On class_name to state 181
+  3:   On SCOPE_OPERATOR to state 182
+  4:   On nested_name_specifier to state 183
+  5:   On identifier to state 113
   6:   On IDENTIFIER to state 58
 
 
-State 299:
+State 300:
 196: term -> '(' ignored_code ')'  . 
   Reduce by 196: term -> '(' ignored_code ')'  . 
 
 
-State 300:
+State 301:
 197: term -> '[' ignored_code ']'  . 
   Reduce by 197: term -> '[' ignored_code ']'  . 
 
 
-State 301:
+State 302:
 198: term -> '{' ignored_code '}'  . 
   Reduce by 198: term -> '{' ignored_code '}'  . 
 
 
-State 302:
+State 303:
 159: ignored_code -> expression separator ignored_code  . 
   Reduce by 159: ignored_code -> expression separator ignored_code  . 
 
 
-State 303:
+State 304:
 148: mem_initializer_list -> mem_initializer ',' mem_initializer_list  . 
   Reduce by 148: mem_initializer_list -> mem_initializer ',' mem_initializer_list  . 
 
 
-State 304:
-149: mem_initializer -> mem_initializer_id '(' ignored_code  . ')' 
-  0:   On ')' to state 329
-
-
 State 305:
+149: mem_initializer -> mem_initializer_id '(' ignored_code  . ')' 
+  0:   On ')' to state 330
+
+
+State 306:
 95: class_or_decltype -> SCOPE_OPERATOR nested_name_specifier class_name  . 
   Reduce by 95: class_or_decltype -> SCOPE_OPERATOR nested_name_specifier class_name  . 
 
 
-State 306:
+State 307:
 154: handler_seq -> handler handler_seq  . 
   Reduce by 154: handler_seq -> handler handler_seq  . 
 
 
-State 307:
+State 308:
 155: handler -> CATCH '('  . exception_declaration ')' compound_statement 
-  0:   On exception_declaration to state 330
-  1:   On type_specifier to state 331
+  0:   On exception_declaration to state 331
+  1:   On type_specifier to state 332
   2:   On trailing_type_specifier to state 25
   3:   On class_specifier to state 26
   4:   On enum_specifier to state 27
@@ -3966,30 +3973,30 @@ State 307:
   21:   On IDENTIFIER to state 58
 
 
-State 308:
+State 309:
 152: function_try_block -> TRY ctor_initializer compound_statement handler_seq  . 
   Reduce by 152: function_try_block -> TRY ctor_initializer compound_statement handler_seq  . 
 
 
-State 309:
+State 310:
 139: function_definition -> decl_specifier_seq declarator '=' DEFAULT ';'  . 
   Reduce by 139: function_definition -> decl_specifier_seq declarator '=' DEFAULT ';'  . 
 
 
-State 310:
+State 311:
 141: function_definition -> decl_specifier_seq declarator '=' DELETE ';'  . 
   Reduce by 141: function_definition -> decl_specifier_seq declarator '=' DELETE ';'  . 
 
 
-State 311:
+State 312:
 53: named_namespace_definition -> NAMESPACE identifier '{' declaration_seq '}'  . 
   Reduce by 53: named_namespace_definition -> NAMESPACE identifier '{' declaration_seq '}'  . 
 
 
-State 312:
+State 313:
 54: named_namespace_definition -> INLINE NAMESPACE identifier '{' declaration_seq  . '}' 
 3: declaration_seq -> declaration_seq  . declaration 
-  0:   On '}' to state 332
+  0:   On '}' to state 333
   1:   On declaration to state 3
   2:   On block_declaration to state 4
   3:   On namespace_definition to state 5
@@ -4049,112 +4056,112 @@ State 312:
   57:   On '~' to state 59
 
 
-State 313:
+State 314:
 56: unnamed_namespace_definition -> INLINE NAMESPACE '{' declaration_seq '}'  . 
   Reduce by 56: unnamed_namespace_definition -> INLINE NAMESPACE '{' declaration_seq '}'  . 
 
 
-State 314:
+State 315:
 38: parameter_declaration_list -> parameter_declaration_list ',' parameter_declaration  . 
   Reduce by 38: parameter_declaration_list -> parameter_declaration_list ',' parameter_declaration  . 
 
 
-State 315:
+State 316:
 75: class_specifier -> class_head '{' member_specification #0002 '}'  . 
   Reduce by 75: class_specifier -> class_head '{' member_specification #0002 '}'  . 
 
 
-State 316:
+State 317:
 103: member_specification -> access_specifier ':' member_specification  . 
   Reduce by 103: member_specification -> access_specifier ':' member_specification  . 
 
 
-State 317:
+State 318:
 109: member_declarator_list -> member_declarator_list ',' member_declarator  . 
   Reduce by 109: member_declarator_list -> member_declarator_list ',' member_declarator  . 
 
 
-State 318:
+State 319:
 110: member_declarator -> declarator  . 
 111: member_declarator -> declarator  . pure_specifier 
 112: member_declarator -> declarator  . brace_or_equal_initializer 
-  0:   On pure_specifier to state 286
-  1:   On brace_or_equal_initializer to state 287
-  2:   On '=' to state 333
+  0:   On pure_specifier to state 287
+  1:   On brace_or_equal_initializer to state 288
+  2:   On '=' to state 334
   Reduce by 110: member_declarator -> declarator  . 
 
 
-State 319:
+State 320:
 106: member_declaration -> decl_specifier_seq member_declarator_list ';'  . 
   Reduce by 106: member_declaration -> decl_specifier_seq member_declarator_list ';'  . 
 
 
-State 320:
+State 321:
 139: function_definition -> decl_specifier_seq declarator '='  . DEFAULT ';' 
 141: function_definition -> decl_specifier_seq declarator '='  . DELETE ';' 
 115: pure_specifier -> '='  . INTEGER_LITERAL 
 49: brace_or_equal_initializer -> '='  . initializer_clause 
-  0:   On DEFAULT to state 262
-  1:   On DELETE to state 263
-  2:   On INTEGER_LITERAL to state 321
-  3:   On initializer_clause to state 117
-  4:   On expression to state 118
-  5:   On term to state 119
-  6:   On literal to state 120
-  7:   On identifier to state 121
-  8:   On PRIMITIVE to state 122
-  9:   On VOID to state 123
-  10:   On TYPE_NAME to state 124
-  11:   On CONSTRUCTOR_NAME to state 125
-  12:   On operand to state 126
-  13:   On SCOPE_OPERATOR to state 127
-  14:   On ASSIGNMENT_OPERATOR to state 128
-  15:   On EXPRESSION_OPERATOR to state 129
-  16:   On WHILE to state 130
-  17:   On FOR to state 131
-  18:   On IF to state 132
-  19:   On TRY to state 133
-  20:   On CATCH to state 134
-  21:   On THROW to state 135
-  22:   On USING to state 136
-  23:   On TRUE to state 137
-  24:   On FALSE to state 138
-  25:   On SIZEOF to state 139
-  26:   On SIGNED to state 140
-  27:   On UNSIGNED to state 141
-  28:   On REGISTER to state 142
-  29:   On RETURN to state 143
-  30:   On CONST to state 144
-  31:   On STATIC to state 145
-  32:   On VOLATILE to state 146
-  33:   On ASM to state 147
-  34:   On AUTO to state 148
-  35:   On '(' to state 149
-  36:   On '[' to state 150
-  37:   On '{' to state 151
-  38:   On STRING_LITERAL to state 152
-  39:   On CHARACTER_LITERAL to state 153
-  40:   On HEXADECIMAL_LITERAL to state 155
-  41:   On OCTAL_LITERAL to state 156
-  42:   On FLOAT_LITERAL to state 157
+  0:   On DEFAULT to state 263
+  1:   On DELETE to state 264
+  2:   On INTEGER_LITERAL to state 322
+  3:   On initializer_clause to state 118
+  4:   On expression to state 119
+  5:   On term to state 120
+  6:   On literal to state 121
+  7:   On identifier to state 122
+  8:   On PRIMITIVE to state 123
+  9:   On VOID to state 124
+  10:   On TYPE_NAME to state 125
+  11:   On CONSTRUCTOR_NAME to state 126
+  12:   On operand to state 127
+  13:   On SCOPE_OPERATOR to state 128
+  14:   On ASSIGNMENT_OPERATOR to state 129
+  15:   On EXPRESSION_OPERATOR to state 130
+  16:   On WHILE to state 131
+  17:   On FOR to state 132
+  18:   On IF to state 133
+  19:   On TRY to state 134
+  20:   On CATCH to state 135
+  21:   On THROW to state 136
+  22:   On USING to state 137
+  23:   On TRUE to state 138
+  24:   On FALSE to state 139
+  25:   On SIZEOF to state 140
+  26:   On SIGNED to state 141
+  27:   On UNSIGNED to state 142
+  28:   On REGISTER to state 143
+  29:   On RETURN to state 144
+  30:   On CONST to state 145
+  31:   On STATIC to state 146
+  32:   On VOLATILE to state 147
+  33:   On ASM to state 148
+  34:   On AUTO to state 149
+  35:   On '(' to state 150
+  36:   On '[' to state 151
+  37:   On '{' to state 152
+  38:   On STRING_LITERAL to state 153
+  39:   On CHARACTER_LITERAL to state 154
+  40:   On HEXADECIMAL_LITERAL to state 156
+  41:   On OCTAL_LITERAL to state 157
+  42:   On FLOAT_LITERAL to state 158
   43:   On IDENTIFIER to state 58
-  44:   On '+' to state 158
-  45:   On '-' to state 159
-  46:   On '*' to state 160
-  47:   On '/' to state 161
-  48:   On '%' to state 162
-  49:   On '^' to state 163
-  50:   On '?' to state 164
-  51:   On ':' to state 165
-  52:   On '|' to state 166
-  53:   On '&' to state 167
-  54:   On '>' to state 168
-  55:   On '<' to state 169
-  56:   On '!' to state 170
-  57:   On '~' to state 171
+  44:   On '+' to state 159
+  45:   On '-' to state 160
+  46:   On '*' to state 161
+  47:   On '/' to state 162
+  48:   On '%' to state 163
+  49:   On '^' to state 164
+  50:   On '?' to state 165
+  51:   On ':' to state 166
+  52:   On '|' to state 167
+  53:   On '&' to state 168
+  54:   On '>' to state 169
+  55:   On '<' to state 170
+  56:   On '!' to state 171
+  57:   On '~' to state 172
 
 
-State 321:
+State 322:
 115: pure_specifier -> '=' INTEGER_LITERAL  . 
 201: literal -> INTEGER_LITERAL  . 
   Reduce by 115: pure_specifier -> '=' INTEGER_LITERAL  . 
@@ -4163,110 +4170,110 @@ Solved RR CONFLICT for rules 115 and 201:
 	removed { ';' ',' } from the LA set of rule 201
 
 
-State 322:
+State 323:
 114: member_declarator -> identifier ':' constant_expression  . 
   Reduce by 114: member_declarator -> identifier ':' constant_expression  . 
 
 
-State 323:
+State 324:
 118: enum_specifier -> enum_head '{' enumerator_list ',' '}'  . 
   Reduce by 118: enum_specifier -> enum_head '{' enumerator_list ',' '}'  . 
 
 
-State 324:
+State 325:
 129: enumerator_list -> enumerator_list ',' enumerator_definition  . 
   Reduce by 129: enumerator_list -> enumerator_list ',' enumerator_definition  . 
 
 
-State 325:
+State 326:
 131: enumerator_definition -> enumerator '=' expression  . 
 165: expression -> expression  . term 
-  0:   On term to state 244
-  1:   On literal to state 120
-  2:   On identifier to state 121
-  3:   On PRIMITIVE to state 122
-  4:   On VOID to state 123
-  5:   On TYPE_NAME to state 124
-  6:   On CONSTRUCTOR_NAME to state 125
-  7:   On operand to state 126
-  8:   On SCOPE_OPERATOR to state 127
-  9:   On ASSIGNMENT_OPERATOR to state 128
-  10:   On EXPRESSION_OPERATOR to state 129
-  11:   On WHILE to state 130
-  12:   On FOR to state 131
-  13:   On IF to state 132
-  14:   On TRY to state 133
-  15:   On CATCH to state 134
-  16:   On THROW to state 135
-  17:   On USING to state 136
-  18:   On TRUE to state 137
-  19:   On FALSE to state 138
-  20:   On SIZEOF to state 139
-  21:   On SIGNED to state 140
-  22:   On UNSIGNED to state 141
-  23:   On REGISTER to state 142
-  24:   On DELETE to state 175
-  25:   On RETURN to state 143
-  26:   On CONST to state 144
-  27:   On STATIC to state 145
-  28:   On VOLATILE to state 146
-  29:   On ASM to state 147
-  30:   On AUTO to state 148
-  31:   On '(' to state 149
-  32:   On '[' to state 150
-  33:   On '{' to state 151
-  34:   On STRING_LITERAL to state 152
-  35:   On CHARACTER_LITERAL to state 153
-  36:   On INTEGER_LITERAL to state 154
-  37:   On HEXADECIMAL_LITERAL to state 155
-  38:   On OCTAL_LITERAL to state 156
-  39:   On FLOAT_LITERAL to state 157
+  0:   On term to state 245
+  1:   On literal to state 121
+  2:   On identifier to state 122
+  3:   On PRIMITIVE to state 123
+  4:   On VOID to state 124
+  5:   On TYPE_NAME to state 125
+  6:   On CONSTRUCTOR_NAME to state 126
+  7:   On operand to state 127
+  8:   On SCOPE_OPERATOR to state 128
+  9:   On ASSIGNMENT_OPERATOR to state 129
+  10:   On EXPRESSION_OPERATOR to state 130
+  11:   On WHILE to state 131
+  12:   On FOR to state 132
+  13:   On IF to state 133
+  14:   On TRY to state 134
+  15:   On CATCH to state 135
+  16:   On THROW to state 136
+  17:   On USING to state 137
+  18:   On TRUE to state 138
+  19:   On FALSE to state 139
+  20:   On SIZEOF to state 140
+  21:   On SIGNED to state 141
+  22:   On UNSIGNED to state 142
+  23:   On REGISTER to state 143
+  24:   On DELETE to state 176
+  25:   On RETURN to state 144
+  26:   On CONST to state 145
+  27:   On STATIC to state 146
+  28:   On VOLATILE to state 147
+  29:   On ASM to state 148
+  30:   On AUTO to state 149
+  31:   On '(' to state 150
+  32:   On '[' to state 151
+  33:   On '{' to state 152
+  34:   On STRING_LITERAL to state 153
+  35:   On CHARACTER_LITERAL to state 154
+  36:   On INTEGER_LITERAL to state 155
+  37:   On HEXADECIMAL_LITERAL to state 156
+  38:   On OCTAL_LITERAL to state 157
+  39:   On FLOAT_LITERAL to state 158
   40:   On IDENTIFIER to state 58
-  41:   On '+' to state 158
-  42:   On '-' to state 159
-  43:   On '*' to state 160
-  44:   On '/' to state 161
-  45:   On '%' to state 162
-  46:   On '^' to state 163
-  47:   On '?' to state 164
-  48:   On ':' to state 165
-  49:   On '|' to state 166
-  50:   On '&' to state 167
-  51:   On '>' to state 168
-  52:   On '<' to state 169
-  53:   On '!' to state 170
-  54:   On '~' to state 171
+  41:   On '+' to state 159
+  42:   On '-' to state 160
+  43:   On '*' to state 161
+  44:   On '/' to state 162
+  45:   On '%' to state 163
+  46:   On '^' to state 164
+  47:   On '?' to state 165
+  48:   On ':' to state 166
+  49:   On '|' to state 167
+  50:   On '&' to state 168
+  51:   On '>' to state 169
+  52:   On '<' to state 170
+  53:   On '!' to state 171
+  54:   On '~' to state 172
   Reduce by 131: enumerator_definition -> enumerator '=' expression  . 
 
 
-State 326:
+State 327:
 85: base_specifier_list -> base_specifier_list ',' base_specifier  . 
   Reduce by 85: base_specifier_list -> base_specifier_list ',' base_specifier  . 
 
 
-State 327:
+State 328:
 89: base_specifier -> VIRTUAL access_specifier base_type_specifier  . 
   Reduce by 89: base_specifier -> VIRTUAL access_specifier base_type_specifier  . 
 
 
-State 328:
+State 329:
 90: base_specifier -> access_specifier VIRTUAL base_type_specifier  . 
   Reduce by 90: base_specifier -> access_specifier VIRTUAL base_type_specifier  . 
 
 
-State 329:
+State 330:
 149: mem_initializer -> mem_initializer_id '(' ignored_code ')'  . 
   Reduce by 149: mem_initializer -> mem_initializer_id '(' ignored_code ')'  . 
 
 
-State 330:
-155: handler -> CATCH '(' exception_declaration  . ')' compound_statement 
-  0:   On ')' to state 334
-
-
 State 331:
+155: handler -> CATCH '(' exception_declaration  . ')' compound_statement 
+  0:   On ')' to state 335
+
+
+State 332:
 156: exception_declaration -> type_specifier  . declarator 
-  0:   On declarator to state 335
+  0:   On declarator to state 336
   1:   On ptr_declarator to state 18
   2:   On noptr_declarator to state 23
   3:   On ptr_operator to state 24
@@ -4286,85 +4293,85 @@ State 331:
   17:   On '~' to state 59
 
 
-State 332:
+State 333:
 54: named_namespace_definition -> INLINE NAMESPACE identifier '{' declaration_seq '}'  . 
   Reduce by 54: named_namespace_definition -> INLINE NAMESPACE identifier '{' declaration_seq '}'  . 
 
 
-State 333:
+State 334:
 115: pure_specifier -> '='  . INTEGER_LITERAL 
 49: brace_or_equal_initializer -> '='  . initializer_clause 
-  0:   On INTEGER_LITERAL to state 321
-  1:   On initializer_clause to state 117
-  2:   On expression to state 118
-  3:   On term to state 119
-  4:   On literal to state 120
-  5:   On identifier to state 121
-  6:   On PRIMITIVE to state 122
-  7:   On VOID to state 123
-  8:   On TYPE_NAME to state 124
-  9:   On CONSTRUCTOR_NAME to state 125
-  10:   On operand to state 126
-  11:   On SCOPE_OPERATOR to state 127
-  12:   On ASSIGNMENT_OPERATOR to state 128
-  13:   On EXPRESSION_OPERATOR to state 129
-  14:   On WHILE to state 130
-  15:   On FOR to state 131
-  16:   On IF to state 132
-  17:   On TRY to state 133
-  18:   On CATCH to state 134
-  19:   On THROW to state 135
-  20:   On USING to state 136
-  21:   On TRUE to state 137
-  22:   On FALSE to state 138
-  23:   On SIZEOF to state 139
-  24:   On SIGNED to state 140
-  25:   On UNSIGNED to state 141
-  26:   On REGISTER to state 142
-  27:   On DELETE to state 175
-  28:   On RETURN to state 143
-  29:   On CONST to state 144
-  30:   On STATIC to state 145
-  31:   On VOLATILE to state 146
-  32:   On ASM to state 147
-  33:   On AUTO to state 148
-  34:   On '(' to state 149
-  35:   On '[' to state 150
-  36:   On '{' to state 151
-  37:   On STRING_LITERAL to state 152
-  38:   On CHARACTER_LITERAL to state 153
-  39:   On HEXADECIMAL_LITERAL to state 155
-  40:   On OCTAL_LITERAL to state 156
-  41:   On FLOAT_LITERAL to state 157
+  0:   On INTEGER_LITERAL to state 322
+  1:   On initializer_clause to state 118
+  2:   On expression to state 119
+  3:   On term to state 120
+  4:   On literal to state 121
+  5:   On identifier to state 122
+  6:   On PRIMITIVE to state 123
+  7:   On VOID to state 124
+  8:   On TYPE_NAME to state 125
+  9:   On CONSTRUCTOR_NAME to state 126
+  10:   On operand to state 127
+  11:   On SCOPE_OPERATOR to state 128
+  12:   On ASSIGNMENT_OPERATOR to state 129
+  13:   On EXPRESSION_OPERATOR to state 130
+  14:   On WHILE to state 131
+  15:   On FOR to state 132
+  16:   On IF to state 133
+  17:   On TRY to state 134
+  18:   On CATCH to state 135
+  19:   On THROW to state 136
+  20:   On USING to state 137
+  21:   On TRUE to state 138
+  22:   On FALSE to state 139
+  23:   On SIZEOF to state 140
+  24:   On SIGNED to state 141
+  25:   On UNSIGNED to state 142
+  26:   On REGISTER to state 143
+  27:   On DELETE to state 176
+  28:   On RETURN to state 144
+  29:   On CONST to state 145
+  30:   On STATIC to state 146
+  31:   On VOLATILE to state 147
+  32:   On ASM to state 148
+  33:   On AUTO to state 149
+  34:   On '(' to state 150
+  35:   On '[' to state 151
+  36:   On '{' to state 152
+  37:   On STRING_LITERAL to state 153
+  38:   On CHARACTER_LITERAL to state 154
+  39:   On HEXADECIMAL_LITERAL to state 156
+  40:   On OCTAL_LITERAL to state 157
+  41:   On FLOAT_LITERAL to state 158
   42:   On IDENTIFIER to state 58
-  43:   On '+' to state 158
-  44:   On '-' to state 159
-  45:   On '*' to state 160
-  46:   On '/' to state 161
-  47:   On '%' to state 162
-  48:   On '^' to state 163
-  49:   On '?' to state 164
-  50:   On ':' to state 165
-  51:   On '|' to state 166
-  52:   On '&' to state 167
-  53:   On '>' to state 168
-  54:   On '<' to state 169
-  55:   On '!' to state 170
-  56:   On '~' to state 171
-
-
-State 334:
-155: handler -> CATCH '(' exception_declaration ')'  . compound_statement 
-  0:   On compound_statement to state 336
-  1:   On '{' to state 67
+  43:   On '+' to state 159
+  44:   On '-' to state 160
+  45:   On '*' to state 161
+  46:   On '/' to state 162
+  47:   On '%' to state 163
+  48:   On '^' to state 164
+  49:   On '?' to state 165
+  50:   On ':' to state 166
+  51:   On '|' to state 167
+  52:   On '&' to state 168
+  53:   On '>' to state 169
+  54:   On '<' to state 170
+  55:   On '!' to state 171
+  56:   On '~' to state 172
 
 
 State 335:
+155: handler -> CATCH '(' exception_declaration ')'  . compound_statement 
+  0:   On compound_statement to state 337
+  1:   On '{' to state 67
+
+
+State 336:
 156: exception_declaration -> type_specifier declarator  . 
   Reduce by 156: exception_declaration -> type_specifier declarator  . 
 
 
-State 336:
+State 337:
 155: handler -> CATCH '(' exception_declaration ')' compound_statement  . 
   Reduce by 155: handler -> CATCH '(' exception_declaration ')' compound_statement  . 
 

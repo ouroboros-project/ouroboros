@@ -100,7 +100,7 @@ parameter_declaration:
 //;
 
 ptr_operator:
-  '*' { $$ = d_scanner.matched(); }
+  '*' cv_qualifier { $$ = d_scanner.matched(); }
 |
   '&' { $$ = d_scanner.matched(); }
 ;
