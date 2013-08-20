@@ -12,6 +12,7 @@ namespace opwig {
 namespace md {
 class Scope;
 class Namespace;
+class Class;
 }
 
 namespace gen {
@@ -51,6 +52,7 @@ class WrapperGenerator {
     
     void iterateAndWrapScope(const md::Ptr<const md::Scope>& scope);
     void handleNamespace(const md::Ptr<const md::Namespace>& nspace);
+    void handleClass(const md::Ptr<const md::Class>& the_class);
 };
 
 } // namespace gen

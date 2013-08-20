@@ -62,20 +62,20 @@ class WrapperSpecification {
         the module. You should write that here as well. */
     virtual std::string FinishFile() const = 0;
     
-    
-    /** These functions are called to wrap a specific kind of metadata.
-        They should return whatever code block is required to wrap such things.
-        Remember that to convert values between C++ and script you should use
-        the <>Converter class, defined by the ConverterProvider we use.
-        And also that using the <>Converter (constructor, methods, etc)  
-        depends on how you defined it in the ConverterProvider. */
+    /** These functions are called to wrap a specific kind of metadata. They should return whatever
+        code block is required to wrap such things. */
     
     virtual std::string WrapFunction(const md::Ptr<const md::Function>& obj) = 0;
     virtual std::string WrapVariable(const md::Ptr<const md::Variable>& obj) = 0;
-    virtual std::string WrapClass(const md::Ptr<const md::Class>& obj) = 0;
+    virtual std::string WrapEnum(const md::Ptr<const md::Enum>& obj) = 0;
+
+    /** These methods are called when the wrapper generator enters or leaves an inner scope (classes
+        and namespaces). */
+
+    virtual std::string OpenClass(const md::Ptr<const md::Class>& obj) = 0;
+    virtual std::string CloseClass(const md::Ptr<const md::Class>& obj) = 0;
     virtual std::string OpenNamespace(const md::Ptr<const md::Namespace>& obj) = 0;
     virtual std::string CloseNamespace(const md::Ptr<const md::Namespace>& obj) = 0;
-    virtual std::string WrapEnum(const md::Ptr<const md::Enum>& obj) = 0;
     
     /// Returns the signature of the load_func (initializing function) of the module.
     virtual std::string LoadFuncSignature() const = 0;

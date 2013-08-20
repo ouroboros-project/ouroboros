@@ -166,8 +166,18 @@ string PythonSpecification::WrapVariable(const Ptr<const md::Variable>& obj) {
     return func.str();
 }
 
-// WRAP CLASS
-string PythonSpecification::WrapClass(const Ptr<const md::Class>& obj) {
+// WRAP ENUM
+string PythonSpecification::WrapEnum(const Ptr<const md::Enum>& obj) {
+    return "";
+}
+
+// OPEN CLASS
+string PythonSpecification::OpenClass(const Ptr<const md::Class>& obj) {
+    return "";
+}
+
+// CLOSE CLASS
+string PythonSpecification::CloseClass(const Ptr<const md::Class>& obj) {
     return "";
 }
 
@@ -183,11 +193,6 @@ string PythonSpecification::OpenNamespace(const Ptr<const md::Namespace>& obj) {
 string PythonSpecification::CloseNamespace(const Ptr<const md::Namespace>& obj) {
     current_ = current_->parent();
     return "} //closing namespace "+obj->name()+"\n";
-}
-
-// WRAP ENUM
-string PythonSpecification::WrapEnum(const Ptr<const md::Enum>& obj) {
-    return "";
 }
 
 std::list<ScriptModule> PythonSpecification::GetGeneratedModules () const {

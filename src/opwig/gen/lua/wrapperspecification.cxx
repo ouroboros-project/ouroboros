@@ -225,7 +225,15 @@ string WrapperSpecification::WrapVariable (const md::Ptr<const md::Variable>& ob
     return code.str();
 }
 
-string WrapperSpecification::WrapClass (const md::Ptr<const md::Class>& obj) {
+string WrapperSpecification::WrapEnum (const md::Ptr<const md::Enum>& obj) {
+    return "";
+}
+
+string WrapperSpecification::OpenClass (const md::Ptr<const md::Class>& obj) {
+    return "";
+}
+
+string WrapperSpecification::CloseClass (const md::Ptr<const md::Class>& obj) {
     return "";
 }
 
@@ -256,10 +264,6 @@ string WrapperSpecification::CloseNamespace (const md::Ptr<const md::Namespace>&
     return
         string(open ? "} // namespace generated\n\n" : "")+
         "} // namespace "+obj->name()+"\n\n";
-}
-
-string WrapperSpecification::WrapEnum (const md::Ptr<const md::Enum>& obj) {
-    return "";
 }
 
 std::list<ScriptModule> WrapperSpecification::GetGeneratedModules () const {
