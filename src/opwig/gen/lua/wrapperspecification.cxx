@@ -56,6 +56,7 @@ string WrapperSpecification::MiddleBlock() const {
 
 string WrapperSpecification::FinishFile () const {
     string functions_wrap_code =
+        string(current_module()->open ? "} // generated\n" : "")+
         "namespace {\n\n"
         "// List of wrapped functions\n";
     for (auto module : modules_) {
@@ -224,40 +225,45 @@ string WrapperSpecification::WrapVariable (const md::Ptr<const md::Variable>& ob
     return code.str();
 }
 
-string WrapperSpecification::WrapClass (const md::Ptr<const md::Class>& obj) {
-    return "";
-}
-
-string WrapperSpecification::WrapNamespace (const md::Ptr<const md::Namespace>& obj, bool closing) {
-    bool open = current_module()->open;
-    if (!closing) {
-        if (open) current_module()->open = false;
-        Ptr<Module> new_module(new Module);
-
-        new_module->name = obj->name();
-        new_module->open = false;
-        new_module->parent = current_module();
-        for (auto module : module_stack_)
-          new_module->path += module->name+"_";
-
-        current_module()->children.push_back(new_module);
-        modules_.push_back(new_module);
-        module_stack_.push_back(new_module);
-
-        return
-            string(open ? "} // namespace generated\n\n" : "")+
-            "namespace "+new_module->name+" {\n";
-    } else {
-        module_stack_.pop_back();
-
-        return
-            string(open ? "} // namespace generated\n\n" : "")+
-            "} // namespace "+obj->name()+"\n\n";
-    }
-}
-
 string WrapperSpecification::WrapEnum (const md::Ptr<const md::Enum>& obj) {
     return "";
+}
+
+string WrapperSpecification::OpenClass (const md::Ptr<const md::Class>& obj) {
+    return "";
+}
+
+string WrapperSpecification::CloseClass (const md::Ptr<const md::Class>& obj) {
+    return "";
+}
+
+string WrapperSpecification::OpenNamespace (const md::Ptr<const md::Namespace>& obj) {
+    bool open = current_module()->open;
+    if (open) current_module()->open = false;
+    Ptr<Module> new_module(new Module);
+
+    new_module->name = obj->name();
+    new_module->open = false;
+    new_module->parent = current_module();
+    for (auto module : module_stack_)
+      new_module->path += module->name+"_";
+
+    current_module()->children.push_back(new_module);
+    modules_.push_back(new_module);
+    module_stack_.push_back(new_module);
+
+    return
+        string(open ? "} // namespace generated\n\n" : "")+
+        "namespace "+new_module->name+" {\n";
+}
+
+string WrapperSpecification::CloseNamespace (const md::Ptr<const md::Namespace>& obj) {
+    bool open = current_module()->open;
+    module_stack_.pop_back();
+
+    return
+        string(open ? "} // namespace generated\n\n" : "")+
+        "} // namespace "+obj->name()+"\n\n";
 }
 
 std::list<ScriptModule> WrapperSpecification::GetGeneratedModules () const {

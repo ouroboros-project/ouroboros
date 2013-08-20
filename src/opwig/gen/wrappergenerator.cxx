@@ -85,7 +85,7 @@ void WrapperGenerator::iterateAndWrapScope(const Ptr<const md::Scope>& scope) {
         wrap_file_ << spec_->WrapEnum(entry.second) << endl;
     }
     for (auto entry : scope->IterateClasses()) {
-        wrap_file_ << spec_->WrapClass(entry.second) << endl;
+        handleClass(entry.second);
     }
     for (auto entry : scope->IterateNamespaces()) {
         handleNamespace(entry.second);
@@ -93,9 +93,15 @@ void WrapperGenerator::iterateAndWrapScope(const Ptr<const md::Scope>& scope) {
 }
 
 void WrapperGenerator::handleNamespace(const Ptr<const md::Namespace>& nspace) {
-    wrap_file_ << spec_->WrapNamespace(nspace, false) << endl;
+    wrap_file_ << spec_->OpenNamespace(nspace) << endl;
     iterateAndWrapScope(nspace);
-    wrap_file_ << spec_->WrapNamespace(nspace, true) << endl;
+    wrap_file_ << spec_->CloseNamespace(nspace) << endl;
+}
+
+void WrapperGenerator::handleClass(const Ptr<const md::Class>& the_class) {
+    wrap_file_ << spec_->OpenClass(the_class) << endl;
+    iterateAndWrapScope(the_class);
+    wrap_file_ << spec_->CloseClass(the_class) << endl;
 }
 
 } //end namespace gen

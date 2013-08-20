@@ -1,6 +1,9 @@
 namespace opwig {
 namespace gen {
 
+using std::string;
+using std::list;
+
 /*******************************************************
  Dummy Wrapper definition for testing
 *******************************************************/
@@ -8,20 +11,20 @@ class DummySpecification : public WrapperSpecification {
   public:
     DummySpecification() {}
     virtual ~DummySpecification() {}
-    virtual std::string wrapper_name() const { return "Dummy"; }
+    virtual string wrapper_name() const { return "Dummy"; }
     
-    virtual std::string FileHeader() const {
+    virtual string FileHeader() const {
         return
             "// Source generated with OPWIG for scripting language DUMMY\n"
             "// -------------------------------------------------------------";
     }
-    virtual std::string MiddleBlock() const { return ""; }
-    virtual std::string FinishFile() const {
+    virtual string MiddleBlock() const { return ""; }
+    virtual string FinishFile() const {
         return
             "// -------------------------------------------------------------\n"
             "// finished file";
     }
-    virtual std::string WrapFunction(const md::Ptr<const md::Function>& obj) {
+    virtual string WrapFunction(const md::Ptr<const md::Function>& obj) {
         std::stringstream func;
         func << "RETURN_TYPE OPWIG_wrap_"+obj->name()+"(ARG_1_TYPE arg1) {" << std::endl;
         func << "    DummyConverter converter ();" << std::endl;
@@ -38,12 +41,15 @@ class DummySpecification : public WrapperSpecification {
         func << "}";
         return func.str();
     }
-    virtual std::string WrapVariable(const md::Ptr<const md::Variable>& obj) { return "VARIABLE:"+obj->name(); }
-    virtual std::string WrapClass(const md::Ptr<const md::Class>& obj) { return "CLASS:"+obj->name(); }
-    virtual std::string WrapNamespace(const md::Ptr<const md::Namespace>& obj, bool closing) { return "NAMESPACE:"+obj->name(); }
-    virtual std::string WrapEnum(const md::Ptr<const md::Enum>& obj) { return "ENUM:"+obj->name(); }
-    virtual std::string LoadFuncSignature() const { return "void(*)(void)"; }
-    virtual std::list<ScriptModule> GetGeneratedModules() const {return {{module_name_, "init_"+module_name_}}; }
+    virtual string WrapVariable(const md::Ptr<const md::Variable>& obj) { return "VARIABLE:"+obj->name(); }
+    virtual string WrapEnum(const md::Ptr<const md::Enum>& obj) { return "ENUM:"+obj->name(); }
+
+    virtual string OpenClass(const md::Ptr<const md::Class>& obj) { return "CLASS:"+obj->name(); }
+    virtual string CloseClass(const md::Ptr<const md::Class>& obj) { return "CLASS:"+obj->name(); }
+    virtual string OpenNamespace(const md::Ptr<const md::Namespace>& obj) { return "NAMESPACE:"+obj->name(); }
+    virtual string CloseNamespace(const md::Ptr<const md::Namespace>& obj) { return "NAMESPACE:"+obj->name(); }
+    virtual string LoadFuncSignature() const { return "void(*)(void)"; }
+    virtual list<ScriptModule> GetGeneratedModules() const {return {{module_name_, "init_"+module_name_}}; }
 };
  
 /*********************************************************/

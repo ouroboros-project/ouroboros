@@ -166,28 +166,33 @@ string PythonSpecification::WrapVariable(const Ptr<const md::Variable>& obj) {
     return func.str();
 }
 
-// WRAP CLASS
-string PythonSpecification::WrapClass(const Ptr<const md::Class>& obj) {
-    return "";
-}
-
-// WRAP NAMESPACE
-string PythonSpecification::WrapNamespace(const Ptr<const md::Namespace>& obj, bool closing) {
-    if (!closing) {
-        Ptr<WrapModule> newm = Ptr<WrapModule>(new WrapModule(obj->name(), current_));
-        current_->AddSubModule(newm);
-        current_ = newm;
-        return "namespace "+obj->name()+" { //entering namespace "+obj->name()+"\n";
-    }
-    else {
-        current_ = current_->parent();
-        return "} //closing namespace "+obj->name()+"\n";
-    }
-}
-
 // WRAP ENUM
 string PythonSpecification::WrapEnum(const Ptr<const md::Enum>& obj) {
     return "";
+}
+
+// OPEN CLASS
+string PythonSpecification::OpenClass(const Ptr<const md::Class>& obj) {
+    return "";
+}
+
+// CLOSE CLASS
+string PythonSpecification::CloseClass(const Ptr<const md::Class>& obj) {
+    return "";
+}
+
+// OPEN NAMESPACE
+string PythonSpecification::OpenNamespace(const Ptr<const md::Namespace>& obj) {
+    Ptr<WrapModule> newm = Ptr<WrapModule>(new WrapModule(obj->name(), current_));
+    current_->AddSubModule(newm);
+    current_ = newm;
+    return "namespace "+obj->name()+" { //entering namespace "+obj->name()+"\n";
+}
+
+// CLOSE NAMESPACE
+string PythonSpecification::CloseNamespace(const Ptr<const md::Namespace>& obj) {
+    current_ = current_->parent();
+    return "} //closing namespace "+obj->name()+"\n";
 }
 
 std::list<ScriptModule> PythonSpecification::GetGeneratedModules () const {
