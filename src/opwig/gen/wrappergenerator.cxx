@@ -93,9 +93,9 @@ void WrapperGenerator::iterateAndWrapScope(const Ptr<const md::Scope>& scope) {
 }
 
 void WrapperGenerator::handleNamespace(const Ptr<const md::Namespace>& nspace) {
-    wrap_file_ << spec_->WrapNamespace(nspace, false) << endl;
+    wrap_file_ << spec_->OpenNamespace(nspace) << endl;
     iterateAndWrapScope(nspace);
-    wrap_file_ << spec_->WrapNamespace(nspace, true) << endl;
+    wrap_file_ << spec_->CloseNamespace(nspace) << endl;
 }
 
 } //end namespace gen

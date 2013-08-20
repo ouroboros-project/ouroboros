@@ -171,18 +171,18 @@ string PythonSpecification::WrapClass(const Ptr<const md::Class>& obj) {
     return "";
 }
 
-// WRAP NAMESPACE
-string PythonSpecification::WrapNamespace(const Ptr<const md::Namespace>& obj, bool closing) {
-    if (!closing) {
-        Ptr<WrapModule> newm = Ptr<WrapModule>(new WrapModule(obj->name(), current_));
-        current_->AddSubModule(newm);
-        current_ = newm;
-        return "namespace "+obj->name()+" { //entering namespace "+obj->name()+"\n";
-    }
-    else {
-        current_ = current_->parent();
-        return "} //closing namespace "+obj->name()+"\n";
-    }
+// OPEN NAMESPACE
+string PythonSpecification::OpenNamespace(const Ptr<const md::Namespace>& obj) {
+    Ptr<WrapModule> newm = Ptr<WrapModule>(new WrapModule(obj->name(), current_));
+    current_->AddSubModule(newm);
+    current_ = newm;
+    return "namespace "+obj->name()+" { //entering namespace "+obj->name()+"\n";
+}
+
+// CLOSE NAMESPACE
+string PythonSpecification::CloseNamespace(const Ptr<const md::Namespace>& obj) {
+    current_ = current_->parent();
+    return "} //closing namespace "+obj->name()+"\n";
 }
 
 // WRAP ENUM

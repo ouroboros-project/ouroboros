@@ -21,6 +21,9 @@ set (
 find_package (PythonLibs 2.6)
 include_directories (${PYTHON_INCLUDE_DIRS})
 
+find_package (Lua51)
+include_directories (${LUA_INCLUDE_DIR})
+
 add_custom_command (
   OUTPUT ${MILESTONE_00_GENERATED_SRC}
   COMMAND opwig
