@@ -17,12 +17,12 @@ using md::Ptr;
 WrapperSpecification::WrapperSpecification () {
     Ptr<ModuleWrap> root(new ModuleWrap);
     modules_.push_back(root);
-    module_stack_.push_back(root);
+    manager_.PushModule(root);
 }
 
 string WrapperSpecification::FileHeader () const {
-    current_module()->name = module_name_;
-    current_module()->open = false;
+    manager_.current_module()->name = module_name_;
+    manager_.current_module()->open = false;
     return
         "\n"
         "// This is a generated file.\n\n";
@@ -56,7 +56,7 @@ string WrapperSpecification::MiddleBlock() const {
 
 string WrapperSpecification::FinishFile () const {
     string functions_wrap_code =
-        string(current_module()->open ? "} // generated\n" : "")+
+        string(manager_.current_module()->open ? "} // generated\n" : "")+
         "namespace {\n\n"
         "// List of wrapped functions\n";
     for (auto module : modules_) {
@@ -129,7 +129,7 @@ string WrapperSpecification::FinishFile () const {
 }
 
 string WrapperSpecification::WrapFunction (const md::Ptr<const md::Function>& obj) {
-    current_module()->functions.push_back({obj->name(), DumpNamespaceNesting()+"generated::"});
+    manager_.current_module()->functions.push_back({obj->name(), DumpNamespaceNesting()+"generated::"});
     stringstream func_code, args_code, call_code;
     size_t       num_params = obj->num_parameters();
     CheckAndOpenNamespace(func_code);
@@ -192,7 +192,7 @@ string WrapperSpecification::WrapFunction (const md::Ptr<const md::Function>& ob
 }
 
 string WrapperSpecification::WrapVariable (const md::Ptr<const md::Variable>& obj) {
-    current_module()->getters.push_back({obj->name(), DumpNamespaceNesting()+"generated::"});
+    manager_.current_module()->getters.push_back({obj->name(), DumpNamespaceNesting()+"generated::"});
     stringstream code;
     const string type = obj->type()->full_type();
     CheckAndOpenNamespace(code);
@@ -203,7 +203,7 @@ string WrapperSpecification::WrapVariable (const md::Ptr<const md::Variable>& ob
           << "    return 1;\n"
           << "}\n\n";
     if (!obj->type()->is_const()) {
-        current_module()->setters.push_back({obj->name(), DumpNamespaceNesting()+"generated::"});
+        manager_.current_module()->setters.push_back({obj->name(), DumpNamespaceNesting()+"generated::"});
         code
           << "int " << GetWrapName("setter", obj->name()) << " (lua_State* L) {\n"
           << "    opa::lua::Converter convert(L);\n"
@@ -238,19 +238,18 @@ string WrapperSpecification::CloseClass (const md::Ptr<const md::Class>& obj) {
 }
 
 string WrapperSpecification::OpenNamespace (const md::Ptr<const md::Namespace>& obj) {
-    bool open = current_module()->open;
-    if (open) current_module()->open = false;
+    bool open = manager_.current_module()->open;
+    if (open) manager_.current_module()->open = false;
     Ptr<ModuleWrap> new_module(new ModuleWrap);
 
     new_module->name = obj->name();
     new_module->open = false;
-    new_module->parent = current_module();
-    for (auto module : module_stack_)
-      new_module->path += module->name+"_";
+    new_module->parent = manager_.current_module();
+    new_module->path = manager_.StackAsString("_");
 
-    current_module()->children.push_back(new_module);
+    manager_.current_module()->children.push_back(new_module);
     modules_.push_back(new_module);
-    module_stack_.push_back(new_module);
+    manager_.PushModule(new_module);
 
     return
         string(open ? "} // namespace generated\n\n" : "")+
@@ -258,8 +257,8 @@ string WrapperSpecification::OpenNamespace (const md::Ptr<const md::Namespace>& 
 }
 
 string WrapperSpecification::CloseNamespace (const md::Ptr<const md::Namespace>& obj) {
-    bool open = current_module()->open;
-    module_stack_.pop_back();
+    bool open = manager_.current_module()->open;
+    manager_.PopModule();
 
     return
         string(open ? "} // namespace generated\n\n" : "")+
@@ -278,14 +277,7 @@ std::list<ScriptModule> WrapperSpecification::GetGeneratedModules () const {
 }
 
 string WrapperSpecification::DumpNamespaceNesting () const {
-    string dump;
-    bool skip = true;
-    for (auto module : module_stack_)
-        if (skip)
-          skip = false;
-        else
-          dump += module->name+"::";
-    return dump;
+    return manager_.StackAsString("::", 1);
 }
 
 } // namespace lua
