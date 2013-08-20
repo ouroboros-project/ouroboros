@@ -13,7 +13,7 @@ class Sender {
     bool break_line;
 
     /// Constructor.
-    Sender(const char *const THE_TALKER_NAME = "Bob Singer");
+    Sender();
     
     /// Prints prompt output.
     void send_message (const char* str);

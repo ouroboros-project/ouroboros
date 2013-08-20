@@ -9,8 +9,8 @@ namespace out {
 using std::cout;
 using std::endl;
 
-Sender::Sender (const char *const THE_TALKER_NAME)
-    : break_line(true), TALKER_NAME(THE_TALKER_NAME) {}
+Sender::Sender ()
+    : break_line(true), TALKER_NAME("Bob Singer") {}
 
 void Sender::send_message (const char* str) {
     if (break_line)
