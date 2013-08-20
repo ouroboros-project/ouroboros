@@ -4,6 +4,7 @@
 
 #include <opwig/gen/wrapperspecification.h>
 #include <opwig/gen/lua/wraps.h>
+#include <opwig/gen/lua/wrapperstate.h>
 #include <opwig/md/ptr.h>
 #include <list>
 #include <string>
@@ -40,7 +41,7 @@ class WrapperSpecification final : public ::opwig::gen::WrapperSpecification {
   private:
 
     std::list<md::Ptr<ModuleWrap>>  modules_;
-    WrapsManager                    manager_;
+    WrapperState                    manager_;
 
     std::string DumpNamespaceNesting () const;
 
