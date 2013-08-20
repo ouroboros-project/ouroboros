@@ -11,7 +11,7 @@ using std::string;
 using std::stringstream;
 using std::list;
 
-string WrapList (const md::Ptr<Module>& module, WrappedMember member, const string& type) {
+string WrapList (const md::Ptr<ModuleWrap>& module, WrappedMember member, const string& type) {
     const auto& wraps = (*module).*member;
     stringstream code;
     code  << "luaL_Reg "<< module->path+module->name << "_" << type << "s[] = {\n";

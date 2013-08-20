@@ -39,12 +39,12 @@ class WrapperSpecification final : public ::opwig::gen::WrapperSpecification {
     
   private:
 
-    std::list<md::Ptr<Module>>  modules_;
-    std::list<md::Ptr<Module>>  module_stack_;
+    std::list<md::Ptr<ModuleWrap>>  modules_;
+    std::list<md::Ptr<ModuleWrap>>  module_stack_;
 
     std::string DumpNamespaceNesting () const;
 
-    md::Ptr<Module> current_module () const;
+    md::Ptr<ModuleWrap> current_module () const;
 
     void CheckAndOpenNamespace (std::ostream& output);
 
@@ -58,7 +58,7 @@ inline std::string WrapperSpecification::LoadFuncSignature () const {
     return "int(*)(lua_State*)";
 }
 
-inline md::Ptr<Module> WrapperSpecification::current_module () const {
+inline md::Ptr<ModuleWrap> WrapperSpecification::current_module () const {
     return module_stack_.back();
 }
 

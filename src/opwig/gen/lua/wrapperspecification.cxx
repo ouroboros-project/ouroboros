@@ -15,7 +15,7 @@ using std::stringstream;
 using md::Ptr;
 
 WrapperSpecification::WrapperSpecification () {
-    Ptr<Module> root(new Module);
+    Ptr<ModuleWrap> root(new ModuleWrap);
     modules_.push_back(root);
     module_stack_.push_back(root);
 }
@@ -60,9 +60,9 @@ string WrapperSpecification::FinishFile () const {
         "namespace {\n\n"
         "// List of wrapped functions\n";
     for (auto module : modules_) {
-        functions_wrap_code += WrapList(module, &Module::functions, "function");
-        functions_wrap_code += WrapList(module, &Module::getters, "getter");
-        functions_wrap_code += WrapList(module, &Module::setters, "setter");
+        functions_wrap_code += WrapList(module, &ModuleWrap::functions, "function");
+        functions_wrap_code += WrapList(module, &ModuleWrap::getters, "getter");
+        functions_wrap_code += WrapList(module, &ModuleWrap::setters, "setter");
     }
     functions_wrap_code +=
         Utilities()+
@@ -240,7 +240,7 @@ string WrapperSpecification::CloseClass (const md::Ptr<const md::Class>& obj) {
 string WrapperSpecification::OpenNamespace (const md::Ptr<const md::Namespace>& obj) {
     bool open = current_module()->open;
     if (open) current_module()->open = false;
-    Ptr<Module> new_module(new Module);
+    Ptr<ModuleWrap> new_module(new ModuleWrap);
 
     new_module->name = obj->name();
     new_module->open = false;
