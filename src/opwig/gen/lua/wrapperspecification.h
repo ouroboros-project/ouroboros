@@ -41,7 +41,7 @@ class WrapperSpecification final : public ::opwig::gen::WrapperSpecification {
   private:
 
     std::list<md::Ptr<ModuleWrap>>  modules_;
-    WrapperState                    manager_;
+    WrapperState                    state_;
 
     std::string DumpNamespaceNesting () const;
 
@@ -58,9 +58,9 @@ inline std::string WrapperSpecification::LoadFuncSignature () const {
 }
 
 inline void WrapperSpecification::CheckAndOpenNamespace (std::ostream& output) {
-    if (!manager_.current_module()->open) {
+    if (!state_.current_module()->open) {
         output << "namespace generated {\n\n";
-        manager_.current_module()->open = true;
+        state_.current_module()->open = true;
     }
 }
 

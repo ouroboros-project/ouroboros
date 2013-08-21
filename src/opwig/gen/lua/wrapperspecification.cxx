@@ -13,16 +13,17 @@ namespace lua {
 using std::string;
 using std::stringstream;
 using md::Ptr;
+using md::Namespace;
 
 WrapperSpecification::WrapperSpecification () {
     Ptr<ModuleWrap> root(new ModuleWrap);
     modules_.push_back(root);
-    manager_.PushModule(root);
+    state_.PushModule(root);
 }
 
 string WrapperSpecification::FileHeader () const {
-    manager_.current_module()->name = module_name_;
-    manager_.current_module()->open = false;
+    state_.current_module()->name = module_name_;
+    state_.current_module()->open = false;
     return
         "\n"
         "// This is a generated file.\n\n";
@@ -54,9 +55,19 @@ string WrapperSpecification::MiddleBlock() const {
         "} // unnamed namespace\n\n";
 }
 
+namespace {
+
+string CheckAndCloseNamespace (const Ptr<const Namespace>& obj, bool open) {
+    return
+        string(open ? "} // namespace generated\n\n" : "")+
+        string(obj ? "} // namespace "+obj->name()+"\n\n": "");
+}
+
+} // unnamed namespace
+
 string WrapperSpecification::FinishFile () const {
     string functions_wrap_code =
-        string(manager_.current_module()->open ? "} // generated\n" : "")+
+        CheckAndCloseNamespace(Ptr<const Namespace>(), state_.current_module()->open)+
         "namespace {\n\n"
         "// List of wrapped functions\n";
     for (auto module : modules_) {
@@ -129,7 +140,7 @@ string WrapperSpecification::FinishFile () const {
 }
 
 string WrapperSpecification::WrapFunction (const md::Ptr<const md::Function>& obj) {
-    manager_.current_module()->functions.push_back({obj->name(), DumpNamespaceNesting()+"generated::"});
+    state_.current_module()->functions.push_back({obj->name(), DumpNamespaceNesting()+"generated::"});
     stringstream func_code, args_code, call_code;
     size_t       num_params = obj->num_parameters();
     CheckAndOpenNamespace(func_code);
@@ -192,7 +203,7 @@ string WrapperSpecification::WrapFunction (const md::Ptr<const md::Function>& ob
 }
 
 string WrapperSpecification::WrapVariable (const md::Ptr<const md::Variable>& obj) {
-    manager_.current_module()->getters.push_back({obj->name(), DumpNamespaceNesting()+"generated::"});
+    state_.current_module()->getters.push_back({obj->name(), DumpNamespaceNesting()+"generated::"});
     stringstream code;
     const string type = obj->type()->full_type();
     CheckAndOpenNamespace(code);
@@ -203,7 +214,7 @@ string WrapperSpecification::WrapVariable (const md::Ptr<const md::Variable>& ob
           << "    return 1;\n"
           << "}\n\n";
     if (!obj->type()->is_const()) {
-        manager_.current_module()->setters.push_back({obj->name(), DumpNamespaceNesting()+"generated::"});
+        state_.current_module()->setters.push_back({obj->name(), DumpNamespaceNesting()+"generated::"});
         code
           << "int " << GetWrapName("setter", obj->name()) << " (lua_State* L) {\n"
           << "    opa::lua::Converter convert(L);\n"
@@ -237,32 +248,31 @@ string WrapperSpecification::CloseClass (const md::Ptr<const md::Class>& obj) {
     return "";
 }
 
-string WrapperSpecification::OpenNamespace (const md::Ptr<const md::Namespace>& obj) {
-    bool open = manager_.current_module()->open;
-    if (open) manager_.current_module()->open = false;
+string WrapperSpecification::OpenNamespace (const Ptr<const Namespace>& obj) {
+    bool open = state_.current_module()->open;
+    if (open) state_.current_module()->open = false;
     Ptr<ModuleWrap> new_module(new ModuleWrap);
 
     new_module->name = obj->name();
     new_module->open = false;
-    new_module->parent = manager_.current_module();
-    new_module->path = manager_.StackAsString("_");
+    new_module->parent = state_.current_module();
+    new_module->path = state_.StackAsString("_");
 
-    manager_.current_module()->children.push_back(new_module);
+    state_.current_module()->children.push_back(new_module);
     modules_.push_back(new_module);
-    manager_.PushModule(new_module);
+    state_.PushModule(new_module);
 
     return
         string(open ? "} // namespace generated\n\n" : "")+
         "namespace "+new_module->name+" {\n";
 }
 
-string WrapperSpecification::CloseNamespace (const md::Ptr<const md::Namespace>& obj) {
-    bool open = manager_.current_module()->open;
-    manager_.PopModule();
+string WrapperSpecification::CloseNamespace (const Ptr<const Namespace>& obj) {
+    bool open = state_.current_module()->open;
+    state_.PopModule();
 
     return
-        string(open ? "} // namespace generated\n\n" : "")+
-        "} // namespace "+obj->name()+"\n\n";
+        CheckAndCloseNamespace(obj, open);
 }
 
 std::list<ScriptModule> WrapperSpecification::GetGeneratedModules () const {
@@ -277,7 +287,7 @@ std::list<ScriptModule> WrapperSpecification::GetGeneratedModules () const {
 }
 
 string WrapperSpecification::DumpNamespaceNesting () const {
-    return manager_.StackAsString("::", 1);
+    return state_.StackAsString("::", 1);
 }
 
 } // namespace lua
