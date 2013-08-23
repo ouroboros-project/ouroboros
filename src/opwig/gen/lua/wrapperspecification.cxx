@@ -15,15 +15,12 @@ using std::stringstream;
 using md::Ptr;
 using md::Namespace;
 
-WrapperSpecification::WrapperSpecification () {
-    Ptr<ModuleWrap> root(new ModuleWrap);
-    modules_.push_back(root);
-    state_.PushModule(root);
+WrapperSpecification::WrapperSpecification (const string& the_module_name)
+    : state_(the_module_name) {
+    modules_.push_back(state_.current_module());
 }
 
 string WrapperSpecification::FileHeader () const {
-    state_.current_module()->name = module_name_;
-    state_.current_module()->open = false;
     return
         "\n"
         "// This is a generated file.\n\n";
@@ -249,22 +246,11 @@ string WrapperSpecification::CloseClass (const md::Ptr<const md::Class>& obj) {
 }
 
 string WrapperSpecification::OpenNamespace (const Ptr<const Namespace>& obj) {
-    bool open = state_.current_module()->open;
-    if (open) state_.current_module()->open = false;
-    Ptr<ModuleWrap> new_module(new ModuleWrap);
+    stringstream code;
+    code << state_.PushModule(obj->name());
+    modules_.push_back(state_.current_module());
 
-    new_module->name = obj->name();
-    new_module->open = false;
-    new_module->parent = state_.current_module();
-    new_module->path = state_.StackAsString("_");
-
-    state_.current_module()->children.push_back(new_module);
-    modules_.push_back(new_module);
-    state_.PushModule(new_module);
-
-    return
-        string(open ? "} // namespace generated\n\n" : "")+
-        "namespace "+new_module->name+" {\n";
+    return code.str();
 }
 
 string WrapperSpecification::CloseNamespace (const Ptr<const Namespace>& obj) {

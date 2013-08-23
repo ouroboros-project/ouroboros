@@ -18,7 +18,7 @@ class WrapperSpecification final : public ::opwig::gen::WrapperSpecification {
 
   public:
 
-    WrapperSpecification ();
+    WrapperSpecification (const std::string& the_module_name);
 
     std::string wrapper_name () const;
 
