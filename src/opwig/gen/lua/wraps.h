@@ -17,13 +17,12 @@ struct DataWrap {
     std::string nesting;
 };
 
-struct ModuleWrap : public opa::utils::Uncopyable {
+struct ModuleWrap : public opa::utils::Uncopyable, std::enable_shared_from_this<ModuleWrap> {
 
     std::string                     name, path;
     std::list<DataWrap>             functions;
     std::list<DataWrap>             getters;
     std::list<DataWrap>             setters;
-    md::WeakPtr<ModuleWrap>         parent;
 
     /// Tells if the module has any wraps in it.
     /** @return bool Whether there are any wrap.
@@ -37,9 +36,14 @@ struct ModuleWrap : public opa::utils::Uncopyable {
 
     /// Gives a read-only access to the module's submodules.
     /** @return const std::list<md::Ptr<ModuleWrap>>&
-     **         A read-only reference to the list of submodules.
+     **         A read-only reference to the list of child modules.
      */
     const std::list<md::Ptr<ModuleWrap>>& children () const;
+
+    /// Gives the module's supermodule.
+    /** @return md::Ptr<ModuleWrap> The parent module.
+     */
+    md::Ptr<ModuleWrap> parent () const;
 
     /// Adds a submodule to the module.
     /** @param the_child The new child module.
@@ -51,6 +55,7 @@ struct ModuleWrap : public opa::utils::Uncopyable {
     friend class WrapperState;
 
     std::list<md::Ptr<ModuleWrap>>  children_;
+    md::WeakPtr<ModuleWrap>         parent_;
 
     ModuleWrap () {}
 
@@ -68,8 +73,13 @@ inline const std::list<md::Ptr<ModuleWrap>>& ModuleWrap::children () const {
     return children_;
 }
 
+inline md::Ptr<ModuleWrap> ModuleWrap::parent () const {
+    return parent_.lock();
+}
+
 inline void ModuleWrap::AddChild (const md::Ptr<ModuleWrap>& the_child) {
     children_.push_back(the_child);
+    the_child->parent_ = shared_from_this();
 }
 
 } // namespace lua

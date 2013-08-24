@@ -33,7 +33,6 @@ string WrapperState::PushModule (const string& module_name) {
     Ptr<ModuleWrap> new_module(new ModuleWrap);
 
     new_module->name = module_name;
-    new_module->parent = current_module();
     new_module->path = StackAsString("_");
 
     current_module()->AddChild(new_module);

@@ -84,7 +84,7 @@ string WrapperSpecification::FinishFile () const {
             "int luaopen_"+module->path+module->name+" (lua_State *L);\n\n";
     for (auto module : modules_) {
         string nesting_modules;
-        for (auto parent = module->parent.lock(); parent; parent = parent->parent.lock())
+        for (auto parent = module->parent(); parent; parent = parent->parent())
             nesting_modules =
                 "        OPWIG_Lua_MakeParentModule(L, \""+parent->name+"\");\n"
                 + nesting_modules;
@@ -265,7 +265,7 @@ std::list<ScriptModule> WrapperSpecification::GetGeneratedModules () const {
     std::list<ScriptModule> the_list;
     for (auto module : modules_) {
         string modname = module->name;
-        for (auto parent = module->parent.lock(); parent; parent = parent->parent.lock())
+        for (auto parent = module->parent(); parent; parent = parent->parent())
           modname = parent->name+"."+modname;
         the_list.push_back(ScriptModule(modname, "luaopen_"+module->path+module->name));
     }
