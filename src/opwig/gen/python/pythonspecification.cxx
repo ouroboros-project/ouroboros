@@ -173,12 +173,12 @@ string PythonSpecification::WrapEnum(const Ptr<const md::Enum>& obj) {
 
 // OPEN CLASS
 string PythonSpecification::OpenClass(const Ptr<const md::Class>& obj) {
-    return "";
+    return "namespace "+obj->name()+" { //entering CLASS namespace "+obj->name()+"\n";
 }
 
 // CLOSE CLASS
 string PythonSpecification::CloseClass(const Ptr<const md::Class>& obj) {
-    return "";
+    return "} //closing CLASS namespace "+obj->name()+"\n";
 }
 
 // OPEN NAMESPACE
