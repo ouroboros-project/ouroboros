@@ -23,33 +23,53 @@ struct ModuleWrap : public opa::utils::Uncopyable {
     std::list<DataWrap>             functions;
     std::list<DataWrap>             getters;
     std::list<DataWrap>             setters;
-    std::list<md::Ptr<ModuleWrap>>  children;
     md::WeakPtr<ModuleWrap>         parent;
 
     /// Tells if the module has any wraps in it.
-    /** @return bool Whether there are any wraps in the module.
+    /** @return bool Whether there are any wrap.
      */
     bool has_wraps () const;
 
     /// Tells if the module has any sub-modules in it.
-    /** @return Whether there are children modules in the module.
+    /** @return Whether there are children modules.
      */
     bool has_children () const;
 
+    /// Gives a read-only access to the module's submodules.
+    /** @return const std::list<md::Ptr<ModuleWrap>>&
+     **         A read-only reference to the list of submodules.
+     */
+    const std::list<md::Ptr<ModuleWrap>>& children () const;
+
+    /// Adds a submodule to the module.
+    /** @param the_child The new child module.
+     */
+    void AddChild (const md::Ptr<ModuleWrap>& the_child);
+
   private:
 
-    ModuleWrap () {}
-
     friend class WrapperState;
+
+    std::list<md::Ptr<ModuleWrap>>  children_;
+
+    ModuleWrap () {}
 
 };
 
 inline bool ModuleWrap::has_wraps () const {
-  return !functions.empty() || !getters.empty() || !setters.empty();
+    return !functions.empty() || !getters.empty() || !setters.empty();
 }
 
 inline bool ModuleWrap::has_children () const {
-  return !children.empty();
+    return !children_.empty();
+}
+
+inline const std::list<md::Ptr<ModuleWrap>>& ModuleWrap::children () const {
+    return children_;
+}
+
+inline void ModuleWrap::AddChild (const md::Ptr<ModuleWrap>& the_child) {
+    children_.push_back(the_child);
 }
 
 } // namespace lua

@@ -111,7 +111,7 @@ string WrapperSpecification::FinishFile () const {
             "    // Register module's funcitons.\n"
             "    luaL_register(L, NULL, "+module->path+module->name+"_functions);\n"
             "    // Register module's submodules.\n";
-        for (auto submodule : module->children) {
+        for (auto submodule : module->children()) {
             init_functions_code +=
                 "    OPWIG_Lua_ExportSubmodule("
                          "L, "

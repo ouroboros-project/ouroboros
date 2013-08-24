@@ -36,7 +36,7 @@ string WrapperState::PushModule (const string& module_name) {
     new_module->parent = current_module();
     new_module->path = StackAsString("_");
 
-    current_module()->children.push_back(new_module);
+    current_module()->AddChild(new_module);
     PushModule(new_module);
     return
         string(open ? "} // namespace generated\n\n" : "")+
