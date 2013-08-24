@@ -103,7 +103,7 @@ string Utilities () {
         "    // Stack: []\n"
         "    return 0;\n"
         "}\n\n"
-        "/// [0,0,-]\n"
+        "/// [-1,+1,-]\n"
         "void OPWIG_Lua_PrepareMetatable (State& L, luaL_Reg getters[], luaL_Reg setters[]) {\n"
         "    // Stack: [module]\n"
         "    L.newtable();\n"

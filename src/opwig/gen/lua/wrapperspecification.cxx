@@ -108,7 +108,7 @@ string WrapperSpecification::FinishFile () const {
             "    // Leave only the module table in the stack\n"
             "    L.remove(1);\n"
             "    L.settop(1);\n"
-            "    // Register module's funcitons.\n"
+            "    // Register module's functions.\n"
             "    luaL_register(L, NULL, "+module->path+module->name+"_functions);\n"
             "    // Register module's submodules.\n";
         for (auto submodule : module->children()) {
@@ -246,11 +246,14 @@ string WrapperSpecification::CloseClass (const md::Ptr<const md::Class>& obj) {
 }
 
 string WrapperSpecification::OpenNamespace (const Ptr<const Namespace>& obj) {
-    stringstream code;
-    code << state_.PushModule(obj->name());
+    stringstream  code;
+    bool          open = state_.current_module()->has_wraps();
+    state_.PushModule(obj->name());
     modules_.push_back(state_.current_module());
 
-    return code.str();
+    return
+        string(open ? "} // namespace generated\n\n" : "")+
+        "namespace "+obj->name()+" {\n";
 }
 
 string WrapperSpecification::CloseNamespace (const Ptr<const Namespace>& obj) {
