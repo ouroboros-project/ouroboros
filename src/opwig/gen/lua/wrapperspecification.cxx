@@ -64,7 +64,7 @@ string CheckAndCloseNamespace (const Ptr<const Namespace>& obj, bool open) {
 
 string WrapperSpecification::FinishFile () const {
     string functions_wrap_code =
-        CheckAndCloseNamespace(Ptr<const Namespace>(), state_.current_module()->open)+
+        CheckAndCloseNamespace(Ptr<const Namespace>(), state_.current_module()->has_wraps())+
         "namespace {\n\n"
         "// List of wrapped functions\n";
     for (auto module : modules_) {
@@ -137,10 +137,10 @@ string WrapperSpecification::FinishFile () const {
 }
 
 string WrapperSpecification::WrapFunction (const md::Ptr<const md::Function>& obj) {
-    state_.current_module()->functions.push_back({obj->name(), DumpNamespaceNesting()+"generated::"});
     stringstream func_code, args_code, call_code;
     size_t       num_params = obj->num_parameters();
     CheckAndOpenNamespace(func_code);
+    state_.current_module()->functions.push_back({obj->name(), DumpNamespaceNesting()+"generated::"});
     func_code << "int " << GetWrapName("function", obj->name()) << " (lua_State* L) {\n";
     if (num_params > 0)
         func_code
@@ -200,10 +200,10 @@ string WrapperSpecification::WrapFunction (const md::Ptr<const md::Function>& ob
 }
 
 string WrapperSpecification::WrapVariable (const md::Ptr<const md::Variable>& obj) {
-    state_.current_module()->getters.push_back({obj->name(), DumpNamespaceNesting()+"generated::"});
     stringstream code;
     const string type = obj->type()->full_type();
     CheckAndOpenNamespace(code);
+    state_.current_module()->getters.push_back({obj->name(), DumpNamespaceNesting()+"generated::"});
     code  << "int " << GetWrapName("getter", obj->name()) << " (lua_State* L) {\n"
           << "    opa::lua::Converter convert(L);\n"
           << "    convert.TypeToScript<" << type << ">(" << obj->name()
@@ -254,11 +254,11 @@ string WrapperSpecification::OpenNamespace (const Ptr<const Namespace>& obj) {
 }
 
 string WrapperSpecification::CloseNamespace (const Ptr<const Namespace>& obj) {
-    bool open = state_.current_module()->open;
+    bool open = !state_.current_module()->has_children() && state_.current_module()->has_wraps();
     state_.PopModule();
 
     return
-        CheckAndCloseNamespace(obj, open);
+        CheckAndCloseNamespace(obj,  open);
 }
 
 std::list<ScriptModule> WrapperSpecification::GetGeneratedModules () const {

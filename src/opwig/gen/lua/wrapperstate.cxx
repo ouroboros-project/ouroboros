@@ -13,7 +13,6 @@ using md::Ptr;
 WrapperState::WrapperState (const string& the_module_name) {
     Ptr<ModuleWrap> root(new ModuleWrap);
     root->name = the_module_name;
-    root->open = false;
     PushModule(root);
 }
 
@@ -30,12 +29,10 @@ string WrapperState::StackAsString (const string& sep, size_t skip) const {
 }
 
 string WrapperState::PushModule (const string& module_name) {
-    bool open = current_module()->open;
-    if (open) current_module()->open = false;
+    bool open = current_module()->has_wraps();
     Ptr<ModuleWrap> new_module(new ModuleWrap);
 
     new_module->name = module_name;
-    new_module->open = false;
     new_module->parent = current_module();
     new_module->path = StackAsString("_");
 

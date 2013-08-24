@@ -58,10 +58,8 @@ inline std::string WrapperSpecification::LoadFuncSignature () const {
 }
 
 inline void WrapperSpecification::CheckAndOpenNamespace (std::ostream& output) {
-    if (!state_.current_module()->open) {
+    if (!state_.current_module()->has_wraps())
         output << "namespace generated {\n\n";
-        state_.current_module()->open = true;
-    }
 }
 
 } // namespace lua
