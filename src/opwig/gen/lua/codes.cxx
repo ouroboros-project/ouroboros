@@ -177,7 +177,11 @@ string Utilities () {
         "    // Leave only the module table in the stack.\n"
         "    L.settop(1);\n"
         "    // Stack: [module]\n"
-        "}\n\n";
+        "}\n\n"
+        "/// [-(1|0),+1,-]\n"
+        "void OPWIG_Lua_PrepareModule (State& L, const ModuleInfo& info) {\n"
+        "}\n\n"
+        ;
 }
 
 } // namespace lua
