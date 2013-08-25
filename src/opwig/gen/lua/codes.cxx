@@ -65,7 +65,9 @@ string MiddleBlockCode (const string& module_name) {
         "            child.parent = this;\n"
         "    }\n"
         "};\n\n"
-        "} // unnamed namespace\n\n";
+        "} // unnamed namespace\n\n"
+        "// Begin wrappers\n\n"
+        "namespace generated {\n\n";
 }
 
 string Utilities () {
