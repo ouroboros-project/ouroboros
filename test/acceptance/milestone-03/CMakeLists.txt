@@ -17,7 +17,7 @@ set (
 set (
   MILESTONE_GENERATED_SRC
   src/Lua_prompt_wrap.cxx
-  #src/Python_prompt_wrap.cxx
+  src/Python_prompt_wrap.cxx
 )
 
 find_package (PythonLibs 2.6)
