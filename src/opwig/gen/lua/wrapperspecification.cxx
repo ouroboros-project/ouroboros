@@ -220,23 +220,25 @@ string WrapperSpecification::WrapEnum (const md::Ptr<const md::Enum>& obj) {
 }
 
 string WrapperSpecification::OpenClass (const md::Ptr<const md::Class>& obj) {
-    bool    open = state_.current_module()->has_wraps();
-    string  last_name = state_.current_module()->name;
+    //bool    open = state_.current_module()->has_wraps();
+    //string  last_name = state_.current_module()->name;
     state_.PushModule(obj->name(), true);
     modules_.push_back(state_.current_module());
 
-    return
-        string(open ? "} // namespace generated for class "+last_name+"\n\n" : "")+
-        "namespace /*"+obj->name()+"*/ {\n";
+    //return
+    //    string(open ? "} // namespace generated for class "+last_name+"\n\n" : "")+
+    //    "namespace /*"+obj->name()+"*/ {\n";
+    return "// Wraps for class "+obj->name()+"\n";
 }
 
 string WrapperSpecification::CloseClass (const md::Ptr<const md::Class>& obj) {
-    bool open = !state_.current_module()->has_children() && state_.current_module()->has_wraps();
+    //bool open = !state_.current_module()->has_children() && state_.current_module()->has_wraps();
     state_.PopModule();
 
-    return
-        string(open ? "} // namespace generated for class "+obj->name()+"\n\n" : "")+
-        string(obj ? "} // namespace for "+obj->name()+"\n\n": "");
+    //return
+    //    string(open ? "} // namespace generated for class "+obj->name()+"\n\n" : "")+
+    //    string(obj ? "} // namespace for "+obj->name()+"\n\n": "");
+    return "";
 }
 
 string WrapperSpecification::OpenNamespace (const Ptr<const Namespace>& obj) {
