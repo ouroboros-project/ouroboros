@@ -24,6 +24,11 @@ struct ModuleWrap : public opa::utils::Uncopyable, std::enable_shared_from_this<
     std::list<DataWrap>             getters;
     std::list<DataWrap>             setters;
 
+    /// Tells if the module represents a class.
+    /** @return bool Wheter the module is a class.
+     */
+    bool is_class () const;
+
     /// Tells if the module has any wraps in it.
     /** @return bool Whether there are any wrap.
      */
@@ -56,10 +61,15 @@ struct ModuleWrap : public opa::utils::Uncopyable, std::enable_shared_from_this<
 
     std::list<md::Ptr<ModuleWrap>>  children_;
     md::WeakPtr<ModuleWrap>         parent_;
+    bool                            is_class_;
 
-    ModuleWrap () {}
+    ModuleWrap (bool is_class_flag = false) : is_class_(is_class_flag) {}
 
 };
+
+inline bool ModuleWrap::is_class () const {
+    return is_class_;
+}
 
 inline bool ModuleWrap::has_wraps () const {
     return !functions.empty() || !getters.empty() || !setters.empty();

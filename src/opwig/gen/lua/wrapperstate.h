@@ -29,7 +29,7 @@ class WrapperState : public opa::utils::Uncopyable {
 
     void PushModule (const md::Ptr<ModuleWrap>& the_module);
 
-    void PushModule (const std::string& module_name);
+    void PushModule (const std::string& module_name, bool is_class_flag = false);
 
     void PopModule ();
 

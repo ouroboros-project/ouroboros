@@ -19,13 +19,20 @@ class Variable : public MetadataObject {
     /// constructor.
     static Ptr<Variable> Create (const std::string& var_name, const Ptr<const Type>& var_type);
 
-    Ptr<const Type> type() const { return type_; }
+    Ptr<const Type> type () const { return type_; }
+
+    /// Tells if the variable is static.
+    /** @return bool Whether the variable is static
+     */
+    bool is_static () const { return is_static_; }
 
   private:
 
     Ptr<const Type> type_;
+    bool            is_static_;
 
-    Variable (const std::string& var_name, const Ptr<const Type>& var_type) : MetadataObject(var_name), type_(var_type) { }
+    Variable (const std::string& var_name, const Ptr<const Type>& var_type)
+        : MetadataObject(var_name), type_(var_type), is_static_(false) {}
 
 };
 

@@ -28,8 +28,8 @@ string WrapperState::StackAsString (const string& sep, size_t skip) const {
     return result;
 }
 
-void WrapperState::PushModule (const string& module_name) {
-    Ptr<ModuleWrap> new_module(new ModuleWrap);
+void WrapperState::PushModule (const string& module_name, bool is_class_flag) {
+    Ptr<ModuleWrap> new_module(new ModuleWrap(is_class_flag));
 
     new_module->name = module_name;
     new_module->path = StackAsString("_");

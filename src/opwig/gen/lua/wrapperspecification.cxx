@@ -70,7 +70,7 @@ string WrapperSpecification::FinishFile () const {
             "/// [-(1|2),+1,e]\n"
             "int luaopen_"+module->path+module->name+" (lua_State* L_) {\n"
             "    State L(L_);\n"
-            "    //OPWIG_Lua_PrepareModule(L, ???);\n"
+            "    //OPWIG_Lua_PrepareModule(L, ...);\n"
             "    if (L.gettop() > 1) {\n"
             "        L.remove(1);\n"
             "        L.settop(1);\n"
@@ -116,6 +116,8 @@ string WrapperSpecification::FinishFile () const {
 }
 
 string WrapperSpecification::WrapFunction (const md::Ptr<const md::Function>& obj) {
+    if (state_.current_module()->is_class() && !obj->is_static())
+        return "";
     stringstream func_code, args_code, call_code;
     size_t       num_params = obj->num_parameters();
     CheckAndOpenNamespace(func_code);
@@ -179,6 +181,8 @@ string WrapperSpecification::WrapFunction (const md::Ptr<const md::Function>& ob
 }
 
 string WrapperSpecification::WrapVariable (const md::Ptr<const md::Variable>& obj) {
+    if (state_.current_module()->is_class() && !obj->is_static())
+        return "";
     stringstream code;
     const string type = obj->type()->full_type();
     CheckAndOpenNamespace(code);
@@ -217,16 +221,27 @@ string WrapperSpecification::WrapEnum (const md::Ptr<const md::Enum>& obj) {
 }
 
 string WrapperSpecification::OpenClass (const md::Ptr<const md::Class>& obj) {
-    return "";
+    bool    open = state_.current_module()->has_wraps();
+    string  last_name = state_.current_module()->name;
+    state_.PushModule(obj->name(), true);
+    modules_.push_back(state_.current_module());
+
+    return
+        string(open ? "} // namespace generated for class "+last_name+"\n\n" : "")+
+        "namespace /*"+obj->name()+"*/ {\n";
 }
 
 string WrapperSpecification::CloseClass (const md::Ptr<const md::Class>& obj) {
-    return "";
+    bool open = !state_.current_module()->has_children() && state_.current_module()->has_wraps();
+    state_.PopModule();
+
+    return
+        string(open ? "} // namespace generated for class "+obj->name()+"\n\n" : "")+
+        string(obj ? "} // namespace for "+obj->name()+"\n\n": "");
 }
 
 string WrapperSpecification::OpenNamespace (const Ptr<const Namespace>& obj) {
-    stringstream  code;
-    bool          open = state_.current_module()->has_wraps();
+    bool open = state_.current_module()->has_wraps();
     state_.PushModule(obj->name());
     modules_.push_back(state_.current_module());
 
