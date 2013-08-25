@@ -36,6 +36,17 @@ void ExportModule (State& L, const ModuleInfo* info) {
         L.pushvalue(Constant::GLOBALSINDEX());
         MakeParentModule(L, info->parent());
     }
+    // Stack: [nesting-table]
+    L.newtable();
+    L.pushvalue(-1);
+    // Stack: [nesting-table, module, module]
+    L.setfield(1, info->name());
+    // Leave only the module table in the stack
+    L.remove(1);
+    L.settop(1);
+    // Stack: [module]
+    // Register module's functions.
+    luaL_register(L, NULL, info->functions());
 }
 
 } // namespace aux

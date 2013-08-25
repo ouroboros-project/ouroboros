@@ -40,6 +40,11 @@ class ModuleInfo {
      */
     const ModuleInfo* parent () const;
 
+    /// Gives the module's functions array.
+    /** @return const luaL_Reg* The module's functions.
+     */
+    const luaL_Reg* functions () const;
+
   private:
 
     std::string           name_;
@@ -65,6 +70,10 @@ inline std::string ModuleInfo::name () const {
 
 inline const ModuleInfo* ModuleInfo::parent () const {
     return parent_;
+}
+
+inline const luaL_Reg* ModuleInfo::functions () const {
+    return funcions_;
 }
 
 void ExportModule (State& L, const ModuleInfo* info);

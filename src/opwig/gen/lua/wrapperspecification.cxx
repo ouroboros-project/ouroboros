@@ -53,26 +53,12 @@ string WrapperSpecification::FinishFile () const {
         init_functions_code +=
             "int luaopen_"+module->path+module->name+" (lua_State *L);\n\n";
     for (auto module : modules_) {
-        string nesting_modules;
-        for (auto parent = module->parent(); parent; parent = parent->parent())
-            nesting_modules =
-                "        OPWIG_Lua_MakeParentModule(L, \""+parent->name+"\");\n"
-                + nesting_modules;
         init_functions_code +=
             "/// [-(1|2),+1,e]\n"
             "int luaopen_"+module->path+module->name+" (lua_State* L_) {\n"
             "    State L(L_);\n"
             "    ExportModule(L, &"+module->nesting+"info);\n"
-            "    // Nesting table is at index 1.\n"
-            "    L.newtable();\n"
-            "    L.pushvalue(-1);\n"
-            "    // Module table is at index 2 and 3.\n"
-            "    L.setfield(1, MODULE_NAME);\n"
-            "    // Leave only the module table in the stack\n"
-            "    L.remove(1);\n"
-            "    L.settop(1);\n"
-            "    // Register module's functions.\n"
-            "    luaL_register(L, NULL, "+module->nesting+"functions);\n"
+            "    // Stack: [module]\n"
             "    // Register module's submodules.\n";
         for (auto submodule : module->children()) {
             init_functions_code +=
