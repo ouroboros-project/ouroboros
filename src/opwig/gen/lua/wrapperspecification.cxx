@@ -241,7 +241,7 @@ string WrapperSpecification::CloseNamespace (const Ptr<const Namespace>& obj) {
     code
           << " }\n"
           << ");\n\n"
-          << "} // unnamed namespace\n";
+          << "} // unnamed namespace\n\n";
 
     state_.PopModule();
 
