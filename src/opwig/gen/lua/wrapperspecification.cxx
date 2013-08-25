@@ -42,15 +42,7 @@ string CheckAndCloseNamespace (bool open) {
 string WrapperSpecification::FinishFile () const {
     string functions_wrap_code =
         const_cast<WrapperSpecification*>(this)->CloseNamespace(md::Ptr<md::Namespace>())+
-    //    CheckAndCloseNamespace(!state_.current_module()->has_children())+
-        "namespace {\n\n";
-    //    "// List of wrapped functions\n";
-    //for (auto module : modules_) {
-    //    functions_wrap_code += WrapList(module, &ModuleWrap::functions, "function");
-    //    functions_wrap_code += WrapList(module, &ModuleWrap::getters, "getter");
-    //    functions_wrap_code += WrapList(module, &ModuleWrap::setters, "setter");
-    //}
-    functions_wrap_code +=
+        "namespace {\n\n"+
         Utilities()+
         "} // unnamed namespace\n\n";
     string init_functions_code =
@@ -106,8 +98,8 @@ string WrapperSpecification::FinishFile () const {
             "        "+module->nesting+"getters,\n"
             "        "+module->nesting+"setters,\n"
             +(module->is_class()
-            ?   ("        "+module->nesting+"generated::OPWIG_wrap_constructor_"+module->name+"\n")
-            :   ("        nullptr\n" )
+            ? ("        "+module->nesting+"generated::"+GetWrapName("constructor", module->name)+"\n")
+            : ("        nullptr\n" )
             )+
             "    );\n"
             "    // Return de module itself\n"
@@ -254,13 +246,23 @@ string WrapperSpecification::OpenNamespace (const Ptr<const Namespace>& obj) {
 }
 
 string WrapperSpecification::CloseNamespace (const Ptr<const Namespace>& obj) {
-    bool open = !state_.current_module()->has_children();
+    Ptr<ModuleWrap> module = state_.current_module();
+    bool open = !module->has_children();
     stringstream code;
 
     code  << "namespace {\n\n"
-          << WrapList(state_.current_module(), &ModuleWrap::functions, "function")
-          << WrapList(state_.current_module(), &ModuleWrap::getters, "getter")
-          << WrapList(state_.current_module(), &ModuleWrap::setters, "setter")
+          << WrapList(module, &ModuleWrap::functions, "function")
+          << WrapList(module, &ModuleWrap::getters, "getter")
+          << WrapList(module, &ModuleWrap::setters, "setter")
+          << "ModuleInfo info(\n"
+          << "    getters, setters, functions,\n"
+          << "    {";
+    for (auto child : module->children())
+        code
+          << " " << child->name << "::info,";
+    code
+          << " }\n"
+          << ");\n\n"
           << "} // unnamed namespace\n";
 
     state_.PopModule();
