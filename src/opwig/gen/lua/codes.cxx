@@ -60,7 +60,7 @@ string MiddleBlockCode (const string& module_name) {
         "    ModuleInfo (luaL_Reg the_getters[], luaL_Reg the_setters[],\n"
         "                luaL_Reg the_functions[], const list<ModuleInfo>& the_children)\n"
         "        : getters(the_getters), setters(the_setters), funcions(the_functions),\n"
-        "          children(the_children) {\n"
+        "          parent(nullptr), children(the_children) {\n"
         "        for (auto& child : children)\n"
         "            child.parent = this;\n"
         "    }\n"
