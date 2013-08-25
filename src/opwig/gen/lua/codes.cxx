@@ -14,12 +14,12 @@ using std::list;
 string WrapList (const md::Ptr<ModuleWrap>& module, WrappedMember member, const string& type) {
     const auto& wraps = (*module).*member;
     stringstream code;
-    code  << "luaL_Reg "<< module->path+module->name << "_" << type << "s[] = {\n";
+    code  << "luaL_Reg "<< type << "s[] = {\n";
     for (auto wrap : wraps)
         code 
           << "    { "
               << "\"" + wrap.name + "\", "
-              <<  wrap.nesting + GetWrapName(type, wrap.name)
+              << "generated::" + GetWrapName(type, wrap.name)
           << " },\n";
     code  << "    { nullptr, nullptr }\n"
              "};\n\n";

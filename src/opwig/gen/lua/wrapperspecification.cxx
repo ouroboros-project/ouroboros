@@ -32,24 +32,24 @@ string WrapperSpecification::MiddleBlock() const {
 
 namespace {
 
-string CheckAndCloseNamespace (const Ptr<const Namespace>& obj, bool open) {
+string CheckAndCloseNamespace (bool open) {
     return
-        string(open ? "} // namespace generated\n\n" : "")+
-        string(obj ? "} // namespace "+obj->name()+"\n\n": "");
+        string(open ? "} // namespace generated\n\n" : "");
 }
 
 } // unnamed namespace
 
 string WrapperSpecification::FinishFile () const {
     string functions_wrap_code =
-        CheckAndCloseNamespace(Ptr<const Namespace>(), !state_.current_module()->has_children())+
-        "namespace {\n\n"
-        "// List of wrapped functions\n";
-    for (auto module : modules_) {
-        functions_wrap_code += WrapList(module, &ModuleWrap::functions, "function");
-        functions_wrap_code += WrapList(module, &ModuleWrap::getters, "getter");
-        functions_wrap_code += WrapList(module, &ModuleWrap::setters, "setter");
-    }
+        const_cast<WrapperSpecification*>(this)->CloseNamespace(md::Ptr<md::Namespace>())+
+    //    CheckAndCloseNamespace(!state_.current_module()->has_children())+
+        "namespace {\n\n";
+    //    "// List of wrapped functions\n";
+    //for (auto module : modules_) {
+    //    functions_wrap_code += WrapList(module, &ModuleWrap::functions, "function");
+    //    functions_wrap_code += WrapList(module, &ModuleWrap::getters, "getter");
+    //    functions_wrap_code += WrapList(module, &ModuleWrap::setters, "setter");
+    //}
     functions_wrap_code +=
         Utilities()+
         "} // unnamed namespace\n\n";
@@ -88,7 +88,7 @@ string WrapperSpecification::FinishFile () const {
             "    L.remove(1);\n"
             "    L.settop(1);\n"
             "    // Register module's functions.\n"
-            "    luaL_register(L, NULL, "+module->path+module->name+"_functions);\n"
+            "    luaL_register(L, NULL, "+module->nesting+"functions);\n"
             "    // Register module's submodules.\n";
         for (auto submodule : module->children()) {
             init_functions_code +=
@@ -103,8 +103,8 @@ string WrapperSpecification::FinishFile () const {
             "    // Set module metatable.\n"
             "    OPWIG_Lua_PrepareMetatable(\n"
             "        L,\n"
-            "        "+module->path+module->name+"_getters,\n"
-            "        "+module->path+module->name+"_setters,\n"
+            "        "+module->nesting+"getters,\n"
+            "        "+module->nesting+"setters,\n"
             +(module->is_class()
             ?   ("        "+module->nesting+"generated::OPWIG_wrap_constructor_"+module->name+"\n")
             :   ("        nullptr\n" )
@@ -255,10 +255,20 @@ string WrapperSpecification::OpenNamespace (const Ptr<const Namespace>& obj) {
 
 string WrapperSpecification::CloseNamespace (const Ptr<const Namespace>& obj) {
     bool open = !state_.current_module()->has_children();
+    stringstream code;
+
+    code  << "namespace {\n\n"
+          << WrapList(state_.current_module(), &ModuleWrap::functions, "function")
+          << WrapList(state_.current_module(), &ModuleWrap::getters, "getter")
+          << WrapList(state_.current_module(), &ModuleWrap::setters, "setter")
+          << "} // unnamed namespace\n";
+
     state_.PopModule();
 
     return
-        CheckAndCloseNamespace(obj,  open);
+        CheckAndCloseNamespace(open)+
+        code.str()+
+        string(obj ? "} // namespace "+obj->name()+"\n\n": "");
 }
 
 std::list<ScriptModule> WrapperSpecification::GetGeneratedModules () const {
