@@ -27,29 +27,7 @@ string WrapperSpecification::FileHeader () const {
 }
 
 string WrapperSpecification::MiddleBlock() const {
-    return
-        "#include <languages/lua/luawrapper.h>\n"
-        "#include <languages/lua/converter.h>\n"
-        "#include <languages/lua/header.h>\n"
-        "#include <opa/scriptmanager.h>\n"
-        "#include <opa/module.h>\n"
-        "#include <opa/converter.h>\n"
-        "#include <iostream>\n"
-        "#include <string>\n"
-        "#include <stdexcept>\n"
-        "\n"
-        "using std::string;\n"
-        "using std::cout;\n"
-        "using std::endl;\n"
-        "using std::runtime_error;\n"
-        "using opa::Module;\n"
-        "using opa::lua::LuaWrapper;\n"
-        "using opa::lua::State;\n"
-        "using opa::lua::Constant;\n"
-        "\n"
-        "namespace {\n\n"
-        "const char *MODULE_NAME = \""+module_name_+"\";\n\n"
-        "} // unnamed namespace\n\n";
+    return MiddleBlockCode(module_name_);
 }
 
 namespace {

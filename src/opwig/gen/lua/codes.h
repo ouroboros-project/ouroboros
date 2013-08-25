@@ -19,6 +19,8 @@ inline std::string GetWrapName (const std::string& type, const std::string& name
 std::string WrapList (const md::Ptr<ModuleWrap>& module, WrappedMember member,
                       const std::string& type);
 
+std::string MiddleBlockCode (const std::string& module_name);
+
 std::string Utilities ();
 
 } // namespace lua

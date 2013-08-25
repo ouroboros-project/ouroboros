@@ -26,6 +26,37 @@ string WrapList (const md::Ptr<ModuleWrap>& module, WrappedMember member, const 
     return code.str();
 }
 
+string MiddleBlockCode (const string& module_name) {
+    return
+        "#include <languages/lua/luawrapper.h>\n"
+        "#include <languages/lua/converter.h>\n"
+        "#include <languages/lua/header.h>\n"
+        "#include <opa/scriptmanager.h>\n"
+        "#include <opa/module.h>\n"
+        "#include <opa/converter.h>\n"
+        "#include <iostream>\n"
+        "#include <string>\n"
+        "#include <stdexcept>\n"
+        "\n"
+        "using std::string;\n"
+        "using std::cout;\n"
+        "using std::endl;\n"
+        "using std::runtime_error;\n"
+        "using opa::Module;\n"
+        "using opa::lua::LuaWrapper;\n"
+        "using opa::lua::State;\n"
+        "using opa::lua::Constant;\n"
+        "\n"
+        "namespace {\n\n"
+        "const char *MODULE_NAME = \""+module_name+"\";\n\n"
+        "struct ModuleInfo {\n"
+        "    luaL_Reg getters[];\n"
+        "    luaL_Reg setters[];\n"
+        "    luaL_Reg funcions[];\n"
+        "};\n\n"
+        "} // unnamed namespace\n\n";
+}
+
 string Utilities () {
     return
         "void OPWIG_Lua_MakeParentModule (State& L, const string& parent_name) {\n"
