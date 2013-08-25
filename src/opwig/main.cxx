@@ -62,7 +62,7 @@ int main (int argc, char** argv) {
     opwig::gen::WrapperGenerator(inputs, "./").Generate(
         module_name,
         global,
-        Ptr<WrapperSpecification>(new opwig::gen::lua::WrapperSpecification)
+        Ptr<WrapperSpecification>(new opwig::gen::lua::WrapperSpecification(module_name))
     );
     opwig::gen::WrapperGenerator(inputs, "./").Generate(
         module_name, 

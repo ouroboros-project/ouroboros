@@ -16,6 +16,7 @@ TEST_F (MDFunctionTest, Create) {
     EXPECT_EQ("funcname(type0,type1)", var->id());
     EXPECT_FALSE(var->is_pure());
     EXPECT_FALSE(var->is_virtual());
+    EXPECT_FALSE(var->is_static());
     EXPECT_THROW(var->parameter_type(2), std::out_of_range);
 }
 

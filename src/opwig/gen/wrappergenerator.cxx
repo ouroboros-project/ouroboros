@@ -87,9 +87,11 @@ void WrapperGenerator::iterateAndWrapScope(const Ptr<const md::Scope>& scope) {
     for (auto entry : scope->IterateClasses()) {
         handleClass(entry.second);
     }
-    for (auto entry : scope->IterateNamespaces()) {
-        handleNamespace(entry.second);
-    }
+    // FIXME
+    if (dynamic_cast<const md::Namespace*>(scope.get()))
+      for (auto entry : scope->IterateNamespaces()) {
+          handleNamespace(entry.second);
+      }
 }
 
 void WrapperGenerator::handleNamespace(const Ptr<const md::Namespace>& nspace) {

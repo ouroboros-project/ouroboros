@@ -10,13 +10,16 @@ namespace opwig {
 namespace gen {
 namespace lua {
 
-using WrappedMember = std::list<DataWrap> (Module::*);
+using WrappedMember = std::list<DataWrap> (ModuleWrap::*);
 
 inline std::string GetWrapName (const std::string& type, const std::string& name) {
     return "OPWIG_wrap_"+type+"_"+name;
 }
 
-std::string WrapList (const md::Ptr<Module>& module, WrappedMember member, const std::string& type);
+std::string WrapList (const md::Ptr<ModuleWrap>& module, WrappedMember member,
+                      const std::string& type);
+
+std::string MiddleBlockCode (const std::string& module_name);
 
 std::string Utilities ();
 

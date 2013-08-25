@@ -13,56 +13,42 @@ namespace lua {
 using std::string;
 using std::stringstream;
 using md::Ptr;
+using md::Namespace;
 
-WrapperSpecification::WrapperSpecification () {
-    Ptr<Module> root(new Module);
-    modules_.push_back(root);
-    module_stack_.push_back(root);
+WrapperSpecification::WrapperSpecification (const string& the_module_name)
+    : state_(the_module_name) {
+    modules_.push_back(state_.current_module());
 }
 
 string WrapperSpecification::FileHeader () const {
-    current_module()->name = module_name_;
-    current_module()->open = false;
     return
         "\n"
         "// This is a generated file.\n\n";
 }
 
 string WrapperSpecification::MiddleBlock() const {
-    return
-        "#include <languages/lua/luawrapper.h>\n"
-        "#include <languages/lua/converter.h>\n"
-        "#include <languages/lua/header.h>\n"
-        "#include <opa/scriptmanager.h>\n"
-        "#include <opa/module.h>\n"
-        "#include <opa/converter.h>\n"
-        "#include <iostream>\n"
-        "#include <string>\n"
-        "#include <stdexcept>\n"
-        "\n"
-        "using std::string;\n"
-        "using std::cout;\n"
-        "using std::endl;\n"
-        "using std::runtime_error;\n"
-        "using opa::Module;\n"
-        "using opa::lua::LuaWrapper;\n"
-        "using opa::lua::State;\n"
-        "using opa::lua::Constant;\n"
-        "\n"
-        "namespace {\n\n"
-        "const char *MODULE_NAME = \""+module_name_+"\";\n\n"
-        "} // unnamed namespace\n\n";
+    return MiddleBlockCode(module_name_);
 }
+
+namespace {
+
+string CheckAndCloseNamespace (const Ptr<const Namespace>& obj, bool open) {
+    return
+        string(open ? "} // namespace generated\n\n" : "")+
+        string(obj ? "} // namespace "+obj->name()+"\n\n": "");
+}
+
+} // unnamed namespace
 
 string WrapperSpecification::FinishFile () const {
     string functions_wrap_code =
-        string(current_module()->open ? "} // generated\n" : "")+
+        CheckAndCloseNamespace(Ptr<const Namespace>(), state_.current_module()->has_wraps())+
         "namespace {\n\n"
         "// List of wrapped functions\n";
     for (auto module : modules_) {
-        functions_wrap_code += WrapList(module, &Module::functions, "function");
-        functions_wrap_code += WrapList(module, &Module::getters, "getter");
-        functions_wrap_code += WrapList(module, &Module::setters, "setter");
+        functions_wrap_code += WrapList(module, &ModuleWrap::functions, "function");
+        functions_wrap_code += WrapList(module, &ModuleWrap::getters, "getter");
+        functions_wrap_code += WrapList(module, &ModuleWrap::setters, "setter");
     }
     functions_wrap_code +=
         Utilities()+
@@ -76,7 +62,7 @@ string WrapperSpecification::FinishFile () const {
             "int luaopen_"+module->path+module->name+" (lua_State *L);\n\n";
     for (auto module : modules_) {
         string nesting_modules;
-        for (auto parent = module->parent.lock(); parent; parent = parent->parent.lock())
+        for (auto parent = module->parent(); parent; parent = parent->parent())
             nesting_modules =
                 "        OPWIG_Lua_MakeParentModule(L, \""+parent->name+"\");\n"
                 + nesting_modules;
@@ -84,6 +70,7 @@ string WrapperSpecification::FinishFile () const {
             "/// [-(1|2),+1,e]\n"
             "int luaopen_"+module->path+module->name+" (lua_State* L_) {\n"
             "    State L(L_);\n"
+            "    //OPWIG_Lua_PrepareModule(L, ...);\n"
             "    if (L.gettop() > 1) {\n"
             "        L.remove(1);\n"
             "        L.settop(1);\n"
@@ -100,10 +87,10 @@ string WrapperSpecification::FinishFile () const {
             "    // Leave only the module table in the stack\n"
             "    L.remove(1);\n"
             "    L.settop(1);\n"
-            "    // Register module's funcitons.\n"
+            "    // Register module's functions.\n"
             "    luaL_register(L, NULL, "+module->path+module->name+"_functions);\n"
             "    // Register module's submodules.\n";
-        for (auto submodule : module->children) {
+        for (auto submodule : module->children()) {
             init_functions_code +=
                 "    OPWIG_Lua_ExportSubmodule("
                          "L, "
@@ -129,10 +116,12 @@ string WrapperSpecification::FinishFile () const {
 }
 
 string WrapperSpecification::WrapFunction (const md::Ptr<const md::Function>& obj) {
-    current_module()->functions.push_back({obj->name(), DumpNamespaceNesting()+"generated::"});
+    if (state_.current_module()->is_class() && !obj->is_static())
+        return "";
     stringstream func_code, args_code, call_code;
     size_t       num_params = obj->num_parameters();
     CheckAndOpenNamespace(func_code);
+    state_.current_module()->functions.push_back({obj->name(), DumpNamespaceNesting()+"generated::"});
     func_code << "int " << GetWrapName("function", obj->name()) << " (lua_State* L) {\n";
     if (num_params > 0)
         func_code
@@ -192,10 +181,12 @@ string WrapperSpecification::WrapFunction (const md::Ptr<const md::Function>& ob
 }
 
 string WrapperSpecification::WrapVariable (const md::Ptr<const md::Variable>& obj) {
-    current_module()->getters.push_back({obj->name(), DumpNamespaceNesting()+"generated::"});
+    if (state_.current_module()->is_class() && !obj->is_static())
+        return "";
     stringstream code;
     const string type = obj->type()->full_type();
     CheckAndOpenNamespace(code);
+    state_.current_module()->getters.push_back({obj->name(), DumpNamespaceNesting()+"generated::"});
     code  << "int " << GetWrapName("getter", obj->name()) << " (lua_State* L) {\n"
           << "    opa::lua::Converter convert(L);\n"
           << "    convert.TypeToScript<" << type << ">(" << obj->name()
@@ -203,7 +194,7 @@ string WrapperSpecification::WrapVariable (const md::Ptr<const md::Variable>& ob
           << "    return 1;\n"
           << "}\n\n";
     if (!obj->type()->is_const()) {
-        current_module()->setters.push_back({obj->name(), DumpNamespaceNesting()+"generated::"});
+        state_.current_module()->setters.push_back({obj->name(), DumpNamespaceNesting()+"generated::"});
         code
           << "int " << GetWrapName("setter", obj->name()) << " (lua_State* L) {\n"
           << "    opa::lua::Converter convert(L);\n"
@@ -230,47 +221,48 @@ string WrapperSpecification::WrapEnum (const md::Ptr<const md::Enum>& obj) {
 }
 
 string WrapperSpecification::OpenClass (const md::Ptr<const md::Class>& obj) {
-    return "";
+    bool    open = state_.current_module()->has_wraps();
+    string  last_name = state_.current_module()->name;
+    state_.PushModule(obj->name(), true);
+    modules_.push_back(state_.current_module());
+
+    return
+        string(open ? "} // namespace generated for class "+last_name+"\n\n" : "")+
+        "namespace /*"+obj->name()+"*/ {\n";
 }
 
 string WrapperSpecification::CloseClass (const md::Ptr<const md::Class>& obj) {
-    return "";
+    bool open = !state_.current_module()->has_children() && state_.current_module()->has_wraps();
+    state_.PopModule();
+
+    return
+        string(open ? "} // namespace generated for class "+obj->name()+"\n\n" : "")+
+        string(obj ? "} // namespace for "+obj->name()+"\n\n": "");
 }
 
-string WrapperSpecification::OpenNamespace (const md::Ptr<const md::Namespace>& obj) {
-    bool open = current_module()->open;
-    if (open) current_module()->open = false;
-    Ptr<Module> new_module(new Module);
-
-    new_module->name = obj->name();
-    new_module->open = false;
-    new_module->parent = current_module();
-    for (auto module : module_stack_)
-      new_module->path += module->name+"_";
-
-    current_module()->children.push_back(new_module);
-    modules_.push_back(new_module);
-    module_stack_.push_back(new_module);
+string WrapperSpecification::OpenNamespace (const Ptr<const Namespace>& obj) {
+    bool open = state_.current_module()->has_wraps();
+    state_.PushModule(obj->name());
+    modules_.push_back(state_.current_module());
 
     return
         string(open ? "} // namespace generated\n\n" : "")+
-        "namespace "+new_module->name+" {\n";
+        "namespace "+obj->name()+" {\n";
 }
 
-string WrapperSpecification::CloseNamespace (const md::Ptr<const md::Namespace>& obj) {
-    bool open = current_module()->open;
-    module_stack_.pop_back();
+string WrapperSpecification::CloseNamespace (const Ptr<const Namespace>& obj) {
+    bool open = !state_.current_module()->has_children() && state_.current_module()->has_wraps();
+    state_.PopModule();
 
     return
-        string(open ? "} // namespace generated\n\n" : "")+
-        "} // namespace "+obj->name()+"\n\n";
+        CheckAndCloseNamespace(obj,  open);
 }
 
 std::list<ScriptModule> WrapperSpecification::GetGeneratedModules () const {
     std::list<ScriptModule> the_list;
     for (auto module : modules_) {
         string modname = module->name;
-        for (auto parent = module->parent.lock(); parent; parent = parent->parent.lock())
+        for (auto parent = module->parent(); parent; parent = parent->parent())
           modname = parent->name+"."+modname;
         the_list.push_back(ScriptModule(modname, "luaopen_"+module->path+module->name));
     }
@@ -278,14 +270,7 @@ std::list<ScriptModule> WrapperSpecification::GetGeneratedModules () const {
 }
 
 string WrapperSpecification::DumpNamespaceNesting () const {
-    string dump;
-    bool skip = true;
-    for (auto module : module_stack_)
-        if (skip)
-          skip = false;
-        else
-          dump += module->name+"::";
-    return dump;
+    return state_.StackAsString("::", 1);
 }
 
 } // namespace lua

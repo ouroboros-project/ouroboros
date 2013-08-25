@@ -11,7 +11,7 @@ using std::string;
 using std::stringstream;
 using std::list;
 
-string WrapList (const md::Ptr<Module>& module, WrappedMember member, const string& type) {
+string WrapList (const md::Ptr<ModuleWrap>& module, WrappedMember member, const string& type) {
     const auto& wraps = (*module).*member;
     stringstream code;
     code  << "luaL_Reg "<< module->path+module->name << "_" << type << "s[] = {\n";
@@ -24,6 +24,48 @@ string WrapList (const md::Ptr<Module>& module, WrappedMember member, const stri
     code  << "    { nullptr, nullptr }\n"
              "};\n\n";
     return code.str();
+}
+
+string MiddleBlockCode (const string& module_name) {
+    return
+        "#include <languages/lua/luawrapper.h>\n"
+        "#include <languages/lua/converter.h>\n"
+        "#include <languages/lua/header.h>\n"
+        "#include <opa/scriptmanager.h>\n"
+        "#include <opa/module.h>\n"
+        "#include <opa/converter.h>\n"
+        "#include <iostream>\n"
+        "#include <string>\n"
+        "#include <list>\n"
+        "#include <stdexcept>\n"
+        "\n"
+        "using std::list;\n"
+        "using std::string;\n"
+        "using std::cout;\n"
+        "using std::endl;\n"
+        "using std::runtime_error;\n"
+        "using opa::Module;\n"
+        "using opa::lua::LuaWrapper;\n"
+        "using opa::lua::State;\n"
+        "using opa::lua::Constant;\n"
+        "\n"
+        "namespace {\n\n"
+        "const char *MODULE_NAME = \""+module_name+"\";\n\n"
+        "struct ModuleInfo {\n"
+        "    luaL_Reg    *getters;\n"
+        "    luaL_Reg    *setters;\n"
+        "    luaL_Reg    *funcions;\n"
+        "    ModuleInfo  *parent;\n"
+        "    list<ModuleInfo>  children;\n"
+        "    ModuleInfo (luaL_Reg the_getters[], luaL_Reg the_setters[],\n"
+        "                luaL_Reg the_functions[], const list<ModuleInfo>& the_children)\n"
+        "        : getters(the_getters), setters(the_setters), funcions(the_functions),\n"
+        "          parent(nullptr), children(the_children) {\n"
+        "        for (auto& child : children)\n"
+        "            child.parent = this;\n"
+        "    }\n"
+        "};\n\n"
+        "} // unnamed namespace\n\n";
 }
 
 string Utilities () {
@@ -103,7 +145,7 @@ string Utilities () {
         "    // Stack: []\n"
         "    return 0;\n"
         "}\n\n"
-        "/// [0,0,-]\n"
+        "/// [-1,+1,-]\n"
         "void OPWIG_Lua_PrepareMetatable (State& L, luaL_Reg getters[], luaL_Reg setters[]) {\n"
         "    // Stack: [module]\n"
         "    L.newtable();\n"
@@ -135,7 +177,11 @@ string Utilities () {
         "    // Leave only the module table in the stack.\n"
         "    L.settop(1);\n"
         "    // Stack: [module]\n"
-        "}\n\n";
+        "}\n\n"
+        "/// [-(1|0),+1,-]\n"
+        "void OPWIG_Lua_PrepareModule (State& L, const ModuleInfo& info) {\n"
+        "}\n\n"
+        ;
 }
 
 } // namespace lua
