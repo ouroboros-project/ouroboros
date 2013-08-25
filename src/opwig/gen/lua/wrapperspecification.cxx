@@ -189,8 +189,7 @@ string WrapperSpecification::WrapVariable (const md::Ptr<const md::Variable>& ob
     state_.current_module()->getters.push_back({obj->name(), DumpNamespaceNesting()+"generated::"});
     code  << "int " << GetWrapName("getter", obj->name()) << " (lua_State* L) {\n"
           << "    opa::lua::Converter convert(L);\n"
-          << "    convert.TypeToScript<" << type << ">(" << obj->name()
-          << ");\n"
+          << "    convert.TypeToScript<" << type << ">(" << obj->name() << ");\n"
           << "    return 1;\n"
           << "}\n\n";
     if (!obj->type()->is_const()) {
