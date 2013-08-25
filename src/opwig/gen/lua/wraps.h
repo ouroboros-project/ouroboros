@@ -19,7 +19,7 @@ struct DataWrap {
 
 struct ModuleWrap : public opa::utils::Uncopyable, std::enable_shared_from_this<ModuleWrap> {
 
-    std::string                     name, path;
+    std::string                     name, path, nesting;
     std::list<DataWrap>             functions;
     std::list<DataWrap>             getters;
     std::list<DataWrap>             setters;

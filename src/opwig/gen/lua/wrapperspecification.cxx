@@ -105,7 +105,10 @@ string WrapperSpecification::FinishFile () const {
             "        L,\n"
             "        "+module->path+module->name+"_getters,\n"
             "        "+module->path+module->name+"_setters,\n"
-            "        nullptr\n"
+            +(module->is_class()
+            ?   ("        "+module->nesting+"generated::OPWIG_wrap_constructor_"+module->name+"\n")
+            :   ("        nullptr\n" )
+            )+
             "    );\n"
             "    // Return de module itself\n"
             "    return 1;\n"
@@ -229,6 +232,10 @@ string WrapperSpecification::OpenClass (const md::Ptr<const md::Class>& obj) {
 
 string WrapperSpecification::CloseClass (const md::Ptr<const md::Class>& obj) {
     stringstream code;
+
+    code  << "int " << GetWrapName("constructor", obj->name()) << " (lua_State* L) {\n"
+          << "    return 0;\n"
+          << "}\n\n";
 
     state_.PopModule();
 

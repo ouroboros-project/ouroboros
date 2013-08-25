@@ -33,6 +33,7 @@ void WrapperState::PushModule (const string& module_name, bool is_class_flag) {
 
     new_module->name = module_name;
     new_module->path = StackAsString("_");
+    new_module->nesting = StackAsString("::", 1);
 
     current_module()->AddChild(new_module);
     PushModule(new_module);
