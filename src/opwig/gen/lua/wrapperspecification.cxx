@@ -63,14 +63,14 @@ string WrapperSpecification::FinishFile () const {
             "int luaopen_"+module->path+module->name+" (lua_State* L_) {\n"
             "    State L(L_);\n"
             "    OPWIG_Lua_PrepareModule(L, &"+module->nesting+"info);\n"
-            "    if (L.gettop() > 1) {\n"
-            "        L.remove(1);\n"
-            "        L.settop(1);\n"
-            "    } else {\n"
-            "        L.settop(0);\n"
-            "        L.pushvalue(Constant::GLOBALSINDEX());\n"
-            + nesting_modules +
-            "    }\n"
+            //"    if (L.gettop() > 1) {\n"
+            //"        L.remove(1);\n"
+            //"        L.settop(1);\n"
+            //"    } else {\n"
+            //"        L.settop(0);\n"
+            //"        L.pushvalue(Constant::GLOBALSINDEX());\n"
+            //+ nesting_modules +
+            //"    }\n"
             "    // Nesting table is at index 1.\n"
             "    L.newtable();\n"
             "    L.pushvalue(-1);\n"
@@ -255,7 +255,7 @@ string WrapperSpecification::CloseNamespace (const Ptr<const Namespace>& obj) {
           << WrapList(module, &ModuleWrap::getters, "getter")
           << WrapList(module, &ModuleWrap::setters, "setter")
           << "ModuleInfo info(\n"
-          << "    getters, setters, functions,\n"
+          << "    \""+module->name+"\", getters, setters, functions,\n"
           << "    {";
     for (auto child : module->children())
         code
