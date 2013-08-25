@@ -62,7 +62,7 @@ string WrapperSpecification::FinishFile () const {
             "/// [-(1|2),+1,e]\n"
             "int luaopen_"+module->path+module->name+" (lua_State* L_) {\n"
             "    State L(L_);\n"
-            "    //OPWIG_Lua_PrepareModule(L, ...);\n"
+            "    OPWIG_Lua_PrepareModule(L, &"+module->nesting+"info);\n"
             "    if (L.gettop() > 1) {\n"
             "        L.remove(1);\n"
             "        L.settop(1);\n"

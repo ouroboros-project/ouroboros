@@ -188,7 +188,7 @@ string Utilities () {
         "    // Stack: [module]\n"
         "}\n\n"
         "/// [-(1|0),+1,-]\n"
-        "void OPWIG_Lua_PrepareModule (State& L, const ModuleInfo& info) {\n"
+        "void OPWIG_Lua_PrepareModule (State& L, const ModuleInfo* info) {\n"
         "}\n\n"
         ;
 }
