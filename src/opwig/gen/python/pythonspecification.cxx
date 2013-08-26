@@ -1,5 +1,5 @@
 #include <opwig/gen/python/pythonspecification.h>
-#include <opwig/gen/python/wrapmodule.h>
+#include <opwig/gen/python/wrapscope.h>
 #include <opwig/gen/python/utilities.h>
 #include <opwig/md/function.h>
 #include <opwig/md/variable.h>
@@ -18,7 +18,7 @@ using std::stringstream;
 using std::endl;
 
 PythonSpecification::PythonSpecification() {
-    root_module_ = Ptr<WrapModule>(new WrapModule(""));
+    root_module_ = Ptr<WrapScope>(new WrapScope(""));
     current_ = root_module_;
 }
 
@@ -80,14 +80,15 @@ string PythonSpecification::MiddleBlock() const {
 }
 
 // FINISH BLOCK
-void HandleModuleMethodTables(stringstream& block, const Ptr<WrapModule>& module) {
+void HandleModuleMethodTables(stringstream& block, const Ptr<WrapScope>& module) {
     block << "//module " << module->name() << " method table" << endl;
     block << module->GenerateMethodTable(BASE_NSPACE) << endl;
     for (auto subm : module->sub_modules() )
-        HandleModuleMethodTables(block, subm);
+        if (!subm->is_class())
+            HandleModuleMethodTables(block, subm);
 }
 
-void HandleWrapModuleForInitFunc(stringstream& block, const Ptr<WrapModule>& module) {
+void HandleWrapScopeForInitFunc(stringstream& block, const Ptr<WrapScope>& module) {
     block << "PyMODINIT_FUNC" << endl;
     block << GetInitFuncNameForModule(module->name()) << "(void) {" << endl;
     block << TAB;
@@ -103,14 +104,15 @@ void HandleWrapModuleForInitFunc(stringstream& block, const Ptr<WrapModule>& mod
     block << "}" << endl;
 
     for (auto subm : module->sub_modules() )
-        HandleWrapModuleForInitFunc(block, subm);
+        if (!subm->is_class())
+            HandleWrapScopeForInitFunc(block, subm);
 }
 
 string PythonSpecification::FinishFile() const {
     stringstream block;
     block << endl << "} //namespace " << BASE_NSPACE << endl << endl;
     HandleModuleMethodTables(block, root_module_);
-    HandleWrapModuleForInitFunc(block, root_module_);
+    HandleWrapScopeForInitFunc(block, root_module_);
     return block.str();
 }
 
@@ -173,26 +175,37 @@ string PythonSpecification::WrapEnum(const Ptr<const md::Enum>& obj) {
 
 // OPEN CLASS
 string PythonSpecification::OpenClass(const Ptr<const md::Class>& obj) {
+    PushScope(obj->name(), true);
     return "namespace "+obj->name()+" { //entering CLASS namespace "+obj->name()+"\n";
 }
 
 // CLOSE CLASS
 string PythonSpecification::CloseClass(const Ptr<const md::Class>& obj) {
+    PopScope();
     return "} //closing CLASS namespace "+obj->name()+"\n";
 }
 
 // OPEN NAMESPACE
 string PythonSpecification::OpenNamespace(const Ptr<const md::Namespace>& obj) {
-    Ptr<WrapModule> newm = Ptr<WrapModule>(new WrapModule(obj->name(), current_));
-    current_->AddSubModule(newm);
-    current_ = newm;
+    PushScope(obj->name(), false);
     return "namespace "+obj->name()+" { //entering namespace "+obj->name()+"\n";
 }
 
 // CLOSE NAMESPACE
 string PythonSpecification::CloseNamespace(const Ptr<const md::Namespace>& obj) {
-    current_ = current_->parent();
+    PopScope();
     return "} //closing namespace "+obj->name()+"\n";
+}
+
+// AUXILIARY METHODS
+void PythonSpecification::PushScope(const std::string& name, bool is_class) {
+    Ptr<WrapScope> newm = Ptr<WrapScope>(new WrapScope(name, is_class, current_));
+    current_->AddSubModule(newm);
+    current_ = newm;
+}
+
+void PythonSpecification::PopScope() {
+    current_ = current_->parent();
 }
 
 std::list<ScriptModule> PythonSpecification::GetGeneratedModules () const {

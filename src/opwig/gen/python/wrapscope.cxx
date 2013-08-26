@@ -1,4 +1,4 @@
-#include <opwig/gen/python/wrapmodule.h>
+#include <opwig/gen/python/wrapscope.h>
 #include <opwig/gen/python/utilities.h>
 #include <opwig/gen/wrapperspecification.h>
 #include <opwig/md/function.h>
@@ -15,18 +15,18 @@ using std::string;
 using std::stringstream;
 using std::endl;
 
-void WrapModule::AddFunction(const md::Ptr<const md::Function>& func) {
+void WrapScope::AddFunction(const md::Ptr<const md::Function>& func) {
     functions_.push_back(func);
 }
-void WrapModule::AddVariable(const md::Ptr<const md::Variable>& var) {
+void WrapScope::AddVariable(const md::Ptr<const md::Variable>& var) {
     variables_.push_back(var);
 }
 
-string WrapModule::GetMethodTableName() const {
+string WrapScope::GetMethodTableName() const {
     return name_+"Methods";
 }
 
-string WrapModule::GenerateMethodTable(const string& base_nspace) const {
+string WrapScope::GenerateMethodTable(const string& base_nspace) const {
     stringstream table;
     table << "static PyMethodDef " << GetMethodTableName() << "[] = {" << endl;
     for (auto func : functions_) {
@@ -47,9 +47,9 @@ string WrapModule::GenerateMethodTable(const string& base_nspace) const {
     return table.str();
 }
 
-string WrapModule::full_dotted_name() const {
+string WrapScope::full_dotted_name() const {
     string fullName = name_;
-    md::Ptr<WrapModule> mod = parent_;
+    md::Ptr<WrapScope> mod = parent_;
     while (mod) {
         fullName = mod->name() + "." + fullName;
         mod = mod->parent();
@@ -58,17 +58,18 @@ string WrapModule::full_dotted_name() const {
 }
 
 
-std::list<ScriptModule> WrapModule::ConvertTreeToScriptModuleList() const {
+std::list<ScriptModule> WrapScope::ConvertTreeToScriptModuleList() const {
     std::list<ScriptModule> moduleList;
     auxConvertToModuleList(moduleList);
     return moduleList;
 }
 
-void WrapModule::auxConvertToModuleList(std::list<ScriptModule>& moduleList) const {
+void WrapScope::auxConvertToModuleList(std::list<ScriptModule>& moduleList) const {
     ScriptModule mod = {name_, GetInitFuncNameForModule(name_)};
     moduleList.push_back(mod);
     for (auto subm : sub_modules_ )
-        subm->auxConvertToModuleList(moduleList);
+        if (!subm->is_class())
+            subm->auxConvertToModuleList(moduleList);
 }
 
 } // namespace python

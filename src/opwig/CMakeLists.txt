@@ -39,8 +39,8 @@ set (
   ${CMAKE_CURRENT_BINARY_DIR}/gen/lua/wrapperstate.h
   ${CMAKE_CURRENT_BINARY_DIR}/gen/python/pythonspecification.h
   ${CMAKE_CURRENT_BINARY_DIR}/gen/python/pythonspecification.cxx
-  ${CMAKE_CURRENT_BINARY_DIR}/gen/python/wrapmodule.h
-  ${CMAKE_CURRENT_BINARY_DIR}/gen/python/wrapmodule.cxx
+  ${CMAKE_CURRENT_BINARY_DIR}/gen/python/wrapscope.h
+  ${CMAKE_CURRENT_BINARY_DIR}/gen/python/wrapscope.cxx
   ${CMAKE_CURRENT_BINARY_DIR}/gen/python/utilities.h
   ${CMAKE_CURRENT_BINARY_DIR}/gen/python/utilities.cxx
   ${OPWIG_MDPARSER_SRC}
