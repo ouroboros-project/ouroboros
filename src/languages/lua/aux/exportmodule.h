@@ -45,6 +45,16 @@ class ModuleInfo {
      */
     const luaL_Reg* functions () const;
 
+    /// Gives the module's getters array.
+    /** @return const luaL_Reg* The module's getters.
+     */
+    const luaL_Reg* getters () const;
+
+    /// Gives the module's setter array.
+    /** @return const luaL_Reg* The module's setters.
+     */
+    const luaL_Reg* setters () const;
+
   private:
 
     std::string           name_;
@@ -56,10 +66,11 @@ class ModuleInfo {
 
 };
 
-inline ModuleInfo::ModuleInfo (const std::string& name, luaL_Reg the_getters[], luaL_Reg the_setters[],
-                        luaL_Reg the_functions[], const std::list<ModuleInfo>& the_children)
-    : getters_(the_getters), setters_(the_setters), funcions_(the_functions), parent_(nullptr),
-      children_(the_children) {
+inline ModuleInfo::ModuleInfo (const std::string& the_name, luaL_Reg the_getters[],
+                               luaL_Reg the_setters[], luaL_Reg the_functions[],
+                               const std::list<ModuleInfo>& the_children)
+    : name_(the_name), getters_(the_getters), setters_(the_setters), funcions_(the_functions),
+      parent_(nullptr), children_(the_children) {
     for (auto& child : children_)
         child.parent_ = this;
 }
@@ -74,6 +85,14 @@ inline const ModuleInfo* ModuleInfo::parent () const {
 
 inline const luaL_Reg* ModuleInfo::functions () const {
     return funcions_;
+}
+
+inline const luaL_Reg* ModuleInfo::getters () const {
+    return getters_;
+}
+
+inline const luaL_Reg* ModuleInfo::setters () const {
+    return setters_;
 }
 
 void ExportModule (State& L, const ModuleInfo* info);

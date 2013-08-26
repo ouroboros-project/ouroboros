@@ -53,7 +53,7 @@ string MiddleBlockCode (const string& module_name) {
         "using opa::lua::aux::ExportModule;\n"
         "\n"
         "namespace {\n\n"
-        "const char *MODULE_NAME = \""+module_name+"\";\n\n"
+        +Utilities()+
         "} // unnamed namespace\n\n"
         "// Begin wrappers\n\n"
         "namespace generated {\n\n";
@@ -125,8 +125,8 @@ string Utilities () {
         "    return 0;\n"
         "}\n\n"
         "/// [-1,+1,-]\n"
-        "void OPWIG_Lua_PrepareMetatable (State& L, luaL_Reg getters[], luaL_Reg setters[],\n"
-        "                                 lua_CFunction ctor) {\n"
+        "void OPWIG_Lua_PrepareMetatable (State& L, const luaL_Reg getters[],\n"
+        "                                 const luaL_Reg setters[], lua_CFunction ctor) {\n"
         "    // Stack: [module]\n"
         "    L.newtable();\n"
         "    // Stack: [module, mttable]\n"
