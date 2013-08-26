@@ -25,6 +25,20 @@ void MakeParentModule (State& L, const ModuleInfo* parent) {
     L.remove(-2);
 }
 
+/// This function exports the given submodule into the table at the stack's top.
+/**
+ */
+void ExportSubmodule (State& L, const string& name, lua_CFunction init) {
+    // Stack: [module]
+    L.pushcfunction(init);
+    L.pushprimitive(name);
+    L.pushvalue(1);
+    // Stack: [module, cfunction, string, module]
+    L.call(2, 1);
+    // Stack: [module, submodule]
+    L.setfield(1, name);
+}
+
 } // unnamed namespace
 
 void ExportModule (State& L, const ModuleInfo* info) {
@@ -47,6 +61,10 @@ void ExportModule (State& L, const ModuleInfo* info) {
     // Stack: [module]
     // Register module's functions.
     luaL_register(L, NULL, info->functions());
+    // Stack: [module]
+    // Register module's submodules.
+    for (auto submodule_info : info->children())
+        ExportSubmodule(L, submodule_info->name(), submodule_info->init_function());
 }
 
 } // namespace aux

@@ -41,9 +41,7 @@ string CheckAndCloseNamespace (bool open) {
 
 string WrapperSpecification::FinishFile () const {
     string functions_wrap_code =
-        const_cast<WrapperSpecification*>(this)->CloseNamespace(md::Ptr<md::Namespace>())+
-        "namespace {\n\n"+
-        "} // unnamed namespace\n\n";
+        const_cast<WrapperSpecification*>(this)->CloseNamespace(md::Ptr<md::Namespace>());
     string init_functions_code =
         // Loader function
         "extern \"C\" {\n\n";
@@ -199,30 +197,24 @@ string WrapperSpecification::CloseNamespace (const Ptr<const Namespace>& obj) {
     stringstream code;
 
     code  << "namespace {\n\n"
+          << "/// Forward declaration.\n"
+          << "int init (lua_State* L_);\n\n"
           << WrapList(module, &ModuleWrap::functions, "function")
           << WrapList(module, &ModuleWrap::getters, "getter")
           << WrapList(module, &ModuleWrap::setters, "setter")
           << "ModuleInfo info(\n"
-          << "    \""+module->name+"\", getters, setters, functions,\n"
+          << "    \""+module->name+"\", init, getters, setters, functions,\n"
           << "    {";
     for (auto child : module->children())
         code
-          << " " << child->name << "::info,";
+          << " &" << child->name << "::info,";
     code  << " }\n"
           << ");\n\n"
           << "/// [-(1|2),+1,e]\n"
           << "int init (lua_State* L_) {\n"
           << "    State L(L_);\n"
           << "    ExportModule(L, &info);\n"
-          << "    // Stack: [module]\n"
-          << "    // Register module's submodules.\n";
-    for (auto submodule : module->children())
-      code
-          << "    OPWIG_Lua_ExportSubmodule("
-                << "L, "
-                << "\"" << submodule->name << "\", "
-                << submodule->nesting << "init"
-          << ");\n";
+          << "    // Stack: [module]\n";
     code  << "    // Set module metatable.\n"
           << "    OPWIG_Lua_PrepareMetatable(\n"
           << "        L,\n"
