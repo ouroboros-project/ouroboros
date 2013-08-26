@@ -21,8 +21,6 @@ std::string WrapList (const md::Ptr<ModuleWrap>& module, WrappedMember member,
 
 std::string MiddleBlockCode (const std::string& module_name);
 
-std::string Utilities ();
-
 } // namespace lua
 } // namespace gen
 } // namespace opwig

@@ -39,9 +39,103 @@ void ExportSubmodule (State& L, const string& name, lua_CFunction init) {
     L.setfield(1, name);
 }
 
+/// [-2,+1,-]
+int UniversalGetter (lua_State *L_) {
+    // Stack: [table, key]
+    State L(L_);
+    L.remove(1);
+    // Stack: [key]
+    L.pushvalue(lua_upvalueindex(1));
+    // Stack: [key, getters]
+    L.insert(1);
+    // Stack: [getters, key]
+    L.gettable(1);
+    // Stack: [getters, getter]
+    if (L.isnil(2)) {
+        L.settop(0);
+        L.pushnil();
+        return 1;
+    }
+    L.remove(1);
+    // Stack: [getter]
+    L.call(0, 1);
+    // Stack: [value]
+    return 1;
+}
+
+/// [-3,+1,-]
+int UniversalSetter (lua_State *L_) {
+    // Stack: [table, key, value]
+    State L(L_);
+    L.remove(1);
+    // Stack: [key, value]
+    L.pushvalue(lua_upvalueindex(1));
+    // Stack: [key, value, setters]
+    L.pushvalue(1);
+    // Stack: [key, value, setters, key]
+    L.gettable(3);
+    // Stack: [key, value, setters, setter]
+    if (L.isnil(4)) {
+        L.settop(0);
+        return luaL_error(
+            L,
+            "Attempt to write to nonexistent variable."
+        );
+    }
+    L.remove(3);
+    // Stack: [key, value, setter]
+    L.insert(2);
+    // Stack: [key, setter, value]
+    L.call(1, 0);
+    // Stack: [key]
+    L.settop(0);
+    // Stack: []
+    return 0;
+}
+
+/// [-1,+1,-]
+void PrepareMetatable (State& L, const ModuleInfo* info) {
+    // Stack: [module]
+    L.newtable();
+    // Stack: [module, mttable]
+    L.pushvalue(-1);
+    // Stack: [module, mttable, mttable]
+    L.setmetatable(1);
+    // Stack: [module, mttable]
+    /* Getters */ {
+        L.newtable();
+        // Stack: [module, mttable, getters]
+        luaL_register(L, NULL, info->getters());
+        // Stack: [module, mttable, getters]
+        L.pushcfunction(UniversalGetter, 1);
+        // Stack: [module, mttable, __index]
+        L.setfield(2, "__index");
+    }
+    // Stack: [module, mttable]
+    /* Setters */ {
+        L.newtable();
+        // Stack: [module, mttable, setters]
+        luaL_register(L, NULL, info->setters());
+        // Stack: [module, mttable, setters]
+        L.pushcfunction(UniversalSetter, 1);
+        // Stack: [module, mttable, __newindex]
+        L.setfield(2, "__newindex");
+    }
+    // Stack: [module, mttable]
+    if (info->constructor()) {
+        L.pushcfunction(info->constructor());
+        // Stack: [module, mttable, __call]
+        L.setfield(2, "__call");
+    }
+    // Stack: [module, mttable]
+    // Leave only the module table in the stack.
+    L.settop(1);
+    // Stack: [module]
+}
+
 } // unnamed namespace
 
-void ExportModule (State& L, const ModuleInfo* info) {
+int ExportModule (State&& L, const ModuleInfo* info) {
     if (L.gettop() > 1) {
         L.remove(1);
         L.settop(1);
@@ -59,12 +153,17 @@ void ExportModule (State& L, const ModuleInfo* info) {
     L.remove(1);
     L.settop(1);
     // Stack: [module]
-    // Register module's functions.
-    luaL_register(L, NULL, info->functions());
-    // Stack: [module]
     // Register module's submodules.
     for (auto submodule_info : info->children())
         ExportSubmodule(L, submodule_info->name(), submodule_info->init_function());
+    // Stack: [module]
+    // Register module's functions.
+    luaL_register(L, NULL, info->functions());
+    // Stack: [module];
+    // Set module metatable.
+    PrepareMetatable(L, info);
+    // Return de module itself
+    return 1;
 }
 
 } // namespace aux

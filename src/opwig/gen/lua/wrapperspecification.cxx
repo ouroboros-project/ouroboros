@@ -211,22 +211,8 @@ string WrapperSpecification::CloseNamespace (const Ptr<const Namespace>& obj) {
     code  << " }\n"
           << ");\n\n"
           << "/// [-(1|2),+1,e]\n"
-          << "int init (lua_State* L_) {\n"
-          << "    State L(L_);\n"
-          << "    ExportModule(L, &info);\n"
-          << "    // Stack: [module]\n";
-    code  << "    // Set module metatable.\n"
-          << "    OPWIG_Lua_PrepareMetatable(\n"
-          << "        L,\n"
-          << "        info.getters(),\n"
-          << "        info.setters(),\n"
-          << (module->is_class()
-            ? ("        generated::"+GetWrapName("constructor", module->name)+"\n")
-            : ("        nullptr\n" )
-            )
-          << "    );\n"
-          << "    // Return de module itself\n"
-          << "    return 1;\n"
+          << "int init (lua_State* L) {\n"
+          << "    return ExportModule(L, &info);\n"
           << "}\n\n"
           << "} // unnamed namespace\n\n";
 

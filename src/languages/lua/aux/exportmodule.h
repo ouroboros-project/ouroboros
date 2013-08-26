@@ -63,6 +63,11 @@ class ModuleInfo : public utils::Uncopyable {
      */
     const luaL_Reg* setters () const;
 
+    /// Gives the module's constructor function (if there is one).
+    /** @return lua_CFunction The module's constructor.
+     */
+    lua_CFunction constructor () const;
+
     /// Gives red-only access toe the module's submodules.
     /** @return const std::list<ModuleInfo>& The module's children.
      */
@@ -113,11 +118,15 @@ inline const luaL_Reg* ModuleInfo::setters () const {
     return setters_;
 }
 
+inline lua_CFunction ModuleInfo::constructor () const {
+    return nullptr;
+}
+
 inline const std::list<ModuleInfo*>& ModuleInfo::children () const {
     return children_;
 }
 
-void ExportModule (State& L, const ModuleInfo* info);
+int ExportModule (State&& L, const ModuleInfo* info);
 
 } // namespace aux
 } // namespace lua
