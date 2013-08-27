@@ -37,12 +37,14 @@ string WrapScope::GenerateMethodTable(const string& base_nspace) const {
         table << TAB << "{\"" << func_name << "\", " << full_func_name;
         table << ", " << METHARGS::ForFunction(func) << ", \"calls C++ wrapped function\" }," << endl;
     }
-    for (auto var : variables_) {
-        string var_name = var->name();
-        string full_var_name = GetWrappedNestedName(var);
-        table << TAB << "{\"" << var_name << "\", " << base_nspace << "::" << full_var_name;
-        table << ", " << METHARGS::ForVariable(var);
-        table << ", \"wraps C++ variable - call() for get, call(newValue) for set [if possible]\" }," << endl;
+    if (!is_class_) {
+        for (auto var : variables_) {
+            string var_name = var->name();
+            string full_var_name = GetWrappedNestedName(var);
+            table << TAB << "{\"" << var_name << "\", " << base_nspace << "::" << full_var_name;
+            table << ", " << METHARGS::ForVariable(var);
+            table << ", \"wraps C++ variable - call() for get, call(newValue) for set [if possible]\" }," << endl;
+        }
     }
     table << TAB << "{NULL, NULL, 0, NULL} //sentinel" << endl;
     table << "};" << endl;
