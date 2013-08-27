@@ -103,7 +103,7 @@ void HandleWrapScopeForInitFunc(stringstream& block, const Ptr<WrapScope>& modul
     }
     for (auto subm : module->sub_modules() ) {
         if (subm->is_class()) {
-            string typeName = BASE_NSPACE + "::" + subm->full_dotted_name("::") + "::" + GetTypeNameForClass(subm->name());
+            string typeName = BASE_NSPACE + "::" + subm->nested_name() + "::" + GetTypeNameForClass(subm->name());
             block << TAB << "if (PyType_Ready(&" << typeName << ") < 0)" << endl;
             block << TAB << TAB << "return;" << endl;
         }
@@ -210,7 +210,7 @@ string PythonSpecification::WrapVariable(const Ptr<const md::Variable>& obj) {
             func << TAB << "cpp_self->" << obj->name() << " = newValue;" << endl;
             func << TAB << "return 0;" << endl;
             func << "}" << endl;
-            func << "catch (std::exception& e) { return FuncErrorHandling(e); }" << endl;
+            func << "catch (std::exception& e) { FuncErrorHandling(e); return -1; }" << endl;
         }
         else {
             func << "{" << endl;
@@ -270,9 +270,9 @@ string PythonSpecification::CloseClass(const Ptr<const md::Class>& obj) {
     ccb << TAB << "\"" << obj->nested_name(".", false) << "\"," << endl;
     ccb << TAB << "sizeof(" << GetTypeObjNameForClass(obj->name()) << ")," << endl;
     ccb << TAB << "0," << endl;
-    ccb << TAB << "(destructor)opa::python::wrapper::GenericDealloc<" << obj->nested_name() << ">," << endl;
+    ccb << TAB << "(destructor)opa::python::wrapper::GenericDealloc< " << obj->nested_name() << ">," << endl;
     ccb << TAB << "0, 0, 0, 0," << endl;
-    ccb << TAB << "(reprfunc)opa::python::wrapper::GenericRepr<" << obj->nested_name() << ">," << endl;
+    ccb << TAB << "(reprfunc)opa::python::wrapper::GenericRepr< " << obj->nested_name() << ">," << endl;
     ccb << TAB << "0, 0, 0, 0, 0, 0, 0, 0, 0," << endl;
     ccb << TAB << "Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE," << endl;
     ccb << TAB << "\"wrapped C++ type\"," << endl;
@@ -281,7 +281,7 @@ string PythonSpecification::CloseClass(const Ptr<const md::Class>& obj) {
     ccb << TAB << "0,    /* tp_members */" << endl;
     ccb << TAB << current_->GetGetSetTableName() << ", /* tp_getset */" << endl;
     ccb << TAB << "0, 0, 0, 0, 0, 0, 0," << endl;
-    ccb << TAB << "opa::python::wrapper::GenericNew<" << obj->nested_name() << ">," << endl;
+    ccb << TAB << "opa::python::wrapper::GenericNew< " << obj->nested_name() << ">," << endl;
     ccb << "};" << endl;
     ccb << "} //closing CLASS namespace " << obj->name() << endl;
 

@@ -70,12 +70,24 @@ std::string WrapScope::GenerateGetSetTable(const std::string& base_nspace) const
     return table.str();
 }
 
-string WrapScope::full_dotted_name(const std::string& separator) const {
+string WrapScope::full_dotted_name() const {
     string fullName = name_;
     md::Ptr<WrapScope> mod = parent_;
     while (mod) {
-        fullName = mod->name() + separator + fullName;
+        fullName = mod->name() + "." + fullName;
         mod = mod->parent();
+    }
+    return fullName;
+}
+
+std::string WrapScope::nested_name() const {
+    string fullName = name_;
+    md::Ptr<WrapScope> mod = parent_;
+    while (mod) {
+        fullName = mod->name() + "::" + fullName;
+        mod = mod->parent();
+        if (!mod->parent())
+            break;
     }
     return fullName;
 }

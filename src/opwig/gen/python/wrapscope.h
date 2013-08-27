@@ -41,8 +41,15 @@ class WrapScope final {
 
     void AddSubModule(const md::Ptr<WrapScope>& subm) { sub_modules_.push_back(subm); }
     
+    /// Returns the name of this scope (should be equal to the name of the md::Scope that generated this).
     std::string name() const { return name_; }
-    std::string full_dotted_name(const std::string& separator = ".") const;
+    /** Returns a dot-separated path name, from the root scope to this one (generating the
+        dotted-path notation for python). */
+    std::string full_dotted_name() const;
+    /** Returns a '::'-separated path name, from the root scope to this one (should be equal to the nested_name()
+        of the md::Scope that generated this). */
+    std::string nested_name() const;
+
     void set_name(const std::string& name) { name_ = name; }
     bool is_class() const { return is_class_; }
     const md::Ptr<WrapScope>& parent() const { return parent_; }
