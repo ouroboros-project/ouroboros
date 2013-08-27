@@ -118,12 +118,15 @@ string PythonSpecification::FinishFile() const {
 }
 
 // WRAP FUNCION
-//TODO: fix for class - call as methods
 string PythonSpecification::WrapFunction(const Ptr<const md::Function>& obj) {
     current_->AddFunction(obj);
         
     stringstream func;
-    func << "PyObject* " << FUNC_PREFIX << obj->name() << "(PyObject* self, PyObject* args)" << endl;
+    string self_type = "PyObject";
+    if (current_->is_class()) {
+        self_type = GetTypeObjNameForClass(current_->name());
+    }
+    func << "PyObject* " << FUNC_PREFIX << obj->name() << "(" << self_type << "* py_self, PyObject* args)" << endl;
     func << "try {" << endl;
     if (obj->num_parameters() > 0)
         func << TAB << "if (!NumArgsOk(args, " << obj->num_parameters() << ")) return nullptr;" << endl;
@@ -136,12 +139,18 @@ string PythonSpecification::WrapFunction(const Ptr<const md::Function>& obj) {
             args << ", ";
         args << "fArg" << i;
     }
+    string func_call = obj->nested_name();
+    if (current_->is_class()) {
+        func << TAB << "typename py_self->type* cpp_self = static_cast<py_self->type*>(py_self->obj);" << endl;
+        func_call = "cpp_self->" + obj->name();
+    }
+
     if (obj->return_type()->full_type() == "void") {
-        func << TAB << obj->nested_name() << "("<< args.str() << ");" << endl;
+        func << TAB << func_call << "("<< args.str() << ");" << endl;
         func << TAB << "Py_RETURN_NONE;" << endl;
     }
     else {
-        func << TAB << obj->return_type()->full_type() << " fValue = " << obj->nested_name() << "("<< args.str() << ");" << endl;
+        func << TAB << obj->return_type()->full_type() << " fValue = " << func_call << "("<< args.str() << ");" << endl;
         func << TAB << "return converter.TypeToScript<"<< obj->return_type()->full_type() <<">(fValue);" << endl;
     }
     func << "}" << endl;
@@ -150,24 +159,59 @@ string PythonSpecification::WrapFunction(const Ptr<const md::Function>& obj) {
 }
 
 // WRAP VARIABLE
-//TODO: fix for classes - generate getter/setter
 string PythonSpecification::WrapVariable(const Ptr<const md::Variable>& obj) {
     current_->AddVariable(obj);
     stringstream func;
-    func << "PyObject* " << FUNC_PREFIX << obj->name() << "(PyObject* self, PyObject* args)" << std::endl;
-    func << "try {" << endl;
-    func << TAB << "PythonConverter converter (true);" << std::endl;
-    func << TAB << obj->type()->full_type() << " oldValue = " << obj->nested_name() << ";" << endl;
-    if (!obj->type()->is_const()) {
-        func << TAB << "if (static_cast<int>(PyTuple_Size(args)) == 1) {" << endl;
-        func << TAB << TAB << obj->nested_name() << " = ";
-        func << "converter.PyArgToType<"<< obj->type()->full_type() <<">(args, 0);" << endl;
-        func << TAB << "}" << endl;
-        func << TAB << "else if (!NumArgsOk(args, 0)) return nullptr;" << endl;
+    if (!current_->is_class()) {
+        func << "PyObject* " << FUNC_PREFIX << obj->name() << "(PyObject* self, PyObject* args)" << std::endl;
+        func << "try {" << endl;
+        func << TAB << "PythonConverter converter (true);" << std::endl;
+        func << TAB << obj->type()->full_type() << " oldValue = " << obj->nested_name() << ";" << endl;
+        if (!obj->type()->is_const()) {
+            func << TAB << "if (static_cast<int>(PyTuple_Size(args)) == 1) {" << endl;
+            func << TAB << TAB << obj->nested_name() << " = ";
+            func << "converter.PyArgToType<"<< obj->type()->full_type() <<">(args, 0);" << endl;
+            func << TAB << "}" << endl;
+            func << TAB << "else if (!NumArgsOk(args, 0)) return nullptr;" << endl;
+        }
+        func << TAB << "return converter.TypeToScript<" << obj->type()->full_type() <<">(oldValue);" << endl;
+        func << "}" << endl;
+        func << "catch (std::exception& e) { return FuncErrorHandling(e); }" << endl;
     }
-    func << TAB << "return converter.TypeToScript<" << obj->type()->full_type() <<">(oldValue);" << endl;
-    func << "}" << endl;
-    func << "catch (std::exception& e) { return FuncErrorHandling(e); }" << endl;
+    else {
+        func << "PyObject* " << FUNC_PREFIX << obj->name() << "_getter(" << GetTypeObjNameForClass(current_->name());
+        func << "* py_self, void *closure)" << endl;
+        func << "try {" << endl;
+        func << TAB << "PythonConverter converter (true);" << endl;
+        func << TAB << "typename py_self->type* cpp_self = static_cast<py_self->type*>(py_self->obj);" << endl;
+        func << TAB << "return converter.TypeToScript<" << obj->type()->full_type() <<">(cpp_self->" << obj->name() << ");" << endl;
+        func << "}" << endl;
+        func << "catch (std::exception& e) { return FuncErrorHandling(e); }" << endl << endl;
+
+        func << "int " << FUNC_PREFIX << obj->name() << "_setter(" << GetTypeObjNameForClass(current_->name());
+        func << "* py_self, PyObject *value, void *closure)" << endl;
+        if (!obj->type()->is_const()) {
+            func << "try {" << endl;
+            func << TAB << "if (value == NULL) {" << endl;
+            func << TAB << TAB << "PyErr_SetString(PyExc_TypeError, \"[OPWIG] Cannot delete attribute from wrapped C++ class\");" << endl;
+            func << TAB << TAB << "return -1;" << endl;
+            func << TAB << "}" << endl;
+            func << TAB << "PythonConverter converter (true);" << endl;
+            func << TAB << obj->type()->full_type() <<" newValue = converter.ScriptToType<" << obj->type()->full_type() <<">(value);" << endl;
+            //TODO: check if this is accurate - passing type checking to converter
+            func << TAB << "typename py_self->type* cpp_self = static_cast<py_self->type*>(py_self->obj);" << endl;
+            func << TAB << "cpp_self->" << obj->name() << " = newValue;" << endl;
+            func << TAB << "return 0;" << endl;
+            func << "}" << endl;
+            func << "catch (std::exception& e) { return FuncErrorHandling(e); }" << endl;
+        }
+        else {
+            func << "{" << endl;
+            func << TAB << "PyErr_SetString(PyExc_TypeError, \"[OPWIG] tried to set value of a const (read-only) variable.\");" << endl;
+            func << TAB << "return -1;" << endl;
+            func << "}" << endl;
+        }
+    }
     return func.str();
 }
 
@@ -182,14 +226,14 @@ string PythonSpecification::OpenClass(const Ptr<const md::Class>& obj) {
     stringstream ocb; //open class block
 
     ocb << "namespace " << obj->name() << " { //entering CLASS namespace " << obj->name() << endl;
-    ocb << "typedef struct _Py" << obj->name() << "Object {" << endl;
+    ocb << "typedef struct _" << GetTypeObjNameForClass(obj->name()) << " {" << endl;
     ocb << TAB << "PyObject_HEAD" << endl;
     ocb << TAB << "void* obj;" << endl;
     ocb << TAB << "typedef " << obj->nested_name() << " type;" << endl;
     ocb << TAB << "void construct(PyObject* args, PyObject* kwds) {" << endl;
     ocb << TAB << TAB << "COISAS" << endl; //TODO: IMPLEMENT COISAS
     ocb << TAB << "}" << endl;
-    ocb << "} Py" << obj->name() << "Object;" << endl;
+    ocb << "} " << GetTypeObjNameForClass(obj->name()) << ";" << endl;
     
     return ocb.str();
 }
@@ -203,7 +247,7 @@ string PythonSpecification::CloseClass(const Ptr<const md::Class>& obj) {
     ccb << TAB << "PyObject_HEAD_INIT(NULL)" << endl;
     ccb << TAB << "0," << endl;
     ccb << TAB << "\"" << obj->nested_name(".", false) << "\"," << endl;
-    ccb << TAB << "sizeof(Py" << obj->name() << "Object)," << endl;
+    ccb << TAB << "sizeof(" << GetTypeObjNameForClass(obj->name()) << ")," << endl;
     ccb << TAB << "0," << endl;
     ccb << TAB << "(destructor)opa::python::wrapper::GenericDealloc<" << obj->nested_name() << ">," << endl;
     ccb << TAB << "0, 0, 0, 0," << endl;

@@ -27,6 +27,8 @@ std::string GetMETHARGSforFunction(const md::Ptr<const md::Function>& func);
 
 std::string GetInitFuncNameForModule(const std::string& module_name);
 
+std::string GetTypeObjNameForClass(const std::string& class_name);
+
 namespace METHARGS {
 std::string ForFunction(const md::Ptr<const md::Function>& func);
 std::string ForVariable(const md::Ptr<const md::Variable>& var);

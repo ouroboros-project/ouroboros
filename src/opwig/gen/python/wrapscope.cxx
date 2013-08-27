@@ -31,8 +31,10 @@ string WrapScope::GenerateMethodTable(const string& base_nspace) const {
     table << "static PyMethodDef " << GetMethodTableName() << "[] = {" << endl;
     for (auto func : functions_) {
         string func_name = func->name();
-        string full_func_name = GetWrappedNestedName(func);
-        table << TAB << "{\"" << func_name << "\", " << base_nspace << "::" << full_func_name;
+        string full_func_name = base_nspace + "::" + GetWrappedNestedName(func);
+        if (is_class_)
+            full_func_name = "(PyCFunction)" + full_func_name;
+        table << TAB << "{\"" << func_name << "\", " << full_func_name;
         table << ", " << METHARGS::ForFunction(func) << ", \"calls C++ wrapped function\" }," << endl;
     }
     for (auto var : variables_) {
