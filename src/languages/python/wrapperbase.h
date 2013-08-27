@@ -24,7 +24,7 @@ PyObject* GenericNew(PyTypeObject *type, PyObject *args, PyObject *kwds)
         }
     }
     else {
-        std::string tname (typeid(value).name());
+        std::string tname (typeid(self).name());
         std::string pyname (type->tp_name);
         std::string msg = "could not allocate a new " + pyname + " [T: " + tname + "] object.";
         PyErr_SetString(PyExc_RuntimeError, msg.c_str());

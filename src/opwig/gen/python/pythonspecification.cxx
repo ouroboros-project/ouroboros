@@ -147,7 +147,7 @@ string PythonSpecification::WrapFunction(const Ptr<const md::Function>& obj) {
     }
     string func_call = obj->nested_name();
     if (current_->is_class()) {
-        func << TAB << "typename py_self->type* cpp_self = static_cast<py_self->type*>(py_self->obj);" << endl;
+        func << TAB << "typename " << self_type << "::type* cpp_self = static_cast<" << self_type << "::type*>(py_self->obj);" << endl;
         func_call = "cpp_self->" + obj->name();
     }
 
@@ -185,16 +185,17 @@ string PythonSpecification::WrapVariable(const Ptr<const md::Variable>& obj) {
         func << "catch (std::exception& e) { return FuncErrorHandling(e); }" << endl;
     }
     else {
-        func << "PyObject* " << FUNC_PREFIX << obj->name() << "_getter(" << GetTypeObjNameForClass(current_->name());
+        std::string self_type = GetTypeObjNameForClass(current_->name());
+        func << "PyObject* " << FUNC_PREFIX << obj->name() << "_getter(" << self_type;
         func << "* py_self, void *closure)" << endl;
         func << "try {" << endl;
         func << TAB << "PythonConverter converter (true);" << endl;
-        func << TAB << "typename py_self->type* cpp_self = static_cast<py_self->type*>(py_self->obj);" << endl;
+        func << TAB << "typename " << self_type << "::type* cpp_self = static_cast<" << self_type << "::type*>(py_self->obj);" << endl;
         func << TAB << "return converter.TypeToScript<" << obj->type()->full_type() <<">(cpp_self->" << obj->name() << ");" << endl;
         func << "}" << endl;
         func << "catch (std::exception& e) { return FuncErrorHandling(e); }" << endl << endl;
 
-        func << "int " << FUNC_PREFIX << obj->name() << "_setter(" << GetTypeObjNameForClass(current_->name());
+        func << "int " << FUNC_PREFIX << obj->name() << "_setter(" << self_type;
         func << "* py_self, PyObject *value, void *closure)" << endl;
         if (!obj->type()->is_const()) {
             func << "try {" << endl;
@@ -205,7 +206,7 @@ string PythonSpecification::WrapVariable(const Ptr<const md::Variable>& obj) {
             func << TAB << "PythonConverter converter (true);" << endl;
             func << TAB << obj->type()->full_type() <<" newValue = converter.ScriptToType<" << obj->type()->full_type() <<">(value);" << endl;
             //TODO: check if this is accurate - passing type checking to converter
-            func << TAB << "typename py_self->type* cpp_self = static_cast<py_self->type*>(py_self->obj);" << endl;
+            func << TAB << "typename " << self_type << "::type* cpp_self = static_cast<" << self_type << "::type*>(py_self->obj);" << endl;
             func << TAB << "cpp_self->" << obj->name() << " = newValue;" << endl;
             func << TAB << "return 0;" << endl;
             func << "}" << endl;
@@ -238,18 +239,18 @@ string PythonSpecification::OpenClass(const Ptr<const md::Class>& obj) {
     ocb << TAB << "typedef " << obj->nested_name() << " type;" << endl;
     ocb << TAB << "void construct(PyObject* args, PyObject* kwds)" << endl;
     ocb << TAB << "try {" << endl;
-    auto ctor = obj->constructors()[0];
+    /*auto ctor = obj->constructors()[0];
     if (ctor->num_parameters() > 0)
         ocb << TAB << TAB << "if (!NumArgsOk(args, " << ctor->num_parameters() << ")) return;" << endl;
-    ocb << TAB << TAB << "PythonConverter converter (true);" << std::endl;
+    ocb << TAB << TAB << "PythonConverter converter (true);" << std::endl;*/
     stringstream args ("");
-    for (unsigned i=0; i<ctor->num_parameters(); i++) {
+    /*for (unsigned i=0; i<ctor->num_parameters(); i++) {
         ocb << TAB << TAB << ctor->parameter_type(i)->full_type() <<" fArg"<< i;
         ocb << " = converter.PyArgToType<"<< ctor->parameter_type(i)->full_type() <<">(args, " << i << ");" << endl;
         if (i > 0)
             args << ", ";
         args << "fArg" << i;
-    }
+    }*/
     ocb << TAB << TAB << "this->obj = new " << obj->nested_name() << "("<< args.str() << ");" << endl;
     ocb << TAB << "}" << endl;
     ocb << TAB << "catch (std::exception& e) { FuncErrorHandling(e); }" << endl;
