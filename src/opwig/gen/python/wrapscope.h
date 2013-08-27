@@ -36,6 +36,9 @@ class WrapScope final {
     std::string GetMethodTableName() const;
     std::string GenerateMethodTable(const std::string& base_nspace) const;
 
+    std::string GetGetSetTableName() const;
+    std::string GenerateGetSetTable(const std::string& base_nspace) const;
+
     void AddSubModule(const md::Ptr<WrapScope>& subm) { sub_modules_.push_back(subm); }
     
     std::string name() const { return name_; }

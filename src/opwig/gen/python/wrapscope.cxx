@@ -47,6 +47,25 @@ string WrapScope::GenerateMethodTable(const string& base_nspace) const {
     return table.str();
 }
 
+std::string WrapScope::GetGetSetTableName() const {
+    return name_+"GetSetters";
+}
+
+std::string WrapScope::GenerateGetSetTable(const std::string& base_nspace) const {
+    stringstream table;
+    table << "static PyGetSetDef " << GetGetSetTableName() << "[] = {" << endl;
+    for (auto var : variables_) {
+        string var_name = var->name();
+        string full_var_name = base_nspace + "::" + GetWrappedNestedName(var);
+        table << TAB << "{\"" << var_name << "\", (getter)" << full_var_name << "_getter";
+        table << ", (setter)" << full_var_name << "_setter";
+        table << ", \"C++ class variable wrap\", NULL }," << endl;
+    }
+    table << TAB << "{NULL} //sentinel" << endl;
+    table << "};" << endl;
+    return table.str();
+}
+
 string WrapScope::full_dotted_name() const {
     string fullName = name_;
     md::Ptr<WrapScope> mod = parent_;

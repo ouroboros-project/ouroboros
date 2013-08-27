@@ -30,6 +30,7 @@ string PythonSpecification::FileHeader() const {
         "#include <Python.h>\n"
         "#include <languages/python/pythonwrapper.h>\n"
         "#include <languages/python/pythonconverter.h>\n"
+        "#include <languages/python/wrapperbase.h>\n"
         "#include <opa/scriptmanager.h>\n"
         "#include <opa/module.h>\n"
         "#include <iostream>\n"
@@ -102,7 +103,7 @@ void HandleWrapScopeForInitFunc(stringstream& block, const Ptr<WrapScope>& modul
     }
 
     block << "}" << endl;
-
+    //TODO: fix for classes - call TypeReady
     for (auto subm : module->sub_modules() )
         if (!subm->is_class())
             HandleWrapScopeForInitFunc(block, subm);
@@ -117,6 +118,7 @@ string PythonSpecification::FinishFile() const {
 }
 
 // WRAP FUNCION
+//TODO: fix for class - call as methods
 string PythonSpecification::WrapFunction(const Ptr<const md::Function>& obj) {
     current_->AddFunction(obj);
         
@@ -148,6 +150,7 @@ string PythonSpecification::WrapFunction(const Ptr<const md::Function>& obj) {
 }
 
 // WRAP VARIABLE
+//TODO: fix for classes - generate getter/setter
 string PythonSpecification::WrapVariable(const Ptr<const md::Variable>& obj) {
     current_->AddVariable(obj);
     stringstream func;
@@ -176,13 +179,49 @@ string PythonSpecification::WrapEnum(const Ptr<const md::Enum>& obj) {
 // OPEN CLASS
 string PythonSpecification::OpenClass(const Ptr<const md::Class>& obj) {
     PushScope(obj->name(), true);
-    return "namespace "+obj->name()+" { //entering CLASS namespace "+obj->name()+"\n";
+    stringstream ocb; //open class block
+
+    ocb << "namespace " << obj->name() << " { //entering CLASS namespace " << obj->name() << endl;
+    ocb << "typedef struct _Py" << obj->name() << "Object {" << endl;
+    ocb << TAB << "PyObject_HEAD" << endl;
+    ocb << TAB << "void* obj;" << endl;
+    ocb << TAB << "typedef " << obj->nested_name() << " type;" << endl;
+    ocb << TAB << "void construct(PyObject* args, PyObject* kwds) {" << endl;
+    ocb << TAB << TAB << "COISAS" << endl; //TODO: IMPLEMENT COISAS
+    ocb << TAB << "}" << endl;
+    ocb << "} Py" << obj->name() << "Object;" << endl;
+    
+    return ocb.str();
 }
 
 // CLOSE CLASS
 string PythonSpecification::CloseClass(const Ptr<const md::Class>& obj) {
+    stringstream ccb; //close class block
+    ccb << current_->GenerateMethodTable(BASE_NSPACE) << endl;
+    ccb << current_->GenerateGetSetTable(BASE_NSPACE) << endl << endl;
+    ccb << "static PyTypeObject Py" << obj->name() << "Type = {" << endl;
+    ccb << TAB << "PyObject_HEAD_INIT(NULL)" << endl;
+    ccb << TAB << "0," << endl;
+    ccb << TAB << "\"" << obj->nested_name(".", false) << "\"," << endl;
+    ccb << TAB << "sizeof(Py" << obj->name() << "Object)," << endl;
+    ccb << TAB << "0," << endl;
+    ccb << TAB << "(destructor)opa::python::wrapper::GenericDealloc<" << obj->nested_name() << ">," << endl;
+    ccb << TAB << "0, 0, 0, 0," << endl;
+    ccb << TAB << "(reprfunc)opa::python::wrapper::GenericRepr<" << obj->nested_name() << ">," << endl;
+    ccb << TAB << "0, 0, 0, 0, 0, 0, 0, 0, 0," << endl;
+    ccb << TAB << "Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE," << endl;
+    ccb << TAB << "\"wrapped C++ type\"," << endl;
+    ccb << TAB << "0, 0, 0, 0, 0, 0," << endl;
+    ccb << TAB << current_->GetMethodTableName() << ", /* tp_methods */" << endl;
+    ccb << TAB << "0,    /* tp_members */" << endl;
+    ccb << TAB << current_->GetGetSetTableName() << ", /* tp_getset */" << endl;
+    ccb << TAB << "0, 0, 0, 0, 0, 0, 0," << endl;
+    ccb << TAB << "opa::python::wrapper::GenericNew<" << obj->nested_name() << ">," << endl;
+    ccb << "};" << endl;
+    ccb << "} //closing CLASS namespace " << obj->name() << endl;
+
     PopScope();
-    return "} //closing CLASS namespace "+obj->name()+"\n";
+    return ccb.str();
 }
 
 // OPEN NAMESPACE
