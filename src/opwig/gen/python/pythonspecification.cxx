@@ -75,6 +75,12 @@ string PythonSpecification::MiddleBlock() const {
         "    cout << \"[ERROR IN C++]\" << e.what() << endl;\n"
         "    if (PyErr_Occurred()==nullptr)   PyErr_SetString(PyExc_RuntimeError, e.what());\n"
         "    return nullptr;\n"
+        "}\n\n"
+        "void AddTypeToModule(PyObject* module, const char* typeName, PyTypeObject* type) {\n"
+        "    if (PyType_Ready(type) < 0)\n"
+        "        return;\n"
+        "    Py_INCREF(type);\n"
+        "    PyModule_AddObject(module, typeName, (PyObject*)type);\n"
         "}\n"
         "} // unnamed namespace\n\n"
         "namespace "+BASE_NSPACE+" {\n\n";
@@ -98,14 +104,14 @@ void HandleWrapScopeForInitFunc(stringstream& block, const Ptr<WrapScope>& modul
     block << "Py_InitModule(\"" << module->full_dotted_name() << "\", " << module->GetMethodTableName() << ");" << endl;
 
     if (module->parent()) {
+        block << TAB << "if (" << module->name() << "_mod == nullptr) return;" << endl;
         block << TAB << "AddToParentModule(" << module->name() << "_mod, \"" << module->name();
         block << "\", \"" << module->parent()->full_dotted_name() << "\");" << endl;
     }
     for (auto subm : module->sub_modules() ) {
         if (subm->is_class()) {
             string typeName = BASE_NSPACE + "::" + subm->nested_name() + "::" + GetTypeNameForClass(subm->name());
-            block << TAB << "if (PyType_Ready(&" << typeName << ") < 0)" << endl;
-            block << TAB << TAB << "return;" << endl;
+            block << TAB << "AddTypeToModule(" << module->name() << "_mod, \"" << subm->name() << "\", &" << typeName << ");" << endl;
         }
     }
     block << "}" << endl;
