@@ -30,15 +30,6 @@ string WrapperSpecification::MiddleBlock() const {
     return MiddleBlockCode(module_name_);
 }
 
-namespace {
-
-string CheckAndCloseNamespace (bool open) {
-    return
-        string(open ? "} // namespace generated\n\n" : "");
-}
-
-} // unnamed namespace
-
 string WrapperSpecification::FinishFile () const {
     string functions_wrap_code =
         const_cast<WrapperSpecification*>(this)->CloseNamespace(md::Ptr<md::Namespace>());
@@ -162,22 +153,30 @@ string WrapperSpecification::WrapEnum (const md::Ptr<const md::Enum>& obj) {
 }
 
 string WrapperSpecification::OpenClass (const md::Ptr<const md::Class>& obj) {
+    bool open = !state_.current_module()->has_children();
     state_.PushModule(obj->name(), true);
     modules_.push_back(state_.current_module());
 
-    return "// Wraps for class "+obj->name()+"\n";
+    return
+        string(open ? "} // namespace generated\n\n" : "")+
+        "namespace class_"+obj->name()+" {\n\n"+
+        "namespace generated {\n\n";
 }
 
 string WrapperSpecification::CloseClass (const md::Ptr<const md::Class>& obj) {
-    stringstream code;
+    bool open = !state_.current_module()->has_children();
+    string code = CloseModuleBlock(state_.current_module());
 
-    code  << "int " << GetWrapName("constructor", obj->name()) << " (lua_State* L) {\n"
-          << "    return 0;\n"
-          << "}\n\n";
+    //code  << "int " << GetWrapName("constructor", obj->name()) << " (lua_State* L) {\n"
+    //      << "    return 0;\n"
+    //      << "}\n\n";
 
     state_.PopModule();
 
-    return code.str();
+    return
+        CheckAndCloseNamespace(open)+
+        code+
+        string(obj ? "} // namespace class_"+obj->name()+"\n\n": "");
 }
 
 string WrapperSpecification::OpenNamespace (const Ptr<const Namespace>& obj) {
@@ -192,35 +191,12 @@ string WrapperSpecification::OpenNamespace (const Ptr<const Namespace>& obj) {
 }
 
 string WrapperSpecification::CloseNamespace (const Ptr<const Namespace>& obj) {
-    Ptr<ModuleWrap> module = state_.current_module();
-    bool open = !module->has_children();
-    stringstream code;
-
-    code  << "namespace {\n\n"
-          << "/// Forward declaration.\n"
-          << "int init (lua_State* L_);\n\n"
-          << WrapList(module, &ModuleWrap::functions, "function")
-          << WrapList(module, &ModuleWrap::getters, "getter")
-          << WrapList(module, &ModuleWrap::setters, "setter")
-          << "ModuleInfo info(\n"
-          << "    \""+module->name+"\", init, getters, setters, functions,\n"
-          << "    {";
-    for (auto child : module->children())
-        code
-          << " &" << child->name << "::info,";
-    code  << " }\n"
-          << ");\n\n"
-          << "/// [-(1|2),+1,e]\n"
-          << "int init (lua_State* L) {\n"
-          << "    return ExportModule(L, &info);\n"
-          << "}\n\n"
-          << "} // unnamed namespace\n\n";
-
+    bool open = !state_.current_module()->has_children();
+    string code = CloseModuleBlock(state_.current_module());
     state_.PopModule();
-
     return
         CheckAndCloseNamespace(open)+
-        code.str()+
+        code+
         string(obj ? "} // namespace "+obj->name()+"\n\n": "");
 }
 

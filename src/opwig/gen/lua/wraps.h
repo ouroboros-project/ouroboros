@@ -78,7 +78,7 @@ inline bool ModuleWrap::has_wraps () const {
 }
 
 inline bool ModuleWrap::has_children () const {
-    return nonclass_children_num_ > 0;
+    return !children_.empty(); // nonclass_children_num_ > 0;
 }
 
 inline const std::list<md::Ptr<ModuleWrap>>& ModuleWrap::children () const {

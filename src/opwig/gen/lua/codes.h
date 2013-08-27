@@ -4,6 +4,9 @@
 
 #include <opwig/gen/lua/wraps.h>
 
+#include <opwig/md/metadataobject.h>
+#include <opwig/md/ptr.h>
+
 #include <string>
 
 namespace opwig {
@@ -20,6 +23,10 @@ std::string WrapList (const md::Ptr<ModuleWrap>& module, WrappedMember member,
                       const std::string& type);
 
 std::string MiddleBlockCode (const std::string& module_name);
+
+std::string CheckAndCloseNamespace (bool open, const std::string& name = "generated");
+
+std::string CloseModuleBlock (const md::Ptr<ModuleWrap>& module);
 
 } // namespace lua
 } // namespace gen

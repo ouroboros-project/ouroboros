@@ -10,6 +10,8 @@ namespace lua {
 using std::string;
 using std::stringstream;
 using std::list;
+using md::Ptr;
+using md::MetadataObject;
 
 string WrapList (const md::Ptr<ModuleWrap>& module, WrappedMember member, const string& type) {
     const auto& wraps = (*module).*member;
@@ -54,6 +56,37 @@ string MiddleBlockCode (const string& module_name) {
         "\n"
         "// Begin wrappers\n\n"
         "namespace generated {\n\n";
+}
+
+string CheckAndCloseNamespace (bool open, const string& name) {
+    return
+        open ? ("} // namespace "+name+"\n\n") : "";
+}
+
+std::string CloseModuleBlock (const Ptr<ModuleWrap>& module) {
+    stringstream code;
+
+    code  << "namespace {\n\n"
+          << "/// Forward declaration.\n"
+          << "int init (lua_State* L_);\n\n"
+          << WrapList(module, &ModuleWrap::functions, "function")
+          << WrapList(module, &ModuleWrap::getters, "getter")
+          << WrapList(module, &ModuleWrap::setters, "setter")
+          << "ModuleInfo info(\n"
+          << "    \""+module->name+"\", init, getters, setters, functions,\n"
+          << "    {";
+    for (auto child : module->children())
+        code
+          << " &" << (child->is_class() ? "class_" : "") << child->name << "::info,";
+    code  << " }\n"
+          << ");\n\n"
+          << "/// [-(1|2),+1,e]\n"
+          << "int init (lua_State* L) {\n"
+          << "    return ExportModule(L, &info);\n"
+          << "}\n\n"
+          << "} // unnamed namespace\n\n";
+
+    return code.str();
 }
 
 } // namespace lua
