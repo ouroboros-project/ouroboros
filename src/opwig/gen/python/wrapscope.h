@@ -42,7 +42,7 @@ class WrapScope final {
     void AddSubModule(const md::Ptr<WrapScope>& subm) { sub_modules_.push_back(subm); }
     
     std::string name() const { return name_; }
-    std::string full_dotted_name() const;
+    std::string full_dotted_name(const std::string& separator = ".") const;
     void set_name(const std::string& name) { name_ = name; }
     bool is_class() const { return is_class_; }
     const md::Ptr<WrapScope>& parent() const { return parent_; }

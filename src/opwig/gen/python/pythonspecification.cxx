@@ -101,9 +101,15 @@ void HandleWrapScopeForInitFunc(stringstream& block, const Ptr<WrapScope>& modul
         block << TAB << "AddToParentModule(" << module->name() << "_mod, \"" << module->name();
         block << "\", \"" << module->parent()->full_dotted_name() << "\");" << endl;
     }
-
+    for (auto subm : module->sub_modules() ) {
+        if (subm->is_class()) {
+            string typeName = BASE_NSPACE + "::" + subm->full_dotted_name("::") + "::" + GetTypeNameForClass(subm->name());
+            block << TAB << "if (PyType_Ready(&" << typeName << ") < 0)" << endl;
+            block << TAB << TAB << "return;" << endl;
+        }
+    }
     block << "}" << endl;
-    //TODO: fix for classes - call TypeReady
+
     for (auto subm : module->sub_modules() )
         if (!subm->is_class())
             HandleWrapScopeForInitFunc(block, subm);
@@ -243,7 +249,7 @@ string PythonSpecification::CloseClass(const Ptr<const md::Class>& obj) {
     stringstream ccb; //close class block
     ccb << current_->GenerateMethodTable(BASE_NSPACE) << endl;
     ccb << current_->GenerateGetSetTable(BASE_NSPACE) << endl << endl;
-    ccb << "static PyTypeObject Py" << obj->name() << "Type = {" << endl;
+    ccb << "static PyTypeObject " << GetTypeNameForClass(obj->name()) << " = {" << endl;
     ccb << TAB << "PyObject_HEAD_INIT(NULL)" << endl;
     ccb << TAB << "0," << endl;
     ccb << TAB << "\"" << obj->nested_name(".", false) << "\"," << endl;

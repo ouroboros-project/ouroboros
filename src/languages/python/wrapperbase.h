@@ -2,6 +2,8 @@
 #define OUROBOROS_SCRIPT_PYTHON_WRAPPERBASE_H_
 
 #include <Python.h>
+#include <string>
+#include <typeinfo>
 
 namespace opa {
 namespace python {
@@ -16,13 +18,16 @@ PyObject* GenericNew(PyTypeObject *type, PyObject *args, PyObject *kwds)
         self->construct(args, kwds);
         if (self->obj == nullptr)
         {
-            // solta exceção em python?
+            // the construct method should set the appropriate exceptions
             Py_DECREF(self);
             return NULL;
         }
     }
     else {
-        // solta exceção python?
+        std::string tname (typeid(value).name());
+        std::string pyname (type->tp_name);
+        std::string msg = "could not allocate a new " + pyname + " [T: " + tname + "] object.";
+        PyErr_SetString(PyExc_RuntimeError, msg.c_str());
     }
     return (PyObject*)self;
 }
@@ -41,23 +46,6 @@ PyObject* GenericRepr(T* self)
                                self->ob_type->tp_name, (int)self->obj);
 }
 
-/******************/
-/*** COISAS PRA GERAR **/
-
-///> wrap de metodos/ getters e setters de atributos
-
-
-///> CLOSE CLASS
-
-
-bool TypeReady (PyTypeObject* type_obj) {
-    //se tiver que inicializar coisa do tipo pode colocar aqui
-    if (PyType_Ready(type_obj) < 0) {
-        // solta exceção em python?
-        return false;
-    }
-    return true;
-}
 
 } /* namespace wrapper */
 } /* namespace python */
