@@ -236,9 +236,23 @@ string PythonSpecification::OpenClass(const Ptr<const md::Class>& obj) {
     ocb << TAB << "PyObject_HEAD" << endl;
     ocb << TAB << "void* obj;" << endl;
     ocb << TAB << "typedef " << obj->nested_name() << " type;" << endl;
-    ocb << TAB << "void construct(PyObject* args, PyObject* kwds) {" << endl;
-    ocb << TAB << TAB << "COISAS" << endl; //TODO: IMPLEMENT COISAS
+    ocb << TAB << "void construct(PyObject* args, PyObject* kwds)" << endl;
+    ocb << TAB << "try {" << endl;
+    auto ctor = obj->constructors()[0];
+    if (ctor->num_parameters() > 0)
+        ocb << TAB << TAB << "if (!NumArgsOk(args, " << ctor->num_parameters() << ")) return;" << endl;
+    ocb << TAB << TAB << "PythonConverter converter (true);" << std::endl;
+    stringstream args ("");
+    for (unsigned i=0; i<ctor->num_parameters(); i++) {
+        ocb << TAB << TAB << ctor->parameter_type(i)->full_type() <<" fArg"<< i;
+        ocb << " = converter.PyArgToType<"<< ctor->parameter_type(i)->full_type() <<">(args, " << i << ");" << endl;
+        if (i > 0)
+            args << ", ";
+        args << "fArg" << i;
+    }
+    ocb << TAB << TAB << "this->obj = new " << obj->nested_name() << "("<< args.str() << ");" << endl;
     ocb << TAB << "}" << endl;
+    ocb << TAB << "catch (std::exception& e) { FuncErrorHandling(e); }" << endl;
     ocb << "} " << GetTypeObjNameForClass(obj->name()) << ";" << endl;
     
     return ocb.str();
