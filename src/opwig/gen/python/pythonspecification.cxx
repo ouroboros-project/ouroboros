@@ -264,15 +264,16 @@ string PythonSpecification::CloseClass(const Ptr<const md::Class>& obj) {
     stringstream ccb; //close class block
     ccb << current_->GenerateMethodTable(BASE_NSPACE) << endl;
     ccb << current_->GenerateGetSetTable(BASE_NSPACE) << endl << endl;
+    string tObjName = GetTypeObjNameForClass(obj->name());
     ccb << "static PyTypeObject " << GetTypeNameForClass(obj->name()) << " = {" << endl;
     ccb << TAB << "PyObject_HEAD_INIT(NULL)" << endl;
     ccb << TAB << "0," << endl;
     ccb << TAB << "\"" << obj->nested_name(".", false) << "\"," << endl;
-    ccb << TAB << "sizeof(" << GetTypeObjNameForClass(obj->name()) << ")," << endl;
+    ccb << TAB << "sizeof(" << tObjName << ")," << endl;
     ccb << TAB << "0," << endl;
-    ccb << TAB << "(destructor)opa::python::wrapper::GenericDealloc< " << obj->nested_name() << ">," << endl;
+    ccb << TAB << "(destructor)opa::python::wrapper::GenericDealloc<" << tObjName << ">," << endl;
     ccb << TAB << "0, 0, 0, 0," << endl;
-    ccb << TAB << "(reprfunc)opa::python::wrapper::GenericRepr< " << obj->nested_name() << ">," << endl;
+    ccb << TAB << "(reprfunc)opa::python::wrapper::GenericRepr<" << tObjName << ">," << endl;
     ccb << TAB << "0, 0, 0, 0, 0, 0, 0, 0, 0," << endl;
     ccb << TAB << "Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE," << endl;
     ccb << TAB << "\"wrapped C++ type\"," << endl;
@@ -281,7 +282,7 @@ string PythonSpecification::CloseClass(const Ptr<const md::Class>& obj) {
     ccb << TAB << "0,    /* tp_members */" << endl;
     ccb << TAB << current_->GetGetSetTableName() << ", /* tp_getset */" << endl;
     ccb << TAB << "0, 0, 0, 0, 0, 0, 0," << endl;
-    ccb << TAB << "opa::python::wrapper::GenericNew< " << obj->nested_name() << ">," << endl;
+    ccb << TAB << "opa::python::wrapper::GenericNew<" << tObjName << ">," << endl;
     ccb << "};" << endl;
     ccb << "} //closing CLASS namespace " << obj->name() << endl;
 

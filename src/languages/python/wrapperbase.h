@@ -35,15 +35,15 @@ PyObject* GenericNew(PyTypeObject *type, PyObject *args, PyObject *kwds)
 template <typename T>
 void GenericDealloc(T* self)
 {
-    delete static_cast<T*>(self->obj);
+    delete static_cast<typename T::type*>(self->obj);
     self->ob_type->tp_free((PyObject*)self);
 }
 
 template <typename T>
 PyObject* GenericRepr(T* self)
 {
-    return PyString_FromFormat("<OuroborosWrap: instance of '%s' at %d>",
-                               self->ob_type->tp_name, (int)self->obj);
+    return PyString_FromFormat("<OuroborosWrap: instance of '%s' at %p>",
+                               self->ob_type->tp_name, self->obj);
 }
 
 
