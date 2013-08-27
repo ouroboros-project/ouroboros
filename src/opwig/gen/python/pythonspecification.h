@@ -9,7 +9,7 @@ namespace opwig {
 namespace gen {
 namespace python {
 
-class WrapModule;
+class WrapScope;
 
 class PythonSpecification final : public ::opwig::gen::WrapperSpecification {
 
@@ -35,8 +35,11 @@ class PythonSpecification final : public ::opwig::gen::WrapperSpecification {
     std::list<ScriptModule> GetGeneratedModules() const;
     
   private:
-    md::Ptr<WrapModule> root_module_;
-    md::Ptr<WrapModule> current_;
+    md::Ptr<WrapScope> root_module_;
+    md::Ptr<WrapScope> current_;
+
+    void PushScope(const std::string& name, bool is_class);
+    void PopScope();
 };
 
 inline std::string PythonSpecification::wrapper_name () const {

@@ -23,18 +23,18 @@ const char* PythonData::UnwrapString() const {
     if (py_data_ == nullptr) return "INVALID";
     PyObject *temp = PyObject_Str(py_data_);
     if(temp == nullptr) return "INVALID";
-    char* result = PyString_AsString(temp);
+    const char* result = converter_.ScriptToType<const char*>(temp);
     Py_DECREF(temp);
     return result;
 }
 bool PythonData::UnwrapBoolean() const {
-    return !!PyObject_IsTrue(py_data_); //HEEEEL YEAAAAH!!
+    return converter_.ScriptToType<bool>(py_data_);
 }
 int PythonData::UnwrapInteger() const {
-    return static_cast<int>( PyInt_AsLong(py_data_) );
+    return converter_.ScriptToType<int>(py_data_);
 }
 double PythonData::UnwrapNumber() const {
-    return static_cast<double>( PyFloat_AsDouble(py_data_) );
+    return converter_.ScriptToType<double>(py_data_);
 }
 
 /*************/
@@ -118,12 +118,16 @@ void PythonData::WrapString(const char* str) {
         py_data_ = nullptr;
     }
 
-    py_data_ = PyString_FromString(str);
+    py_data_ = converter_.TypeToScript<const char*>(str);
     own_ref_ = true;
 }
 
 void PythonData::WrapBoolean(bool boolean) {
-    py_data_ = PyBool_FromLong(static_cast<long>(boolean));
+    if (py_data_ != nullptr && own_ref_) {
+        Py_DECREF(py_data_);
+        py_data_ = nullptr;
+    }
+    py_data_ = converter_.TypeToScript<bool>(boolean);
     own_ref_ = true;
 }
 
@@ -133,7 +137,7 @@ void PythonData::WrapInteger(int number) {
         py_data_ = nullptr;
     }
     
-    py_data_ = PyInt_FromLong(static_cast<long>(number));
+    py_data_ = converter_.TypeToScript<int>(number);
     own_ref_ = true;
 }
 
@@ -143,7 +147,7 @@ void PythonData::WrapNumber(double number) {
         py_data_ = nullptr;
     }
 
-    py_data_ = PyFloat_FromDouble(number);
+    py_data_ = converter_.TypeToScript<double>(number);
     own_ref_ = true;
 }
 

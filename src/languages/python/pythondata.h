@@ -5,6 +5,7 @@
 #include <vector>
 #include <opa/virtualdata.h>
 #include <languages/python/pythonwrapper.h>
+#include <languages/python/pythonconverter.h>
 
 namespace opa {
 
@@ -59,6 +60,7 @@ class PythonData : public VirtualData {
     PythonWrapper* wrapper_;
     bool own_ref_; //if true, we own a ref to our PyObject* (py_data_), so we need to DECREF it in due time.
     PyObject* py_data_;
+    PythonConverter converter_;
 };
 
 }

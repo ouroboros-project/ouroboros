@@ -39,7 +39,7 @@ PRIMITIVE_CONVERTER_TEMPLATES(DummyConverter, ScriptObj)
         return CppTypeName##ToScript (value); \
     } \
     template<> \
-    inline CppType Class::ScriptToType<CppType>(ScriptType value) { \
+    inline CppType Class::ScriptToType<CppType>(ScriptType value) const { \
         return ScriptTo##CppTypeName (value); \
     } 
 
@@ -62,7 +62,7 @@ PRIMITIVE_CONVERTER_TEMPLATES(DummyConverter, ScriptObj)
 // Defines the signature of the ScriptToType template method  
 #define CONVERTER_IMPL_SCRIPT_TO_TYPE(ScriptType) \
     template <typename T> \
-    T ScriptToType(ScriptType value)
+    T ScriptToType(ScriptType value) const 
     
 namespace opa {
 
@@ -74,14 +74,14 @@ class Converter {
   public:
     virtual ~Converter() {}
     
-    virtual bool        ScriptToBool    (T t) = 0;
-    virtual short       ScriptToShort   (T t) = 0;
-    virtual int         ScriptToInt     (T t) = 0;
-    virtual long        ScriptToLong    (T t) = 0;
-    virtual float       ScriptToFloat   (T t) = 0;
-    virtual double      ScriptToDouble  (T t) = 0;
-    virtual char        ScriptToChar    (T t) = 0;
-    virtual const char* ScriptToCStr    (T t) = 0;
+    virtual bool        ScriptToBool    (T t) const = 0;
+    virtual short       ScriptToShort   (T t) const = 0;
+    virtual int         ScriptToInt     (T t) const = 0;
+    virtual long        ScriptToLong    (T t) const = 0;
+    virtual float       ScriptToFloat   (T t) const = 0;
+    virtual double      ScriptToDouble  (T t) const = 0;
+    virtual char        ScriptToChar    (T t) const = 0;
+    virtual const char* ScriptToCStr    (T t) const = 0;
     
     virtual T BoolToScript      (bool value) = 0;
     virtual T ShortToScript     (short value) = 0;

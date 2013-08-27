@@ -27,6 +27,12 @@ std::string GetMETHARGSforFunction(const md::Ptr<const md::Function>& func);
 
 std::string GetInitFuncNameForModule(const std::string& module_name);
 
+/** Returns the name of the struct representing a object of the type with given
+    name. */
+std::string GetTypeObjNameForClass(const std::string& class_name);
+/// Returns the name of the python type object for the given class name.
+std::string GetTypeNameForClass(const std::string& class_name);
+
 namespace METHARGS {
 std::string ForFunction(const md::Ptr<const md::Function>& func);
 std::string ForVariable(const md::Ptr<const md::Variable>& var);

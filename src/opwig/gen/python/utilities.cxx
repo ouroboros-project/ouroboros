@@ -23,6 +23,14 @@ std::string GetInitFuncNameForModule(const std::string& module_name) {
     return "init"+module_name;
 }
 
+std::string GetTypeObjNameForClass(const std::string& class_name) {
+    return "Py" + class_name + "Object";
+}
+
+std::string GetTypeNameForClass(const std::string& class_name) {
+    return "Py" + class_name + "Type";
+}
+
 namespace METHARGS {
 string ForFunction(const Ptr<const Function>& func) {
     if (func->num_parameters() == 0)
