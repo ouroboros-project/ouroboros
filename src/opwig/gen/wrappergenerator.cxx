@@ -1,7 +1,11 @@
 #include <opwig/gen/wrappergenerator.h>
 #include <opwig/gen/wrapperspecification.h>
+#include <opwig/md/accessspecifier.h>
 #include <opwig/md/scope.h>
 #include <opwig/md/namespace.h>
+#include <opwig/md/function.h>
+#include <opwig/md/variable.h>
+#include <opwig/md/enum.h>
 #include <fstream>
 #include <iostream>
 
@@ -14,6 +18,7 @@ using std::ios_base;
 using std::endl;
 using std::string;
 using md::Ptr;
+using md::AccessSpecifier;
 
 void WrapperGenerator::Generate (const string& module_name, const Ptr<const md::Scope>& root,
                                  const Ptr<WrapperSpecification>& spec) {
@@ -76,22 +81,27 @@ std::string WrapperGenerator::generateBootstrap() const {
 
 void WrapperGenerator::iterateAndWrapScope(const Ptr<const md::Scope>& scope) {
     for (auto entry : scope->IterateFunctions()) {
-        wrap_file_ << spec_->WrapFunction(entry.second) << endl;
+        if (entry.second->access() != AccessSpecifier::PRIVATE)
+            wrap_file_ << spec_->WrapFunction(entry.second) << endl;
     }
     for (auto entry : scope->IterateVariables()) {
-        wrap_file_ << spec_->WrapVariable(entry.second) << endl;
+        if (entry.second->access() != AccessSpecifier::PRIVATE)
+            wrap_file_ << spec_->WrapVariable(entry.second) << endl;
     }
     for (auto entry : scope->IterateEnums()) {
-        wrap_file_ << spec_->WrapEnum(entry.second) << endl;
+        if (entry.second->access() != AccessSpecifier::PRIVATE)
+            wrap_file_ << spec_->WrapEnum(entry.second) << endl;
     }
     for (auto entry : scope->IterateClasses()) {
-        handleClass(entry.second);
+        if (entry.second->access() != AccessSpecifier::PRIVATE)
+            handleClass(entry.second);
     }
     // FIXME
     if (dynamic_cast<const md::Namespace*>(scope.get()))
-      for (auto entry : scope->IterateNamespaces()) {
-          handleNamespace(entry.second);
-      }
+        for (auto entry : scope->IterateNamespaces()) {
+            if (entry.second->access() != AccessSpecifier::PRIVATE)
+                handleNamespace(entry.second);
+        }
 }
 
 void WrapperGenerator::handleNamespace(const Ptr<const md::Namespace>& nspace) {
