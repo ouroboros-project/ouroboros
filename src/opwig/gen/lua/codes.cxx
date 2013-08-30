@@ -73,7 +73,8 @@ std::string CloseModuleBlock (const Ptr<ModuleWrap>& module) {
           << WrapList(module, &ModuleWrap::getters, "getter")
           << WrapList(module, &ModuleWrap::setters, "setter")
           << "ModuleInfo info(\n"
-          << "    \""+module->name+"\", init, getters, setters, functions,\n"
+          << "    \""+module->name+"\", init,\n"
+          << "    { {\"getters\",getters}, {\"setters\",setters}, {\"functions\",functions} },\n"
           << "    {";
     for (auto child : module->children())
         code

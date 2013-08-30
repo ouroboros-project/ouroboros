@@ -8,6 +8,7 @@
 
 #include <string>
 #include <list>
+#include <unordered_map>
 
 namespace opa {
 namespace lua {
@@ -21,6 +22,8 @@ class ModuleInfo : public utils::Uncopyable {
 
   public:
 
+    using FunctionTable = std::unordered_map<std::string, luaL_Reg*>;
+
     /// Constructor.
     /** The luaL_Reg[] parameters are arrays of lua_CFunction's, used by luaL_register().
      ** @param the_name       Module's name (not the absolute path)
@@ -30,8 +33,9 @@ class ModuleInfo : public utils::Uncopyable {
      ** @param the_children   The module's child modules.
      */
     ModuleInfo (const std::string& the_name, lua_CFunction the_init_function,
-                luaL_Reg the_getters[], luaL_Reg the_setters[], luaL_Reg the_functions[],
-                const std::list<ModuleInfo*>& the_children);
+                const FunctionTable& the_function_table,
+                const std::list<ModuleInfo*>& the_children,
+                lua_CFunction the_constructor = nullptr);
 
     /// Gives the module's name.
     /** @return std::string The module's name.
@@ -77,19 +81,21 @@ class ModuleInfo : public utils::Uncopyable {
 
     std::string             name_;
     lua_CFunction           init_function_;
-    luaL_Reg                *getters_;
-    luaL_Reg                *setters_;
-    luaL_Reg                *funcions_;
+    FunctionTable           function_table_;
     ModuleInfo              *parent_;
     std::list<ModuleInfo*>  children_;
+    lua_CFunction           constructor_;
+
+    const luaL_Reg* VerifyAndGet (const std::string& name) const;
 
 };
 
 inline ModuleInfo::ModuleInfo (const std::string& the_name, lua_CFunction the_init_function,
-                               luaL_Reg the_getters[], luaL_Reg the_setters[],
-                               luaL_Reg the_functions[], const std::list<ModuleInfo*>& the_children)
-    : name_(the_name), init_function_(the_init_function), getters_(the_getters),
-      setters_(the_setters), funcions_(the_functions), parent_(nullptr), children_(the_children) {
+                               const FunctionTable& the_function_table,
+                               const std::list<ModuleInfo*>& the_children,
+                               lua_CFunction the_constructor)
+    : name_(the_name), init_function_(the_init_function), function_table_(the_function_table),
+      parent_(nullptr), children_(the_children), constructor_(the_constructor) {
     for (auto& child : children_)
         child->parent_ = this;
 }
@@ -107,23 +113,30 @@ inline const ModuleInfo* ModuleInfo::parent () const {
 }
 
 inline const luaL_Reg* ModuleInfo::functions () const {
-    return funcions_;
+    return VerifyAndGet("functions");
 }
 
 inline const luaL_Reg* ModuleInfo::getters () const {
-    return getters_;
+    return VerifyAndGet("getters");
 }
 
 inline const luaL_Reg* ModuleInfo::setters () const {
-    return setters_;
+    return VerifyAndGet("setters");
 }
 
 inline lua_CFunction ModuleInfo::constructor () const {
-    return nullptr;
+    return constructor_;
 }
 
 inline const std::list<ModuleInfo*>& ModuleInfo::children () const {
     return children_;
+}
+
+inline const luaL_Reg* ModuleInfo::VerifyAndGet (const std::string& name) const {
+    auto it = function_table_.find(name);
+    if (it == function_table_.end())
+      return nullptr;
+    return it->second;
 }
 
 int ExportModule (State&& L, const ModuleInfo* info);
