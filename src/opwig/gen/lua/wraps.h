@@ -24,6 +24,7 @@ struct ModuleWrap : public opa::utils::Uncopyable, std::enable_shared_from_this<
     std::list<DataWrap>             getters;
     std::list<DataWrap>             setters;
     std::list<DataWrap>             member_getters;
+    std::list<DataWrap>             member_functions;
 
     /// Tells if the module represents a class.
     /** @return bool Wheter the module is a class.

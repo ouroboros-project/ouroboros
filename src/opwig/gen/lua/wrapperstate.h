@@ -9,6 +9,11 @@
 #include <list>
 
 namespace opwig {
+
+namespace md {
+class Function;
+} // namespace md
+
 namespace gen {
 namespace lua {
 
@@ -25,6 +30,8 @@ class WrapperState : public opa::utils::Uncopyable {
 
     md::Ptr<ModuleWrap> current_module () const;
 
+    bool is_current_class () const;
+
     std::string StackAsString (const std::string& sep, size_t skip = 0) const;
 
     void PushModule (const md::Ptr<ModuleWrap>& the_module);
@@ -32,6 +39,8 @@ class WrapperState : public opa::utils::Uncopyable {
     void PushModule (const std::string& module_name, bool is_class_flag = false);
 
     void PopModule ();
+
+    void AddFunction (const md::Ptr<const md::Function>& the_function);
 
   private:
 
@@ -41,6 +50,10 @@ class WrapperState : public opa::utils::Uncopyable {
 
 inline md::Ptr<ModuleWrap> WrapperState::current_module () const {
     return stack_.back();
+}
+
+inline bool WrapperState::is_current_class () const {
+    return current_module()->is_class();
 }
 
 inline void WrapperState::PushModule (const md::Ptr<ModuleWrap>& the_module) {

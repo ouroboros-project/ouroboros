@@ -48,15 +48,17 @@ string WrapperSpecification::FinishFile () const {
     return functions_wrap_code + init_functions_code;
 }
 
-string WrapperSpecification::WrapFunction (const md::Ptr<const md::Function>& obj) {
-    if (state_.current_module()->is_class() && !obj->is_static())
-        return "";
-    stringstream func_code, args_code, call_code;
-    size_t       num_params = obj->num_parameters();
-    //CheckAndOpenNamespace(func_code);
-    state_.current_module()->functions.push_back({obj->name(), DumpNamespaceNesting()+"generated::"});
-    func_code << "int " << GetWrapName("function", obj->name()) << " (lua_State* L) {\n";
-    if (num_params > 0)
+string WrapperSpecification::WrapFunction (const Ptr<const md::Function>& obj) {
+    stringstream    func_code,
+                    args_code,
+                    call_code;
+    bool            is_class = state_.is_current_class();
+    size_t          num_params = obj->num_parameters();
+    size_t          self_param = (is_class ? 1 : 0);
+    string          prefix = is_class ? "member_" : "";
+    state_.AddFunction(obj);
+    func_code << "int " << GetWrapName(prefix+"function", obj->name()) << " (lua_State* L) {\n";
+    if (num_params+self_param > 0)
         func_code
               << "    int args = 0;\n"
               << "    if ((args = lua_gettop(L)) < " << num_params << ")\n"
@@ -68,17 +70,26 @@ string WrapperSpecification::WrapFunction (const md::Ptr<const md::Function>& ob
               << "            args\n"
               << "        );\n";
     func_code << "    opa::lua::Converter convert(L);\n";
+    if (is_class) {
+        string type = state_.current_module()->name;
+        func_code
+              << "    " << type << " *self = static_cast<" << type << "*>(\n"
+              << "        static_cast<opa::lua::aux::UserData*>(\n"
+              << "            convert.ScriptToType<void*>(1)\n"
+              << "        )->obj\n"
+              << "    );\n";
+    }
     if (num_params > 0)
         args_code
               << "    try {\n";
-    call_code << obj->name() << "(";
+    call_code << (is_class ? "self->" : "") << obj->name() << "(";
     for (size_t i = 0; i < obj->num_parameters(); ++i) {
         string type = obj->parameter_type(i)->full_type();
         func_code
               << "    " << type << " arg_" << i << ";\n";
         args_code
               << "        arg_" << i << " = "
-              <<              "convert.ScriptToType<" << type << ">(" << (i+1) << ");\n";
+              <<              "convert.ScriptToType<" << type << ">(" << (i+1+self_param) << ");\n";
         call_code << "arg_" << i;
         if (i+1 < obj->num_parameters())
             call_code << ", ";
@@ -104,6 +115,7 @@ string WrapperSpecification::WrapFunction (const md::Ptr<const md::Function>& ob
         func_code
               << "    " << obj->return_type()->full_type() << " result = "
                   << call_code.str() << ";\n"
+              << "    lua_settop(L, 0);\n"
               << "    convert.TypeToScript<" << obj->return_type()->full_type() << ">(result);\n"
               << "    int stack = 1;\n";
     }

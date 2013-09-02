@@ -101,22 +101,41 @@ int UniversalMemberGetter (lua_State *L_) {
     State L(L_);
     L.pushvalue(lua_upvalueindex(1));
     // Stack: [obj, key, getters]
-    L.insert(2);
-    // Stack: [obj, getters, key]
-    L.gettable(2);
-    // Stack: [obj, getters, getter]
-    if (L.isnil(3)) {
-        L.settop(0);
-        L.pushnil();
+    L.pushvalue(2);
+    // Stack: [obj, key, getters, key]
+    L.gettable(3);
+    // Stack: [obj, key, getters, getter]
+    if (!L.isnil(4)) {
+        // Found an attributre.
+        L.insert(1);
+        // Stack: [getter, obj, ...]
+        L.settop(2);
+        // Stack: [getter, obj]
+        L.call(1, 1);
+        // Stack: [value]
+        return 1;
+    } else {
+        // It wasn't an attribute, try a method.
+        L.settop(2);
+        // Stack: [obj, key]
+        L.pushvalue(lua_upvalueindex(2));
+        // Stack: [obj, key, methods]
+        L.pushvalue(2);
+        // Stack: [obj, key, methods, key]
+        L.gettable(3);
+        // Stack: [obj, key, methods, method]
+        if (L.isnil(4)) {
+            // It wasn't a method either. Return nil.
+            L.settop(0);
+            L.pushnil();
+            return 1;
+        }
+        L.insert(1);
+        // Stack: [method, ...]
+        L.settop(1);
+        // Stack: [method]
         return 1;
     }
-    L.remove(2);
-    // Stack: [obj, getter]
-    L.insert(1);
-    // Stack: [getter, obj]
-    L.call(1, 1);
-    // Stack: [value]
-    return 1;
 }
 
 /// [-1,+1,-]
@@ -124,14 +143,15 @@ void PrepareObjMetatable (State& L, const ModuleInfo* info) {
     // Stack: [module, mttable]
     L.newtable();
     // Stack: [module, mttable, vtable]
-    /* Getters */ {
+    /* Getters and methods */ {
         L.newtable();
-        if (!info->member_getters())
-            std::cout << "WAT\n";
         // Stack: [module, mttable, vtable, getters]
         luaL_register(L, NULL, info->member_getters());
-        // Stack: [module, mttable, vtable, getters]
-        L.pushcfunction(UniversalMemberGetter, 1);
+        L.newtable();
+        // Stack: [module, mttable, vtable, getters, methods]
+        luaL_register(L, NULL, info->member_functions());
+        // Stack: [module, mttable, vtable, getters, methods]
+        L.pushcfunction(UniversalMemberGetter, 2);
         // Stack: [module, mttable, vtable, __index]
         L.setfield(3, "__index");
     }

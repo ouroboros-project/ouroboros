@@ -27,30 +27,30 @@ local input = require 'prompt.input'
 function main ()
   local send = out.Sender()
   local receive = input.Receiver()
-  send.message("Let's check some things first...")
+  send:send_message("Let's check some things first...")
   --if not wrongnumtest() or not wrongtypetest() then
   --  return false
   --end
-  send.message("Everything ok so far. S'up bro.", 'unused');
+  send:send_message("Everything ok so far. S'up bro.", 'unused');
   while true do
-    local msg = receive.message()
+    local msg = receive:receive_message()
     print("[received '"..msg.."']")
     if msg == "bye" then return true end
     if msg == "dude" then
-      send_multimessage("Say what?", 5)
+      send:send_multimessage("Say what?", 5)
     elseif msg == "sqrt" then
-      send.message("Of...?")
-      local arg = input.receive_number()
-      send.message("'Tis "..math.sqrt(arg))
+      send:send_message("Of...?")
+      local arg = receive:number()
+      send:send_message("'Tis "..math.sqrt(arg))
     elseif msg == "My favorite color is blue." then
       send.break_line = false
-      send.message("You sure? ")
+      send:send_message("You sure? ")
       send.break_line = true
-      local answer = receive.confirmation()
+      local answer = receive:confirmation()
       if answer then
-        send.message("Lame.")
+        send:send_message("Lame.")
       else
-        send.message("Indecisive fella.")
+        send:send_message("Indecisive fella.")
       end
     end
   end

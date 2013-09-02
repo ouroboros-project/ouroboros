@@ -1,6 +1,7 @@
 
 #include <opwig/gen/lua/wrapperstate.h>
 
+#include <opwig/md/function.h>
 #include <opwig/md/ptr.h>
 
 namespace opwig {
@@ -9,6 +10,7 @@ namespace lua {
 
 using std::string;
 using md::Ptr;
+using md::Function;
 
 WrapperState::WrapperState (const string& the_module_name) {
     Ptr<ModuleWrap> root(new ModuleWrap);
@@ -37,6 +39,16 @@ void WrapperState::PushModule (const string& module_name, bool is_class_flag) {
 
     current_module()->AddChild(new_module);
     PushModule(new_module);
+}
+
+void WrapperState::AddFunction (const Ptr<const md::Function>& the_function) {
+    auto module = current_module();
+    if (module->is_class())
+        module->member_functions.push_back({
+            the_function->name(), StackAsString("::",1)+"generated::"
+        });
+    else
+        module->functions.push_back({the_function->name(), StackAsString("::",1)+"generated::"});
 }
 
 } // namespace lua
