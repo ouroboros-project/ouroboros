@@ -145,12 +145,15 @@ struct UserData {
 
 int ExportModule (State&& L, const ModuleInfo* info);
 
+void PrepareObjMetatable (State& L, const ModuleInfo* info);
+
 template <typename T>
-inline int Construct (State&& L) {
+inline int Construct (State&& L, const ModuleInfo* info) {
     L.settop(0);
     L.pushudata(sizeof(UserData));
     UserData *udata = static_cast<UserData*>(L.touserdata(-1));
     udata->obj = static_cast<void*>(new T);
+    PrepareObjMetatable(L, info);
     return 1;
 }
 

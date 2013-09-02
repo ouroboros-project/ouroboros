@@ -162,8 +162,8 @@ string WrapperSpecification::OpenClass (const md::Ptr<const md::Class>& obj) {
     return
         string(open ? "} // namespace generated\n\n" : "")+
         "namespace class_"+obj->name()+" {\n\n"+
-        "namespace generated {\n\n"+
-        code;
+        code+
+        "namespace generated {\n\n";
 }
 
 string WrapperSpecification::CloseClass (const md::Ptr<const md::Class>& obj) {

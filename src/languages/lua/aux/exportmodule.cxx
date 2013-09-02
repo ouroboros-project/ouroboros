@@ -166,6 +166,10 @@ int ExportModule (State&& L, const ModuleInfo* info) {
     return 1;
 }
 
+void PrepareObjMetatable (State& L, const ModuleInfo* info) {
+    
+}
+
 } // namespace aux
 } // namespace lua
 } // namespace opa
