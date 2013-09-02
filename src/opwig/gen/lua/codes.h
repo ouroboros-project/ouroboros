@@ -10,6 +10,11 @@
 #include <string>
 
 namespace opwig {
+
+namespace md {
+class Class;
+}
+
 namespace gen {
 namespace lua {
 
@@ -23,6 +28,8 @@ std::string WrapList (const md::Ptr<ModuleWrap>& module, WrappedMember member,
                       const std::string& type);
 
 std::string MiddleBlockCode (const std::string& module_name);
+
+std::string OpenClassBlock (const md::Ptr<const md::Class>& the_class);
 
 std::string CheckAndCloseNamespace (bool open, const std::string& name = "generated");
 

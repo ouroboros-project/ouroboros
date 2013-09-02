@@ -139,7 +139,20 @@ inline const luaL_Reg* ModuleInfo::VerifyAndGet (const std::string& name) const 
     return it->second;
 }
 
+struct UserData {
+    void *obj;
+};
+
 int ExportModule (State&& L, const ModuleInfo* info);
+
+template <typename T>
+inline int Construct (State&& L) {
+    L.settop(0);
+    L.pushudata(sizeof(UserData));
+    UserData *udata = static_cast<UserData*>(L.touserdata(-1));
+    udata->obj = static_cast<void*>(new T);
+    return 1;
+}
 
 } // namespace aux
 } // namespace lua

@@ -1,5 +1,6 @@
 
 #include <opwig/gen/lua/codes.h>
+#include <opwig/md/class.h>
 
 #include <sstream>
 
@@ -12,6 +13,7 @@ using std::stringstream;
 using std::list;
 using md::Ptr;
 using md::MetadataObject;
+using md::Class;
 
 string WrapList (const md::Ptr<ModuleWrap>& module, WrappedMember member, const string& type) {
     const auto& wraps = (*module).*member;
@@ -56,6 +58,14 @@ string MiddleBlockCode (const string& module_name) {
         "\n"
         "// Begin wrappers\n\n"
         "namespace generated {\n\n";
+}
+
+string OpenClassBlock (const Ptr<const Class>& the_class) {
+    stringstream code;
+    code  << "int " << "constructor" << " (lua_State* L) {\n"
+          << "    return opa::lua::aux::Construct<" << the_class->name() << ">(L);\n"
+          << "}\n\n";
+    return code.str();
 }
 
 string CheckAndCloseNamespace (bool open, const string& name) {

@@ -153,12 +153,8 @@ string WrapperSpecification::WrapEnum (const md::Ptr<const md::Enum>& obj) {
 }
 
 string WrapperSpecification::OpenClass (const md::Ptr<const md::Class>& obj) {
-    bool open = !state_.current_module()->has_children();
-    stringstream code;
-     
-    code  << "int " << "constructor" << " (lua_State* L) {\n"
-          << "    return 0;\n"
-          << "}\n\n";
+    bool open   = !state_.current_module()->has_children();
+    string code = OpenClassBlock(obj);
     
     state_.PushModule(obj->name(), true);
     modules_.push_back(state_.current_module());
@@ -167,7 +163,7 @@ string WrapperSpecification::OpenClass (const md::Ptr<const md::Class>& obj) {
         string(open ? "} // namespace generated\n\n" : "")+
         "namespace class_"+obj->name()+" {\n\n"+
         "namespace generated {\n\n"+
-        code.str();
+        code;
 }
 
 string WrapperSpecification::CloseClass (const md::Ptr<const md::Class>& obj) {
