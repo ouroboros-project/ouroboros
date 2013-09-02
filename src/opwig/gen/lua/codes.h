@@ -29,8 +29,6 @@ std::string WrapList (const md::Ptr<ModuleWrap>& module, WrappedMember member,
 
 std::string MiddleBlockCode (const std::string& module_name);
 
-std::string OpenClassBlock (const md::Ptr<const md::Class>& the_class);
-
 std::string CheckAndCloseNamespace (bool open, const std::string& name = "generated");
 
 std::string CloseModuleBlock (const md::Ptr<ModuleWrap>& module);

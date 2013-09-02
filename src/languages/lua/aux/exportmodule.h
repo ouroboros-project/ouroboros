@@ -170,7 +170,8 @@ struct UserData {
 int ExportModule (State&& L, const ModuleInfo* info);
 
 template <typename T>
-inline int Construct (State&& L, const ModuleInfo* info) {
+inline int Construct (lua_State* L_) {
+    State L(L_);
     // Stack: [module]
     L.getmetatable(1);
     // Stack: [module, mttable]
@@ -189,7 +190,8 @@ inline int Construct (State&& L, const ModuleInfo* info) {
 }
 
 template <typename T>
-inline int Destruct (State&& L) {
+inline int Destruct (lua_State* L_) {
+    State L(L_);
     UserData *udata = static_cast<UserData*>(L.touserdata(1));
     L.settop(0);
     delete static_cast<T*>(udata->obj);

@@ -154,7 +154,6 @@ string WrapperSpecification::WrapEnum (const md::Ptr<const md::Enum>& obj) {
 
 string WrapperSpecification::OpenClass (const md::Ptr<const md::Class>& obj) {
     bool open   = !state_.current_module()->has_children();
-    string code = OpenClassBlock(obj);
     
     state_.PushModule(obj->name(), true);
     modules_.push_back(state_.current_module());
@@ -162,7 +161,6 @@ string WrapperSpecification::OpenClass (const md::Ptr<const md::Class>& obj) {
     return
         string(open ? "} // namespace generated\n\n" : "")+
         "namespace class_"+obj->name()+" {\n\n"+
-        code+
         "namespace generated {\n\n";
 }
 

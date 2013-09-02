@@ -60,15 +60,6 @@ string MiddleBlockCode (const string& module_name) {
         "namespace generated {\n\n";
 }
 
-string OpenClassBlock (const Ptr<const Class>& the_class) {
-    stringstream code;
-    code  << "namespace {\n"
-          << "int " << "constructor" << " (lua_State* L);\n"
-            << "int " << "destructor" << " (lua_State* L);\n"
-          << "} // unnamed namespace\n\n";
-    return code.str();
-}
-
 string CheckAndCloseNamespace (bool open, const string& name) {
     return
         open ? ("} // namespace "+name+"\n\n") : "";
@@ -93,7 +84,9 @@ string CloseModuleBlock (const Ptr<ModuleWrap>& module) {
     if (module->is_class())
         code
           << "},\n"
-          << "    constructor\n";
+          << "    opa::lua::aux::Construct<" << module->name << ">,\n"
+          << "    opa::lua::aux::Destruct<" << module->name << ">,\n"
+          << "    true\n";
     else
         code
           << " }\n";
@@ -101,14 +94,6 @@ string CloseModuleBlock (const Ptr<ModuleWrap>& module) {
           << "/// [-(1|2),+1,e]\n"
           << "int init (lua_State* L) {\n"
           << "    return ExportModule(L, &info);\n"
-          << "}\n\n";
-    if (module->is_class())
-      code
-          << "int constructor (lua_State* L) {\n"
-          << "    return opa::lua::aux::Construct<" << module->name << ">(L, &info);\n"
-          << "}\n\n"
-          << "int destructor (lua_State* L) {\n"
-          << "    return opa::lua::aux::Destruct<" << module->name << ">(L);\n"
           << "}\n\n";
     code  << "} // unnamed namespace\n\n";
 
