@@ -94,13 +94,23 @@ int UniversalSetter (lua_State *L_) {
 }
 
 /// [-1,+1,-]
+void PrepareObjMetatable (State& L, const ModuleInfo* info) {
+    // Stack: [module, mttable]
+    L.newtable();
+    // Stack: [module, mttable, vtable]
+    /* Destructor */ {
+        L.pushcfunction(info->destructor());
+        // Stack: [module, mttable, vtable, __gc]
+        L.setfield(3, "__gc");
+    }
+    // Stack: [module, mttable, vtable]
+    L.setfield(2, "__vtable");
+}
+
+/// [-1,+1,-]
 void PrepareMetatable (State& L, const ModuleInfo* info) {
     // Stack: [module]
     L.newtable();
-    // Stack: [module, mttable]
-    L.pushvalue(-1);
-    // Stack: [module, mttable, mttable]
-    L.setmetatable(1);
     // Stack: [module, mttable]
     /* Getters */ {
         L.newtable();
@@ -121,15 +131,17 @@ void PrepareMetatable (State& L, const ModuleInfo* info) {
         // Stack: [module, mttable, __newindex]
         L.setfield(2, "__newindex");
     }
-    // Stack: [module, mttable]
-    if (info->constructor()) {
-        L.pushcfunction(info->constructor());
-        // Stack: [module, mttable, __call]
-        L.setfield(2, "__call");
+    if (info->is_class()) {
+        // Stack: [module, mttable]
+        if (info->constructor()) {
+            L.pushcfunction(info->constructor());
+            // Stack: [module, mttable, __call]
+            L.setfield(2, "__call");
+        }
+        PrepareObjMetatable(L, info);
     }
     // Stack: [module, mttable]
-    // Leave only the module table in the stack.
-    L.settop(1);
+    L.setmetatable(1);
     // Stack: [module]
 }
 
@@ -164,10 +176,6 @@ int ExportModule (State&& L, const ModuleInfo* info) {
     PrepareMetatable(L, info);
     // Return de module itself
     return 1;
-}
-
-void PrepareObjMetatable (State& L, const ModuleInfo* info) {
-    
 }
 
 } // namespace aux

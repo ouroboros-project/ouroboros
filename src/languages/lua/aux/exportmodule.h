@@ -35,12 +35,19 @@ class ModuleInfo : public utils::Uncopyable {
     ModuleInfo (const std::string& the_name, lua_CFunction the_init_function,
                 const FunctionTable& the_function_table,
                 const std::list<ModuleInfo*>& the_children,
-                lua_CFunction the_constructor = nullptr);
+                lua_CFunction the_constructor = nullptr,
+                lua_CFunction the_desctructor = nullptr,
+                bool the_class_flag = false);
 
     /// Gives the module's name.
     /** @return std::string The module's name.
      */
     std::string name () const;
+    
+    /// Tells if the module is a class or not.
+    /** @return bool Whether the module is a class or not.
+     */
+    bool is_class () const;
 
     /// Gives the module's Lua init function.
     /** @return lua_CFunction The module's init function.
@@ -72,6 +79,11 @@ class ModuleInfo : public utils::Uncopyable {
      */
     lua_CFunction constructor () const;
 
+    /// Gives the module's destructor function (if there is one).
+    /** @return lua_CFunction The module's destructor.
+     */
+    lua_CFunction destructor () const;
+
     /// Gives red-only access toe the module's submodules.
     /** @return const std::list<ModuleInfo>& The module's children.
      */
@@ -85,6 +97,8 @@ class ModuleInfo : public utils::Uncopyable {
     ModuleInfo              *parent_;
     std::list<ModuleInfo*>  children_;
     lua_CFunction           constructor_;
+    lua_CFunction           destructor_;
+    bool                    is_class_;
 
     const luaL_Reg* VerifyAndGet (const std::string& name) const;
 
@@ -93,15 +107,21 @@ class ModuleInfo : public utils::Uncopyable {
 inline ModuleInfo::ModuleInfo (const std::string& the_name, lua_CFunction the_init_function,
                                const FunctionTable& the_function_table,
                                const std::list<ModuleInfo*>& the_children,
-                               lua_CFunction the_constructor)
+                               lua_CFunction the_constructor, lua_CFunction the_desctructor,
+                               bool the_class_flag)
     : name_(the_name), init_function_(the_init_function), function_table_(the_function_table),
-      parent_(nullptr), children_(the_children), constructor_(the_constructor) {
+      parent_(nullptr), children_(the_children), constructor_(the_constructor),
+      destructor_(the_desctructor), is_class_(the_class_flag) {
     for (auto& child : children_)
         child->parent_ = this;
 }
 
 inline std::string ModuleInfo::name () const {
     return name_;
+}
+
+inline bool ModuleInfo::is_class () const {
+    return is_class_;
 }
 
 inline lua_CFunction ModuleInfo::init_function () const {
@@ -128,6 +148,10 @@ inline lua_CFunction ModuleInfo::constructor () const {
     return constructor_;
 }
 
+inline lua_CFunction ModuleInfo::destructor () const {
+    return destructor_;
+}
+
 inline const std::list<ModuleInfo*>& ModuleInfo::children () const {
     return children_;
 }
@@ -145,16 +169,31 @@ struct UserData {
 
 int ExportModule (State&& L, const ModuleInfo* info);
 
-void PrepareObjMetatable (State& L, const ModuleInfo* info);
-
 template <typename T>
 inline int Construct (State&& L, const ModuleInfo* info) {
-    L.settop(0);
+    // Stack: [module]
+    L.getmetatable(1);
+    // Stack: [module, mttable]
     L.pushudata(sizeof(UserData));
+    // Stack: [module, mttable, newobj]
     UserData *udata = static_cast<UserData*>(L.touserdata(-1));
     udata->obj = static_cast<void*>(new T);
-    PrepareObjMetatable(L, info);
+    L.getfield(2, "__vtable");
+    // Stack: [module, mttable, newobj, vtable]
+    L.setmetatable(3);
+    // Stack: [module, mttable, newobj]
+    L.insert(1);
+    // Stack: [newobj, ...]
+    L.settop(1);
     return 1;
+}
+
+template <typename T>
+inline int Destruct (State&& L) {
+    UserData *udata = static_cast<UserData*>(L.touserdata(1));
+    L.settop(0);
+    delete static_cast<T*>(udata->obj);
+    return 0;
 }
 
 } // namespace aux

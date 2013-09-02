@@ -64,6 +64,7 @@ string OpenClassBlock (const Ptr<const Class>& the_class) {
     stringstream code;
     code  << "namespace {\n"
           << "int " << "constructor" << " (lua_State* L);\n"
+            << "int " << "destructor" << " (lua_State* L);\n"
           << "} // unnamed namespace\n\n";
     return code.str();
 }
@@ -105,6 +106,9 @@ string CloseModuleBlock (const Ptr<ModuleWrap>& module) {
       code
           << "int constructor (lua_State* L) {\n"
           << "    return opa::lua::aux::Construct<" << module->name << ">(L, &info);\n"
+          << "}\n\n"
+          << "int destructor (lua_State* L) {\n"
+          << "    return opa::lua::aux::Destruct<" << module->name << ">(L);\n"
           << "}\n\n";
     code  << "} // unnamed namespace\n\n";
 
