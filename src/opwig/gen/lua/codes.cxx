@@ -74,9 +74,11 @@ string CloseModuleBlock (const Ptr<ModuleWrap>& module) {
           << WrapList(module, &ModuleWrap::functions, "function")
           << WrapList(module, &ModuleWrap::getters, "getter")
           << WrapList(module, &ModuleWrap::setters, "setter")
+          << WrapList(module, &ModuleWrap::member_getters, "member_getter")
           << "ModuleInfo info(\n"
           << "    \""+module->name+"\", init,\n"
-          << "    { {\"getters\",getters}, {\"setters\",setters}, {\"functions\",functions} },\n"
+          << "    { {\"getters\",getters}, {\"setters\",setters}, {\"functions\",functions},\n"
+          << "      {\"member_getters\",member_getters} },\n"
           << "    {";
     for (auto child : module->children())
         code

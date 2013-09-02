@@ -74,6 +74,11 @@ class ModuleInfo : public utils::Uncopyable {
      */
     const luaL_Reg* setters () const;
 
+    /// Gives the module's member getters array.
+    /** @return const luaL_Reg* The module's member getters.
+     */
+    const luaL_Reg* member_getters () const;
+
     /// Gives the module's constructor function (if there is one).
     /** @return lua_CFunction The module's constructor.
      */
@@ -142,6 +147,10 @@ inline const luaL_Reg* ModuleInfo::getters () const {
 
 inline const luaL_Reg* ModuleInfo::setters () const {
     return VerifyAndGet("setters");
+}
+
+inline const luaL_Reg* ModuleInfo::member_getters () const {
+    return VerifyAndGet("member_getters");
 }
 
 inline lua_CFunction ModuleInfo::constructor () const {

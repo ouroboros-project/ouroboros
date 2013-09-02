@@ -1,6 +1,8 @@
 
 #include <languages/lua/aux/exportmodule.h>
 
+#include <iostream>
+
 namespace opa {
 namespace lua {
 namespace aux {
@@ -93,10 +95,46 @@ int UniversalSetter (lua_State *L_) {
     return 0;
 }
 
+/// [-2,+1,-]
+int UniversalMemberGetter (lua_State *L_) {
+    // Stack: [obj, key]
+    State L(L_);
+    L.pushvalue(lua_upvalueindex(1));
+    // Stack: [obj, key, getters]
+    L.insert(2);
+    // Stack: [obj, getters, key]
+    L.gettable(2);
+    // Stack: [obj, getters, getter]
+    if (L.isnil(3)) {
+        L.settop(0);
+        L.pushnil();
+        return 1;
+    }
+    L.remove(2);
+    // Stack: [obj, getter]
+    L.insert(1);
+    // Stack: [getter, obj]
+    L.call(1, 1);
+    // Stack: [value]
+    return 1;
+}
+
 /// [-1,+1,-]
 void PrepareObjMetatable (State& L, const ModuleInfo* info) {
     // Stack: [module, mttable]
     L.newtable();
+    // Stack: [module, mttable, vtable]
+    /* Getters */ {
+        L.newtable();
+        if (!info->member_getters())
+            std::cout << "WAT\n";
+        // Stack: [module, mttable, vtable, getters]
+        luaL_register(L, NULL, info->member_getters());
+        // Stack: [module, mttable, vtable, getters]
+        L.pushcfunction(UniversalMemberGetter, 1);
+        // Stack: [module, mttable, vtable, __index]
+        L.setfield(3, "__index");
+    }
     // Stack: [module, mttable, vtable]
     /* Destructor */ {
         L.pushcfunction(info->destructor());
@@ -105,6 +143,7 @@ void PrepareObjMetatable (State& L, const ModuleInfo* info) {
     }
     // Stack: [module, mttable, vtable]
     L.setfield(2, "__vtable");
+    // Stack: [module, mttable]
 }
 
 /// [-1,+1,-]
@@ -138,6 +177,7 @@ void PrepareMetatable (State& L, const ModuleInfo* info) {
             // Stack: [module, mttable, __call]
             L.setfield(2, "__call");
         }
+        // Stack: [module, mttable]
         PrepareObjMetatable(L, info);
     }
     // Stack: [module, mttable]
