@@ -79,8 +79,14 @@ std::string CloseModuleBlock (const Ptr<ModuleWrap>& module) {
     for (auto child : module->children())
         code
           << " &" << (child->is_class() ? "class_" : "") << child->name << "::info,";
-    code  << " }\n"
-          << ");\n\n"
+    if (module->is_class())
+        code
+          << "},\n"
+          << "    generated::constructor\n";
+    else
+        code
+          << " }\n";
+    code  << ");\n\n"
           << "/// [-(1|2),+1,e]\n"
           << "int init (lua_State* L) {\n"
           << "    return ExportModule(L, &info);\n"
