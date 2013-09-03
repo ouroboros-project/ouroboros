@@ -45,6 +45,8 @@ class WrapperState : public opa::utils::Uncopyable {
 
     void AddVariableGetter (const md::Ptr<const md::Variable>& the_variable);
 
+    void AddVariableSetter (const md::Ptr<const md::Variable>& the_variable);
+
   private:
 
     std::list<md::Ptr<ModuleWrap>> stack_;

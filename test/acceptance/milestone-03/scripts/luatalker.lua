@@ -31,7 +31,8 @@ function main ()
   --if not wrongnumtest() or not wrongtypetest() then
   --  return false
   --end
-  send:send_message("Line breakage status is "..send.break_line, 'unused');
+  send:send_message("Everything ok so far. S'up bro.", 'unused');
+  send:send_message("Line breakage status is "..tostring(send.break_line), 'unused');
   while true do
     local msg = receive:receive_message()
     print("[received '"..msg.."']")

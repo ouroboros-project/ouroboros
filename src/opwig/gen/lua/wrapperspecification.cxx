@@ -128,7 +128,8 @@ string WrapperSpecification::WrapFunction (const Ptr<const md::Function>& obj) {
 string WrapperSpecification::WrapVariable (const md::Ptr<const md::Variable>& obj) {
     stringstream  code;
     bool          is_class = state_.is_current_class();
-    string        prefix = is_class ? "member_" : "";
+    const string  prefix = is_class ? "member_" : "";
+    const string  self_type = state_.current_module()->name;
     const string  type = obj->type()->full_type();
 
     state_.AddVariableGetter(obj);
@@ -142,7 +143,7 @@ string WrapperSpecification::WrapVariable (const md::Ptr<const md::Variable>& ob
           << "            \"Error: '%s' atribute cannot be accessed without an object.\\n\",\n"
           << "            \"" << DumpNamespaceNesting() << obj->name() << "\"\n"
           << "        );\n"
-          << "    " << type << " *self = static_cast<" << type << "*>(\n"
+          << "    " << self_type << " *self = static_cast<" << self_type << "*>(\n"
           << "        static_cast<opa::lua::aux::UserData*>(\n"
           << "            convert.ScriptToType<void*>(1)\n"
           << "        )->obj\n"
@@ -155,13 +156,27 @@ string WrapperSpecification::WrapVariable (const md::Ptr<const md::Variable>& ob
           << "}\n\n";
 
     if (!obj->type()->is_const()) {
-        state_.current_module()->setters.push_back({obj->name(), DumpNamespaceNesting()+"generated::"});
+        state_.AddVariableSetter(obj);
         code
           << "int " << GetWrapName("setter", obj->name()) << " (lua_State* L) {\n"
-          << "    opa::lua::Converter convert(L);\n"
+          << "    opa::lua::Converter convert(L);\n";
+        if (is_class)
+            code
+          << "    if (lua_gettop(L) < 2)\n"
+          << "        return luaL_error(\n"
+          << "            L,\n"
+          << "            \"Error: '%s' atribute cannot be set without an object or value.\\n\",\n"
+          << "            \"" << DumpNamespaceNesting() << obj->name() << "\"\n"
+          << "        );\n"
+          << "    " << self_type << " *self = static_cast<" << self_type << "*>(\n"
+          << "        static_cast<opa::lua::aux::UserData*>(\n"
+          << "            convert.ScriptToType<void*>(1)\n"
+          << "        )->obj\n"
+          << "    );\n";
+        code
           << "    " << type << " value;\n"
           << "    try {\n"
-          << "        value = convert.ScriptToType<" << type << ">(1);\n"
+          << "        value = convert.ScriptToType<" << type << ">(" << 1+(is_class?1:0) << ");\n"
           << "    } catch (runtime_error e) {\n"
           << "        return luaL_error(\n"
           << "            L,\n"
@@ -169,8 +184,15 @@ string WrapperSpecification::WrapVariable (const md::Ptr<const md::Variable>& ob
           << "            \"" << DumpNamespaceNesting() << obj->name() << "\",\n"
           << "            e.what()\n"
           << "        );\n"
-          << "    }\n"
-          << "    " << obj->name() << " = value;\n"
+          << "    }\n";
+        if (is_class)
+            code
+          << "    self->" << obj->name() << " = value;\n";
+        else
+            code
+          << "    " << obj->name() << " = value;\n";
+        code
+          << "    lua_settop(L, 0);\n"
           << "    return 0;\n"
           << "}\n\n";
     }

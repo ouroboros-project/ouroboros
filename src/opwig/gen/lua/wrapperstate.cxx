@@ -62,6 +62,16 @@ void WrapperState::AddVariableGetter (const Ptr<const md::Variable>& the_variabl
         module->getters.push_back({the_variable->name(), StackAsString("::",1)+"generated::"});
 }
 
+void WrapperState::AddVariableSetter (const Ptr<const md::Variable>& the_variable) {
+    auto module = current_module();
+    if (module->is_class())
+        module->member_setters.push_back({
+            the_variable->name(), StackAsString("::",1)+"generated::"
+        });
+    else
+        module->setters.push_back({the_variable->name(), StackAsString("::",1)+"generated::"});
+}
+
 } // namespace lua
 } // namespace gen
 } // namespace opwig
