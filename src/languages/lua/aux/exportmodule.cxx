@@ -138,6 +138,39 @@ int UniversalMemberGetter (lua_State *L_) {
     }
 }
 
+/// [-3,+1,-]
+int UniversalMemberSetter (lua_State *L_) {
+    // Stack: [obj, key, value]
+    State L(L_);
+    // Stack: [obj, key, value]
+    L.pushvalue(lua_upvalueindex(1));
+    // Stack: [obj, key, value, setters]
+    L.pushvalue(2);
+    // Stack: [obj, key, value, setters, key]
+    L.gettable(4);
+    // Stack: [obj, key, value, setters, setter]
+    if (L.isnil(5)) {
+        string attr_name = L.tostring(2);
+        L.settop(0);
+        return luaL_error(
+            L,
+            "Attempt to write to nonexistent attribute '%s'.",
+            attr_name.c_str()
+        );
+    }
+    L.insert(1);
+    // Stack: [setter, obj, key, value, ...]
+    L.remove(3);
+    // Stack: [setter, obj, value, ...]
+    L.settop(3);
+    // Stack: [setter, obj, value]
+    L.call(2, 0);
+    // Stack: []
+    L.settop(0); // Yes, I'm neurotic.
+    // Stack: []
+    return 0;
+}
+
 /// [-1,+1,-]
 void PrepareObjMetatable (State& L, const ModuleInfo* info) {
     // Stack: [module, mttable]
@@ -154,6 +187,16 @@ void PrepareObjMetatable (State& L, const ModuleInfo* info) {
         L.pushcfunction(UniversalMemberGetter, 2);
         // Stack: [module, mttable, vtable, __index]
         L.setfield(3, "__index");
+    }
+    // Stack: [module, mttable, vtable]
+    /* Setters */ {
+        L.newtable();
+        // Stack: [module, mttable, vtable, setters]
+        luaL_register(L, NULL, info->member_setters());
+        // Stack: [module, mttable, vtable, setters]
+        L.pushcfunction(UniversalMemberSetter, 1);
+        // Stack: [module, mttable, vtable, __newindex]
+        L.setfield(3, "__newindex");
     }
     // Stack: [module, mttable, vtable]
     /* Destructor */ {

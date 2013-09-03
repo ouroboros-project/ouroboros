@@ -47,7 +47,7 @@ function main ()
       send.break_line = false
       send:send_message("You sure? ")
       send.break_line = true
-      local answer = receive:confirmation()
+      local answer = receive:receive_confirmation()
       if answer then
         send:send_message("Lame.")
       else
