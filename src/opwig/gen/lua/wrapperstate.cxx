@@ -2,6 +2,7 @@
 #include <opwig/gen/lua/wrapperstate.h>
 
 #include <opwig/md/function.h>
+#include <opwig/md/variable.h>
 #include <opwig/md/ptr.h>
 
 namespace opwig {
@@ -49,6 +50,16 @@ void WrapperState::AddFunction (const Ptr<const md::Function>& the_function) {
         });
     else
         module->functions.push_back({the_function->name(), StackAsString("::",1)+"generated::"});
+}
+
+void WrapperState::AddVariableGetter (const Ptr<const md::Variable>& the_variable) {
+    auto module = current_module();
+    if (module->is_class())
+        module->member_getters.push_back({
+            the_variable->name(), StackAsString("::",1)+"generated::"
+        });
+    else
+        module->getters.push_back({the_variable->name(), StackAsString("::",1)+"generated::"});
 }
 
 } // namespace lua

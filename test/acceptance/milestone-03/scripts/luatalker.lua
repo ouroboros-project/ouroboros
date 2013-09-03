@@ -31,7 +31,7 @@ function main ()
   --if not wrongnumtest() or not wrongtypetest() then
   --  return false
   --end
-  send:send_message("Everything ok so far. S'up bro.", 'unused');
+  send:send_message("Line breakage status is "..send.break_line, 'unused');
   while true do
     local msg = receive:receive_message()
     print("[received '"..msg.."']")
@@ -40,7 +40,7 @@ function main ()
       send:send_multimessage("Say what?", 5)
     elseif msg == "sqrt" then
       send:send_message("Of...?")
-      local arg = receive:number()
+      local arg = receive:receive_number()
       send:send_message("'Tis "..math.sqrt(arg))
     elseif msg == "My favorite color is blue." then
       send.break_line = false

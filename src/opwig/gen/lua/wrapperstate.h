@@ -12,6 +12,7 @@ namespace opwig {
 
 namespace md {
 class Function;
+class Variable;
 } // namespace md
 
 namespace gen {
@@ -41,6 +42,8 @@ class WrapperState : public opa::utils::Uncopyable {
     void PopModule ();
 
     void AddFunction (const md::Ptr<const md::Function>& the_function);
+
+    void AddVariableGetter (const md::Ptr<const md::Variable>& the_variable);
 
   private:
 

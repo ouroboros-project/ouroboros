@@ -126,17 +126,34 @@ string WrapperSpecification::WrapFunction (const Ptr<const md::Function>& obj) {
 }
 
 string WrapperSpecification::WrapVariable (const md::Ptr<const md::Variable>& obj) {
-    if (state_.current_module()->is_class() && !obj->is_static())
-        return "";
-    stringstream code;
-    const string type = obj->type()->full_type();
-    //CheckAndOpenNamespace(code);
-    state_.current_module()->getters.push_back({obj->name(), DumpNamespaceNesting()+"generated::"});
-    code  << "int " << GetWrapName("getter", obj->name()) << " (lua_State* L) {\n"
-          << "    opa::lua::Converter convert(L);\n"
-          << "    convert.TypeToScript<" << type << ">(" << obj->name() << ");\n"
-          << "    return 1;\n"
+    stringstream  code;
+    bool          is_class = state_.is_current_class();
+    string        prefix = is_class ? "member_" : "";
+    const string  type = obj->type()->full_type();
+
+    state_.AddVariableGetter(obj);
+    code  << "int " << GetWrapName(prefix+"getter", obj->name()) << " (lua_State* L) {\n"
+          << "    opa::lua::Converter convert(L);\n";
+    if (is_class)
+        code
+          << "    if (lua_gettop(L) < 1)\n"
+          << "        return luaL_error(\n"
+          << "            L,\n"
+          << "            \"Error: '%s' atribute cannot be accessed without an object.\\n\",\n"
+          << "            \"" << DumpNamespaceNesting() << obj->name() << "\"\n"
+          << "        );\n"
+          << "    " << type << " *self = static_cast<" << type << "*>(\n"
+          << "        static_cast<opa::lua::aux::UserData*>(\n"
+          << "            convert.ScriptToType<void*>(1)\n"
+          << "        )->obj\n"
+          << "    );\n"
+          << "    convert.TypeToScript<" << type << ">(self->" << obj->name() << ");\n";
+    else
+        code
+          << "    convert.TypeToScript<" << type << ">(" << obj->name() << ");\n";
+    code  << "    return 1;\n"
           << "}\n\n";
+
     if (!obj->type()->is_const()) {
         state_.current_module()->setters.push_back({obj->name(), DumpNamespaceNesting()+"generated::"});
         code
@@ -157,6 +174,7 @@ string WrapperSpecification::WrapVariable (const md::Ptr<const md::Variable>& ob
           << "    return 0;\n"
           << "}\n\n";
     }
+
     return code.str();
 }
 
