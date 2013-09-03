@@ -4,33 +4,35 @@
 local out = require 'prompt.out'
 local input = require 'prompt.input'
 
---local function wrongnumtest ()
---  local check, err = pcall(function () out.send.message() end)
---  if check == false and err then
---    print(err)
---  else
---    return false
---  end
---  return true
---end
---
---local function wrongtypetest ()
---  local check, err = pcall(function () out.send_multimessage('derp', function() end) end)
---  if check == false and err then
---    print(err)
---  else
---    return false
---  end
---  return true
---end
+local function nogetter ()
+  local test = input.Receiver()
+  local check, err = pcall(function () assert(test.sbrubles) end)
+  if check == false and err then
+    print(err)
+  else
+    return false
+  end
+  return true
+end
+
+local function nosetter ()
+  local test = out.Sender()
+  local check, err = pcall(function () test.sbrubles = 42 end)
+  if check == false and err then
+    print(err)
+  else
+    return false
+  end
+  return true
+end
 
 function main ()
   local send = out.Sender()
   local receive = input.Receiver()
   send:send_message("Let's check some things first...")
-  --if not wrongnumtest() or not wrongtypetest() then
-  --  return false
-  --end
+  if not nogetter() or not nosetter() then
+    return false
+  end
   send:send_message("Everything ok so far. S'up bro.", 'unused');
   send:send_message("Line breakage status is "..tostring(send.break_line), 'unused');
   while true do
