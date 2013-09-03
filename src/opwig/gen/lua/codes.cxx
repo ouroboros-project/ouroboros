@@ -1,5 +1,6 @@
 
 #include <opwig/gen/lua/codes.h>
+#include <opwig/md/class.h>
 
 #include <sstream>
 
@@ -10,16 +11,19 @@ namespace lua {
 using std::string;
 using std::stringstream;
 using std::list;
+using md::Ptr;
+using md::MetadataObject;
+using md::Class;
 
 string WrapList (const md::Ptr<ModuleWrap>& module, WrappedMember member, const string& type) {
     const auto& wraps = (*module).*member;
     stringstream code;
-    code  << "luaL_Reg "<< module->path+module->name << "_" << type << "s[] = {\n";
+    code  << "luaL_Reg "<< type << "s[] = {\n";
     for (auto wrap : wraps)
         code 
           << "    { "
               << "\"" + wrap.name + "\", "
-              <<  wrap.nesting + GetWrapName(type, wrap.name)
+              << "generated::" + GetWrapName(type, wrap.name)
           << " },\n";
     code  << "    { nullptr, nullptr }\n"
              "};\n\n";
@@ -28,6 +32,7 @@ string WrapList (const md::Ptr<ModuleWrap>& module, WrappedMember member, const 
 
 string MiddleBlockCode (const string& module_name) {
     return
+        "#include <languages/lua/aux/exportmodule.h>\n"
         "#include <languages/lua/luawrapper.h>\n"
         "#include <languages/lua/converter.h>\n"
         "#include <languages/lua/header.h>\n"
@@ -48,140 +53,59 @@ string MiddleBlockCode (const string& module_name) {
         "using opa::lua::LuaWrapper;\n"
         "using opa::lua::State;\n"
         "using opa::lua::Constant;\n"
+        "using opa::lua::aux::ModuleInfo;\n"
+        "using opa::lua::aux::ExportModule;\n"
         "\n"
-        "namespace {\n\n"
-        "const char *MODULE_NAME = \""+module_name+"\";\n\n"
-        "struct ModuleInfo {\n"
-        "    luaL_Reg    *getters;\n"
-        "    luaL_Reg    *setters;\n"
-        "    luaL_Reg    *funcions;\n"
-        "    ModuleInfo  *parent;\n"
-        "    list<ModuleInfo>  children;\n"
-        "    ModuleInfo (luaL_Reg the_getters[], luaL_Reg the_setters[],\n"
-        "                luaL_Reg the_functions[], const list<ModuleInfo>& the_children)\n"
-        "        : getters(the_getters), setters(the_setters), funcions(the_functions),\n"
-        "          parent(nullptr), children(the_children) {\n"
-        "        for (auto& child : children)\n"
-        "            child.parent = this;\n"
-        "    }\n"
-        "};\n\n"
-        "} // unnamed namespace\n\n";
+        "// Begin wrappers\n\n"
+        "namespace generated {\n\n";
 }
 
-string Utilities () {
+string CheckAndCloseNamespace (bool open, const string& name) {
     return
-        "void OPWIG_Lua_MakeParentModule (State& L, const string& parent_name) {\n"
-        "    // This function uses the table on top of the stack to check for the parent module.\n"
-        "    // If it is not there, the function creates it.\n"
-        "    L.getfield(-1, parent_name);\n"
-        "    if (L.isnil(-1)) {\n"
-        "        L.pop(1);\n"
-        "        L.newtable();\n"
-        "        L.pushvalue(-1);\n"
-        "        L.setfield(-3, parent_name);\n"
-        "    }\n"
-        "    L.remove(-2);\n"
-        "}\n\n"
-        "void OPWIG_Lua_ExportSubmodule (State& L, const string& name, lua_CFunction init) {\n"
-        "    // This function exports the given submodule into the table at the stack's top.\n"
-        "    // Stack: [module]\n"
-        "    L.pushcfunction(init);\n"
-        "    L.pushprimitive(name);\n"
-        "    L.pushvalue(1);\n"
-        "    // Stack: [module, cfunction, string, module]\n"
-        "    L.call(2, 1);\n"
-        "    // Stack: [module, submodule]\n"
-        "    L.setfield(1, name);\n"
-        "}\n\n"
-        "/// [-2,+1,-]\n"
-        "int OPWIG_Lua_UniversalGetter (lua_State *L_) {\n"
-        "    // Stack: [table, key]\n"
-        "    State L(L_);\n"
-        "    L.remove(1);\n"
-        "    // Stack: [key]\n"
-        "    L.pushvalue(lua_upvalueindex(1));\n"
-        "    // Stack: [key, getters]\n"
-        "    L.insert(1);\n"
-        "    // Stack: [getters, key]\n"
-        "    L.gettable(1);\n"
-        "    // Stack: [getters, getter]\n"
-        "    if (L.isnil(2)) {\n"
-        "        L.settop(0);\n"
-        "        L.pushnil();\n"
-        "        return 1;\n"
-        "    }\n"
-        "    L.remove(1);\n"
-        "    // Stack: [getter]\n"
-        "    L.call(0, 1);\n"
-        "    // Stack: [value]\n"
-        "    return 1;\n"
-        "}\n\n"
-        "/// [-3,+1,-]\n"
-        "int OPWIG_Lua_UniversalSetter (lua_State *L_) {\n"
-        "    // Stack: [table, key, value]\n"
-        "    State L(L_);\n"
-        "    L.remove(1);\n"
-        "    // Stack: [key, value]\n"
-        "    L.pushvalue(lua_upvalueindex(1));\n"
-        "    // Stack: [key, value, setters]\n"
-        "    L.pushvalue(1);\n"
-        "    // Stack: [key, value, setters, key]\n"
-        "    L.gettable(3);\n"
-        "    // Stack: [key, value, setters, setter]\n"
-        "    if (L.isnil(4)) {\n"
-        "        L.settop(0);\n"
-        "        return luaL_error(\n"
-        "            L,\n"
-        "            \"Attempt to write to nonexistent variable.\"\n"
-        "        );\n"
-        "    }\n"
-        "    L.remove(3);\n"
-        "    // Stack: [key, value, setter]\n"
-        "    L.insert(2);\n"
-        "    // Stack: [key, setter, value]\n"
-        "    L.call(1, 0);\n"
-        "    // Stack: [key]\n"
-        "    L.settop(0);\n"
-        "    // Stack: []\n"
-        "    return 0;\n"
-        "}\n\n"
-        "/// [-1,+1,-]\n"
-        "void OPWIG_Lua_PrepareMetatable (State& L, luaL_Reg getters[], luaL_Reg setters[]) {\n"
-        "    // Stack: [module]\n"
-        "    L.newtable();\n"
-        "    // Stack: [module, mttable]\n"
-        "    L.pushvalue(-1);\n"
-        "    // Stack: [module, mttable, mttable]\n"
-        "    L.setmetatable(1);\n"
-        "    // Stack: [module, mttable]\n"
-        "    /* Getters */ {\n"
-        "       L.newtable();\n"
-        "       // Stack: [module, mttable, getters]\n"
-        "       luaL_register(L, NULL, getters);\n"
-        "       // Stack: [module, mttable, getters]\n"
-        "       L.pushcfunction(OPWIG_Lua_UniversalGetter, 1);\n"
-        "       // Stack: [module, mttable, __index]\n"
-        "       L.setfield(2, \"__index\");\n"
-        "    }\n"
-        "    // Stack: [module, mttable]\n"
-        "    /* Setters */ {\n"
-        "       L.newtable();\n"
-        "       // Stack: [module, mttable, setters]\n"
-        "       luaL_register(L, NULL, setters);\n"
-        "       // Stack: [module, mttable, setters]\n"
-        "       L.pushcfunction(OPWIG_Lua_UniversalSetter, 1);\n"
-        "       // Stack: [module, mttable, __newindex]\n"
-        "       L.setfield(2, \"__newindex\");\n"
-        "    }\n"
-        "    // Stack: [module, mttable]\n"
-        "    // Leave only the module table in the stack.\n"
-        "    L.settop(1);\n"
-        "    // Stack: [module]\n"
-        "}\n\n"
-        "/// [-(1|0),+1,-]\n"
-        "void OPWIG_Lua_PrepareModule (State& L, const ModuleInfo& info) {\n"
-        "}\n\n"
-        ;
+        open ? ("} // namespace "+name+"\n\n") : "";
+}
+
+string CloseModuleBlock (const Ptr<ModuleWrap>& module) {
+    stringstream code;
+
+    code  << "namespace {\n\n"
+          << "/// Forward declaration.\n"
+          << "int init (lua_State* L_);\n\n"
+          << WrapList(module, &ModuleWrap::functions, "function")
+          << WrapList(module, &ModuleWrap::getters, "getter")
+          << WrapList(module, &ModuleWrap::setters, "setter")
+          << WrapList(module, &ModuleWrap::member_getters, "member_getter")
+          << WrapList(module, &ModuleWrap::member_setters, "member_setter")
+          << WrapList(module, &ModuleWrap::member_functions, "member_function")
+          << "ModuleInfo info(\n"
+          << "    \""+module->name+"\", init,\n"
+          << "    {\n"
+          << "        {\"getters\",getters}, {\"setters\",setters}, {\"functions\",functions},\n"
+          << "        {\"member_getters\",member_getters},\n"
+          << "        {\"member_setters\",member_setters},\n"
+          << "        {\"member_functions\",member_functions}\n"
+          << "    }, \n"
+          << "    {";
+    for (auto child : module->children())
+        code
+          << " &" << (child->is_class() ? "class_" : "") << child->name << "::info,";
+    if (module->is_class())
+        code
+          << "},\n"
+          << "    opa::lua::aux::Construct<" << module->name << ">,\n"
+          << "    opa::lua::aux::Destruct<" << module->name << ">,\n"
+          << "    true\n";
+    else
+        code
+          << " }\n";
+    code  << ");\n\n"
+          << "/// [-(1|2),+1,e]\n"
+          << "int init (lua_State* L) {\n"
+          << "    return ExportModule(L, &info);\n"
+          << "}\n\n";
+    code  << "} // unnamed namespace\n\n";
+
+    return code.str();
 }
 
 } // namespace lua

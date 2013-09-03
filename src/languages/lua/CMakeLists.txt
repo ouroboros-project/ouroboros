@@ -19,6 +19,8 @@ SET(OUROBOROS_LUA_SRC
     ./primitive.h 
     ./state.h 
     ./swigluarun.h 
+    ./aux/exportmodule.h
+    ./aux/exportmodule.cxx
 )
 
 find_package (Lua51)

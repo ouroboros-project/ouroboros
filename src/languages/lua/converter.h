@@ -49,7 +49,14 @@ template <>
 inline bool Converter::ScriptToType<bool> (int index) {
     if (index < 0 || index > L_.gettop())
         throw std::runtime_error("invalid stack index "+std::to_string(index));
-    return L_.toprimitive<bool>(index);
+    return L_.toboolean(index);
+}
+
+template <>
+inline void* Converter::ScriptToType<void*> (int index) {
+    if (index < 0 || index > L_.gettop())
+        throw std::runtime_error("invalid stack index "+std::to_string(index));
+    return L_.touserdata(index);
 }
 
 }

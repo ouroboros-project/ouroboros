@@ -40,6 +40,7 @@ class State {
     void pushboolean (bool b) { lua_pushboolean(L_, b); }
     void pushinteger (lua_Integer integer) { lua_pushinteger(L_, integer); }
     void pushnumber (lua_Number number) { lua_pushnumber(L_, number); }
+    void pushudata (size_t size) { lua_newuserdata(L_, size); }
     void pushudata (UData ptr) { lua_pushlightuserdata(L_, ptr); }
     void pushstring (const char* str) { lua_pushstring(L_, str); }
     void pushcfunction (lua_CFunction func, int n = 0) {
@@ -65,6 +66,8 @@ class State {
 
     void gettable (int index) { lua_gettable(L_, index); }
     void settable (int index) { lua_settable(L_, index); }
+    void rawget (int index) { lua_rawget(L_, index); }
+    void rawset (int index) { lua_rawset(L_, index); }
     void rawgeti (int index, int n) { lua_rawgeti(L_, index, n); }
     void rawseti (int index, int n) { lua_rawseti(L_, index, n); }
 

@@ -4,11 +4,18 @@
 
 #include <opa/utils/uncopyable.h>
 #include <opwig/gen/lua/wraps.h>
+#include <opwig/gen/lua/codes.h>
 
 #include <string>
 #include <list>
 
 namespace opwig {
+
+namespace md {
+class Function;
+class Variable;
+} // namespace md
+
 namespace gen {
 namespace lua {
 
@@ -25,6 +32,8 @@ class WrapperState : public opa::utils::Uncopyable {
 
     md::Ptr<ModuleWrap> current_module () const;
 
+    bool is_current_class () const;
+
     std::string StackAsString (const std::string& sep, size_t skip = 0) const;
 
     void PushModule (const md::Ptr<ModuleWrap>& the_module);
@@ -33,14 +42,26 @@ class WrapperState : public opa::utils::Uncopyable {
 
     void PopModule ();
 
+    void AddFunction (const md::Ptr<const md::Function>& the_function);
+
+    void AddVariableGetter (const md::Ptr<const md::Variable>& the_variable);
+
+    void AddVariableSetter (const md::Ptr<const md::Variable>& the_variable);
+
   private:
 
     std::list<md::Ptr<ModuleWrap>> stack_;
+
+    void AddWrap (const std::string& name, WrappedMember member, WrappedMember nonmember);
 
 };
 
 inline md::Ptr<ModuleWrap> WrapperState::current_module () const {
     return stack_.back();
+}
+
+inline bool WrapperState::is_current_class () const {
+    return current_module()->is_class();
 }
 
 inline void WrapperState::PushModule (const md::Ptr<ModuleWrap>& the_module) {

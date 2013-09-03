@@ -19,10 +19,13 @@ struct DataWrap {
 
 struct ModuleWrap : public opa::utils::Uncopyable, std::enable_shared_from_this<ModuleWrap> {
 
-    std::string                     name, path;
+    std::string                     name, path, nesting;
     std::list<DataWrap>             functions;
     std::list<DataWrap>             getters;
     std::list<DataWrap>             setters;
+    std::list<DataWrap>             member_getters;
+    std::list<DataWrap>             member_setters;
+    std::list<DataWrap>             member_functions;
 
     /// Tells if the module represents a class.
     /** @return bool Wheter the module is a class.
@@ -62,8 +65,10 @@ struct ModuleWrap : public opa::utils::Uncopyable, std::enable_shared_from_this<
     std::list<md::Ptr<ModuleWrap>>  children_;
     md::WeakPtr<ModuleWrap>         parent_;
     bool                            is_class_;
+    size_t                          nonclass_children_num_;
 
-    ModuleWrap (bool is_class_flag = false) : is_class_(is_class_flag) {}
+    ModuleWrap (bool is_class_flag = false)
+        : is_class_(is_class_flag), nonclass_children_num_(0) {}
 
 };
 
@@ -76,7 +81,7 @@ inline bool ModuleWrap::has_wraps () const {
 }
 
 inline bool ModuleWrap::has_children () const {
-    return !children_.empty();
+    return !children_.empty(); // nonclass_children_num_ > 0;
 }
 
 inline const std::list<md::Ptr<ModuleWrap>>& ModuleWrap::children () const {
@@ -90,6 +95,7 @@ inline md::Ptr<ModuleWrap> ModuleWrap::parent () const {
 inline void ModuleWrap::AddChild (const md::Ptr<ModuleWrap>& the_child) {
     children_.push_back(the_child);
     the_child->parent_ = shared_from_this();
+    if (!the_child->is_class()) nonclass_children_num_++;
 }
 
 } // namespace lua
