@@ -158,7 +158,7 @@ string WrapperSpecification::WrapVariable (const md::Ptr<const md::Variable>& ob
     if (!obj->type()->is_const()) {
         state_.AddVariableSetter(obj);
         code
-          << "int " << GetWrapName("setter", obj->name()) << " (lua_State* L) {\n"
+          << "int " << GetWrapName(prefix+"setter", obj->name()) << " (lua_State* L) {\n"
           << "    opa::lua::Converter convert(L);\n";
         if (is_class)
             code

@@ -4,6 +4,7 @@
 
 #include <opa/utils/uncopyable.h>
 #include <opwig/gen/lua/wraps.h>
+#include <opwig/gen/lua/codes.h>
 
 #include <string>
 #include <list>
@@ -50,6 +51,8 @@ class WrapperState : public opa::utils::Uncopyable {
   private:
 
     std::list<md::Ptr<ModuleWrap>> stack_;
+
+    void AddWrap (const std::string& name, WrappedMember member, WrappedMember nonmember);
 
 };
 

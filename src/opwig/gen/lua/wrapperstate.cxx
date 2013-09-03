@@ -43,33 +43,26 @@ void WrapperState::PushModule (const string& module_name, bool is_class_flag) {
 }
 
 void WrapperState::AddFunction (const Ptr<const md::Function>& the_function) {
-    auto module = current_module();
-    if (module->is_class())
-        module->member_functions.push_back({
-            the_function->name(), StackAsString("::",1)+"generated::"
-        });
-    else
-        module->functions.push_back({the_function->name(), StackAsString("::",1)+"generated::"});
+    AddWrap(the_function->name(), &ModuleWrap::member_functions, &ModuleWrap::functions);
 }
 
 void WrapperState::AddVariableGetter (const Ptr<const md::Variable>& the_variable) {
-    auto module = current_module();
-    if (module->is_class())
-        module->member_getters.push_back({
-            the_variable->name(), StackAsString("::",1)+"generated::"
-        });
-    else
-        module->getters.push_back({the_variable->name(), StackAsString("::",1)+"generated::"});
+    AddWrap(the_variable->name(), &ModuleWrap::member_getters, &ModuleWrap::getters);
 }
 
 void WrapperState::AddVariableSetter (const Ptr<const md::Variable>& the_variable) {
+    AddWrap(the_variable->name(), &ModuleWrap::member_setters, &ModuleWrap::setters);
+}
+
+void WrapperState::AddWrap (const string& name, WrappedMember member,
+                            WrappedMember nonmember) {
     auto module = current_module();
     if (module->is_class())
-        module->member_setters.push_back({
-            the_variable->name(), StackAsString("::",1)+"generated::"
+        ((*module).*member).push_back({
+            name, StackAsString("::",1)+"generated::"
         });
     else
-        module->setters.push_back({the_variable->name(), StackAsString("::",1)+"generated::"});
+        ((*module).*nonmember).push_back({name, StackAsString("::",1)+"generated::"});
 }
 
 } // namespace lua
