@@ -103,10 +103,11 @@ class InheritableLangWrapper : public LangWrapper {
 
   protected:
 
-    std::vector< Module<loader_t> > modules_;
+    std::vector<Module<loader_t>> modules_;
 
-    InheritableLangWrapper(const std::string& file_extension, const LangID id, const std::string& name) :
-        LangWrapper(file_extension, id, name) {}
+    InheritableLangWrapper(const std::string& file_extension, const LangID id,
+                           const std::string& name)
+        : LangWrapper(file_extension, id, name) {}
 
 };
 

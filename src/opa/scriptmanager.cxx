@@ -12,15 +12,12 @@ using std::string;
 
 ScriptManager* ScriptManager::ref_ = nullptr;
 
-ScriptManager::ScriptManager() {
-    // TODO Auto-generated constructor stub
-
-}
+ScriptManager::ScriptManager() {}
 
 bool ScriptManager::Initialize(const std::string& scripts_path) {
     bool is_ok = true;
 
-	scripts_path_ = scripts_path;
+    scripts_path_ = scripts_path;
 
     WrapperMap::iterator it = wrappers_.begin();
     while (it != wrappers_.end()) {
@@ -49,7 +46,8 @@ void ScriptManager::Register(LangWrapper* wrapper) {
 }
 
 LangWrapper* ScriptManager::GetWrapper(const string& name) {
-    if (!wrappers_.count(name))	return nullptr;
+    // TODO: avoid double search
+    if (!wrappers_.count(name)) return nullptr;
     return wrappers_[name];
 }
 
