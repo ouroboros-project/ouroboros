@@ -5,6 +5,7 @@
 
 #include <opa/langwrapper.h>
 #include <opa/virtualobj.h>
+#include <opa/exceptions.h>
 
 namespace opa {
 
@@ -52,7 +53,10 @@ LangWrapper* ScriptManager::GetWrapper(const string& name) {
 }
 
 void ScriptManager::ExecuteCode(const string& language, const string& code) {
-    if (!wrappers_.count(language)) return;
+    if (!wrappers_.count(language)) {
+        throw InvalidVMError(language, "this VM does not exist.");
+        return;
+    }
     
     wrappers_[language]->ExecuteCode(code);
 }
@@ -69,7 +73,7 @@ VirtualObj ScriptManager::LoadModule(const string& script) {
         }
         ++it;
     }
-    fprintf(stderr, "Uncapable of loading module (path notation) \"%s\".\n", filepath.c_str() );
+    throw IOError(filepath, "opening");
     return VirtualObj();
 }
 
