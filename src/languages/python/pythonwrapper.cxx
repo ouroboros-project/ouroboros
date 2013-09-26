@@ -96,9 +96,12 @@ string PythonWrapper::GetPythonExceptionDetails() {
     PyErr_Fetch(&exc_typ,&exc_val,&exc_tb);
     PyErr_NormalizeException(&exc_typ,&exc_val,&exc_tb);
 
+    string info = "";
     temp = PyObject_GetAttrString(exc_typ, "__name__");
     if (temp != nullptr) {
         //fprintf(stderr, "%s: ", PyString_AsString(temp));
+        info.append( PyString_AsString(temp) );
+        info += ": ";
         Py_DECREF(temp);
     }
     Py_DECREF(exc_typ);
@@ -107,20 +110,27 @@ string PythonWrapper::GetPythonExceptionDetails() {
         temp = PyObject_Str(exc_val);
         if (temp != nullptr) {
             //fprintf(stderr, "%s", PyString_AsString(temp));
+            info.append( PyString_AsString(temp) );
+            info += "\n";
             Py_DECREF(temp);
         }
         Py_DECREF(exc_val);
     }
 
     //fprintf(stderr, "\n");
-    string info = "<no information available>";
-    if(exc_tb == nullptr) return info;
+    if(exc_tb == nullptr) {
+        if (info.size() <= 0) return "<no information available (no traceback)>";
+        return info;
+    }
     
     PyObject *pName = PyString_FromString("traceback");
     PyObject *pModule = PyImport_Import(pName);
     Py_DECREF(pName);
     
-    if(pModule == nullptr) return info;
+    if(pModule == nullptr) {
+        if (info.size() <= 0) return "<no information available (no traceback module)>";
+        return info;
+    }
 
     PyObject *pFunc = PyObject_GetAttrString(pModule, "format_tb");
     
@@ -132,7 +142,6 @@ string PythonWrapper::GetPythonExceptionDetails() {
         if (pValue != nullptr) {
             Py_ssize_t len = PyList_Size(pValue);
             PyObject *t;
-            info = "";
             for (Py_ssize_t i = 0; i < len; i++) {
                 PyObject *tt = PyList_GetItem(pValue,i);
                 t = Py_BuildValue("(O)",tt);
@@ -150,6 +159,7 @@ string PythonWrapper::GetPythonExceptionDetails() {
     Py_DECREF(pFunc);
 
     Py_DECREF(pModule);
+    if (info.size() <= 0) return "<no information available (N/A)>";
     return info;
 }
 
