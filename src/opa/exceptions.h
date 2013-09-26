@@ -7,12 +7,6 @@
     
 namespace opa {
 
-/*
--InvalidVMError
--IOError
--InternalVMError
-*/
-
 /** Class representing a invalid VM error. Examples: trying to use unregistered VMs,
     trying to use something from a VM in another, etc.*/
 class InvalidVMError : public std::runtime_error {

@@ -1,4 +1,5 @@
 #include <languages/python/pythonconverter.h>
+#include <opa/exceptions.h>
 
 namespace opa {
 namespace python {
@@ -11,7 +12,7 @@ namespace python {
         : "")
 
 #define RAISE(message, isReturn) \
-    throw ConversionError("Python", message+WRAPPER_MSG_ADDENDUM(isReturn))
+    throw InternalVMError("Python", "[Converter] "+message+WRAPPER_MSG_ADDENDUM(isReturn))
 
 #define CHECK_NULL(obj, message) \
     if (obj == nullptr) RAISE(message, false)

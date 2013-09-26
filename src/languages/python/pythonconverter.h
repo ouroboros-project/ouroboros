@@ -3,6 +3,7 @@
 
 #include <Python.h>
 #include <opa/converter.h>
+#include <opa/exceptions.h>
 #include <string>
 #include <typeinfo>
 
@@ -36,19 +37,19 @@ public:
         //implement templatized TypeToScript<T> method
         //it receives a T value parameter and should return a ScriptObj
         std::string tname (typeid(value).name());
-        throw ConversionError("Python", "conversion method TypeToScript<"+tname+"> not implemented");
+        throw InternalVMError("Python", "[Converter] conversion method TypeToScript<"+tname+"> not implemented");
     }
     
     CONVERTER_IMPL_SCRIPT_TO_TYPE(PyObject*) {
         //implement templatized ScriptToType<T> method
         //it receives a ScriptObj value parameter and should return a T
-        throw ConversionError("Python", "conversion method ScriptToType<T> not implemented");
+        throw InternalVMError("Python", "[Converter] conversion method ScriptToType<T> not implemented");
     }
     
     template <typename T>
     T PyArgToType(PyObject* args, int index) {
         PyObject* arg = PyTuple_GetItem(args, static_cast<Py_ssize_t>(index));
-        if (arg == nullptr) throw ConversionError("Python", "Failed to get ARGS tuple element at index "+std::to_string(index));
+        if (arg == nullptr) throw InternalVMError("Python", "[Converter] Failed to get ARGS tuple element at index "+std::to_string(index));
         arg_index_ = index;
         return ScriptToType<T>(arg);
     }

@@ -1,8 +1,10 @@
 #include <languages/python/pythondata.h>
 #include <opa/scriptmanager.h>
 #include <opa/virtualobj.h>
+#include <opa/exceptions.h>
 #include <languages/python/swigpyrun.h>
 
+#include <string>
 #include <memory>
 #include <cstdlib>
 
@@ -10,6 +12,7 @@ namespace opa {
 namespace python {
 
 using std::shared_ptr;
+using std::string;
 
 void* PythonData::Unwrap(const VirtualType& type, bool disown) const {
     void* pointer;
@@ -20,9 +23,15 @@ void* PythonData::Unwrap(const VirtualType& type, bool disown) const {
     return nullptr;
 }
 const char* PythonData::UnwrapString() const {
-    if (py_data_ == nullptr) return "INVALID";
+    if (py_data_ == nullptr) {
+        throw InvalidVMError("Python", "[Converter] tried to unwrap a invalid object to string.");
+        return "INVALID";
+    }
     PyObject *temp = PyObject_Str(py_data_);
-    if(temp == nullptr) return "INVALID";
+    if(temp == nullptr) {
+        throw InternalVMError("Python", "[Converter] could not get string representation of object.");
+        return "INVALID";
+    }
     const char* result = converter_.ScriptToType<const char*>(temp);
     Py_DECREF(temp);
     return result;
@@ -41,8 +50,14 @@ double PythonData::UnwrapNumber() const {
 template <class T>
 static T UnwrapSequence(PyObject* py_data_, PythonWrapper* wrapper_) {
     T seq = T();
-    if (py_data_ == nullptr)   return seq;
-    if (!PySequence_Check(py_data_)) return seq;
+    if (py_data_ == nullptr) {
+        throw InvalidVMError("Python", "[Converter] tried to unwrap a invalid object to sequence.");
+        return seq;
+    }
+    if (!PySequence_Check(py_data_)) {
+        throw InternalVMError("Python", "[Converter] tried to unwrap to sequence an objet that does not implement the sequence protocol.");
+        return seq;
+    }
 
     Py_ssize_t size = PySequence_Length(py_data_);
     PyObject* obj;
@@ -64,15 +79,27 @@ VirtualData::List PythonData::UnwrapList() const {
 }
 VirtualData::Map PythonData::UnwrapMap() const {
     Map d = Map();
-    if (py_data_ == nullptr)   return d;
-    if (!PyMapping_Check(py_data_)) return d;
+    if (py_data_ == nullptr) {
+        throw InvalidVMError("Python", "[Converter] tried to unwrap a invalid object to map.");
+        return d;
+    }
+    if (!PyMapping_Check(py_data_)) {
+        throw InternalVMError("Python", "[Converter] tried to unwrap to map an objet that does not implement the mapping protocol.");
+        return seq;
+    }
 
     PyObject* items_func = PyObject_GetAttrString(py_data_, "items"); //new ref
-    if (items_func == nullptr) return d;
+    if (items_func == nullptr) {
+        throw InternalVMError("Python", "[Converter] could not get the items() method of map.");
+        return d;
+    }
     PyObject* items = PyObject_CallObject(items_func, nullptr);  //new ref
     Py_XDECREF(items_func);
     //PyObject* items = PyMapping_Items(py_data_); //items is new ref
-    if (items == nullptr)   return d;    
+    if (items == nullptr) {
+        throw InternalVMError("Python", "[Converter] could not get the items of the map.");
+        return d;
+    }
 
     Py_ssize_t size = PySequence_Length(items);
     PyObject *item, *key, *value;
@@ -156,6 +183,7 @@ void PythonData::WrapNumber(double number) {
 VirtualData::Ptr PythonData::Execute(const std::vector<Ptr>& args) {
     if (!PyCallable_Check(py_data_)) {
         //The object we contain is not callable - cannot execute it.
+        throw InternalVMError("Python", "[VData::Execute] executed object does not implement the callable protocol.");
         return VirtualData::Ptr();
     }
 
@@ -163,6 +191,7 @@ VirtualData::Ptr PythonData::Execute(const std::vector<Ptr>& args) {
     if (arglist == nullptr) {
         /*Some error occured... Py/C API doesn't specify what might cause the failure here...
            Most likely out of memory? */
+        throw InternalVMError("Python", "[VData::Execute] could not create tuple of arguments.");
         return VirtualData::Ptr();
     }
 
@@ -187,8 +216,8 @@ VirtualData::Ptr PythonData::Execute(const std::vector<Ptr>& args) {
     PyObject* result = PyObject_CallObject(py_data_, arglist); //return is new ref
     /*If result = nullptr, CallObject failed (somehow)*/
     if (result == nullptr) {
-        fprintf(stderr, "[Python] Error executing callable object (python exception details below)\n");
-        wrapper_->PrintPythonExceptionDetails();
+        string exc_info = wrapper_->GetPythonExceptionDetails(); 
+        throw InternalVMError("Python", "[VData::Execute] called function raised exception:\n"+exc_info);
         return VirtualData::Ptr();
     }
 
@@ -223,10 +252,14 @@ VirtualData::Ptr PythonData::GetAttribute(Ptr key) {
     else {
         if (!PyMapping_Check(py_data_)) {
             //Object doesn't have attribute with the given name and can't have items...
+            throw InternalVMError("Python", 
+                "[VData::Attribute] trying to get attribute as a item in object, and it does not implement the mapping protocol.");
             return VirtualData::Ptr();
         }
         if (!PyMapping_HasKey(py_data_, key_data) ) {
             //Object doesn't have attribute or item with the given name...
+            throw InternalVMError("Python", 
+                "[VData::Attribute] trying to get attribute as a item in object, and it does not have an item with given key.");
             return VirtualData::Ptr();
         }
         attr = PyObject_GetItem(py_data_, key_data); //return is new ref
