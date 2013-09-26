@@ -1,4 +1,6 @@
 #include <languages/python/pythonconverter.h>
+#include <opa/exceptions.h>
+#include <string>
 
 namespace opa {
 namespace python {
@@ -11,17 +13,20 @@ namespace python {
         : "")
 
 #define RAISE(message, isReturn) \
-    throw ConversionError("Python", message+WRAPPER_MSG_ADDENDUM(isReturn))
+    std::string error_msg = "[Converter] "; \
+    error_msg += message+WRAPPER_MSG_ADDENDUM(isReturn); \
+    throw InternalVMError("Python", error_msg)
 
 #define CHECK_NULL(obj, message) \
-    if (obj == nullptr) RAISE(message, false)
+    if (obj == nullptr) { RAISE(message, false); }
 
 #define CHECK_NULL_TO_SCRIPT(obj, message) \
-    if (obj == nullptr) RAISE(message, true)
+    if (obj == nullptr) { RAISE(message, true); }
 
 #define CHECK_PY_ERROR(message) \
-    if ( PyErr_Occurred() != nullptr) \
-        RAISE(message, false);
+    if ( PyErr_Occurred() != nullptr) { \
+        RAISE(message, false); \
+    }
 
 //////////////////
 // script -> C++ methods

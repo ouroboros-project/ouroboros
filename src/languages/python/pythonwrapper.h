@@ -1,6 +1,7 @@
 #ifndef OUROBOROS_SCRIPT_PYTHON_PYTHONWRAPPER_H_
 #define OUROBOROS_SCRIPT_PYTHON_PYTHONWRAPPER_H_
 
+#include <string>
 #include <vector>
 #include <opa/langwrapper.h>
 
@@ -36,7 +37,7 @@ class PythonWrapper : public PythonWrapperBase {
     /// Finalizes the LangWrapper, finalizing any language specific stuff.
     virtual void Finalize();
 
-    void PrintPythonExceptionDetails();
+    std::string GetPythonExceptionDetails();
 
   private:
     //std::vector<Module> modules_;

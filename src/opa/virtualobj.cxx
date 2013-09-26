@@ -1,5 +1,6 @@
 
 #include <opa/virtualobj.h>
+#include <opa/exceptions.h>
 
 #include <algorithm>
 
@@ -15,11 +16,13 @@ VirtualObj VirtualObj::operator() (const list<VirtualObj>& args) const {
         // Wrappers of executed VObj (we) and of the VObjs passed as
         // arguments must be the same.
         if (!*it) {
-            puts("[vobj::op()] Argument in not a valid virtual object.");
+            throw InvalidVMError(this->wrapper()->lang_name(), "received a invalid VObj as argument in VObj::operator().");
             return VirtualObj();
         }
         if (wrapper() != it->wrapper()) {
             puts("[vobj::op()] Argument wrapper is not the same as the called object.");
+            throw InvalidVMError(this->wrapper()->lang_name(),
+                  "in VObj::operator(): received argument of a different VM ("+it->wrapper()->lang_name()+").");
             return VirtualObj();
         }
         arglist.push_back(it->data_);

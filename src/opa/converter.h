@@ -30,7 +30,6 @@ PRIMITIVE_CONVERTER_TEMPLATES(DummyConverter, ScriptObj)
 #define OUROBOROS_SCRIPT_CONVERTER_H_
 
 #include <string>
-#include <exception>
 
 //used internally
 #define CONVERTER_TEMPLATE_SPECIALIZATION(Class, ScriptType, CppType, CppTypeName) \
@@ -94,24 +93,6 @@ class Converter {
  
   protected:
     Converter() {}
-};
-
-/** Class representing a conversion exception. To be used by the converter
-    if they need to throw errors. */
-class ConversionError : public std::exception {
-  public:
-    ConversionError (const char* wrapper_name, const std::string& message)
-        : wrapper_name_(wrapper_name), message_(message) {}
-    ConversionError (const char* wrapper_name, const char* message)
-        : wrapper_name_(wrapper_name), message_(message) {}
-    
-    virtual const char* what() const throw() override {
-        return ("[Error in "+wrapper_name_+"Converter] "+message_).c_str();
-    }
-  
-  protected:
-    std::string wrapper_name_;
-    std::string message_;
 };
 
 } /* namespace opa */

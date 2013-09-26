@@ -18,22 +18,32 @@ namespace opa {
 namespace python {
 
 using std::shared_ptr;
+using std::string;
 
 VirtualData::Ptr PythonWrapper::NewData() {
     VirtualData::Ptr vdata( new PythonData(this, nullptr, false) ); 
     return vdata;
 }
 
-void PythonWrapper::ExecuteCode(const std::string& code) {
-    PyRun_SimpleString(code.c_str());
+void PythonWrapper::ExecuteCode(const string& code) {
+    PyObject* main_mod = PyImport_AddModule("__main__"); //borrowed ref
+    PyObject* main_dict = PyModule_GetDict(main_mod); //borrowed
+    PyObject* result = PyRun_String(code.c_str(), Py_single_input, main_dict, main_dict); //result = new ref
+    if (result == nullptr) {
+        string exc_info = GetPythonExceptionDetails();
+        throw InternalVMError("Python", "[ExecuteCode] raised exception:\n"+exc_info);
+        return;
+    }
+    //TODO: we should put this in a VObj and return it... 
+    Py_DECREF(result);
 }
 
 VirtualObj PythonWrapper::LoadModule(const std::string& name) {
     std::string dotted_name = SCRIPT_MANAGER()->ConvertPathToDottedNotation(name);
     PyObject* module = PyImport_ImportModule(dotted_name.c_str()); //new ref
     if (module == nullptr) {
-        fprintf(stderr, "[Python] Error loading module: '%s' (python exception details below)\n", dotted_name.c_str());
-        PrintPythonExceptionDetails();
+        string exc_info = GetPythonExceptionDetails();
+        throw InternalVMError("Python", "[LoadModule] module '"+dotted_name+"' raised exception:\n"+exc_info);
         return VirtualObj();
     }
 #ifdef DEBUG
@@ -77,10 +87,10 @@ void PythonWrapper::Finalize() {
     Py_Finalize();
 }
 
-void PythonWrapper::PrintPythonExceptionDetails() {
+string PythonWrapper::GetPythonExceptionDetails() {
     if(PyErr_Occurred() == nullptr) {
         puts("No Exception.");
-        return;
+        return "<no exception>";
     }
     PyObject *temp, *exc_typ, *exc_val, *exc_tb;
     PyErr_Fetch(&exc_typ,&exc_val,&exc_tb);
@@ -88,7 +98,7 @@ void PythonWrapper::PrintPythonExceptionDetails() {
 
     temp = PyObject_GetAttrString(exc_typ, "__name__");
     if (temp != nullptr) {
-        fprintf(stderr, "%s: ", PyString_AsString(temp));
+        //fprintf(stderr, "%s: ", PyString_AsString(temp));
         Py_DECREF(temp);
     }
     Py_DECREF(exc_typ);
@@ -96,20 +106,21 @@ void PythonWrapper::PrintPythonExceptionDetails() {
     if(exc_val != nullptr) {
         temp = PyObject_Str(exc_val);
         if (temp != nullptr) {
-            fprintf(stderr, "%s", PyString_AsString(temp));
+            //fprintf(stderr, "%s", PyString_AsString(temp));
             Py_DECREF(temp);
         }
         Py_DECREF(exc_val);
     }
 
-    fprintf(stderr, "\n");
-    if(exc_tb == nullptr) return;
+    //fprintf(stderr, "\n");
+    string info = "<no information available>";
+    if(exc_tb == nullptr) return info;
     
     PyObject *pName = PyString_FromString("traceback");
     PyObject *pModule = PyImport_Import(pName);
     Py_DECREF(pName);
     
-    if(pModule == nullptr) return;
+    if(pModule == nullptr) return info;
 
     PyObject *pFunc = PyObject_GetAttrString(pModule, "format_tb");
     
@@ -121,6 +132,7 @@ void PythonWrapper::PrintPythonExceptionDetails() {
         if (pValue != nullptr) {
             Py_ssize_t len = PyList_Size(pValue);
             PyObject *t;
+            info = "";
             for (Py_ssize_t i = 0; i < len; i++) {
                 PyObject *tt = PyList_GetItem(pValue,i);
                 t = Py_BuildValue("(O)",tt);
@@ -128,7 +140,8 @@ void PythonWrapper::PrintPythonExceptionDetails() {
                 char *buffer;
                 if(!PyArg_ParseTuple(t,"s",&buffer)) break;
 
-                fputs(buffer, stderr);
+                string line (buffer);
+                info = info + line + "\n";
             }
         }
         Py_DECREF(pValue);
@@ -137,6 +150,7 @@ void PythonWrapper::PrintPythonExceptionDetails() {
     Py_DECREF(pFunc);
 
     Py_DECREF(pModule);
+    return info;
 }
 
 }
