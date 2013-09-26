@@ -85,7 +85,7 @@ VirtualData::Map PythonData::UnwrapMap() const {
     }
     if (!PyMapping_Check(py_data_)) {
         throw InternalVMError("Python", "[Converter] tried to unwrap to map an objet that does not implement the mapping protocol.");
-        return seq;
+        return d;
     }
 
     PyObject* items_func = PyObject_GetAttrString(py_data_, "items"); //new ref

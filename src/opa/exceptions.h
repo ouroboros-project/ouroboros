@@ -25,7 +25,7 @@ class IOError : public std::runtime_error {
 
 /** Class representing a internal error on a VM. Raised when a VM API call
     gives an error or some exception occured inside the VM. */
-class InternalVMError : public runtime_error {
+class InternalVMError : public std::runtime_error {
   public:
     InternalVMError(const std::string& vm_name, const std::string& msg) 
         : std::runtime_error("["+vm_name+"] Internal error:\n"+msg) {}

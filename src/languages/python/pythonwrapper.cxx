@@ -90,7 +90,7 @@ void PythonWrapper::Finalize() {
 string PythonWrapper::GetPythonExceptionDetails() {
     if(PyErr_Occurred() == nullptr) {
         puts("No Exception.");
-        return;
+        return "<no exception>";
     }
     PyObject *temp, *exc_typ, *exc_val, *exc_tb;
     PyErr_Fetch(&exc_typ,&exc_val,&exc_tb);
@@ -98,7 +98,7 @@ string PythonWrapper::GetPythonExceptionDetails() {
 
     temp = PyObject_GetAttrString(exc_typ, "__name__");
     if (temp != nullptr) {
-        fprintf(stderr, "%s: ", PyString_AsString(temp));
+        //fprintf(stderr, "%s: ", PyString_AsString(temp));
         Py_DECREF(temp);
     }
     Py_DECREF(exc_typ);
@@ -106,24 +106,24 @@ string PythonWrapper::GetPythonExceptionDetails() {
     if(exc_val != nullptr) {
         temp = PyObject_Str(exc_val);
         if (temp != nullptr) {
-            fprintf(stderr, "%s", PyString_AsString(temp));
+            //fprintf(stderr, "%s", PyString_AsString(temp));
             Py_DECREF(temp);
         }
         Py_DECREF(exc_val);
     }
 
-    fprintf(stderr, "\n");
-    if(exc_tb == nullptr) return;
+    //fprintf(stderr, "\n");
+    string info = "<no information available>";
+    if(exc_tb == nullptr) return info;
     
     PyObject *pName = PyString_FromString("traceback");
     PyObject *pModule = PyImport_Import(pName);
     Py_DECREF(pName);
     
-    if(pModule == nullptr) return;
+    if(pModule == nullptr) return info;
 
     PyObject *pFunc = PyObject_GetAttrString(pModule, "format_tb");
     
-    string info = "<no information available>";
     if (pFunc && PyCallable_Check(pFunc)) {
         PyObject *pArgs = PyTuple_New(1);
         PyTuple_SetItem(pArgs, 0, exc_tb);
