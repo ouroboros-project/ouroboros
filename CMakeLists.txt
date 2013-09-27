@@ -174,3 +174,8 @@ install(
   FILES_MATCHING PATTERN "*.h" PATTERN "*.th" PATTERN "*.tcc"
 )
 
+# Export relevant variables to parent scope in case add_subdirectory has been
+# used.
+
+set (OUROBOROS_INCLUDE_DIR ${OUROBOROS_SRC_DIR} PARENT_SCOPE)
+
