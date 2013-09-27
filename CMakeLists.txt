@@ -177,5 +177,7 @@ install(
 # Export relevant variables to parent scope in case add_subdirectory has been
 # used.
 
-set (OUROBOROS_INCLUDE_DIR ${OUROBOROS_SRC_DIR} PARENT_SCOPE)
+if (NOT CMAKE_PARENT_LIST_FILE STREQUAL CMAKE_CURRENT_LIST_FILE)
+  set (OUROBOROS_INCLUDE_DIR ${OUROBOROS_SRC_DIR} PARENT_SCOPE)
+endif ()
 
