@@ -3,8 +3,8 @@
 #define OPWIG_GEN_LUA_WRAPPERSTATE_H_
 
 #include <opa/utils/uncopyable.h>
-#include <opwig/gen/lua/wraps.h>
-#include <opwig/gen/lua/codes.h>
+#include <languages/lua/wraps.h>
+#include <languages/lua/codes.h>
 
 #include <string>
 #include <list>

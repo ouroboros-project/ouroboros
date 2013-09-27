@@ -1,5 +1,5 @@
-#include <opwig/gen/python/wrapscope.h>
-#include <opwig/gen/python/utilities.h>
+#include <languages/python/wrapscope.h>
+#include <languages/python/utilities.h>
 #include <opwig/gen/wrapperspecification.h>
 #include <opwig/md/function.h>
 #include <opwig/md/variable.h>

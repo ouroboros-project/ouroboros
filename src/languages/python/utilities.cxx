@@ -1,4 +1,4 @@
-#include <opwig/gen/python/utilities.h>
+#include <languages/python/utilities.h>
 #include <opwig/md/function.h>
 #include <opwig/md/variable.h>
 #include <string>

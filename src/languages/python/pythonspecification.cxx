@@ -1,6 +1,6 @@
-#include <opwig/gen/python/pythonspecification.h>
-#include <opwig/gen/python/wrapscope.h>
-#include <opwig/gen/python/utilities.h>
+#include <languages/python/pythonspecification.h>
+#include <languages/python/wrapscope.h>
+#include <languages/python/utilities.h>
 #include <opwig/md/function.h>
 #include <opwig/md/variable.h>
 #include <opwig/md/namespace.h>

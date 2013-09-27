@@ -2,7 +2,7 @@
 #ifndef OPWIG_GEN_LUA_CODES_H_
 #define OPWIG_GEN_LUA_CODES_H_
 
-#include <opwig/gen/lua/wraps.h>
+#include <languages/lua/wraps.h>
 
 #include <opwig/md/metadataobject.h>
 #include <opwig/md/ptr.h>

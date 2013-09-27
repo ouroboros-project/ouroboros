@@ -1,5 +1,5 @@
 
-#include <opwig/gen/lua/codes.h>
+#include <languages/lua/codes.h>
 #include <opwig/md/class.h>
 
 #include <sstream>

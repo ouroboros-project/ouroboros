@@ -1,5 +1,5 @@
 
-#include <opwig/gen/lua/wrapperstate.h>
+#include <languages/lua/wrapperstate.h>
 
 #include <opwig/md/function.h>
 #include <opwig/md/variable.h>

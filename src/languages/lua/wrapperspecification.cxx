@@ -1,6 +1,6 @@
 
-#include <opwig/gen/lua/wrapperspecification.h>
-#include <opwig/gen/lua/codes.h>
+#include <languages/lua/wrapperspecification.h>
+#include <languages/lua/codes.h>
 #include <opwig/md/function.h>
 #include <opwig/md/variable.h>
 #include <opwig/md/namespace.h>

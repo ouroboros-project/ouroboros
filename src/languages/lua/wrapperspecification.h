@@ -3,8 +3,8 @@
 #define OPWIG_GEN_LUA_WRAPPERSPECIFICATION_H_
 
 #include <opwig/gen/wrapperspecification.h>
-#include <opwig/gen/lua/wraps.h>
-#include <opwig/gen/lua/wrapperstate.h>
+#include <languages/lua/wraps.h>
+#include <languages/lua/wrapperstate.h>
 #include <opwig/md/ptr.h>
 #include <list>
 #include <string>
