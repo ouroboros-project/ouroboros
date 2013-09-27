@@ -177,9 +177,8 @@ install(
 # Export relevant variables to parent scope in case add_subdirectory has been
 # used.
 
-message (STATUS "Parent: ${CMAKE_HOME_DIRECTORY}")
-message (STATUS "Current: ${CMAKE_CURRENT_LIST_DIR}")
 if (NOT ${CMAKE_HOME_DIRECTORY} STREQUAL ${CMAKE_CURRENT_LIST_DIR})
   set (OUROBOROS_INCLUDE_DIR ${OUROBOROS_SRC_DIR} PARENT_SCOPE)
+  set (OUROBOROS_WRAPPER_FILE cmake/ouroboros_wrapper.cmake PARENT_SCOPE)
 endif ()
 
