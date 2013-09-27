@@ -21,6 +21,8 @@ SET(OUROBOROS_SRC
     ./src/opa/utils/idgenerator.h 
     ./src/opa/utils/uncopyable.h 
 
+    ./opwig/opwig.h
+    ./opwig/opwig.cxx
     ./opwig/md/accessspecifier.h
     ./opwig/md/metadataobject.h
     ./opwig/md/metadataobject.cxx
