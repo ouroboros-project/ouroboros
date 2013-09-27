@@ -27,8 +27,8 @@ public:
     bool Initialize(const std::string& scripts_path);
     void Finalize();
 
-    void Register(LangWrapper* wrapper);
-    LangWrapper* GetWrapper(const std::string& name);
+    void Register(VirtualMachine* vm);
+    VirtualMachine* GetMachine(const std::string& name);
 
     void ExecuteCode(const std::string& language, const std::string& code);
 
@@ -46,8 +46,8 @@ private:
     ScriptManager();
 
     std::string scripts_path_;
-    typedef std::map<std::string, LangWrapper*> WrapperMap;
-    WrapperMap wrappers_;
+    typedef std::map<std::string, VirtualMachine*> MachineMap;
+    MachineMap machines_;
 };
 
 }

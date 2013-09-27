@@ -11,27 +11,28 @@ namespace md {
 class Function;
 class Variable;
 }
-
 namespace gen {
-
 struct ScriptModule;
+}
+}
 
+namespace opa {
 namespace python {
 
 class WrapScope final {
   public:
     WrapScope(const std::string& name)
      : name_(name), is_class_(false) {}
-    WrapScope(const std::string& name, const md::Ptr<WrapScope>& parent)
+    WrapScope(const std::string& name, const opwig::md::Ptr<WrapScope>& parent)
      : name_(name), is_class_(false), parent_(parent) {}
     WrapScope(const std::string& name, bool is_class)
      : name_(name), is_class_(is_class) {}
-    WrapScope(const std::string& name, bool is_class, const md::Ptr<WrapScope>& parent)
+    WrapScope(const std::string& name, bool is_class, const opwig::md::Ptr<WrapScope>& parent)
      : name_(name), is_class_(is_class), parent_(parent) {}
     ~WrapScope() {}
 
-    void AddFunction(const md::Ptr<const md::Function>& func);
-    void AddVariable(const md::Ptr<const md::Variable>& var);
+    void AddFunction(const opwig::md::Ptr<const opwig::md::Function>& func);
+    void AddVariable(const opwig::md::Ptr<const opwig::md::Variable>& var);
 
     std::string GetMethodTableName() const;
     std::string GenerateMethodTable(const std::string& base_nspace) const;
@@ -39,7 +40,7 @@ class WrapScope final {
     std::string GetGetSetTableName() const;
     std::string GenerateGetSetTable(const std::string& base_nspace) const;
 
-    void AddSubModule(const md::Ptr<WrapScope>& subm) { sub_modules_.push_back(subm); }
+    void AddSubModule(const opwig::md::Ptr<WrapScope>& subm) { sub_modules_.push_back(subm); }
     
     /// Returns the name of this scope (should be equal to the name of the md::Scope that generated this).
     std::string name() const { return name_; }
@@ -52,25 +53,24 @@ class WrapScope final {
 
     void set_name(const std::string& name) { name_ = name; }
     bool is_class() const { return is_class_; }
-    const md::Ptr<WrapScope>& parent() const { return parent_; }
-    const std::list<md::Ptr<WrapScope>>& sub_modules() const { return sub_modules_; }
+    const opwig::md::Ptr<WrapScope>& parent() const { return parent_; }
+    const std::list<opwig::md::Ptr<WrapScope>>& sub_modules() const { return sub_modules_; }
 
-    std::list<ScriptModule> ConvertTreeToScriptModuleList() const;
+    std::list<opwig::gen::ScriptModule> ConvertTreeToScriptModuleList() const;
 
   private:
     std::string name_;
     bool is_class_;
-    std::list<md::Ptr<const md::Function>> functions_;
-    std::list<md::Ptr<const md::Variable>> variables_;
-    md::Ptr<WrapScope> parent_;
-    std::list<md::Ptr<WrapScope>> sub_modules_;
+    std::list<opwig::md::Ptr<const opwig::md::Function>> functions_;
+    std::list<opwig::md::Ptr<const opwig::md::Variable>> variables_;
+    opwig::md::Ptr<WrapScope> parent_;
+    std::list<opwig::md::Ptr<WrapScope>> sub_modules_;
 
-    void auxConvertToModuleList(std::list<ScriptModule>& moduleList) const;
+    void auxConvertToModuleList(std::list<opwig::gen::ScriptModule>& moduleList) const;
 };
 
 } // namespace python
-} // namespace gen
-} // namespace opwig
+} // namespace opa
 
 #endif // OPWIG_GEN_PYTHON_WRAPSCOPE_H_
 

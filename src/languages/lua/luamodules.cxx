@@ -4,7 +4,7 @@
 #include <cstdio>
 
 #include <opa/module.h>
-#include <languages/lua/luawrapper.h>
+#include <languages/lua/luamachine.h>
 
 namespace opa {
 namespace lua {
@@ -20,14 +20,14 @@ void AddModule(const Module<inittype> & module) {
     get_module_list().push_back(module);
 }
 
-void RegisterModules(LuaWrapper* wrapper) {
+void RegisterModules(LuaMachine* machine) {
     LuaModuleList& lua_modules = get_module_list();
     for(LuaModuleList::const_iterator it = lua_modules.begin(); it != lua_modules.end(); ++it) {
-        if(!wrapper->RegisterModule(*it)) {
-            fprintf(stderr, "[%s] Load module '%s': >>ERROR<<\n", wrapper->lang_name().c_str(), it->name().c_str());
+        if(!machine->RegisterModule(*it)) {
+            fprintf(stderr, "[%s] Load module '%s': >>ERROR<<\n", machine->lang_name().c_str(), it->name().c_str());
         } else {
 #ifdef DEBUG
-            fprintf(stderr, "[%s] Load module '%s': ok\n", wrapper->lang_name().c_str(), it->name().c_str());
+            fprintf(stderr, "[%s] Load module '%s': ok\n", machine->lang_name().c_str(), it->name().c_str());
 #endif
         }
     }

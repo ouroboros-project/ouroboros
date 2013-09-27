@@ -13,8 +13,8 @@ SET(OUROBOROS_LUA_SRC
     ./luadata.cxx 
     ./luadata.h 
     ./luamodules.cxx 
-    ./luawrapper.cxx 
-    ./luawrapper.h 
+    ./luamachine.cxx 
+    ./luamachine.h 
     ./modules.h 
     ./primitive.h 
     ./state.h 

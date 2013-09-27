@@ -16,13 +16,13 @@ VirtualObj VirtualObj::operator() (const list<VirtualObj>& args) const {
         // Wrappers of executed VObj (we) and of the VObjs passed as
         // arguments must be the same.
         if (!*it) {
-            throw InvalidVMError(this->wrapper()->lang_name(), "received a invalid VObj as argument in VObj::operator().");
+            throw InvalidVMError(this->machine()->lang_name(), "received a invalid VObj as argument in VObj::operator().");
             return VirtualObj();
         }
-        if (wrapper() != it->wrapper()) {
-            puts("[vobj::op()] Argument wrapper is not the same as the called object.");
-            throw InvalidVMError(this->wrapper()->lang_name(),
-                  "in VObj::operator(): received argument of a different VM ("+it->wrapper()->lang_name()+").");
+        if (machine() != it->machine()) {
+            puts("[vobj::op()] Argument VM is not the same as the called object.");
+            throw InvalidVMError(this->machine()->lang_name(),
+                  "in VObj::operator(): received argument of a different VM ("+it->machine()->lang_name()+").");
             return VirtualObj();
         }
         arglist.push_back(it->data_);
@@ -31,9 +31,9 @@ VirtualObj VirtualObj::operator() (const list<VirtualObj>& args) const {
     return ret;
 }
 
-VirtualObj VirtualObj::Create (const char* obj, LangWrapper* wrapper) {
-    if (!wrapper) return VirtualObj();
-    VirtualData::Ptr new_data = wrapper->NewData();
+VirtualObj VirtualObj::Create (const char* obj, VirtualMachine* vm) {
+    if (!vm) return VirtualObj();
+    VirtualData::Ptr new_data = vm->NewData();
     new_data->WrapString(obj);
     return VirtualObj(new_data);
 }

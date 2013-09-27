@@ -8,7 +8,7 @@ SET(OUROBOROS_SRC
     ./src/opa/defs.h
     ./src/opa/exceptions.h
     ./src/opa/initscripts.cxx 
-    ./src/opa/langwrapper.h 
+    ./src/opa/virtualmachine.h 
     ./src/opa/module.h 
     ./src/opa/scriptmanager.cxx 
     ./src/opa/scriptmanager.h 
@@ -46,7 +46,6 @@ SET(OUROBOROS_SRC
     ./src/opwig/gen/proxycodeprovider.h
     ./src/opwig/gen/wrappergenerator.h
     ./src/opwig/gen/wrappergenerator.cxx
-    ./src/opwig/gen/wrappergenerator.h
     ./src/opwig/gen/wrapperspecification.h
 
     ${OPWIG_MDPARSER_SRC}

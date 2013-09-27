@@ -2,14 +2,14 @@
 #define OUROBOROS_SCRIPT_PYTHON_MODULES_H_
 
 #include <opa/script.h>
-#include <languages/python/pythonwrapper.h>
+#include <languages/python/pythonmachine.h>
 
 namespace opa {
 namespace python {
 
 void AddModule(const Module<inittype> &);
 
-void RegisterModules(PythonWrapper* wrapper);
+void RegisterModules(PythonMachine* machine);
 
 } /* namespace python */
 } /* namespace opa */

@@ -4,8 +4,8 @@ SET(OUROBOROS_PYTHON_SRC
     ./pythondata.cxx 
     ./pythondata.h 
     ./pythonmodules.cxx 
-    ./pythonwrapper.cxx 
-    ./pythonwrapper.h 
+    ./pythonmachine.cxx 
+    ./pythonmachine.h 
     ./pythonconverter.cxx
     ./pythonconverter.h
     ./swigpyrun.h

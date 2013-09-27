@@ -1,6 +1,6 @@
 #include <Python.h>
 
-#include <languages/python/pythonwrapper.h>
+#include <languages/python/pythonmachine.h>
 
 #include <string>
 #include <cstdlib>
@@ -20,12 +20,12 @@ namespace python {
 using std::shared_ptr;
 using std::string;
 
-VirtualData::Ptr PythonWrapper::NewData() {
+VirtualData::Ptr PythonMachine::NewData() {
     VirtualData::Ptr vdata( new PythonData(this, nullptr, false) ); 
     return vdata;
 }
 
-void PythonWrapper::ExecuteCode(const string& code) {
+void PythonMachine::ExecuteCode(const string& code) {
     PyObject* main_mod = PyImport_AddModule("__main__"); //borrowed ref
     PyObject* main_dict = PyModule_GetDict(main_mod); //borrowed
     PyObject* result = PyRun_String(code.c_str(), Py_single_input, main_dict, main_dict); //result = new ref
@@ -38,7 +38,7 @@ void PythonWrapper::ExecuteCode(const string& code) {
     Py_DECREF(result);
 }
 
-VirtualObj PythonWrapper::LoadModule(const std::string& name) {
+VirtualObj PythonMachine::LoadModule(const std::string& name) {
     std::string dotted_name = SCRIPT_MANAGER()->ConvertPathToDottedNotation(name);
     PyObject* module = PyImport_ImportModule(dotted_name.c_str()); //new ref
     if (module == nullptr) {
@@ -53,8 +53,8 @@ VirtualObj PythonWrapper::LoadModule(const std::string& name) {
     return VirtualObj(vdata);
 }
 
-/// Initializes the LangWrapper (that is, the language's API. Returns bool telling if (true=) no problems occured.
-bool PythonWrapper::Initialize() {
+/// Initializes the VirtualMachine (that is, the language's API. Returns bool telling if (true=) no problems occured.
+bool PythonMachine::Initialize() {
 #ifdef WIN32
     Py_NoSiteFlag = 1;
 #endif
@@ -82,12 +82,12 @@ bool PythonWrapper::Initialize() {
     return true;
 }
 
-/// Finalizes the LangWrapper, finalizing any language specific stuff.
-void PythonWrapper::Finalize() {
+/// Finalizes the VirtualMachine, finalizing any language specific stuff.
+void PythonMachine::Finalize() {
     Py_Finalize();
 }
 
-string PythonWrapper::GetPythonExceptionDetails() {
+string PythonMachine::GetPythonExceptionDetails() {
     if(PyErr_Occurred() == nullptr) {
         puts("No Exception.");
         return "<no exception>";

@@ -3,15 +3,14 @@
 #include <opwig/md/variable.h>
 #include <string>
 
-namespace opwig {
-namespace gen {
+namespace opa {
 namespace python {
 
 using std::string;
-using md::Ptr;
-using md::MetadataObject;
-using md::Function;
-using md::Variable;
+using opwig::md::Ptr;
+using opwig::md::MetadataObject;
+using opwig::md::Function;
+using opwig::md::Variable;
 
 string GetWrappedNestedName(const Ptr<const MetadataObject>& func) {
     string full_name = func->nested_name("::", false);
@@ -47,5 +46,4 @@ string ForVariable(const Ptr<const Variable>& var) {
 } // namespace METHARGS
 
 } // namespace python
-} // namespace gen
-} // namespace opwig
+} // namespace opa

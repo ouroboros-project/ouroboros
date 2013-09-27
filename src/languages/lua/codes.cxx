@@ -33,7 +33,7 @@ string WrapList (const md::Ptr<ModuleWrap>& module, WrappedMember member, const 
 string MiddleBlockCode (const string& module_name) {
     return
         "#include <languages/lua/aux/exportmodule.h>\n"
-        "#include <languages/lua/luawrapper.h>\n"
+        "#include <languages/lua/luamachine.h>\n"
         "#include <languages/lua/converter.h>\n"
         "#include <languages/lua/header.h>\n"
         "#include <opa/scriptmanager.h>\n"
@@ -50,7 +50,7 @@ string MiddleBlockCode (const string& module_name) {
         "using std::endl;\n"
         "using std::runtime_error;\n"
         "using opa::Module;\n"
-        "using opa::lua::LuaWrapper;\n"
+        "using opa::lua::LuaMachine;\n"
         "using opa::lua::State;\n"
         "using opa::lua::Constant;\n"
         "using opa::lua::aux::ModuleInfo;\n"

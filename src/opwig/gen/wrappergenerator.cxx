@@ -56,17 +56,17 @@ std::string WrapperGenerator::generateBootstrap() const {
         "Bootstrap entry_point;\n\n"
         "Bootstrap::Bootstrap () {\n"
         "    cout << \"Bootstrapping "+spec_->wrapper_name()+" module "+spec_->module_name()+"\" << endl;\n"
-        "    "+spec_->wrapper_name()+"Wrapper *wrapper = dynamic_cast<"+spec_->wrapper_name()+"Wrapper*>(\n"
-        "        SCRIPT_MANAGER()->GetWrapper(\""+spec_->wrapper_name()+"\")\n"
+        "    "+spec_->wrapper_name()+"Machine *vm = dynamic_cast<"+spec_->wrapper_name()+"Machine*>(\n"
+        "        SCRIPT_MANAGER()->GetMachine(\""+spec_->wrapper_name()+"\")\n"
         "    );\n"
-        "    if (wrapper == NULL) {\n"
-        "        wrapper = new "+spec_->wrapper_name()+"Wrapper;\n"
-        "        SCRIPT_MANAGER()->Register(wrapper);\n"
+        "    if (vm == NULL) {\n"
+        "        vm = new "+spec_->wrapper_name()+"Machine;\n"
+        "        SCRIPT_MANAGER()->Register(vm);\n"
         "    }\n";
 
     for (auto scriptMod : spec_->GetGeneratedModules()) {
         bootstrap +=
-            "    wrapper->RegisterModule("
+            "    vm->RegisterModule("
                     "Module<"+spec_->LoadFuncSignature()+">("
                           "\""+scriptMod.module_name+"\", "
                           +scriptMod.init_func_name+

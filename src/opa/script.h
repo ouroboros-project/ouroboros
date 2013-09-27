@@ -7,12 +7,12 @@ namespace opa {
 void InitScripts();
 
 // Public classes
-class LangWrapper;
+class VirtualMachine;
 class VirtualData;
 class VirtualObj;
 
 template <typename T> class Converter;
-template <typename loader_t> class InheritableLangWrapper;
+template <typename loader_t> class InheritableVirtualMachine;
 
 template <typename loader_t>
 class Module;
@@ -26,7 +26,7 @@ namespace lua {
 class LuaData;
 
 // Lua Managers
-class LuaWrapper;
+class LuaMachine;
 
 } /* namespace lua */
 
@@ -36,7 +36,7 @@ namespace python {
 class PythonData;
 
 // Python Managers
-class PythonWrapper;
+class PythonMachine;
 
 } /* namespace python */
 

@@ -11,15 +11,15 @@ namespace lua {
 using std::vector;
 
 LuaData::~LuaData() {
-    if (wrapper_)
-        wrapper_->data_gear()//.DestroyID_old(id_);
+    if (machine_)
+        machine_->data_gear()//.DestroyID_old(id_);
             .SafeCall(DataGear::DestroyID)
             .Arg(id_)
             .NoResult();
 }
 
 void* LuaData::Unwrap(const VirtualType& type, bool disown) const {
-    return wrapper_->data_gear()
+    return machine_->data_gear()
         .SafeCall(DataGear::UnwrapData)
         .Arg(id_)
         .Arg(type.FromLang(LANG(Lua)))
@@ -28,34 +28,34 @@ void* LuaData::Unwrap(const VirtualType& type, bool disown) const {
 }
 
 template <class T>
-T UnwrapPrimitive(LuaWrapper* wrapper, const DataID id, const T default_value) {
-    return wrapper->data_gear()
+T UnwrapPrimitive(LuaMachine* machine, const DataID id, const T default_value) {
+    return machine->data_gear()
         .SafeCall(DataGear::UnwrapPrimitive<T>)
         .Arg(id)
         .GetResult(default_value);
 }
 
 const char* LuaData::UnwrapString() const {
-    return UnwrapPrimitive<const char*>(wrapper_, id_, nullptr);
+    return UnwrapPrimitive<const char*>(machine_, id_, nullptr);
 }
 
 bool LuaData::UnwrapBoolean() const {
-    return UnwrapPrimitive<bool>(wrapper_, id_, false);
+    return UnwrapPrimitive<bool>(machine_, id_, false);
 }
 
 int LuaData::UnwrapInteger() const {
-    return UnwrapPrimitive<int>(wrapper_, id_, 0);
+    return UnwrapPrimitive<int>(machine_, id_, 0);
 }
 
 double LuaData::UnwrapNumber() const {
-    return UnwrapPrimitive<double>(wrapper_, id_, 0.0);
+    return UnwrapPrimitive<double>(machine_, id_, 0.0);
 }
 
 template <class T>
-static T UnwrapSequence(LuaWrapper* wrapper,
+static T UnwrapSequence(LuaMachine* machine,
                         DataID seq_id) {
     DataBuffer id_list;
-    if (!wrapper->data_gear()
+    if (!machine->data_gear()
         .SafeCall(DataGear::UnwrapList)
         .Arg(seq_id)
         .Arg(&id_list)
@@ -64,21 +64,21 @@ static T UnwrapSequence(LuaWrapper* wrapper,
     T data_seq;
     DataBuffer::iterator it;
     for (it = id_list.begin(); it != id_list.end(); ++it)
-        data_seq.push_back(VirtualData::Ptr(new LuaData(wrapper, *it)));
+        data_seq.push_back(VirtualData::Ptr(new LuaData(machine, *it)));
     return data_seq;
 }
 
 LuaData::Vector LuaData::UnwrapVector() const {
-    return UnwrapSequence<Vector>(wrapper_, id_);
+    return UnwrapSequence<Vector>(machine_, id_);
 }
 
 LuaData::List LuaData::UnwrapList() const {
-    return UnwrapSequence<List>(wrapper_, id_);
+    return UnwrapSequence<List>(machine_, id_);
 }
 
 LuaData::Map LuaData::UnwrapMap() const {
     DataMap id_table;
-    if (!wrapper_->data_gear()
+    if (!machine_->data_gear()
         .SafeCall(DataGear::UnwrapTable)
         .Arg(id_)
         .Arg(&id_table)
@@ -88,15 +88,15 @@ LuaData::Map LuaData::UnwrapMap() const {
     DataMap::iterator it;
     for (it = id_table.begin(); it != id_table.end(); ++it) {
         data_table.insert(std::pair<VirtualData::Ptr, VirtualData::Ptr>(
-            Ptr(new LuaData(wrapper_, it->first)),
-            Ptr(new LuaData(wrapper_, it->second))
+            Ptr(new LuaData(machine_, it->first)),
+            Ptr(new LuaData(machine_, it->second))
         ));
     }
     return data_table;
 }
 
 void LuaData::Wrap(void* data, const VirtualType& type) {
-    if (!wrapper_->data_gear()
+    if (!machine_->data_gear()
         .SafeCall(DataGear::WrapData)
         .Arg(id_)
         .Arg(data)
@@ -106,8 +106,8 @@ void LuaData::Wrap(void* data, const VirtualType& type) {
 }
 
 template <class T>
-void WrapPrimitive(LuaWrapper* wrapper, DataID id, T value) {
-    wrapper->data_gear()
+void WrapPrimitive(LuaMachine* machine, DataID id, T value) {
+    machine->data_gear()
         .SafeCall(DataGear::WrapPrimitive<T>)
         .Arg(id)
         .Arg(value)
@@ -115,19 +115,19 @@ void WrapPrimitive(LuaWrapper* wrapper, DataID id, T value) {
 }
 
 void LuaData::WrapString(const char* str) {
-    WrapPrimitive(wrapper_, id_, str);
+    WrapPrimitive(machine_, id_, str);
 }
 
 void LuaData::WrapBoolean(bool boolean) {
-    WrapPrimitive(wrapper_, id_, boolean);
+    WrapPrimitive(machine_, id_, boolean);
 }
 
 void LuaData::WrapInteger(int number) {
-    WrapPrimitive(wrapper_, id_, number);
+    WrapPrimitive(machine_, id_, number);
 }
 
 void LuaData::WrapNumber(double number) {
-    WrapPrimitive(wrapper_, id_, number);
+    WrapPrimitive(machine_, id_, number);
 }
 
 VirtualData::Ptr LuaData::Execute(const vector<Ptr>& args) {
@@ -136,31 +136,31 @@ VirtualData::Ptr LuaData::Execute(const vector<Ptr>& args) {
         args.end(),
         std::mem_fn(&VirtualData::AddToBuffer)
     );
-    return wrapper_->OperateBuffer(id_, DataGear::Execute);
+    return machine_->OperateBuffer(id_, DataGear::Execute);
 }
 
 VirtualData::Ptr LuaData::GetAttribute(Ptr key) {
-    wrapper_->CleanBuffer();
+    machine_->CleanBuffer();
     key->AddToBuffer();
-    return wrapper_->OperateBuffer(id_, DataGear::GetField);
+    return machine_->OperateBuffer(id_, DataGear::GetField);
 }
 
 VirtualData::Ptr LuaData::SetAttribute(Ptr key, Ptr value) {
     key->AddToBuffer();
     value->AddToBuffer();
-    return wrapper_->OperateBuffer(id_, DataGear::SetField);
+    return machine_->OperateBuffer(id_, DataGear::SetField);
 }
 
 void LuaData::UnsafePopValue() {
-    wrapper_->data_gear().SetData(id_);
+    machine_->data_gear().SetData(id_);
 }
 
 void LuaData::UnsafePushValue() {
-    wrapper_->data_gear().GetData(id_);
+    machine_->data_gear().GetData(id_);
 }
 
 void LuaData::AddToBuffer() {
-    wrapper_->AddToBuffer(id_);
+    machine_->AddToBuffer(id_);
 }
 
 } /* namespace lua */

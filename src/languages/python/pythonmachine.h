@@ -1,9 +1,9 @@
-#ifndef OUROBOROS_SCRIPT_PYTHON_PYTHONWRAPPER_H_
-#define OUROBOROS_SCRIPT_PYTHON_PYTHONWRAPPER_H_
+#ifndef OUROBOROS_SCRIPT_PYTHON_PYTHONMACHINE_H_
+#define OUROBOROS_SCRIPT_PYTHON_PYTHONMACHINE_H_
 
 #include <string>
 #include <vector>
-#include <opa/langwrapper.h>
+#include <opa/virtualmachine.h>
 
 namespace opa {
 
@@ -13,7 +13,7 @@ namespace python {
 
 typedef void (*PyInitFunction)(void);
 typedef opa::Module<PyInitFunction> PythonModule;
-typedef opa::InheritableLangWrapper<PyInitFunction> PythonWrapperBase;
+typedef opa::InheritableVirtualMachine<PyInitFunction> PythonMachineBase;
 typedef opa::python::PyInitFunction inittype;
 
 #define PYTHON_INIT_FUNCTION_NAME(name) init_##name
@@ -21,10 +21,10 @@ typedef opa::python::PyInitFunction inittype;
 #define PYTHON_MODULE_NAME(name) "_" #name
 #define PYTHON_NAMESPACE ::opa::python
 
-class PythonWrapper : public PythonWrapperBase {
+class PythonMachine : public PythonMachineBase {
   public:
-    PythonWrapper() : PythonWrapperBase("py", LANG(Python), "Python") {}
-    virtual ~PythonWrapper() {}
+    PythonMachine() : PythonMachineBase("py", LANG(Python), "Python") {}
+    virtual ~PythonMachine() {}
 
     virtual VirtualData::Ptr NewData();
 
@@ -32,9 +32,9 @@ class PythonWrapper : public PythonWrapperBase {
     
     virtual VirtualObj LoadModule(const std::string& name);
 
-    /// Initializes the LangWrapper (that is, the language's API. Returns bool telling if (true=) no problems occured.
+    /// Initializes the VirtualMachine (that is, the language's API. Returns bool telling if (true=) no problems occured.
     virtual bool Initialize();
-    /// Finalizes the LangWrapper, finalizing any language specific stuff.
+    /// Finalizes the VirtualMachine, finalizing any language specific stuff.
     virtual void Finalize();
 
     std::string GetPythonExceptionDetails();
@@ -46,4 +46,4 @@ class PythonWrapper : public PythonWrapperBase {
 }
 }
 
-#endif /* OUROBOROS_SCRIPT_PYTHON_PYTHONWRAPPER_H_ */
+#endif /* OUROBOROS_SCRIPT_PYTHON_PYTHONMACHINE_H_ */

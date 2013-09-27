@@ -1,6 +1,6 @@
 
 
-#include <languages/lua/luawrapper.h>
+#include <languages/lua/luamachine.h>
 
 #include <opa/virtualdata.h>
 #include <opa/virtualobj.h>
@@ -19,7 +19,7 @@ using std::vector;
 
 /// Overwritten methods.
 
-bool LuaWrapper::Initialize() {
+bool LuaMachine::Initialize() {
     if (data_gear_) return true;
     RegisterModules(this);
     BootstrapGear btgear;
@@ -34,20 +34,20 @@ bool LuaWrapper::Initialize() {
     return false;
 }
 
-void LuaWrapper::Finalize() {
+void LuaMachine::Finalize() {
     delete data_gear_;
     data_gear_ = nullptr;
 }
 
-VirtualData::Ptr LuaWrapper::NewData() {
+VirtualData::Ptr LuaMachine::NewData() {
     return VirtualData::Ptr(NewLuaData());
 }
 
-void LuaWrapper::ExecuteCode(const std::string& code) {
+void LuaMachine::ExecuteCode(const std::string& code) {
     LoadChunk(code, DataGear::DoString);
 }
 
-VirtualObj LuaWrapper::LoadModule(const string& name) {
+VirtualObj LuaMachine::LoadModule(const string& name) {
     string fullpath =
         SCRIPT_MANAGER()->scripts_path() + SCRIPT_MANAGER()->ConvertDottedNotationToPath(name) +
         "." + file_extension();
@@ -56,13 +56,13 @@ VirtualObj LuaWrapper::LoadModule(const string& name) {
 
 /// Other methods.
 
-LuaData* LuaWrapper::NewLuaData() {
+LuaData* LuaMachine::NewLuaData() {
     return new LuaData(
         this,
         NewDataID()
     );
 }
-VirtualData::Ptr LuaWrapper::OperateBuffer(const DataID operand_id,
+VirtualData::Ptr LuaMachine::OperateBuffer(const DataID operand_id,
                                            lua_CFunction op) {
     DataID result_id = NewDataID();
     bool success = data_gear()
@@ -83,20 +83,20 @@ VirtualData::Ptr LuaWrapper::OperateBuffer(const DataID operand_id,
         : VirtualData::Ptr();
 }
 
-DataID LuaWrapper::NewDataID() {
+DataID LuaMachine::NewDataID() {
     return data_gear()
         .SafeCall(DataGear::GenerateID)
         .GetResult<DataID>(LUA_NOREF);
 }
 
-void LuaWrapper::DeleteDataID(DataID id) {
+void LuaMachine::DeleteDataID(DataID id) {
    data_gear()
        .SafeCall(DataGear::DestroyID)
        .Arg(id)
        .NoResult();
 }
 
-VirtualData::Ptr LuaWrapper::LoadChunk(const string& chunk,
+VirtualData::Ptr LuaMachine::LoadChunk(const string& chunk,
                                        lua_CFunction loader) {
     DataID result_id = NewDataID();
     bool success = data_gear()

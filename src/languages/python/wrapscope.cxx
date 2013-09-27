@@ -7,18 +7,21 @@
 #include <string>
 #include <sstream>
 
-namespace opwig {
-namespace gen {
+namespace opa {
 namespace python {
 
 using std::string;
 using std::stringstream;
 using std::endl;
+using opwig::md::Ptr;
+using opwig::md::Function;
+using opwig::md::Variable;
+using opwig::gen::ScriptModule;
 
-void WrapScope::AddFunction(const md::Ptr<const md::Function>& func) {
+void WrapScope::AddFunction(const Ptr<const Function>& func) {
     functions_.push_back(func);
 }
-void WrapScope::AddVariable(const md::Ptr<const md::Variable>& var) {
+void WrapScope::AddVariable(const Ptr<const Variable>& var) {
     variables_.push_back(var);
 }
 
@@ -72,7 +75,7 @@ std::string WrapScope::GenerateGetSetTable(const std::string& base_nspace) const
 
 string WrapScope::full_dotted_name() const {
     string fullName = name_;
-    md::Ptr<WrapScope> mod = parent_;
+    Ptr<WrapScope> mod = parent_;
     while (mod) {
         fullName = mod->name() + "." + fullName;
         mod = mod->parent();
@@ -82,7 +85,7 @@ string WrapScope::full_dotted_name() const {
 
 std::string WrapScope::nested_name() const {
     string fullName = name_;
-    md::Ptr<WrapScope> mod = parent_;
+    Ptr<WrapScope> mod = parent_;
     while (mod) {
         fullName = mod->name() + "::" + fullName;
         mod = mod->parent();
@@ -108,5 +111,4 @@ void WrapScope::auxConvertToModuleList(std::list<ScriptModule>& moduleList) cons
 }
 
 } // namespace python
-} // namespace gen
-} // namespace opwig
+} // namespace opa

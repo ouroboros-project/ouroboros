@@ -9,7 +9,7 @@ namespace lua {
 
 void AddModule(const Module<inittype> &);
 
-void RegisterModules(LuaWrapper* wrapper);
+void RegisterModules(LuaMachine* machine);
 
 } /* namespace lua */
 } /* namespace opa */
