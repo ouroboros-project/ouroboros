@@ -179,6 +179,10 @@ install(
 
 if (NOT ${CMAKE_HOME_DIRECTORY} STREQUAL ${CMAKE_CURRENT_LIST_DIR})
   set (OUROBOROS_INCLUDE_DIR ${OUROBOROS_SRC_DIR} PARENT_SCOPE)
-  set (OUROBOROS_WRAPPER_FILE cmake/ouroboros_wrapper.cmake PARENT_SCOPE)
+  set (
+    OUROBOROS_WRAP_HELPER
+    ${CMAKE_CURRENT_LIST_DIR}/cmake/wrap_helper.cmake
+    PARENT_SCOPE
+  )
 endif ()
 
