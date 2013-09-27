@@ -19,6 +19,15 @@ SET(OUROBOROS_LUA_SRC
     ./primitive.h 
     ./state.h 
     ./swigluarun.h 
+
+    ./wrapperspecification.h
+    ./wrapperspecification.cxx
+    ./codes.h
+    ./codes.cxx
+    ./wraps.h
+    ./wrapperstate.cxx
+    ./wrapperstate.h
+
     ./aux/exportmodule.h
     ./aux/exportmodule.cxx
 )

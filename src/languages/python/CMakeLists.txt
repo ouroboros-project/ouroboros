@@ -8,7 +8,14 @@ SET(OUROBOROS_PYTHON_SRC
     ./pythonwrapper.h 
     ./pythonconverter.cxx
     ./pythonconverter.h
-    ./swigpyrun.h 
+    ./swigpyrun.h
+
+    ./pythonspecification.h
+    ./pythonspecification.cxx
+    ./wrapscope.h
+    ./wrapscope.cxx
+    ./utilities.h
+    ./utilities.cxx
 )
 
 find_package (PythonLibs 2.6)
