@@ -177,9 +177,9 @@ install(
 # Export relevant variables to parent scope in case add_subdirectory has been
 # used.
 
-message (STATUS "Parent: ${CMAKE_PARENT_LIST_FILE}")
-message (STATUS "Current: ${CMAKE_CURRENT_LIST_FILE}")
-if (NOT ${CMAKE_PARENT_LIST_FILE} STREQUAL ${CMAKE_CURRENT_LIST_FILE})
+message (STATUS "Parent: ${CMAKE_HOME_DIRECTORY}")
+message (STATUS "Current: ${CMAKE_CURRENT_LIST_DIR}")
+if (NOT ${CMAKE_HOME_DIRECTORY} STREQUAL ${CMAKE_CURRENT_LIST_DIR})
   set (OUROBOROS_INCLUDE_DIR ${OUROBOROS_SRC_DIR} PARENT_SCOPE)
 endif ()
 
