@@ -1,5 +1,5 @@
 
-include (opwig/parser/generate.cmake)
+include (src/opwig/parser/generate.cmake)
 
 SET(OUROBOROS_SRC 
     ./src/opa/script.h 
@@ -21,33 +21,33 @@ SET(OUROBOROS_SRC
     ./src/opa/utils/idgenerator.h 
     ./src/opa/utils/uncopyable.h 
 
-    ./opwig/opwig.h
-    ./opwig/opwig.cxx
-    ./opwig/md/accessspecifier.h
-    ./opwig/md/metadataobject.h
-    ./opwig/md/metadataobject.cxx
-    ./opwig/md/container.h
-    ./opwig/md/scope.h
-    ./opwig/md/scope.cxx
-    ./opwig/md/ptr.h
-    ./opwig/md/type.h
-    ./opwig/md/namespace.h
-    ./opwig/md/variable.h
-    ./opwig/md/class.h
-    ./opwig/md/class.cxx
-    ./opwig/md/semanticerror.h
-    ./opwig/md/function.h
-    ./opwig/md/enum.h
-    ./opwig/md/parameter.h
-    ./opwig/md/nestednamespecifier.h
-    ./opwig/md/nestednamespecifier.cxx
-    ./opwig/gen/proxygenerator.h
-    ./opwig/gen/proxygenerator.cxx
-    ./opwig/gen/proxycodeprovider.h
-    ./opwig/gen/wrappergenerator.h
-    ./opwig/gen/wrappergenerator.cxx
-    ./opwig/gen/wrappergenerator.h
-    ./opwig/gen/wrapperspecification.h
+    ./src/opwig/opwig.h
+    ./src/opwig/opwig.cxx
+    ./src/opwig/md/accessspecifier.h
+    ./src/opwig/md/metadataobject.h
+    ./src/opwig/md/metadataobject.cxx
+    ./src/opwig/md/container.h
+    ./src/opwig/md/scope.h
+    ./src/opwig/md/scope.cxx
+    ./src/opwig/md/ptr.h
+    ./src/opwig/md/type.h
+    ./src/opwig/md/namespace.h
+    ./src/opwig/md/variable.h
+    ./src/opwig/md/class.h
+    ./src/opwig/md/class.cxx
+    ./src/opwig/md/semanticerror.h
+    ./src/opwig/md/function.h
+    ./src/opwig/md/enum.h
+    ./src/opwig/md/parameter.h
+    ./src/opwig/md/nestednamespecifier.h
+    ./src/opwig/md/nestednamespecifier.cxx
+    ./src/opwig/gen/proxygenerator.h
+    ./src/opwig/gen/proxygenerator.cxx
+    ./src/opwig/gen/proxycodeprovider.h
+    ./src/opwig/gen/wrappergenerator.h
+    ./src/opwig/gen/wrappergenerator.cxx
+    ./src/opwig/gen/wrappergenerator.h
+    ./src/opwig/gen/wrapperspecification.h
 
     ${OPWIG_MDPARSER_SRC}
     ${OPWIG_MDSCANNER_SRC}
