@@ -9,10 +9,10 @@ set (OUROBOROS_LANG_FOUND_python        PYTHONLIBS_FOUND)
 set (OUROBOROS_LANG_LONGNAME_python     Python2.6)
 set (OUROBOROS_LANG_INCLUDE_DIR_python  PYTHON_INCLUDE_DIRS)
 
-set (OUROBOROS_LANGS lua python)
+list (APPEND OUROBOROS_LANGS lua python)
 
 function (ouroboros_wrap_module MODULE_NAME OUTDIR GENERATED_SRC_VAR)
-  foreach (LANGUAGE IN ${OUROBOROS_LANGS})
+  foreach (LANGUAGE IN OUROBOROS_LANGS)
     message (STATUS "Wrapping module ${MODULE_NAME}")
     message (STATUS ${OUROBOROS_LANG_PACKAGE_${LANGUAGE}})
     message (STATUS ${OUROBOROS_LANG_FOUND_${LANGUAGE}})
