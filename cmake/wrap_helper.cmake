@@ -1,5 +1,19 @@
 
-function (ouroboros_wrap_module MODULE_NAME)
+set (OUROBOROS_LANG_PACKAGE_lua     Lua51)
+set (OUROBOROS_LANG_FOUND_lua       LUA51_FOUND)
+set (OUROBOROS_LANG_LONGNAME_lua    Lua5.1)
+set (OUROBOROS_LANG_INCLUDE_DIR_lua LUA_INCLUDE_DIR)
+
+function (ouroboros_wrap_module MODULE_NAME LANGUAGE OUTDIR GENERATED_SRC_VAR)
   message(STATUS "Wrapping module ${MODULE_NAME}")
+  message(STATUS ${OUROBOROS_LANG_PACKAGE_${LANGUAGE}})
+  message(STATUS ${OUROBOROS_LANG_FOUND_${LANGUAGE}})
+  message(STATUS ${OUROBOROS_LANG_LONGNAME_${LANGUAGE}})
+  message(STATUS ${OUROBOROS_LANG_INCLUDE_DIR_${LANGUAGE}})
+  find_package (${OUROBOROS_LANG_PACKAGE_${LANGUAGE}})
+  if (NOT OUROBOROS_LANG_FOUND_${LANGUAGE})
+    message (FATAL_ERROR "Could not find ${OUROBOROS_LANG_LONGNAME_${LANGUAGE}}")
+  endif (NOT OUROBOROS_LANG_FOUND_${LANGUAGE})
+  include_directories (${OUROBOROS_LANG_INCLUDE_DIR_${LANGUAGE}})
 endfunction (ouroboros_wrap_module)
 
