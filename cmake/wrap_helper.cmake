@@ -16,6 +16,7 @@ list (APPEND OUROBOROS_LANGS lua python)
 function (ouroboros_wrap_module MODULE_NAME OUTDIR GENERATED_SRC_VAR)
   message (STATUS "Wrapping module ${MODULE_NAME}")
   message (STATUS "Outputing to ${GENERATED_SRC_VAR}")
+  ## TODO: When opwig is separated, fix all this
   list (APPEND OUROBOROS_GENERATED_SRC)
   foreach (LANGUAGE IN LISTS OUROBOROS_LANGS)
     find_package (${OUROBOROS_LANG_PACKAGE_${LANGUAGE}} ${OUROBOROS_LANG_VERSION_${LANGUAGE}})
@@ -29,7 +30,6 @@ function (ouroboros_wrap_module MODULE_NAME OUTDIR GENERATED_SRC_VAR)
       "${OUTDIR}/${OUROBOROS_LANG_LONGNAME_${LANGUAGE}}_${MODULE_NAME}_wrap.cxx"
     )
   endforeach(LANGUAGE)
-  message (STATUS ${${GENERATED_SRC_VAR}})
   set (${GENERATED_SRC_VAR} ${OUROBOROS_GENERATED_SRC} PARENT_SCOPE)
 endfunction (ouroboros_wrap_module)
 
