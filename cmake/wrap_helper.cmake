@@ -14,15 +14,19 @@ set (OUROBOROS_LANG_INCLUDE_DIR_python  PYTHON_INCLUDE_DIRS)
 list (APPEND OUROBOROS_LANGS lua python)
 
 function (ouroboros_wrap_module MODULE_NAME OUTDIR GENERATED_SRC_VAR)
+  message (STATUS "Wrapping module ${MODULE_NAME}")
   set (${GENERATED_SRC_VAR})
   foreach (LANGUAGE IN LISTS OUROBOROS_LANGS)
-    message (STATUS "Wrapping module ${MODULE_NAME}")
     find_package (${OUROBOROS_LANG_PACKAGE_${LANGUAGE}} ${OUROBOROS_LANG_VERSION_${LANGUAGE}})
     if (NOT ${OUROBOROS_LANG_FOUND_${LANGUAGE}})
       message (FATAL_ERROR "Could not find ${OUROBOROS_LANG_LONGNAME_${LANGUAGE}}")
     endif (NOT ${OUROBOROS_LANG_FOUND_${LANGUAGE}})
     include_directories (${${OUROBOROS_LANG_INCLUDE_DIR_${LANGUAGE}}})
-    set (${GENERATED_SRC_VAR} ${OUTDIR}/${OUROBOROS_LANG_LONGNAME_${LANGUAGE}}_${MODULE_NAME}_wrap.cxx)
+    set (
+      ${GENERATED_SRC_VAR}
+      ${${GENERATED_SRC_VAR}}
+      "${OUTDIR}/${OUROBOROS_LANG_LONGNAME_${LANGUAGE}}_${MODULE_NAME}_wrap.cxx"
+    )
   endforeach(LANGUAGE)
   message (STATUS ${GENERATED_SRC_VAR})
 endfunction (ouroboros_wrap_module)
