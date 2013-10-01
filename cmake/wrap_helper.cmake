@@ -25,6 +25,6 @@ function (ouroboros_wrap_module MODULE_NAME OUTDIR GENERATED_SRC_VAR)
     message (STATUS ${${OUROBOROS_LANG_FOUND_${LANGUAGE}}})
     message (STATUS ${${OUROBOROS_LANG_INCLUDE_DIR_${LANGUAGE}}})
     include_directories (${${OUROBOROS_LANG_INCLUDE_DIR_${LANGUAGE}}})
-  endforeach(LANGUAGE
+  endforeach(LANGUAGE)
 endfunction (ouroboros_wrap_module)
 
