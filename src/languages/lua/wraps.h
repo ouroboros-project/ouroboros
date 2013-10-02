@@ -8,8 +8,7 @@
 #include <string>
 #include <list>
 
-namespace opwig {
-namespace gen {
+namespace opa {
 namespace lua {
 
 struct DataWrap {
@@ -46,24 +45,24 @@ struct ModuleWrap : public opa::utils::Uncopyable, std::enable_shared_from_this<
     /** @return const std::list<md::Ptr<ModuleWrap>>&
      **         A read-only reference to the list of child modules.
      */
-    const std::list<md::Ptr<ModuleWrap>>& children () const;
+    const std::list<opwig::md::Ptr<ModuleWrap>>& children () const;
 
     /// Gives the module's supermodule.
     /** @return md::Ptr<ModuleWrap> The parent module.
      */
-    md::Ptr<ModuleWrap> parent () const;
+    opwig::md::Ptr<ModuleWrap> parent () const;
 
     /// Adds a submodule to the module.
     /** @param the_child The new child module.
      */
-    void AddChild (const md::Ptr<ModuleWrap>& the_child);
+    void AddChild (const opwig::md::Ptr<ModuleWrap>& the_child);
 
   private:
 
     friend class WrapperState;
 
-    std::list<md::Ptr<ModuleWrap>>  children_;
-    md::WeakPtr<ModuleWrap>         parent_;
+    std::list<opwig::md::Ptr<ModuleWrap>>  children_;
+    opwig::md::WeakPtr<ModuleWrap>         parent_;
     bool                            is_class_;
     size_t                          nonclass_children_num_;
 
@@ -84,23 +83,22 @@ inline bool ModuleWrap::has_children () const {
     return !children_.empty(); // nonclass_children_num_ > 0;
 }
 
-inline const std::list<md::Ptr<ModuleWrap>>& ModuleWrap::children () const {
+inline const std::list<opwig::md::Ptr<ModuleWrap>>& ModuleWrap::children () const {
     return children_;
 }
 
-inline md::Ptr<ModuleWrap> ModuleWrap::parent () const {
+inline opwig::md::Ptr<ModuleWrap> ModuleWrap::parent () const {
     return parent_.lock();
 }
 
-inline void ModuleWrap::AddChild (const md::Ptr<ModuleWrap>& the_child) {
+inline void ModuleWrap::AddChild (const opwig::md::Ptr<ModuleWrap>& the_child) {
     children_.push_back(the_child);
     the_child->parent_ = shared_from_this();
     if (!the_child->is_class()) nonclass_children_num_++;
 }
 
 } // namespace lua
-} // namespace gen
-} // namespace opwig
+} // namespace opa
 
 #endif
 

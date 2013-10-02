@@ -22,6 +22,7 @@ namespace {
 }
 
 namespace opwig {
+namespace gen {
 
 int Execute(const string& module_name, const list<string>& inputs, const Ptr<WrapperSpecification>& language_spec) {
     
@@ -46,4 +47,5 @@ int Execute(const string& module_name, const list<string>& inputs, const Ptr<Wra
     return EXIT_SUCCESS;
 }
 
-}
+} // namespace gen 
+} // namespace opwig

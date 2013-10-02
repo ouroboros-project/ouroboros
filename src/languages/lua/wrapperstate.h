@@ -10,13 +10,13 @@
 #include <list>
 
 namespace opwig {
-
 namespace md {
 class Function;
 class Variable;
 } // namespace md
+} // namespace opwig
 
-namespace gen {
+namespace opa {
 namespace lua {
 
 struct ModuleWrap;
@@ -30,33 +30,33 @@ class WrapperState : public opa::utils::Uncopyable {
      */
     WrapperState (const std::string& the_module_name);
 
-    md::Ptr<ModuleWrap> current_module () const;
+    opwig::md::Ptr<ModuleWrap> current_module () const;
 
     bool is_current_class () const;
 
     std::string StackAsString (const std::string& sep, size_t skip = 0) const;
 
-    void PushModule (const md::Ptr<ModuleWrap>& the_module);
+    void PushModule (const opwig::md::Ptr<ModuleWrap>& the_module);
 
     void PushModule (const std::string& module_name, bool is_class_flag = false);
 
     void PopModule ();
 
-    void AddFunction (const md::Ptr<const md::Function>& the_function);
+    void AddFunction (const opwig::md::Ptr<const opwig::md::Function>& the_function);
 
-    void AddVariableGetter (const md::Ptr<const md::Variable>& the_variable);
+    void AddVariableGetter (const opwig::md::Ptr<const opwig::md::Variable>& the_variable);
 
-    void AddVariableSetter (const md::Ptr<const md::Variable>& the_variable);
+    void AddVariableSetter (const opwig::md::Ptr<const opwig::md::Variable>& the_variable);
 
   private:
 
-    std::list<md::Ptr<ModuleWrap>> stack_;
+    std::list<opwig::md::Ptr<ModuleWrap>> stack_;
 
     void AddWrap (const std::string& name, WrappedMember member, WrappedMember nonmember);
 
 };
 
-inline md::Ptr<ModuleWrap> WrapperState::current_module () const {
+inline opwig::md::Ptr<ModuleWrap> WrapperState::current_module () const {
     return stack_.back();
 }
 
@@ -64,7 +64,7 @@ inline bool WrapperState::is_current_class () const {
     return current_module()->is_class();
 }
 
-inline void WrapperState::PushModule (const md::Ptr<ModuleWrap>& the_module) {
+inline void WrapperState::PushModule (const opwig::md::Ptr<ModuleWrap>& the_module) {
     stack_.push_back(the_module);
 }
 
@@ -73,8 +73,7 @@ inline void WrapperState::PopModule () {
 }
 
 } // namespace lua
-} // namespace gen
-} // namespace opwig
+} // namespace opa
 
 #endif
 

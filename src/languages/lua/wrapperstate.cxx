@@ -5,13 +5,12 @@
 #include <opwig/md/variable.h>
 #include <opwig/md/ptr.h>
 
-namespace opwig {
-namespace gen {
+namespace opa {
 namespace lua {
 
 using std::string;
-using md::Ptr;
-using md::Function;
+using opwig::md::Ptr;
+using opwig::md::Function;
 
 WrapperState::WrapperState (const string& the_module_name) {
     Ptr<ModuleWrap> root(new ModuleWrap);
@@ -42,15 +41,15 @@ void WrapperState::PushModule (const string& module_name, bool is_class_flag) {
     PushModule(new_module);
 }
 
-void WrapperState::AddFunction (const Ptr<const md::Function>& the_function) {
+void WrapperState::AddFunction (const Ptr<const Function>& the_function) {
     AddWrap(the_function->name(), &ModuleWrap::member_functions, &ModuleWrap::functions);
 }
 
-void WrapperState::AddVariableGetter (const Ptr<const md::Variable>& the_variable) {
+void WrapperState::AddVariableGetter (const Ptr<const opwig::md::Variable>& the_variable) {
     AddWrap(the_variable->name(), &ModuleWrap::member_getters, &ModuleWrap::getters);
 }
 
-void WrapperState::AddVariableSetter (const Ptr<const md::Variable>& the_variable) {
+void WrapperState::AddVariableSetter (const Ptr<const opwig::md::Variable>& the_variable) {
     AddWrap(the_variable->name(), &ModuleWrap::member_setters, &ModuleWrap::setters);
 }
 
@@ -66,6 +65,5 @@ void WrapperState::AddWrap (const string& name, WrappedMember member,
 }
 
 } // namespace lua
-} // namespace gen
-} // namespace opwig
+} // namespace opa
 

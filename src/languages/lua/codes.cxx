@@ -4,18 +4,17 @@
 
 #include <sstream>
 
-namespace opwig {
-namespace gen {
+namespace opa {
 namespace lua {
 
 using std::string;
 using std::stringstream;
 using std::list;
-using md::Ptr;
-using md::MetadataObject;
-using md::Class;
+using opwig::md::Ptr;
+using opwig::md::MetadataObject;
+using opwig::md::Class;
 
-string WrapList (const md::Ptr<ModuleWrap>& module, WrappedMember member, const string& type) {
+string WrapList (const Ptr<ModuleWrap>& module, WrappedMember member, const string& type) {
     const auto& wraps = (*module).*member;
     stringstream code;
     code  << "luaL_Reg "<< type << "s[] = {\n";
@@ -109,6 +108,5 @@ string CloseModuleBlock (const Ptr<ModuleWrap>& module) {
 }
 
 } // namespace lua
-} // namespace gen
-} // namespace opwig
+} // namespace opa
 
