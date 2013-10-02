@@ -4,8 +4,8 @@
 #include <opa/script.h>
 #include <opa/scriptmanager.h>
 #include <opa/virtualobj.h>
-#include <languages/lua/luawrapper.h>
-#include <languages/python/pythonwrapper.h>
+#include <languages/lua/luamachine.h>
+#include <languages/python/pythonmachine.h>
 
 #include <cstdlib>
 #include <string>
@@ -27,12 +27,12 @@ const string LOGMARK = "[--LOG--] ";
 
 void InitScripts () {
 #ifdef OUROBOROS_LUA_BINDINGS
-    if (SCRIPT_MANAGER()->GetWrapper("Lua") == NULL)
-        SCRIPT_MANAGER()->Register(new opa::lua::LuaWrapper());
+    if (SCRIPT_MANAGER()->GetMachine("Lua") == NULL)
+        SCRIPT_MANAGER()->Register(new opa::lua::LuaMachine());
 #endif
 #ifdef OUROBOROS_PYTHON_BINDINGS
-    if (SCRIPT_MANAGER()->GetWrapper("Python") == NULL)
-        SCRIPT_MANAGER()->Register(new opa::python::PythonWrapper());
+    if (SCRIPT_MANAGER()->GetMachine("Python") == NULL)
+        SCRIPT_MANAGER()->Register(new opa::python::PythonMachine());
 #endif
     SCRIPT_MANAGER()->Initialize("./scripts/");
 }
@@ -54,7 +54,7 @@ bool RunTalker (const string& which) {
   getline(cin, input);
   for (size_t i = 0; i < skip_lines; ++i)
     cout << endl;
-  VirtualObj arg(talker.wrapper());
+  VirtualObj arg(talker.machine());
   arg.set_value<const char*>(input.c_str());
   if (!arg) return false;
   VirtualObj::List args;

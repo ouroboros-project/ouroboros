@@ -4,8 +4,6 @@
 #include <opa/script.h>
 #include <opa/scriptmanager.h>
 #include <opa/virtualobj.h>
-#include <languages/lua/luawrapper.h>
-#include <languages/python/pythonwrapper.h>
 
 #include <cstdlib>
 #include <string>
@@ -33,7 +31,7 @@ bool RunTalker (const string& which, const string& name) {
     VirtualObj  talker = SCRIPT_MANAGER()->LoadModule(which+"talker");
     if (!talker) return false;
     if (!talker["main"]) return false;
-    VirtualObj arg(talker.wrapper());
+    VirtualObj arg(talker.machine());
     arg.set_value<const char*>(name.c_str());
     if (!arg) return false;
     VirtualObj::List args;
