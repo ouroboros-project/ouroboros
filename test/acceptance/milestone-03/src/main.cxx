@@ -4,8 +4,6 @@
 #include <opa/script.h>
 #include <opa/scriptmanager.h>
 #include <opa/virtualobj.h>
-#include <languages/lua/luawrapper.h>
-#include <languages/python/pythonwrapper.h>
 
 #include <cstdlib>
 #include <string>
