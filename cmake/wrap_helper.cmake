@@ -31,7 +31,7 @@ function (ouroboros_wrap_module MODULE_NAME OUTDIR GENERATED_SRC_VAR)
     )
   endforeach(LANGUAGE)
   set (${GENERATED_SRC_VAR} ${OUROBOROS_GENERATED_SRC} PARENT_SCOPE)
-  #message (STATUS ${CMAKE_CURRENT_LIST_DIR})
+  message (STATUS ${CMAKE_CURRENT_LIST_DIR})
   #add_custom_command (
   #  OUTPUT  ${OUROBOROS_GENERATED_SRC}
   #  COMMAND opwig
