@@ -127,6 +127,8 @@ endif (OUROBOROS_CREATE_BINDINGS)
 
 add_library (libouroboros ${OUROBOROS_SRC} ${GENERATED_SRC})
 
+include (cmake/opwig.cmake)
+
 if (CMAKE_COMPILER_IS_GNUCXX)
     set (EXTRA_LIBRARIES m ${EXTRA_LIBRARIES})
 endif (CMAKE_COMPILER_IS_GNUCXX)
