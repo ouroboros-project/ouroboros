@@ -11,33 +11,32 @@ set (OUROBOROS_LANG_FOUND_python        PYTHONLIBS_FOUND)
 set (OUROBOROS_LANG_LONGNAME_python     Python)
 set (OUROBOROS_LANG_INCLUDE_DIR_python  PYTHON_INCLUDE_DIRS)
 
-list (APPEND OUROBOROS_LANGS lua python)
-
-function (ouroboros_wrap_module MODULE_NAME OUTDIR GENERATED_SRC_VAR)
+function (ouroboros_wrap_module MODULE_NAME LANGUAGE OUTDIR GENERATED_SRC_VAR)
+  # Notify
   message (STATUS "Wrapping module ${MODULE_NAME}")
-  message (STATUS "Outputing to ${GENERATED_SRC_VAR}")
-  ## TODO: When opwig is separated, fix all this
-  list (APPEND OUROBOROS_GENERATED_SRC)
-  foreach (LANGUAGE IN LISTS OUROBOROS_LANGS)
-    find_package (${OUROBOROS_LANG_PACKAGE_${LANGUAGE}} ${OUROBOROS_LANG_VERSION_${LANGUAGE}})
-    if (NOT ${OUROBOROS_LANG_FOUND_${LANGUAGE}})
-      message (FATAL_ERROR "Could not find ${OUROBOROS_LANG_LONGNAME_${LANGUAGE}}")
-    endif (NOT ${OUROBOROS_LANG_FOUND_${LANGUAGE}})
-    include_directories (${${OUROBOROS_LANG_INCLUDE_DIR_${LANGUAGE}}})
-    list (
-      APPEND
-      OUROBOROS_GENERATED_SRC
-      "${OUTDIR}/${OUROBOROS_LANG_LONGNAME_${LANGUAGE}}_${MODULE_NAME}_wrap.cxx"
-    )
-  endforeach(LANGUAGE)
+  # Find language package
+  find_package (${OUROBOROS_LANG_PACKAGE_${LANGUAGE}} ${OUROBOROS_LANG_VERSION_${LANGUAGE}})
+  if (NOT ${OUROBOROS_LANG_FOUND_${LANGUAGE}})
+    message (FATAL_ERROR "Could not find ${OUROBOROS_LANG_LONGNAME_${LANGUAGE}}")
+  endif (NOT ${OUROBOROS_LANG_FOUND_${LANGUAGE}})
+  # Setup include directories
+  include_directories (${${OUROBOROS_LANG_INCLUDE_DIR_${LANGUAGE}}})
+  # Define generated source and provide it to the parent scope
+  set (
+    OUROBOROS_GENERATED_SRC
+    "${OUTDIR}/${OUROBOROS_LANG_LONGNAME_${LANGUAGE}}_${MODULE_NAME}_wrap.cxx"
+  )
   set (${GENERATED_SRC_VAR} ${OUROBOROS_GENERATED_SRC} PARENT_SCOPE)
-  message (STATUS ${CMAKE_CURRENT_LIST_DIR})
-  #add_custom_command (
-  #  OUTPUT  ${OUROBOROS_GENERATED_SRC}
-  #  COMMAND opwig
-  #  ARGS    --module-name=${MODULE_NAME} ${ARGN}
-  #  DEPENDS opwig ${ARGN}
-  #  WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
-  #)
+  # Add custom target for generated source code
+  set (OUROBOROS_SPECIFIC_EXECUTABLE opwig-${LANGUAGE})
+  add_custom_command (
+    OUTPUT  ${OUROBOROS_GENERATED_SRC}
+    COMMAND ${OUROBOROS_SPECIFIC_EXECUTABLE}
+    ARGS    --module-name=${MODULE_NAME} ${ARGN}
+    DEPENDS ${OUROBOROS_SPECIFIC_EXECUTABLE} ${ARGN}
+  )
+  # Clean up variables
+  unset (OUROBOROS_GENERATED_SRC)
+  unset (OUROBOROS_SPECIFIC_EXECUTABLE)
 endfunction (ouroboros_wrap_module)
 
