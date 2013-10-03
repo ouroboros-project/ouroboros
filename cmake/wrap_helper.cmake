@@ -32,7 +32,9 @@ function (ouroboros_wrap_module MODULE_NAME LANGUAGE OUTDIR GENERATED_SRC_VAR)
   add_custom_command (
     OUTPUT  ${OUROBOROS_GENERATED_SRC}
     COMMAND ${OUROBOROS_SPECIFIC_EXECUTABLE}
-    ARGS    --module-name=${MODULE_NAME} ${ARGN}
+    ARGS    --module-name=${MODULE_NAME}
+            --output-dir=${OUTDIR}
+            ${ARGN}
     DEPENDS ${OUROBOROS_SPECIFIC_EXECUTABLE} ${ARGN}
   )
   # Clean up variables
