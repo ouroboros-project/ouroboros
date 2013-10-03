@@ -94,7 +94,11 @@ target_link_libraries (
   libouroboros-python
 )
 
-cxx_executable (opwig_test src gtest_main src/config.h ${OPWIG_SRC})
+cxx_executable (opwig_test src gtest_main src/config.h)
+target_link_libraries (
+  opwig_test
+  libouroboros
+)
 
 set (OUROBOROS_TEST_DUMP_DIR ${CMAKE_CURRENT_BINARY_DIR}/dump)
 

@@ -1,19 +1,18 @@
 
-#include <opwig/gen/lua/wrapperspecification.h>
-#include <opwig/gen/lua/codes.h>
+#include <languages/lua/wrapperspecification.h>
+#include <languages/lua/codes.h>
 #include <opwig/md/function.h>
 #include <opwig/md/variable.h>
 #include <opwig/md/namespace.h>
 #include <sstream>
 
-namespace opwig {
-namespace gen {
+namespace opa {
 namespace lua {
 
 using std::string;
 using std::stringstream;
-using md::Ptr;
-using md::Namespace;
+using opwig::md::Ptr;
+using opwig::md::Namespace;
 
 WrapperSpecification::WrapperSpecification (const string& the_module_name)
     : state_(the_module_name) {
@@ -32,7 +31,7 @@ string WrapperSpecification::MiddleBlock() const {
 
 string WrapperSpecification::FinishFile () const {
     string functions_wrap_code =
-        const_cast<WrapperSpecification*>(this)->CloseNamespace(md::Ptr<md::Namespace>());
+        const_cast<WrapperSpecification*>(this)->CloseNamespace(opwig::md::Ptr<opwig::md::Namespace>());
     string init_functions_code =
         // Loader function
         "extern \"C\" {\n\n";
@@ -48,7 +47,7 @@ string WrapperSpecification::FinishFile () const {
     return functions_wrap_code + init_functions_code;
 }
 
-string WrapperSpecification::WrapFunction (const Ptr<const md::Function>& obj) {
+string WrapperSpecification::WrapFunction (const Ptr<const opwig::md::Function>& obj) {
     stringstream    func_code,
                     args_code,
                     call_code;
@@ -125,7 +124,7 @@ string WrapperSpecification::WrapFunction (const Ptr<const md::Function>& obj) {
     return func_code.str();
 }
 
-string WrapperSpecification::WrapVariable (const md::Ptr<const md::Variable>& obj) {
+string WrapperSpecification::WrapVariable (const Ptr<const opwig::md::Variable>& obj) {
     stringstream  code;
     bool          is_class = state_.is_current_class();
     const string  prefix = is_class ? "member_" : "";
@@ -200,11 +199,11 @@ string WrapperSpecification::WrapVariable (const md::Ptr<const md::Variable>& ob
     return code.str();
 }
 
-string WrapperSpecification::WrapEnum (const md::Ptr<const md::Enum>& obj) {
+string WrapperSpecification::WrapEnum (const opwig::md::Ptr<const opwig::md::Enum>& obj) {
     return "";
 }
 
-string WrapperSpecification::OpenClass (const md::Ptr<const md::Class>& obj) {
+string WrapperSpecification::OpenClass (const opwig::md::Ptr<const opwig::md::Class>& obj) {
     bool open   = !state_.current_module()->has_children();
     
     state_.PushModule(obj->name(), true);
@@ -216,7 +215,7 @@ string WrapperSpecification::OpenClass (const md::Ptr<const md::Class>& obj) {
         "namespace generated {\n\n";
 }
 
-string WrapperSpecification::CloseClass (const md::Ptr<const md::Class>& obj) {
+string WrapperSpecification::CloseClass (const opwig::md::Ptr<const opwig::md::Class>& obj) {
     bool    open = !state_.current_module()->has_children();
     string  code = CloseModuleBlock(state_.current_module());
 
@@ -249,13 +248,13 @@ string WrapperSpecification::CloseNamespace (const Ptr<const Namespace>& obj) {
         string(obj ? "} // namespace "+obj->name()+"\n\n": "");
 }
 
-std::list<ScriptModule> WrapperSpecification::GetGeneratedModules () const {
-    std::list<ScriptModule> the_list;
+std::list<opwig::gen::ScriptModule> WrapperSpecification::GetGeneratedModules () const {
+    std::list<opwig::gen::ScriptModule> the_list;
     for (auto module : modules_) {
         string modname = module->name;
         for (auto parent = module->parent(); parent; parent = parent->parent())
           modname = parent->name+"."+modname;
-        the_list.push_back(ScriptModule(modname, "luaopen_"+module->path+module->name));
+        the_list.push_back(opwig::gen::ScriptModule(modname, "luaopen_"+module->path+module->name));
     }
     return the_list;
 }
@@ -265,6 +264,5 @@ string WrapperSpecification::DumpNamespaceNesting () const {
 }
 
 } // namespace lua
-} // namespace gen
-} // namespace opwig
+} // namespace opa
 

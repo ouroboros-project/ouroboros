@@ -3,7 +3,7 @@
 #include <cstdio>
 #include <algorithm>
 
-#include <opa/langwrapper.h>
+#include <opa/virtualmachine.h>
 #include <opa/virtualobj.h>
 #include <opa/exceptions.h>
 
@@ -20,10 +20,10 @@ bool ScriptManager::Initialize(const std::string& scripts_path) {
 
     scripts_path_ = scripts_path;
 
-    WrapperMap::iterator it = wrappers_.begin();
-    while (it != wrappers_.end()) {
-        LangWrapper* wrap = it->second;
-        is_ok = is_ok && wrap->Initialize();
+    MachineMap::iterator it = machines_.begin();
+    while (it != machines_.end()) {
+        VirtualMachine* vm = it->second;
+        is_ok = is_ok && vm->Initialize();
         ++it;
     }
 
@@ -31,45 +31,45 @@ bool ScriptManager::Initialize(const std::string& scripts_path) {
 }
 
 void ScriptManager::Finalize() {
-    WrapperMap::iterator it = wrappers_.begin();
-    while (it != wrappers_.end()) {
-        LangWrapper* wrap = it->second;
-        wrap->Finalize();
-        delete wrap;
+    MachineMap::iterator it = machines_.begin();
+    while (it != machines_.end()) {
+        VirtualMachine* vm = it->second;
+        vm->Finalize();
+        delete vm;
         ++it;
     }
-    wrappers_.clear();
+    machines_.clear();
 }
 
-void ScriptManager::Register(LangWrapper* wrapper) {
-    if (wrappers_.count(wrapper->lang_name())) return;
-    wrappers_[wrapper->lang_name()] = wrapper;
+void ScriptManager::Register(VirtualMachine* vm) {
+    if (machines_.count(vm->lang_name())) return;
+    machines_[vm->lang_name()] = vm;
 }
 
-LangWrapper* ScriptManager::GetWrapper(const string& name) {
+VirtualMachine* ScriptManager::GetMachine(const string& name) {
     // TODO: avoid double search
-    if (!wrappers_.count(name)) return nullptr;
-    return wrappers_[name];
+    if (!machines_.count(name)) return nullptr;
+    return machines_[name];
 }
 
 void ScriptManager::ExecuteCode(const string& language, const string& code) {
-    if (!wrappers_.count(language)) {
+    if (!machines_.count(language)) {
         throw InvalidVMError(language, "this VM does not exist.");
         return;
     }
     
-    wrappers_[language]->ExecuteCode(code);
+    machines_[language]->ExecuteCode(code);
 }
 
 
 VirtualObj ScriptManager::LoadModule(const string& script) {
     string filepath = scripts_path_ + ConvertDottedNotationToPath(script);
 
-    WrapperMap::iterator it = wrappers_.begin();
-    while (it != wrappers_.end()) {
-        LangWrapper* wrap = it->second;
-        if ( CheckIfFileExists(filepath + "." + wrap->file_extension()) ) {
-            return wrap->LoadModule( script );
+    MachineMap::iterator it = machines_.begin();
+    while (it != machines_.end()) {
+        VirtualMachine* vm = it->second;
+        if ( CheckIfFileExists(filepath + "." + vm->file_extension()) ) {
+            return vm->LoadModule( script );
         }
         ++it;
     }

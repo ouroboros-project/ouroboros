@@ -13,12 +13,21 @@ SET(OUROBOROS_LUA_SRC
     ./luadata.cxx 
     ./luadata.h 
     ./luamodules.cxx 
-    ./luawrapper.cxx 
-    ./luawrapper.h 
+    ./luamachine.cxx 
+    ./luamachine.h 
     ./modules.h 
     ./primitive.h 
     ./state.h 
     ./swigluarun.h 
+
+    ./wrapperspecification.h
+    ./wrapperspecification.cxx
+    ./codes.h
+    ./codes.cxx
+    ./wraps.h
+    ./wrapperstate.cxx
+    ./wrapperstate.h
+
     ./aux/exportmodule.h
     ./aux/exportmodule.cxx
 )

@@ -8,7 +8,7 @@
 #include <languages/lua/basegear.h>
 #include <languages/lua/state.h>
 
-#include <opa/langwrapper.h>
+#include <opa/virtualmachine.h>
 #include <opa/module.h>
 
 namespace opa {

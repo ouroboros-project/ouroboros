@@ -27,12 +27,20 @@ find_package (Lua51)
 include_directories (${LUA_INCLUDE_DIR})
 
 add_custom_command (
-  OUTPUT ${MILESTONE_GENERATED_SRC}
-  COMMAND opwig
+  OUTPUT src/Python_prompt_wrap.cxx
+  COMMAND opwig-python
   ARGS    --module-name=prompt input.h out.h
-  DEPENDS src/input.h src/out.h opwig
+  DEPENDS src/input.h src/out.h opwig-python
   WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/src
 )
+add_custom_command (
+  OUTPUT src/Lua_prompt_wrap.cxx
+  COMMAND opwig-lua
+  ARGS    --module-name=prompt input.h out.h
+  DEPENDS src/input.h src/out.h opwig-lua
+  WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/src
+)
+
 
 set_source_files_properties (
   ${MILESTONE_GENERATED_SRC}

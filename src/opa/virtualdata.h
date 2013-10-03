@@ -35,7 +35,7 @@ binary_function <std::shared_ptr<opa::VirtualData>,
 namespace opa {
 
 class VirtualObj;
-class LangWrapper;
+class VirtualMachine;
 
 /// Abstract class representing virtual script data.
 class VirtualData : public std::enable_shared_from_this<VirtualData> {
@@ -91,7 +91,7 @@ class VirtualData : public std::enable_shared_from_this<VirtualData> {
     virtual void WrapInteger(int number) = 0;
     virtual void WrapNumber(double number) = 0;
 
-    virtual LangWrapper* wrapper () const = 0;
+    virtual VirtualMachine* machine () const = 0;
 
     /// Tries to execute ourselves as a function in a script language,
     /// passing the given arguments and returning the result.

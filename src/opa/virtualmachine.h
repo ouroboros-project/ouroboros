@@ -1,6 +1,6 @@
 
-#ifndef OUROBOROS_SCRIPT_LANGWRAPPER_H_
-#define OUROBOROS_SCRIPT_LANGWRAPPER_H_
+#ifndef OUROBOROS_SCRIPT_VIRTUALMACHINE_H_
+#define OUROBOROS_SCRIPT_VIRTUALMACHINE_H_
 
 #include <string>
 
@@ -13,22 +13,22 @@
 
 namespace opa {
 
-class LangWrapper {
+class VirtualMachine {
 
   public:
 
-    virtual ~LangWrapper() {}
+    virtual ~VirtualMachine() {}
 
     const std::string& file_extension() { return file_extension_; }
 
 
-    /// Initializes the LangWrapper.
+    /// Initializes the VirtualMachine.
     /** This is used to initialize the script language's API, if needed.
      ** @return bool : informing whether the initialization was successful.
      */
     virtual bool Initialize() = 0;
 
-    /// Finalizes the LangWrapper, finalizing any language specific stuff.
+    /// Finalizes the VirtualMachine, finalizing any language specific stuff.
     virtual void Finalize() = 0;
 
     virtual VirtualData::Ptr NewData() = 0;
@@ -45,18 +45,18 @@ class LangWrapper {
   private:
 
     template <class loader_t>
-    friend class InheritableLangWrapper;
+    friend class InheritableVirtualMachine;
 
     const std::string file_extension_;
     const LangID      lang_id_;
     const std::string lang_name_;
 
-    LangWrapper(const std::string& file_extension, const LangID id, const std::string& name) :
+    VirtualMachine(const std::string& file_extension, const LangID id, const std::string& name) :
         file_extension_(file_extension),
         lang_id_(id),
         lang_name_(name) {}
 
-    LangWrapper& operator=(const LangWrapper& rhs);
+    VirtualMachine& operator=(const VirtualMachine& rhs);
 
 };
 
@@ -81,11 +81,11 @@ class LangWrapper {
  ** class (like this, implementing it specific to your language),
  ** modify whatever compiling mechanisms you use to make SWIG generate the wrappers
  ** to your language; and finally, when using the scripting system, properly
- ** registering your specific wrapper in the ScriptManager and the
- ** wrapper modules you want in your LangWrapper.
+ ** registering your specific VM in the ScriptManager and the
+ ** wrapper modules you want in your VirtualMachine.
  */
 template <class loader_t>
-class InheritableLangWrapper : public LangWrapper {
+class InheritableVirtualMachine : public VirtualMachine {
 
   public:
 
@@ -105,12 +105,12 @@ class InheritableLangWrapper : public LangWrapper {
 
     std::vector<Module<loader_t>> modules_;
 
-    InheritableLangWrapper(const std::string& file_extension, const LangID id,
+    InheritableVirtualMachine(const std::string& file_extension, const LangID id,
                            const std::string& name)
-        : LangWrapper(file_extension, id, name) {}
+        : VirtualMachine(file_extension, id, name) {}
 
 };
 
 } /* namespace opa */
 
-#endif /* OUROBOROS_SCRIPT_LANGWRAPPER_H_ */
+#endif /* OUROBOROS_SCRIPT_VIRTUALMACHINE_H_ */

@@ -6,7 +6,7 @@
 #include <opa/virtualdata.h>
 
 #include <languages/lua/defs.h>
-#include <languages/lua/luawrapper.h>
+#include <languages/lua/luamachine.h>
 
 namespace opa {
 namespace lua {
@@ -15,8 +15,8 @@ class LuaData : public VirtualData {
 
   public:
 
-    LuaData(LuaWrapper* wrapper, DataID id) :
-        wrapper_(wrapper),
+    LuaData(LuaMachine* luavm, DataID id) :
+        machine_(luavm),
         id_(id) {}
 
     ~LuaData();
@@ -36,7 +36,7 @@ class LuaData : public VirtualData {
     void WrapInteger(int number);
     void WrapNumber(double number);
 
-    LangWrapper* wrapper () const { return wrapper_; }
+    VirtualMachine* machine () const { return machine_; }
 
     Ptr Execute(const std::vector<Ptr>& args);
 
@@ -62,7 +62,7 @@ class LuaData : public VirtualData {
 
   private:
 
-    LuaWrapper* wrapper_;
+    LuaMachine* machine_;
     DataID      id_;
 
 };

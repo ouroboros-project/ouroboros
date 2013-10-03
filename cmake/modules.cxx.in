@@ -4,9 +4,9 @@
 #define LANGUAGES_LIST(ACTION) @LANGUAGES_LIST@
 
 #include <opa/module.h>
-#include <languages/lua/luawrapper.h>
+#include <languages/lua/luamachine.h>
 #include <languages/lua/modules.h>
-#include <languages/python/pythonwrapper.h>
+#include <languages/python/pythonmachine.h>
 #include <languages/python/modules.h>
 
 #define MODULE_INIT_DECLARTION(LANG, NAME) extern LANG##_INIT_FUNCTION_SIGNATURE(NAME);

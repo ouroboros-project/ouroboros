@@ -1,29 +1,29 @@
 
-#ifndef OUROBOROS_SCRIPT_LUA_LUAWRAPPER_H_
-#define OUROBOROS_SCRIPT_LUA_LUAWRAPPER_H_
+#ifndef OUROBOROS_SCRIPT_LUA_LUAMACHINE_H_
+#define OUROBOROS_SCRIPT_LUA_LUAMACHINE_H_
 
 #include <string>
 #include <list>
 #include <vector>
 
 #include <languages/lua/defs.h>
-#include <opa/langwrapper.h>
+#include <opa/virtualmachine.h>
 
 namespace opa {
 namespace lua {
 
 class DataGear;
 class LuaData;
-typedef opa::InheritableLangWrapper<lua_CFunction> LuaWrapperBase;
+typedef opa::InheritableVirtualMachine<lua_CFunction> LuaMachineBase;
 
-class LuaWrapper: public LuaWrapperBase {
+class LuaMachine: public LuaMachineBase {
 
   public:
 
-    LuaWrapper() :
-        LuaWrapperBase("lua",LANG(Lua), "Lua"),
+    LuaMachine() :
+        LuaMachineBase("lua",LANG(Lua), "Lua"),
         data_gear_(nullptr) {}
-    ~LuaWrapper() {
+    ~LuaMachine() {
         if (data_gear_) Finalize();
     }
 
@@ -81,4 +81,4 @@ std::string NameConversion(const std::string& name);
 } /* namespace lua */
 } /* namespace opa */
 
-#endif /* OUROBOROS_SCRIPT_LUA_LUAWRAPPER_H_ */
+#endif /* OUROBOROS_SCRIPT_LUA_LUAMACHINE_H_ */

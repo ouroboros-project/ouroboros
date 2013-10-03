@@ -5,8 +5,7 @@
 #include <list>
 #include <string>
 
-namespace opwig {
-namespace gen {
+namespace opa {
 namespace python {
 
 class WrapScope;
@@ -22,21 +21,21 @@ class PythonSpecification final : public ::opwig::gen::WrapperSpecification {
     std::string MiddleBlock() const;
     std::string FinishFile() const;
 
-    std::string WrapFunction(const md::Ptr<const md::Function>& obj);
-    std::string WrapVariable(const md::Ptr<const md::Variable>& obj);
-    std::string WrapEnum(const md::Ptr<const md::Enum>& obj);
+    std::string WrapFunction(const opwig::md::Ptr<const opwig::md::Function>& obj);
+    std::string WrapVariable(const opwig::md::Ptr<const opwig::md::Variable>& obj);
+    std::string WrapEnum(const opwig::md::Ptr<const opwig::md::Enum>& obj);
 
-    std::string OpenClass(const md::Ptr<const md::Class>& obj);
-    std::string CloseClass(const md::Ptr<const md::Class>& obj);
-    std::string OpenNamespace(const md::Ptr<const md::Namespace>& obj);
-    std::string CloseNamespace(const md::Ptr<const md::Namespace>& obj);
+    std::string OpenClass(const opwig::md::Ptr<const opwig::md::Class>& obj);
+    std::string CloseClass(const opwig::md::Ptr<const opwig::md::Class>& obj);
+    std::string OpenNamespace(const opwig::md::Ptr<const opwig::md::Namespace>& obj);
+    std::string CloseNamespace(const opwig::md::Ptr<const opwig::md::Namespace>& obj);
 
     std::string LoadFuncSignature() const;
-    std::list<ScriptModule> GetGeneratedModules() const;
+    std::list<opwig::gen::ScriptModule> GetGeneratedModules() const;
     
   private:
-    md::Ptr<WrapScope> root_module_;
-    md::Ptr<WrapScope> current_;
+    opwig::md::Ptr<WrapScope> root_module_;
+    opwig::md::Ptr<WrapScope> current_;
 
     void PushScope(const std::string& name, bool is_class);
     void PopScope();
@@ -51,8 +50,7 @@ inline std::string PythonSpecification::LoadFuncSignature () const {
 }
 
 } // namespace python
-} // namespace gen
-} // namespace opwig
+} // namespace opa
 
 #endif // OPWIG_GEN_PYTHON_PYTHONSPECIFICATION_H_
 

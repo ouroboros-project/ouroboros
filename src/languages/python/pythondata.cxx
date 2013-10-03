@@ -48,7 +48,7 @@ double PythonData::UnwrapNumber() const {
 
 /*************/
 template <class T>
-static T UnwrapSequence(PyObject* py_data_, PythonWrapper* wrapper_) {
+static T UnwrapSequence(PyObject* py_data_, PythonMachine* machine_) {
     T seq = T();
     if (py_data_ == nullptr) {
         throw InvalidVMError("Python", "[Converter] tried to unwrap a invalid object to sequence.");
@@ -64,7 +64,7 @@ static T UnwrapSequence(PyObject* py_data_, PythonWrapper* wrapper_) {
     PythonData* data;
     for (Py_ssize_t i = 0; i < size; i++) {
         obj = PySequence_GetItem(py_data_, i); //returns new ref, nullptr on failure
-        data = new PythonData(wrapper_, obj, true); //PythonData takes care of the new ref
+        data = new PythonData(machine_, obj, true); //PythonData takes care of the new ref
         seq.push_back(  VirtualData::Ptr(data)  );
     }
     return seq;
@@ -72,10 +72,10 @@ static T UnwrapSequence(PyObject* py_data_, PythonWrapper* wrapper_) {
 /*************/
 
 VirtualData::Vector PythonData::UnwrapVector() const {
-    return UnwrapSequence<Vector>(py_data_, wrapper_);
+    return UnwrapSequence<Vector>(py_data_, machine_);
 }
 VirtualData::List PythonData::UnwrapList() const {
-    return UnwrapSequence<List>(py_data_, wrapper_);
+    return UnwrapSequence<List>(py_data_, machine_);
 }
 VirtualData::Map PythonData::UnwrapMap() const {
     Map d = Map();
@@ -111,8 +111,8 @@ VirtualData::Map PythonData::UnwrapMap() const {
         key = PySequence_GetItem(item, 0);  //key -> new ref
         value = PySequence_GetItem(item, 1);  //value -> new ref
 
-        key_data = new PythonData(wrapper_, key, true); //PythonData takes care of the new ref
-        value_data = new PythonData(wrapper_, value, true); //PythonData takes care of the new ref
+        key_data = new PythonData(machine_, key, true); //PythonData takes care of the new ref
+        value_data = new PythonData(machine_, value, true); //PythonData takes care of the new ref
 
         d[ VirtualData::Ptr(key_data) ] = VirtualData::Ptr(value_data);
         
@@ -216,13 +216,13 @@ VirtualData::Ptr PythonData::Execute(const std::vector<Ptr>& args) {
     PyObject* result = PyObject_CallObject(py_data_, arglist); //return is new ref
     /*If result = nullptr, CallObject failed (somehow)*/
     if (result == nullptr) {
-        string exc_info = wrapper_->GetPythonExceptionDetails(); 
+        string exc_info = machine_->GetPythonExceptionDetails(); 
         throw InternalVMError("Python", "[VData::Execute] called function raised exception:\n"+exc_info);
         return VirtualData::Ptr();
     }
 
     //WAAARPPER!!!
-    VirtualData::Ptr vdata( new PythonData(wrapper_, result, true) ); //PyVirtualData takes care of the ref.
+    VirtualData::Ptr vdata( new PythonData(machine_, result, true) ); //PyVirtualData takes care of the ref.
     
     //Before returning, kill the argument tuple we created.
     Py_XDECREF(arglist);  //WARNING: in theory, this is correct. However in my testing (in the prototype) this cause some serious shit.
@@ -266,7 +266,7 @@ VirtualData::Ptr PythonData::GetAttribute(Ptr key) {
     }
     /*If Py_GetAttr or Py_GetItem failed somehow, they will return null.*/
     
-    VirtualData::Ptr vdata( new PythonData(wrapper_, attr, true) );
+    VirtualData::Ptr vdata( new PythonData(machine_, attr, true) );
     return vdata;
 }
 

@@ -4,7 +4,7 @@
 
 #include <opa/virtualdata.h>
 #include <opa/type.h>
-#include <opa/langwrapper.h>
+#include <opa/virtualmachine.h>
 #include <opa/virtualprimitive.h>
 #include <opa/utils/uncopyable.h>
 
@@ -46,8 +46,8 @@ class VirtualObj {
     explicit VirtualObj(VirtualData::Ptr data) :
         data_(data) {}
 
-    explicit VirtualObj(LangWrapper* wrapper) :
-        data_(wrapper->NewData()) {}
+    explicit VirtualObj(VirtualMachine* vm) :
+        data_(vm->NewData()) {}
 
     ~VirtualObj() {}
 
@@ -70,7 +70,7 @@ class VirtualObj {
         return *this;
     }
 
-    LangWrapper* wrapper() const { return data_->wrapper(); }
+    VirtualMachine* machine() const { return data_->machine(); }
 
     bool valid() const { return static_cast<bool>(data_); }
 
@@ -90,7 +90,7 @@ class VirtualObj {
         return attribute(key);
     }
     VirtualObj operator[] (const char* key) const {
-        return attribute(Create(key, wrapper()));
+        return attribute(Create(key, machine()));
     }
     VirtualObj operator[] (const std::string& key) const {
         return (*this)[key.c_str()];
@@ -117,9 +117,9 @@ class VirtualObj {
     }
 
     template <class T>
-    static VirtualObj Create (T* obj, LangWrapper* wrapper) {
-        if (!wrapper) return VirtualObj();
-        VirtualData::Ptr new_data = wrapper->NewData();
+    static VirtualObj Create (T* obj, VirtualMachine* vm) {
+        if (!vm) return VirtualObj();
+        VirtualData::Ptr new_data = vm->NewData();
         new_data->Wrap(
             static_cast<void*>(obj),
             TypeRegistry<T>::type()
@@ -127,10 +127,10 @@ class VirtualObj {
         return VirtualObj(new_data);
     }
 
-    static VirtualObj Create (const char* obj, LangWrapper* wrapper);
+    static VirtualObj Create (const char* obj, VirtualMachine* vm);
 
-    static VirtualObj Create (const std::string& str, LangWrapper* wrapper) {
-        return Create(str.c_str(), wrapper);
+    static VirtualObj Create (const std::string& str, VirtualMachine* vm) {
+        return Create(str.c_str(), vm);
     }
     
     void* unsafe_data() const {
@@ -187,7 +187,7 @@ class Bind {
   public:
     Bind(VirtualObj& obj, const std::string& method_name) :
         obj_(obj),
-        method_name_(obj.wrapper()) {
+        method_name_(obj.machine()) {
         method_name_.set_value(method_name.c_str());
     }
     VirtualObj operator() () const {
