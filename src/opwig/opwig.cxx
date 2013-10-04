@@ -18,11 +18,22 @@ using opwig::md::Ptr;
 using opwig::gen::WrapperSpecification;
 
 namespace {
-  const string OPWIG_MARK = "[opwig] ";
+
+const string  OPWIG_MARK = "[opwig] ";
+list<string>  include_dirs;
+
+string FindHeader (const string& filename) {
+    return "";
+}
+
 }
 
 namespace opwig {
 namespace gen {
+
+void IncludeDirectory (const string& dir) {
+    include_dirs.push_back(dir);
+}
 
 int Execute (const string& module_name, const list<string>& inputs,
              const Ptr<WrapperSpecification>& language_spec, const string& output_dir) {

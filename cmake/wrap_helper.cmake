@@ -27,6 +27,12 @@ function (ouroboros_wrap_module MODULE_NAME LANGUAGE OUTDIR GENERATED_SRC_VAR)
     "${OUTDIR}/${OUROBOROS_LANG_LONGNAME_${LANGUAGE}}_${MODULE_NAME}_wrap.cxx"
   )
   set (${GENERATED_SRC_VAR} ${OUROBOROS_GENERATED_SRC} PARENT_SCOPE)
+  # Prepare list of include directories
+  get_directory_property (OUROBOROS_INCLUDE_LIST INCLUDE_DIRECTORIES)
+  set (OUROBOROS_INCLUDES)
+  foreach (INCLUDE_DIR IN LIST OUROBOROS_INCLUDE_LIST)
+    list (APPEND OUROBOROS_INCLUDES "-I${INCLUDE_DIR}")
+  endforeach (INCLUDE_DIR)
   # Add custom target for generated source code
   set (OUROBOROS_SPECIFIC_EXECUTABLE opwig-${LANGUAGE})
   add_custom_command (
@@ -34,6 +40,7 @@ function (ouroboros_wrap_module MODULE_NAME LANGUAGE OUTDIR GENERATED_SRC_VAR)
     COMMAND ${OUROBOROS_SPECIFIC_EXECUTABLE}
     ARGS    --module-name=${MODULE_NAME}
             --output-dir=${OUTDIR}
+            ${OUROBOROS_INCLUDES}
             ${ARGN}
     DEPENDS ${OUROBOROS_SPECIFIC_EXECUTABLE} ${ARGN}
     WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
@@ -41,5 +48,7 @@ function (ouroboros_wrap_module MODULE_NAME LANGUAGE OUTDIR GENERATED_SRC_VAR)
   # Clean up variables
   unset (OUROBOROS_GENERATED_SRC)
   unset (OUROBOROS_SPECIFIC_EXECUTABLE)
+  unset (OUROBOROS_INCLUDE_LIST)
+  unset (OUROBOROS_INCLUDES)
 endfunction (ouroboros_wrap_module)
 
