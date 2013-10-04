@@ -30,7 +30,7 @@ function (ouroboros_wrap_module MODULE_NAME LANGUAGE OUTDIR GENERATED_SRC_VAR)
   # Prepare list of include directories
   get_directory_property (OUROBOROS_INCLUDE_LIST INCLUDE_DIRECTORIES)
   set (OUROBOROS_INCLUDES)
-  foreach (INCLUDE_DIR IN LIST OUROBOROS_INCLUDE_LIST)
+  foreach (INCLUDE_DIR IN LISTS OUROBOROS_INCLUDE_LIST)
     list (APPEND OUROBOROS_INCLUDES "-I${INCLUDE_DIR}")
   endforeach (INCLUDE_DIR)
   # Add custom target for generated source code
