@@ -6,6 +6,7 @@
 #include <opwig/md/ptr.h>
 #include <opwig/md/namespace.h>
 
+
 #include <list>
 #include <string>
 #include <iostream>
@@ -14,6 +15,7 @@
 
 using std::list;
 using std::string;
+using std::ifstream;
 using opwig::md::Ptr;
 using opwig::gen::WrapperSpecification;
 
@@ -22,8 +24,18 @@ namespace {
 const string  OPWIG_MARK = "[opwig] ";
 list<string>  include_dirs;
 
-string FindHeader (const string& filename) {
-    return "";
+bool OpenHeader (const string& filename, ifstream& in) {
+    for (auto include_dir : include_dirs) {
+        in.open(include_dir+"/"+filename);
+        if (in.good())
+            return true;
+        in.close();
+    }
+    in.open(filename);
+    if (in.good())
+        return true;
+    in.close();
+    return false;
 }
 
 }
@@ -40,17 +52,16 @@ int Execute (const string& module_name, const list<string>& inputs,
     
     Ptr<opwig::md::Namespace> global = opwig::md::Namespace::Create("");
     for (string input : inputs) {
-        string header_path = input;
-        std::ifstream in(header_path);
-        if (!in.good()) {
-            std::cout << OPWIG_MARK << "Failed to open source \"" << input << "\"" << std::endl;
+        ifstream in;
+        if (!OpenHeader(input, in)) {
+            std::cerr << OPWIG_MARK << "Failed to open source \"" << input << "\". Error:" << std::endl;
             return EXIT_FAILURE;
         }
         opwig::MDParser parser(in, global);
         
         std::cout << OPWIG_MARK << "Parsing source \"" << input << "\"" << std::endl;
         if (parser.parse()) {
-            std::cout << OPWIG_MARK << "Failed to parse C++ code." << std::endl;
+            std::cerr << OPWIG_MARK << "Failed to parse C++ code." << std::endl;
             return EXIT_FAILURE;
         }
     }
