@@ -25,7 +25,7 @@ int main (int argc, char** argv) {
         else if (arg.substr(0, dirarg_len) == "--output-dir=")
             output_dir = arg.substr(dirarg_len);
         else
-            inputs.push_back(output_dir+"/"+*argv);
+            inputs.push_back(*argv);
     }
     opa::lua::WrapperSpecification* lua_spec = new opa::lua::WrapperSpecification(module_name);
     return opwig::gen::Execute(
