@@ -28,5 +28,10 @@ int main (int argc, char** argv) {
             inputs.push_back(output_dir+"/"+*argv);
     }
     opa::lua::WrapperSpecification* lua_spec = new opa::lua::WrapperSpecification(module_name);
-    return opwig::gen::Execute(module_name, inputs, Ptr<opwig::gen::WrapperSpecification>(lua_spec));
+    return opwig::gen::Execute(
+        module_name,
+        inputs,
+        Ptr<opwig::gen::WrapperSpecification>(lua_spec),
+        output_dir
+    );
 }

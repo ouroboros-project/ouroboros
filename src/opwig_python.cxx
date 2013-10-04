@@ -28,5 +28,10 @@ int main (int argc, char** argv) {
         else
             inputs.push_back(output_dir+"/"+*argv);
     }
-    return opwig::gen::Execute(module_name, inputs, Ptr<WrapperSpecification>(new opa::python::PythonSpecification));
+    return opwig::gen::Execute(
+        module_name,
+        inputs,
+        Ptr<WrapperSpecification>(new opa::python::PythonSpecification),
+        output_dir
+    );
 }

@@ -11,9 +11,13 @@ namespace gen {
 
 class WrapperSpecification;
 
-/** Main function for OPWIG - It executes OPWIG to generate a module with the given name, 
-    wrapping the given input files, for a given language. */
-int Execute(const std::string& module_name, const std::list<std::string>& inputs, const md::Ptr<gen::WrapperSpecification>& language_spec);
+/// Main function for OPWIG.
+/** It executes OPWIG to generate a module with the given name in the specified output directory,
+ ** wrapping the given input files, for a given language.
+ **/
+int Execute (const std::string& module_name, const std::list<std::string>& inputs,
+             const md::Ptr<gen::WrapperSpecification>& language_spec,
+             const std::string& output_dir);
 
 } // namespace gen
 } // namespace opwig
