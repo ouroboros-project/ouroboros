@@ -36,6 +36,7 @@ function (ouroboros_wrap_module MODULE_NAME LANGUAGE OUTDIR GENERATED_SRC_VAR)
             --output-dir=${OUTDIR}
             ${ARGN}
     DEPENDS ${OUROBOROS_SPECIFIC_EXECUTABLE} ${ARGN}
+    WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
   )
   # Clean up variables
   unset (OUROBOROS_GENERATED_SRC)
