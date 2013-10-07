@@ -14,25 +14,36 @@ set (OUROBOROS_LANG_INCLUDE_DIR_python  PYTHON_INCLUDE_DIRS)
 function (ouroboros_wrap_module MODULE_NAME LANGUAGE OUTDIR GENERATED_SRC_VAR)
   # Notify
   message (STATUS "Wrapping module ${MODULE_NAME}")
+
   # Find language package
   find_package (${OUROBOROS_LANG_PACKAGE_${LANGUAGE}} ${OUROBOROS_LANG_VERSION_${LANGUAGE}})
   if (NOT ${OUROBOROS_LANG_FOUND_${LANGUAGE}})
     message (FATAL_ERROR "Could not find ${OUROBOROS_LANG_LONGNAME_${LANGUAGE}}")
   endif (NOT ${OUROBOROS_LANG_FOUND_${LANGUAGE}})
+
   # Setup include directories
   include_directories (${${OUROBOROS_LANG_INCLUDE_DIR_${LANGUAGE}}})
+
   # Define generated source and provide it to the parent scope
   set (
     OUROBOROS_GENERATED_SRC
     "${OUTDIR}/${OUROBOROS_LANG_LONGNAME_${LANGUAGE}}_${MODULE_NAME}_wrap.cxx"
   )
+  set_source_files_properties (
+    ${OUROBOROS_GENERATED_SRC}
+    PROPERTIES
+    GENERATED 1
+    COMPILE_FLAGS -std=gnu++0x
+  )
   set (${GENERATED_SRC_VAR} ${OUROBOROS_GENERATED_SRC} PARENT_SCOPE)
+
   # Prepare list of include directories
   get_directory_property (OUROBOROS_INCLUDE_LIST INCLUDE_DIRECTORIES)
   set (OUROBOROS_INCLUDES)
   foreach (INCLUDE_DIR IN LISTS OUROBOROS_INCLUDE_LIST)
     list (APPEND OUROBOROS_INCLUDES "-I${INCLUDE_DIR}")
   endforeach (INCLUDE_DIR)
+
   # Add custom target for generated source code
   set (OUROBOROS_SPECIFIC_EXECUTABLE opwig-${LANGUAGE})
   add_custom_command (
@@ -45,10 +56,12 @@ function (ouroboros_wrap_module MODULE_NAME LANGUAGE OUTDIR GENERATED_SRC_VAR)
     DEPENDS ${OUROBOROS_SPECIFIC_EXECUTABLE} ${ARGN}
     WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
   )
+
   # Clean up variables
   unset (OUROBOROS_GENERATED_SRC)
   unset (OUROBOROS_SPECIFIC_EXECUTABLE)
   unset (OUROBOROS_INCLUDE_LIST)
   unset (OUROBOROS_INCLUDES)
+
 endfunction (ouroboros_wrap_module)
 
