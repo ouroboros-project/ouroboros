@@ -7,8 +7,20 @@
 
 namespace opa {
 namespace utils {
+
+/// Utility class to generate unique numeric IDs in a range of possible numbers.
+/** This class is used to generate unique IDs, and contains a numeric (int) range, 
+    and can return number by number of this range uniquely. It's possible to 
+    'release' an ID, allowing it to be re-assigned. */
 class IDGenerator : public Uncopyable {
   public:
+    /// Initializes fields with given values.
+    /** Initialize the ID Generator with range [min_id, max_id],
+        and given error value.
+    * @param min_id is the minimum ID value generated.
+    * @param max_id is the maximum ID value generated.
+    * @param error_value is the value that some methods return when an error occurred.
+    */
     IDGenerator(int min_id, int max_id, int error_value);
     ~IDGenerator() {}
 
@@ -21,6 +33,7 @@ class IDGenerator : public Uncopyable {
     int ReleaseID(int id);
 
     /// The error value for this generator.
+    /** @return the error value for this generator.*/
     int error_value() const { return error_value_; }
 
   private:

@@ -5,6 +5,7 @@
 namespace opa {
 namespace utils {
 
+/// Base class for defining uncopyable classes.
 class Uncopyable {
   protected:
     Uncopyable() {}

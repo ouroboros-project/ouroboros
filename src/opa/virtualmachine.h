@@ -13,14 +13,24 @@
 
 namespace opa {
 
+/// Abstract class representing a Virtual Machine in OPA.
+/** This abstract class represents a Virtual Machine in OPA, which is the VM that
+    executes a particular scripting language (and is basically the language itself).
+    This class should be implemented for a scripting language in order for OPA to support the language.
+    However, when implementing it, derive the implementation from InheritableVirtualMachine.
+* @see opa::InheritableVirtualMachine
+*/
 class VirtualMachine {
 
   public:
 
     virtual ~VirtualMachine() {}
 
+    /// Gets the file extension of this VM.
+    /** Gets the file extension (without the '.') of script files for this scripting language.
+    * @return the file extension, without the '.' at the start.
+    */
     const std::string& file_extension() { return file_extension_; }
-
 
     /// Initializes the VirtualMachine.
     /** This is used to initialize the script language's API, if needed.
@@ -28,16 +38,41 @@ class VirtualMachine {
      */
     virtual bool Initialize() = 0;
 
-    /// Finalizes the VirtualMachine, finalizing any language specific stuff.
+    /// Finalizes the VirtualMachine.
+    /** Finalizes the VirtualMachine, releasing the resources used by the language. */
     virtual void Finalize() = 0;
 
+    /// Gets a new, empty VirtualData instance associated with this VM.
+    /** Gets a new, empty VirtualData instance associated with this VM.
+    * @return a new VirtualData instance.
+    */
     virtual VirtualData::Ptr NewData() = 0;
 
+    /// Executes code in the VM.
+    /** Executes a code string inside the VM. It will be executed at a default
+        scope inside the VM and should have access to all features of the language.
+    * @param code is the string containing the code to be executed - it should follow
+            the script language syntax.
+    */
     virtual void ExecuteCode(const std::string& code) = 0;
 
+    /// Loads a script module for this VM.
+    /** Loads a script module for this VM. 
+    * @param name is the path/name of the script to load, without file extensions, using dotted notation.
+    * @return A VirtualObj containing the module.
+    * @see opa::VirtualObj
+    */
     virtual VirtualObj LoadModule(const std::string& name) = 0;
 
+    /// Gets the language ID for this VM.
+    /** Gets the language ID for this VM.
+    * @see opa::LangID
+    */
     const LangID lang_id () { return lang_id_; }
+    /// Gets the name of this VM.
+    /** Gets the name of this VM, which is the name of the scripting language it executes.
+    * @return the name of this VM.
+    */
     const std::string& lang_name() const { return lang_name_; }
 
   protected:
@@ -60,39 +95,34 @@ class VirtualMachine {
 
 };
 
-/// Wraps a scripting language.
-/** Classes derived from this should implement it's methods to wrap a given
- ** language in the system. 
- ** 
- ** Besides this interface, derived classes should implement a method
- ** 
- ** <code>
- ** bool RegisterModule(const string& moduleName, T initFunction)
- ** </code>
- **
- ** where moduleName is the name of the module, as to be imported from the language;
- ** T is a language specific module init function type;
- ** initFunction is the pointer to a function of the said type to initialize
- ** the module in the language (SWIG generates these functions in the wrappers)
- ** and the bool return value tells if the module was registered correctly.
- **
- ** Also, in order to properly add a scripting language to the system,
- ** besides implementing this class, you need to derive the VirtualData
- ** class (like this, implementing it specific to your language),
- ** modify whatever compiling mechanisms you use to make SWIG generate the wrappers
- ** to your language; and finally, when using the scripting system, properly
- ** registering your specific VM in the ScriptManager and the
- ** wrapper modules you want in your VirtualMachine.
- */
+/// Inheritable abstract templatized class that represents a VirtualMachine.
+/** This abstract templatized class derives from VirtualMachine, extending it
+    to contain a record of registered modules. When implementing a VirtualMachine
+    to a scripting language, the implementation should derive from a specialization
+    of this abstract templatized class, where the template argument is the signature
+    of the initialization function for modules in this language.
+
+    Wrapper generators, such as OPWIG, generate wrapper modules for a given language,
+    and these wrapper modules usually contain a 'initialization function' to create
+    the module in the VM. These generated modules should be registered in the VM 
+    so that they are initialized along with it. However, since the signature of this
+    initialization function varies from language to language, we have this templatized
+    class to solve this.
+
+    Note that OPWIG generated modules register themselves automatically.
+* @tparam loader_t signature of the initialization function for modules in this language.
+* @see opa::VirtualMachine
+*/
 template <class loader_t>
 class InheritableVirtualMachine : public VirtualMachine {
-
   public:
-
-    /*bool RegisterModule(const std::string& module_name, loader_t init_func) {
-        return RegisterModule(Module<loader_t>(module_name, init_func));
-    }*/
-
+    /// Registers a (generated) module with the VM.
+    /** Registers a module with this VM, so that its initialization function
+        is executed when the VM initializes. 
+    * @param module is the module to be registered
+    * @return boolean indicating if the module was registered successfully (true) or not.
+    * @see opa::Module
+    */
     bool RegisterModule(const Module<loader_t>& module) {
         if (module.name().empty())
             return false;
