@@ -13,7 +13,7 @@ set (OUROBOROS_LANG_INCLUDE_DIR_python  PYTHON_INCLUDE_DIRS)
 
 function (ouroboros_wrap_module MODULE_NAME LANGUAGE OUTDIR GENERATED_SRC_VAR)
   # Notify
-  message (STATUS "Wrapping module ${MODULE_NAME}")
+  message (STATUS "Adding module ${MODULE_NAME} generation target with ${LANGUAGE}")
 
   # Find language package
   find_package (${OUROBOROS_LANG_PACKAGE_${LANGUAGE}} ${OUROBOROS_LANG_VERSION_${LANGUAGE}})
