@@ -21,8 +21,8 @@ class ProxyGenerator final {
     ProxyGenerator (const std::string& the_output_dir, const std::string& the_header_path);
 
     /// Generates proxies from the classes in the given scope.
-    //  @param the_scope Scope whose classes will be proxied.
-    //  @return The number of proxied classes.
+    /**  @param the_scope Scope whose classes will be proxied.
+         @return The number of proxied classes. */
     size_t Generate (const md::Ptr<const md::Scope>& the_scope);
 
   private:
