@@ -11,7 +11,9 @@ namespace md {
 
 /// Function parameter information.
 struct Parameter final {
+    /// Type of the parameter.
     Ptr<Type> type;
+    /// Name of the parameter, if any.
     std::string name;
     Parameter ();
     Parameter (const Ptr<Type>& the_type, const std::string& the_name = "");

@@ -17,7 +17,11 @@ class Variable;
 class Function;
 class Enum;
 
-/// Metadata interface for C++ scopes.
+/// Metadata class for C++ scopes.
+/** Metadata class representing C++ scope objects.
+    Scopes are objects which contain other metadata objects, and possibly some metadata of themselves.
+    This class is the base for such scope metadata objects in the system. For the actual scope classes,
+    check the derived classes such as opwig::md::Class and opwig::md::Namespace. */
 class Scope : public MetadataObject, public std::enable_shared_from_this<Scope> {
 
   public:

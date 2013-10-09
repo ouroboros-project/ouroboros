@@ -13,13 +13,19 @@ namespace md {
 
 
 /// Container class for metadata objects.
+/** Templatized auxiliary class - represents a container
+    for a particular metadata object.
+* @tparam T The type of the metadata object this container will hold,
+    must derive from opwig::md::MetadataObject.
+*/
 template <class T>
 class Container {
 
   public:
-
+    /// name -> smart pointer to MO map typedef.
     typedef std::map<std::string, Ptr<T>> Table;
 
+    /// Helper class to iterate thru the objects.
     class Iterable {
       public:
         typename Table::const_iterator begin () const { return objects_.begin(); }
@@ -40,12 +46,17 @@ class Container {
     size_t Num () const;
 
     /// Adds a new metadata object with the current access specifier.
+    /** Adds a new metadata object to the container, setting its access specifier
+        to the current access specifier of this container.
+    * @param mdObj Smart pointer to the metadata object to add.
+    * @return bool Indicates if the addition was performed successfully or not.
+    */
     bool Add (Ptr<T> mdObj);
 
-    /// Gives the metadata object identified by the given name (const version).
+    /// Gets the contained metadata object identified by the given id (const version).
     Ptr<const T> Get (const std::string& id) const;
     
-    /// Gives the metadata object identified by the given name.
+    /// Gets the contained metadata object identified by the given id.
     Ptr<T> Get (const std::string& id);
 
     /// Returns STL-iterable interface.
@@ -62,7 +73,7 @@ class Container {
     /// Checks if the given id exists within this container.
     bool HasID(const std::string& id) const;
 
-    /// Checks if the given id exists within this container.
+    /// Checks if the given name exists within this container.
     bool HasName(const std::string& name) const;
 
   protected:

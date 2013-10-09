@@ -13,7 +13,7 @@
 namespace opwig {
 namespace md {
 
-/// Metadata interface for C++ functions.
+/// Metadata class for C++ functions.
 class Function : public MetadataObject {
   
   public:
@@ -21,26 +21,58 @@ class Function : public MetadataObject {
     /// Virtual festructor.
     virtual ~Function () {}
 
-    /// Creates a new Function object. Must be used in place of the constructor.
+    /// Creates a new Function instance.
+    /** Creates a new Function instance with given attributes, and returns a smart pointer to it.
+    * @param the_name Name of the function.
+    * @param the_return_type Smart pointer to the return type of the function.
+    * @param the_parameter_list List of Parameters (@see opwig::md::Parameter) of the function.
+    * @param the_is_pure_flag Indicates if the function was declared with a pure specifier ('= 0') or not.
+    * @param the_virtual_flag Indicates if the function was declared virtual or not.
+    * @return A smart pointer containing a new Function instance.
+    */
     static Ptr<Function> Create (const std::string& the_name, const Ptr<const Type>& the_return_type,
                                  const ParameterList& the_parameter_list, const bool the_is_pure_flag,
                                  const bool the_virtual_flag);
 
+    /// Gets the signature for a function.
+    /** Gets the signature (without return type) for a function, according to its given attributes.
+    * @param the_name Name of the function.
+    * @param the_parameter_list List of Parameters (@see opwig::md::Parameter) of the function.
+    * @return The signature without return type of the function.
+    */
     static std::string GetSignatureFor (const std::string& the_name, const ParameterList& the_parameter_list);
 
-    /// @see opwig::md::MetadataObject::id
+    /// Gets the function ID.
+    /** opwig::md::MetadataObject::id overload - a Function ID is not its name,
+        rather, its the function's signature. 
+    * @see opwig::md::MetadataObject::id
+    */
     virtual const std::string& id () const;
 
     /// Tells the function's return type.
+    /** Gets the return type of the function.
+    * @return A smart pointer to the return type.
+    */
     Ptr<const Type> return_type () const;
 
     /// Tells the function's nth parameter type.
+    /** Gets the type of the n-th parameter of the function.
+    * @param n The index of the parameter to check.
+    * @return The type of the parameter, if any, at index n.
+    */
     Ptr<const Type> parameter_type (size_t n) const;
 
     /// Tells the function's nth parameter name.
+    /** Gets the name of the n-th parameter of the function.
+    * @param n The index of the parameter to check.
+    * @return The name of the parameter, if any, at index n.
+    */
     std::string parameter_name (size_t n) const;
     
     /// Tells the number of parameters of this function.
+    /** Gets the number of parameters of this function.
+    * @return Number of parameters of this function.
+    */
     size_t num_parameters () const { return parameter_list_.size(); }
 
     /// Tells if the function is pure (normally used for abstract methods).

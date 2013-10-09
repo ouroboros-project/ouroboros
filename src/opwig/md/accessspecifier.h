@@ -5,7 +5,9 @@
 namespace opwig {
 namespace md {
 
-///Enum depicting access specifier types for use in code parsing and metadata.
+/// Enumeration for possible metadata access specifiers.
+/** This enumeration represents and defines the possible
+    access specifiers for metadatas. */
 enum class AccessSpecifier { PRIVATE, PROTECTED, PUBLIC };
 
 

@@ -11,7 +11,19 @@ namespace md {
 
 class Scope;
 
-/// Base class for metadata objects.
+/// Represents a nested-name specifier.
+/** Represents a nested-name specifier, which is a C++ grammar structure
+    to define the path/name to something (a metadata object). It follows the
+    pattern:
+
+    <i>scopeName1::scopeName2::ObjectName</i>
+
+    Where <i>ObjectName</i> is something (a metadata object, such as a function, class, etc), contained
+    in the scope <i>scopeName2</i>, which is contained in the scope <i>scopeName1</i>, which should be accessible 
+    from the current scope where this nested-name was declared.
+    It's possible to add a '::' to the start of the nested-name, in which case the path will start from the global
+    namespace.
+*/
 class NestedNameSpecifier {
   public:
     NestedNameSpecifier() : global_(false) {}
@@ -30,9 +42,9 @@ class NestedNameSpecifier {
     /// Adds a scope name to the nested-name-specifier path.
     void AddPath(const std::string& path);
 
-    /// Gets the name of the nested-name-specifier.
+    /// Gets the target name of the nested-name-specifier.
     const std::string& name() const { return name_; }
-    /// Sets the name of the nested-name-specifier.
+    /// Sets the target name of the nested-name-specifier.
     void set_name(const std::string& the_name) { name_ = the_name; }
 
     /// Evaluates the nested-name-specifier, starting from the given initial scope, and returns the

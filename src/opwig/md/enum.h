@@ -11,7 +11,7 @@
 namespace opwig {
 namespace md {
 
-/// Metadata interface for C++ ENUMs.
+/// Metadata class for C++ ENUMs.
 class Enum : public MetadataObject {
   
   public:
@@ -19,13 +19,22 @@ class Enum : public MetadataObject {
     /// Virtual destructor.
     virtual ~Enum() {}
 
-    /// Creates a new Function object. Must be used in place of the constructor.
+    /// Creates a new Enum instance.
+    /** Creates a new Enum instance with given attributes, and returns a smart pointer to it.
+    * @param the_name The name of the enumeration.
+    * @param the_base Name of the base (base type specifier) of this enumeration, if any.
+    * @param the_values Vector of names of the enumeration values.
+    * @return A smart pointer containing a new Enum instance.
+    */
     static Ptr<Enum> Create(const std::string& the_name, const std::string& the_base, const std::vector<std::string>& the_values);
 
-    /// Gets the list of bases (base type specifier) of the enum.
+    /// Gets the base (base type specifier) of the enum.
+    /** @return The name of base of this enum. */
     const std::string base() const { return base_; }
     
     /// Gets the list of values of this enum.
+    /** Gets the list of names of the values of this enumeration.
+    * @return List of names of the values. */
     const std::vector<std::string> values() const { return values_; }
 
   private:

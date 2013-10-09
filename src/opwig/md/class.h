@@ -20,18 +20,36 @@ class Class final : public Scope {
 
   public:
 
-    /// Creates a new Class object. Must be used in place of the
-    /// constructor.
+    /// Creates a new Class instance.
+    /** Creates a new Class instance with given attributes, and returns a smart pointer to it.
+    * @param class_name The name of the class.
+    * @param the_base_specifiers List of base specifiers for the class.
+    * @return A smart pointer containing a new Class instance.
+    */
     static Ptr<Class> Create (const std::string& class_name,
                               const std::list<parser::BaseSpecifier>& the_base_specifiers);
     
     /// Gets the list of BaseSpecifiers (parser struct depicting a base class) of this class.
+    /** Gets the list of parser::BaseSpecifier of this class, which are structs used by the parser
+        to define the base classes of a class.
+    * @return A list of BaseSpecifier.
+    */
     const std::list<parser::BaseSpecifier>& base_specifiers() const { return base_specifiers_; }
     
     /// Gets the list of constructors of this class.
+    /** Gets the list of constructors of this class.
+        Constructors are represented in the metadata as functions of a class, which have the 
+        same name as the class and no return type.
+    * @return A list of smart pointers of constructors (Function metadata class).
+    */
     const std::vector<Ptr<Function>> constructors() const { return constructors_; }
     
     /// Gets the destructor of this class.
+    /** Gets the destructor of this class.
+        The destructor is represented in the metadata as a function of the class, with the
+        same name as the class, plus a '~' prefix, and no return type.
+    * @return  A smart pointer to the destructor (Function metadata class).
+    */
     const Ptr<Function> destructor() const { return destructor_; }
     
 
