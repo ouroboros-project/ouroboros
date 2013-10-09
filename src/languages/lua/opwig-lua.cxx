@@ -5,3 +5,4 @@
 int main (int argc, char** argv) {
     return opwig::gen::Execute<opa::lua::WrapperSpecification>(argc, argv);
 }
+

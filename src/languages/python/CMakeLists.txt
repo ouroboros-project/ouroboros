@@ -53,6 +53,11 @@ set_target_properties (libouroboros-python PROPERTIES
 
 ouroboros_add_langmodule(Python libouroboros-python)
 
+ouroboros_generate_opwig (
+  python
+  languages/python/pythonspecification.h
+  opa::python::PythonSpecification
+)
 
 if (UNIX AND PYTHONLIBS_FOUND)
     set (OUROBOROS_INSTALL_LOCATION_DEFINE "#define OUROBOROS_INSTALL_LOCATION \"/usr/${OUROBOROS_INSTALL_LOCATION}\"")
