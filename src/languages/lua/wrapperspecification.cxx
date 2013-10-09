@@ -15,7 +15,7 @@ using opwig::md::Ptr;
 using opwig::md::Namespace;
 
 WrapperSpecification::WrapperSpecification (const string& the_module_name)
-    : state_(the_module_name) {
+    : ::opwig::gen::WrapperSpecification(the_module_name), state_(the_module_name) {
     modules_.push_back(state_.current_module());
 }
 

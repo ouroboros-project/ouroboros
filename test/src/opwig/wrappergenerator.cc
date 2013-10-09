@@ -9,7 +9,7 @@ using std::list;
 *******************************************************/
 class DummySpecification : public WrapperSpecification {
   public:
-    DummySpecification() {}
+    DummySpecification(const string& the_module_name) : WrapperSpecification(the_module_name) {}
     virtual ~DummySpecification() {}
     virtual string wrapper_name() const { return "Dummy"; }
     
@@ -93,7 +93,7 @@ class WrapperGeneratorTest : public ::testing::Test {
     virtual void SetUp () {}
 
     void Generate () {
-        Ptr<DummySpecification> spec(new DummySpecification() );
+        Ptr<DummySpecification> spec(new DummySpecification("TestModule"));
         generator_.Generate("TestModule", given_scope_, spec);
     }
 

@@ -22,7 +22,6 @@ using md::AccessSpecifier;
 
 void WrapperGenerator::Generate (const string& module_name, const Ptr<const md::Scope>& root,
                                  const Ptr<WrapperSpecification>& spec) {
-    spec->set_module_name(module_name);
     spec_ = spec;
     
     wrap_file_.open(output_dir_+"/"+spec->wrapper_name()+"_"+module_name+"_wrap."+wrap_file_extension_,
