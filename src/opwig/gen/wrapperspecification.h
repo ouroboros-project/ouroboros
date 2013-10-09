@@ -161,7 +161,8 @@ class WrapperSpecification {
     
     /// Returns the signature of the load_func (initializing function) of the module.
     /** Gets the signature of the initialization function for the generated module.
-    * @return String containing the signature for the initialization function.
+     ** @return String containing the signature for the initialization function.
+     **/
     virtual std::string LoadFuncSignature() const = 0;
 
     /// Returns a list of the script modules the wrapper generated.
