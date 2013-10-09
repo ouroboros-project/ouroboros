@@ -112,14 +112,14 @@ foreach( OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES} )
     set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_CURRENT_SOURCE_DIR}/${LIB_DIR} )
 endforeach( OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES )
 
+include (cmake/opwig.cmake)
+
 if (OUROBOROS_CREATE_BINDINGS)
     ouroboros_setup_package(SWIG)
     add_subdirectory( src/languages )
 endif (OUROBOROS_CREATE_BINDINGS)
 
 add_library (libouroboros ${OUROBOROS_SRC} ${GENERATED_SRC})
-
-include (cmake/opwig.cmake)
 
 if (CMAKE_COMPILER_IS_GNUCXX)
     set (EXTRA_LIBRARIES m ${EXTRA_LIBRARIES})

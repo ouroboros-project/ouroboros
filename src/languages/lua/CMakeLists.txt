@@ -58,7 +58,13 @@ set_target_properties (libouroboros-lua PROPERTIES
     VERSION ${FRAMEWORK_VERSION}
 )
 
-ouroboros_add_langmodule(Lua libouroboros-lua)
+ouroboros_add_langmodule (Lua libouroboros-lua)
+
+ouroboros_generate_opwig (
+  lua
+  languages/lua/wrapperspecification.h
+  opa::lua::WrapperSpecification
+)
 
 install(TARGETS libouroboros-lua
     DESTINATION lib

@@ -45,7 +45,9 @@ class WrapperSpecification {
 
   public:
     /// constructor
-    WrapperSpecification() {}
+    /** @param module_name The generated module's name.
+     **/
+    WrapperSpecification(const std::string& module_name) : module_name_(module_name) {}
     
     /// Virtual destructor.
     virtual ~WrapperSpecification() {}
@@ -177,9 +179,6 @@ class WrapperSpecification {
     * @return Name of the module, as received by OPWIG.
     */
     const std::string& module_name() const { return module_name_; }
-    
-    /// Sets the name of the module currently being wrapped.
-    void set_module_name(const std::string& name) { module_name_ = name; }
     
     
   protected:

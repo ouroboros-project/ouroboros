@@ -13,7 +13,7 @@ class WrapScope;
 class PythonSpecification final : public ::opwig::gen::WrapperSpecification {
 
   public:
-    PythonSpecification();
+    PythonSpecification(const std::string& module_name);
 
     std::string wrapper_name () const;
 

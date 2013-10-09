@@ -51,7 +51,6 @@ class WrapScope final {
         of the md::Scope that generated this). */
     std::string nested_name() const;
 
-    void set_name(const std::string& name) { name_ = name; }
     bool is_class() const { return is_class_; }
     const opwig::md::Ptr<WrapScope>& parent() const { return parent_; }
     const std::list<opwig::md::Ptr<WrapScope>>& sub_modules() const { return sub_modules_; }
