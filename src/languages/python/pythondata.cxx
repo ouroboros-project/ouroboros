@@ -2,7 +2,6 @@
 #include <opa/scriptmanager.h>
 #include <opa/virtualobj.h>
 #include <opa/exceptions.h>
-#include <languages/python/swigpyrun.h>
 
 #include <string>
 #include <memory>
@@ -15,11 +14,7 @@ using std::shared_ptr;
 using std::string;
 
 void* PythonData::Unwrap(const VirtualType& type, bool disown) const {
-    void* pointer;
-    int res = SWIG_ConvertPtrAndOwn(py_data_, &pointer, type.FromLang(LANG(Python)), 
-                                    disown ? SWIG_POINTER_DISOWN : 0, nullptr);
-    if (SWIG_IsOK(res))
-        return pointer;
+    //TODO what do you think?
     return nullptr;
 }
 const char* PythonData::UnwrapString() const {
@@ -132,10 +127,7 @@ void PythonData::Wrap(void* data, const VirtualType& type) {
         py_data_ = nullptr;
     }
 
-    py_data_ = SWIG_NewInstanceObj(data, type.FromLang(LANG(Python)), 1);
-    own_ref_ = true;
-    /*Apparently, the PyObject return by the SWIG conversion function is a new reference.
-      So our PyVData needs to handle it.*/
+    //TODO implement this, obviously...
 }
 
 void PythonData::WrapString(const char* str) {
