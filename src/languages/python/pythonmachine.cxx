@@ -11,7 +11,6 @@
 #include <languages/python/pythondata.h>
 #include <opa/virtualobj.h>
 #include <opa/scriptmanager.h>
-#include <languages/python/swigpyrun.h>
 #include <languages/python/modules.h>
 
 namespace opa {

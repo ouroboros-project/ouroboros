@@ -6,6 +6,10 @@
 
 #include <opa/defs.h>
 
+extern "C" {
+struct swig_type_info {};
+}
+
 namespace opa {
 
 class VirtualType {

@@ -87,7 +87,7 @@ set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "Ouroboros Project, a system for automate
 set (CPACK_DEBIAN_PACKAGE_NAME "libouroboros${OUROBOROS_BIGVERSION}")
 set (CPACK_DEBIAN_PACKAGE_HOMEPAGE ${HOME_URL})
 set (CPACK_DEBIAN_PACKAGE_DEPENDS "libc6 (>= 2.2), libgcc1 (>= 1:4.1.1), libstdc++6 (>= 4.4.0), lua5.1, python (>=2.6)")
-set (DEBIAN_PACKAGE_BUILDS_DEPENDS "libc6 (>= 2.2), libgcc1 (>= 1:4.1.1), libstdc++6 (>= 4.4.0), swig2.0, lua5.1-dev, python-dev (>= 2.6), cmake")
+set (DEBIAN_PACKAGE_BUILDS_DEPENDS "libc6 (>= 2.2), libgcc1 (>= 1:4.1.1), libstdc++6 (>= 4.4.0), lua5.1-dev, python-dev (>= 2.6), cmake")
 set (CPACK_NSIS_CONTACT ${CONTACT_MAIL})
 set (CPACK_NSIS_DISPLAY_NAME "Ouroboros Project")
 set (CPACK_NSIS_PACKAGE_HOMEPAGE ${HOME_URL})
@@ -115,7 +115,6 @@ endforeach( OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES )
 include (cmake/opwig.cmake)
 
 if (OUROBOROS_CREATE_BINDINGS)
-    ouroboros_setup_package(SWIG)
     add_subdirectory( src/languages )
 endif (OUROBOROS_CREATE_BINDINGS)
 

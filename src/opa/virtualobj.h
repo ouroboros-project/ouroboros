@@ -295,16 +295,6 @@ class VirtualObj {
         return Create(str.c_str(), vm);
     }
     
-    /// Gets a raw, unsafe pointer to the contained data.
-    /** This method returns a raw and unsafe pointer to the contained data.
-        This was used internally, necessary for SWIG proxies to work... 
-        DO NOT use this if you do not know what you're doing.
-    * @return a raw unsafe pointer to the contained data.
-    * @deprecated
-    */
-    void* unsafe_data() const {
-        return data_->unsafe_data();
-    }
 
   private:
 

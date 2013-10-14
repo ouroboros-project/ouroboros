@@ -18,7 +18,6 @@ SET(OUROBOROS_LUA_SRC
     ./modules.h 
     ./primitive.h 
     ./state.h 
-    ./swigluarun.h 
 
     ./wrapperspecification.h
     ./wrapperspecification.cxx
@@ -35,7 +34,6 @@ SET(OUROBOROS_LUA_SRC
 find_package (Lua51)
 
 include_directories (${LUA_INCLUDE_DIR})
-ouroboros_add_scriptlang (lua)
 
 message ("-- Lua module added.")
 

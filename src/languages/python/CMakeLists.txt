@@ -8,7 +8,6 @@ SET(OUROBOROS_PYTHON_SRC
     ./pythonmachine.h 
     ./pythonconverter.cxx
     ./pythonconverter.h
-    ./swigpyrun.h
 
     ./pythonspecification.h
     ./pythonspecification.cxx
@@ -21,7 +20,6 @@ SET(OUROBOROS_PYTHON_SRC
 find_package (PythonLibs 2.6)
 
 include_directories (${PYTHON_INCLUDE_DIRS})
-ouroboros_add_scriptlang (python)
 
 set (OUROBOROS_PYTHON_LIBRARIES       "")
 if(PYTHON_DEBUG_LIBRARY AND (CMAKE_VERSION VERSION_LESS "2.8.8"))

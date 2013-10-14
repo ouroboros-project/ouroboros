@@ -2,8 +2,6 @@
 #include <languages/lua/datagear.h>
 #include <languages/lua/auxlib.h>
 
-#include <languages/lua/swigluarun.h>
-
 #include <cstdio>
 #include <string>
 
@@ -75,7 +73,7 @@ int DataGear::DestroyID(lua_State* L) {
 int DataGear::WrapData(lua_State* L) {
     State L_(L);
 
-    L_.settop(4);
+    /*_.settop(4);
     GETARG(L_, 1, DataGear, dtgear);
     DataID id = L_.aux().checkintteger(2);
     UData data = L_.touserdata(3);
@@ -85,14 +83,14 @@ int DataGear::WrapData(lua_State* L) {
     SWIG_NewPointerObj(L_, data, type, 0);
     if (!dtgear.SetData(id))
         return luaL_error(L, "Could not set data with id #%d", id);
-
+    */
     return 0;
 }
 
 int DataGear::UnwrapData(lua_State* L) {
     State L_(L);
 
-    L_.settop(4);
+    /*L_.settop(4);
     GETARG(L_, 1, DataGear, dtgear);
     DataID id = L_.aux().checkintteger(2);
     GETARGPTR(L_, 3, swig_type_info, type);
@@ -105,7 +103,7 @@ int DataGear::UnwrapData(lua_State* L) {
         SWIG_IsOK(SWIG_ConvertPtr(L, -1, &data, type, disown ? SWIG_POINTER_DISOWN : 0))) {
         L_.pushudata(data);
     } else L_.pushnil();
-
+    */
     return 1;
 
 }
