@@ -326,10 +326,11 @@ int DataGear::DoFile(lua_State* L) {
         );
 
     const Constant result = L_.aux().loadfile(filename.c_str());
-    if (result != Constant::OK()) {
-        dtgear.Report(result);
-        return 0;
-    }
+    if (result != Constant::OK())
+        return luaL_error(
+            L,
+            dtgear.Report(result).info().c_str()
+        );
 
     L_.newtable();  // temp env table
     L_.newtable();  // temp env table's metatable
