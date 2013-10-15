@@ -10,6 +10,7 @@
 #include <languages/lua/modules.h>
 
 #include <opa/scriptmanager.h>
+#include <opa/exceptions.h>
 
 namespace opa {
 namespace lua {
@@ -65,19 +66,22 @@ LuaData* LuaMachine::NewLuaData() {
 VirtualData::Ptr LuaMachine::OperateBuffer(const DataID operand_id,
                                            lua_CFunction op) {
     DataID result_id = NewDataID();
-    bool success = data_gear()
-        .SafeCall(op)
-        .Arg(operand_id)
-        .Arg(&buffer_)
-        .Arg(result_id)
-        .NoResult();
-    buffer_.clear();
-    if (!success) {
+    try {
+        data_gear()
+          .SafeCall(op)
+          .Arg(operand_id)
+          .Arg(&buffer_)
+          .Arg(result_id)
+          .NoResult();
+    } catch (InternalVMError& e) {
+#ifdef DEBUG
         LuaMsg("was lua data #%d.\n", operand_id);
+#endif
         DeleteDataID(result_id);
-        return VirtualData::Ptr();
-        // TODO throw exception!
+        buffer_.clear();
+        throw;
     }
+    buffer_.clear();
     return data_gear_->HasValue(result_id)
         ? VirtualData::Ptr(new LuaData(this, result_id))
         : VirtualData::Ptr();
@@ -99,14 +103,15 @@ void LuaMachine::DeleteDataID(DataID id) {
 VirtualData::Ptr LuaMachine::LoadChunk(const string& chunk,
                                        lua_CFunction loader) {
     DataID result_id = NewDataID();
-    bool success = data_gear()
+    try {
+      data_gear()
         .SafeCall(loader)
         .Arg(chunk.c_str())
         .Arg(result_id)
         .NoResult();
-    if (!success) {
+    } catch (InternalVMError& e) {
         DeleteDataID(result_id);
-        return VirtualData::Ptr();
+        throw;
     }
     return data_gear_->HasValue(result_id)
         ? VirtualData::Ptr(new LuaData(this, result_id))

@@ -14,6 +14,8 @@ extern "C" {
 
 }
 
+#include <string>
+
 namespace opa {
 namespace lua {
 
@@ -34,7 +36,7 @@ class Constant {
     explicit Constant (Callable c) :
         value_(c()) {}
 
-    int value() { return value_; }
+    int value () { return value_; }
 
     DECLARE_LUA_CONSTANT(,OK)
     DECLARE_LUA_CONSTANT(,REGISTRYINDEX)
@@ -63,11 +65,19 @@ class Constant {
     bool operator != (const Constant& st) const { return value_ != st.value_; }
     operator int() const { return value_; }
 
+    const std::string info () const { return info_; }
+
+    static const Constant AddInfo (const Constant& c, const std::string the_info) {
+        return Constant(c.value_, the_info);
+    }
+
   private:
 
-    Constant (int value) : value_(value) {}
+    Constant (int value, const std::string& the_info = "")
+        : value_(value), info_(the_info) {}
 
-    int value_;
+    int         value_;
+    std::string info_;
 
 };
 

@@ -5,17 +5,21 @@
 #include <languages/lua/luadata.h>
 #include <languages/lua/datagear.h>
 
+#include <opa/exceptions.h>
+
 namespace opa {
 namespace lua {
 
 using std::vector;
 
 LuaData::~LuaData() {
-    if (machine_)
-        machine_->data_gear()//.DestroyID_old(id_);
+    if (machine_) try {
+        machine_->data_gear()
             .SafeCall(DataGear::DestroyID)
             .Arg(id_)
             .NoResult();
+    } catch (InternalVMError& e) {}
+    // We must throw out errors because throwing exceptions in destructors is BAD.
 }
 
 void* LuaData::Unwrap(const VirtualType& type, bool disown) const {
@@ -55,12 +59,11 @@ template <class T>
 static T UnwrapSequence(LuaMachine* machine,
                         DataID seq_id) {
     DataBuffer id_list;
-    if (!machine->data_gear()
+    machine->data_gear()
         .SafeCall(DataGear::UnwrapList)
         .Arg(seq_id)
         .Arg(&id_list)
-        .NoResult())
-        return T();
+        .NoResult();
     T data_seq;
     DataBuffer::iterator it;
     for (it = id_list.begin(); it != id_list.end(); ++it)
@@ -78,12 +81,11 @@ LuaData::List LuaData::UnwrapList() const {
 
 LuaData::Map LuaData::UnwrapMap() const {
     DataMap id_table;
-    if (!machine_->data_gear()
+    machine_->data_gear()
         .SafeCall(DataGear::UnwrapTable)
         .Arg(id_)
         .Arg(&id_table)
-        .NoResult())
-        return Map();
+        .NoResult();
     Map data_table;
     DataMap::iterator it;
     for (it = id_table.begin(); it != id_table.end(); ++it) {
@@ -96,13 +98,12 @@ LuaData::Map LuaData::UnwrapMap() const {
 }
 
 void LuaData::Wrap(void* data, const VirtualType& type) {
-    if (!machine_->data_gear()
+    machine_->data_gear()
         .SafeCall(DataGear::WrapData)
         .Arg(id_)
         .Arg(data)
         .Arg(type.FromLang(LANG(Lua)))
-        .NoResult())
-        return; // TODO deal with error.
+        .NoResult();
 }
 
 template <class T>

@@ -8,6 +8,7 @@
 #include <languages/lua/state.h>
 
 #include <opa/utils/uncopyable.h>
+#include <opa/exceptions.h>
 
 namespace opa {
 namespace lua {
@@ -32,14 +33,18 @@ class BaseGear {
         template <class R>
         R GetResult(const R default_value) {
             R result = default_value;
-            if (gear_.TracedCall(arg_num_,1) == Constant::OK())
+            const Constant check = gear_.TracedCall(arg_num_,1);
+            if (check == Constant::OK())
                 result = gear_->toprimitive<R>(-1);
+            else throw InternalVMError("Lua", check.info());
             arg_num_ = 0;
             return result;
         }
 
-        bool NoResult() {
-            return gear_.TracedCall(arg_num_,0) == Constant::OK();
+        void NoResult() {
+            const Constant check = gear_.TracedCall(arg_num_,0);
+            if (check != Constant::OK())
+              throw InternalVMError("Lua", check.info());
         }
 
       private:
