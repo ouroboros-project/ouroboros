@@ -15,7 +15,7 @@ static int traceback (lua_State *L);
 
 const Constant BaseGear::Report (const Constant& c) {
   if (c != Constant::OK() && !L_.isnil(-1)) {
-    string msg = string("==> Details: ")+L_.tostring(-1);
+    string msg = L_.tostring(-1);
     if (msg.empty()) msg = "(error object is not a string)";
     L_.pop(1);
     /* force a complete garbage collection in case of errors */

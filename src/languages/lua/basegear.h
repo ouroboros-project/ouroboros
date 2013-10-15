@@ -36,7 +36,7 @@ class BaseGear {
             const Constant check = gear_.TracedCall(arg_num_,1);
             if (check == Constant::OK())
                 result = gear_->toprimitive<R>(-1);
-            else throw InternalVMError("Lua", check.info());
+            else throw InternalError(check);
             arg_num_ = 0;
             return result;
         }
@@ -44,12 +44,16 @@ class BaseGear {
         void NoResult() {
             const Constant check = gear_.TracedCall(arg_num_,0);
             if (check != Constant::OK())
-              throw InternalVMError("Lua", check.info());
+              throw InternalError(check);
         }
 
       private:
 
         friend class BaseGear;
+
+        BaseGear&    gear_;
+        int          old_top_;
+        unsigned int arg_num_;
 
         InternalSafeCall(BaseGear& gear, lua_CFunction func) :
             gear_(gear),
@@ -61,9 +65,9 @@ class BaseGear {
 
         InternalSafeCall& operator=(const InternalSafeCall& rhs);
 
-        BaseGear&    gear_;
-        int          old_top_;
-        unsigned int arg_num_;
+        static InternalVMError InternalError (const Constant& check) {
+            return InternalVMError("Lua", "details: "+check.info());
+        }
 
     };
 
