@@ -18,7 +18,7 @@ LuaData::~LuaData() {
             .SafeCall(DataGear::DestroyID)
             .Arg(id_)
             .NoResult();
-    } catch (InternalVMError& e) {}
+    } catch (InternalVMError e) {}
     // We must throw out errors because throwing exceptions in destructors is BAD.
 }
 

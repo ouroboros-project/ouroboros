@@ -73,7 +73,7 @@ VirtualData::Ptr LuaMachine::OperateBuffer(const DataID operand_id,
           .Arg(&buffer_)
           .Arg(result_id)
           .NoResult();
-    } catch (InternalVMError& e) {
+    } catch (InternalVMError e) {
 #ifdef DEBUG
         LuaMsg("was lua data #%d.\n", operand_id);
 #endif
@@ -109,7 +109,7 @@ VirtualData::Ptr LuaMachine::LoadChunk(const string& chunk,
         .Arg(chunk.c_str())
         .Arg(result_id)
         .NoResult();
-    } catch (InternalVMError& e) {
+    } catch (InternalVMError e) {
         DeleteDataID(result_id);
         throw;
     }
