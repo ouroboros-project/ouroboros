@@ -2,13 +2,13 @@
 #ifndef OUROBOROS_SCRIPT_LUA_BASEGEAR_H_
 #define OUROBOROS_SCRIPT_LUA_BASEGEAR_H_
 
-#include <vector>
-
 #include <languages/lua/header.h>
 #include <languages/lua/state.h>
 
 #include <opa/utils/uncopyable.h>
 #include <opa/exceptions.h>
+
+#include <vector>
 
 namespace opa {
 namespace lua {
