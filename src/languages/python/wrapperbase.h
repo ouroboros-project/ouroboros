@@ -9,6 +9,11 @@ namespace opa {
 namespace python {
 namespace wrapper {
 
+/**************
+Specialized helper functions for python type generation.
+**************/
+
+/// Generic python type __new__ method for C++ type T.
 template <typename T>
 PyObject* GenericNew(PyTypeObject *type, PyObject *args, PyObject *kwds)
 {
@@ -32,6 +37,7 @@ PyObject* GenericNew(PyTypeObject *type, PyObject *args, PyObject *kwds)
     return (PyObject*)self;
 }
 
+/// Generic python type dealloc method for C++ type T.
 template <typename T>
 void GenericDealloc(T* self)
 {
@@ -39,6 +45,7 @@ void GenericDealloc(T* self)
     self->ob_type->tp_free((PyObject*)self);
 }
 
+/// Generic python type __repr__ method for C++ type T.
 template <typename T>
 PyObject* GenericRepr(T* self)
 {
@@ -46,6 +53,21 @@ PyObject* GenericRepr(T* self)
                                self->ob_type->tp_name, self->obj);
 }
 
+/**************
+Helper functions for other wrapping module needs.
+**************/
+
+/// Check if the number if elements in the tuple args matches the given number.
+bool NumArgsOk(PyObject* args, int num);
+
+/// Adds a module to a parent module, finding it first.
+void AddToParentModule(PyObject* mChild, const string& childName, const string& fullParentName);
+
+/// Handles C++ exceptions for python.
+PyObject* FuncErrorHandling(const std::exception& e);
+
+/// Adds a type to a module.
+void AddTypeToModule(PyObject* module, const char* typeName, PyTypeObject* type);
 
 } /* namespace wrapper */
 } /* namespace python */

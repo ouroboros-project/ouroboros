@@ -15,6 +15,8 @@ SET(OUROBOROS_PYTHON_SRC
     ./wrapscope.cxx
     ./utilities.h
     ./utilities.cxx
+    ./wrapperbase.h
+    ./wrapperbase.cxx
 )
 
 find_package (PythonLibs 2.6)
