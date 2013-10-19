@@ -79,10 +79,12 @@ int UniversalSetter (lua_State *L_) {
     // Stack: [key, value, setters, setter]
     if (L.isnil(4)) {
         L.settop(0);
-        return luaL_error(
-            L,
-            "Attempt to write to nonexistent variable."
-        );
+        L.pushprimitive("Attempt to write to nonexistent variable or field.");
+        return lua_error(L_);
+        //return luaL_error(
+        //    L,
+        //    "Attempt to write to nonexistent variable."
+        //);
     }
     L.remove(3);
     // Stack: [key, value, setter]
