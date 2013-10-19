@@ -79,12 +79,10 @@ int UniversalSetter (lua_State *L_) {
     // Stack: [key, value, setters, setter]
     if (L.isnil(4)) {
         L.settop(0);
-        L.pushprimitive("Attempt to write to nonexistent variable or field.");
-        return lua_error(L_);
-        //return luaL_error(
-        //    L,
-        //    "Attempt to write to nonexistent variable."
-        //);
+        return luaL_error(
+            L,
+            "Attempt to write to nonexistent variable or field."
+        );
     }
     L.remove(3);
     // Stack: [key, value, setter]
@@ -152,13 +150,16 @@ int UniversalMemberSetter (lua_State *L_) {
     L.gettable(4);
     // Stack: [obj, key, value, setters, setter]
     if (L.isnil(5)) {
-        string attr_name = L.tostring(2);
-        L.settop(0);
-        return luaL_error(
-            L,
-            "Attempt to write to nonexistent attribute '%s'.",
-            attr_name.c_str()
-        );
+        { // Avoiding memory leak...
+          string attr_name = L.tostring(2);
+          L.settop(0);
+          lua_pushfstring(
+              L,
+              "Attempt to write to nonexistent attribute '%s'.",
+              attr_name.c_str()
+          );
+        }
+        return lua_error(L);
     }
     L.insert(1);
     // Stack: [setter, obj, key, value, ...]
