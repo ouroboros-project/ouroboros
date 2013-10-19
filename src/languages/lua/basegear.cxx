@@ -1,11 +1,13 @@
 
-#include <cstdio>
-
 #include <languages/lua/basegear.h>
 #include <languages/lua/auxlib.h>
 
+#include <string>
+
 namespace opa {
 namespace lua {
+
+using std::string;
 
 static int traceback (lua_State *L);
 
@@ -13,12 +15,12 @@ static int traceback (lua_State *L);
 
 const Constant BaseGear::Report (const Constant& c) {
   if (c != Constant::OK() && !L_.isnil(-1)) {
-    const char *msg = L_.tostring(-1);
-    if (msg == nullptr) msg = "(error object is not a string)";
-    LuaMsg("%s\n", msg);
+    string msg = L_.tostring(-1);
+    if (msg.empty()) msg = "(error object is not a string)";
     L_.pop(1);
     /* force a complete garbage collection in case of errors */
     L_.gc(Constant::gc::COLLECT(), 0);
+    return Constant::AddInfo(c, msg);
   }
   return c;
 }
@@ -27,7 +29,7 @@ const Constant BaseGear::TracedCall (int nargs, int nres) {
   int base = L_.gettop() - nargs;
   L_.pushcfunction(traceback);
   L_.insert(base);
-  const Constant result = L_.pcall(nargs, nres, base);
+  Constant result = L_.pcall(nargs, nres, base);
   L_.remove(base);
   return Report(result);
 }

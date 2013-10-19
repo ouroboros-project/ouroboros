@@ -2,12 +2,13 @@
 #ifndef OUROBOROS_SCRIPT_LUA_BASEGEAR_H_
 #define OUROBOROS_SCRIPT_LUA_BASEGEAR_H_
 
-#include <vector>
-
 #include <languages/lua/header.h>
 #include <languages/lua/state.h>
 
 #include <opa/utils/uncopyable.h>
+#include <opa/exceptions.h>
+
+#include <vector>
 
 namespace opa {
 namespace lua {
@@ -32,19 +33,27 @@ class BaseGear {
         template <class R>
         R GetResult(const R default_value) {
             R result = default_value;
-            if (gear_.TracedCall(arg_num_,1) == Constant::OK())
+            const Constant check = gear_.TracedCall(arg_num_,1);
+            if (check == Constant::OK())
                 result = gear_->toprimitive<R>(-1);
+            else throw InternalError(check);
             arg_num_ = 0;
             return result;
         }
 
-        bool NoResult() {
-            return gear_.TracedCall(arg_num_,0) == Constant::OK();
+        void NoResult() {
+            const Constant check = gear_.TracedCall(arg_num_,0);
+            if (check != Constant::OK())
+              throw InternalError(check);
         }
 
       private:
 
         friend class BaseGear;
+
+        BaseGear&    gear_;
+        int          old_top_;
+        unsigned int arg_num_;
 
         InternalSafeCall(BaseGear& gear, lua_CFunction func) :
             gear_(gear),
@@ -56,9 +65,9 @@ class BaseGear {
 
         InternalSafeCall& operator=(const InternalSafeCall& rhs);
 
-        BaseGear&    gear_;
-        int          old_top_;
-        unsigned int arg_num_;
+        static InternalVMError InternalError (const Constant& check) {
+            return InternalVMError("Lua", "details: "+check.info());
+        }
 
     };
 
