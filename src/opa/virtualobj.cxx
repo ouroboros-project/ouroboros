@@ -15,16 +15,11 @@ VirtualObj VirtualObj::operator() (const list<VirtualObj>& args) const {
     for (it = args.begin(); it != args.end(); ++it) {
         // Wrappers of executed VObj (we) and of the VObjs passed as
         // arguments must be the same.
-        if (!*it) {
+        if (!*it)
             throw InvalidVMError(this->machine()->lang_name(), "received a invalid VObj as argument in VObj::operator().");
-            return VirtualObj();
-        }
-        if (machine() != it->machine()) {
-            puts("[vobj::op()] Argument VM is not the same as the called object.");
+        if (machine() != it->machine())
             throw InvalidVMError(this->machine()->lang_name(),
                   "in VObj::operator(): received argument of a different VM ("+it->machine()->lang_name()+").");
-            return VirtualObj();
-        }
         arglist.push_back(it->data_);
     }
     VirtualObj ret(data_->Execute(arglist));
