@@ -34,54 +34,22 @@ string PythonSpecification::FileHeader() const {
         "#include <opa/module.h>\n"
         "#include <iostream>\n"
         "#include <string>\n"
-        "\n"
+        "\n";
+}
+
+string PythonSpecification::MiddleBlock() const {
+    return
         "using std::string;\n"
         "using std::cout;\n"
         "using std::endl;\n"
         "using opa::Module;\n"
         "using opa::python::PythonMachine;\n"
         "using opa::python::PythonConverter;\n"
-        "\n";
-}
-
-string PythonSpecification::MiddleBlock() const {
-    return
-        "namespace {\n\n"
-        "bool NumArgsOk(PyObject* args, int num) {\n"
-        "    if (static_cast<int>(PyTuple_Size(args)) != num) {\n"
-        "        string msg = \"expected \"+std::to_string(num)+\" parameters, but received \"+std::to_string(PyTuple_Size(args))+\".\";\n"
-        "        PyErr_SetString(PyExc_RuntimeError, msg.c_str());\n"
-        "        return false;\n"
-        "    }\n"
-        "    return true;\n"
-        "}\n\n"
-        "void AddToParentModule(PyObject* mChild, const string& childName, const string& fullParentName) {\n"
-        "    PyObject* mParent = PyImport_ImportModule(fullParentName.c_str()); //newref\n"
-        "    if (mParent == nullptr) {\n"
-        "        string msg = \"Initializing '\"+childName+\"', could not import '\"+fullParentName+\"'\";\n"
-        "        PyErr_SetString(PyExc_RuntimeError, msg.c_str());\n"
-        "    }\n"
-        "    else {\n"
-        "        Py_INCREF(mChild);\n"
-        "        if (PyModule_AddObject(mParent, childName.c_str(), mChild) == -1) {\n"
-        "            string msg = \"could not add submodule '\"+childName+\"' to module '\"+fullParentName+\"'\";\n"
-        "            PyErr_SetString(PyExc_RuntimeError, msg.c_str());\n"
-        "        }\n"
-        "        Py_DECREF(mParent);\n"
-        "    }\n"
-        "}\n\n"
-        "PyObject* FuncErrorHandling(const std::exception& e) {\n"
-        "    cout << \"[ERROR IN C++]\" << e.what() << endl;\n"
-        "    if (PyErr_Occurred()==nullptr)   PyErr_SetString(PyExc_RuntimeError, e.what());\n"
-        "    return nullptr;\n"
-        "}\n\n"
-        "void AddTypeToModule(PyObject* module, const char* typeName, PyTypeObject* type) {\n"
-        "    if (PyType_Ready(type) < 0)\n"
-        "        return;\n"
-        "    Py_INCREF(type);\n"
-        "    PyModule_AddObject(module, typeName, (PyObject*)type);\n"
-        "}\n"
-        "} // unnamed namespace\n\n"
+        "using opa::python::wrapper::NumArgsOk;\n"
+        "using opa::python::wrapper::AddToParentModule;\n"
+        "using opa::python::wrapper::FuncErrorHandling;\n"
+        "using opa::python::wrapper::AddTypeToModule;\n"
+        "\n"
         "namespace "+BASE_NSPACE+" {\n\n";
 }
 
