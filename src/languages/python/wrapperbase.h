@@ -61,7 +61,7 @@ Helper functions for other wrapping module needs.
 bool NumArgsOk(PyObject* args, int num);
 
 /// Adds a module to a parent module, finding it first.
-void AddToParentModule(PyObject* mChild, const string& childName, const string& fullParentName);
+void AddToParentModule(PyObject* mChild, const std::string& childName, const std::string& fullParentName);
 
 /// Handles C++ exceptions for python.
 PyObject* FuncErrorHandling(const std::exception& e);
