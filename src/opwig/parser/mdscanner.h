@@ -127,9 +127,18 @@ inline int MDScanner::peek() {
 inline bool MDScanner::currentIsTypeName() {
     int nextToken = peek();
     if (last_token_ == MDParserBase::TYPE_NAME) return false;
-    bool ok = (parenthesis_depth_ > 0 && (last_token_==',' || last_token_=='(' || last_token_==MDParserBase::SCOPE_OPERATOR) 
-                                      && (nextToken==')' || nextToken==',' || nextToken=='*' || nextToken=='&' || nextToken==MDParserBase::IDENTIFIER) );
-    ok = ok || (parenthesis_depth_ == 0 && (nextToken==MDParserBase::IDENTIFIER || nextToken=='*' || nextToken=='&'));
+    bool ok = (parenthesis_depth_ > 0 && (last_token_==',' ||
+                                          last_token_=='(' ||
+                                          last_token_==MDParserBase::SCOPE_OPERATOR ||
+                                          last_token_==MDParserBase::CONST ||
+                                          last_token_==MDParserBase::VOLATILE) 
+                                      && (nextToken==')' ||
+                                          nextToken==',' ||
+                                          nextToken=='*' ||
+                                          nextToken=='&' ||
+                                          nextToken==MDParserBase::IDENTIFIER));
+    ok = ok || (parenthesis_depth_ == 0 && (nextToken==MDParserBase::IDENTIFIER ||
+                                            nextToken=='*' || nextToken=='&'));
     return ok;
 }
 
