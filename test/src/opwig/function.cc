@@ -44,6 +44,14 @@ TEST_F (MDFunctionTest, GlobalSinglePointerArgFunction) {
     TestFunctionParameter(f, 0, "arg", "type *");
 }
 
+TEST_F (MDFunctionTest, GlobalSingleConstRefArgFunction) {
+    ASSERT_EQ(RunParse("rtype name(const type& arg);"), 0);
+    TestScopeChildNums(global_, 0u, 1u, 0u, 0u);
+    
+    auto f = TestFunction("name(const type &)", "name", "rtype", AccessSpecifier::PUBLIC, false);
+    TestFunctionParameter(f, 0, "arg", "const type &");
+}
+
 TEST_F (MDFunctionTest, GlobalDoubleArgFunction) {
     ASSERT_EQ(RunParse("rtype name(type0, type1);"), 0);
     TestScopeChildNums(global_, 0u, 1u, 0u, 0u);
