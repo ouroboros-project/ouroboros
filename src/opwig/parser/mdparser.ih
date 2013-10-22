@@ -29,6 +29,7 @@ inline void MDParser::print()
 }
 
 inline void MDParser::exceptionHandler__(std::exception const &exc) {
+    std::cout << exc.what() << std::endl;
     throw md::SemanticError(exc.what());
 }
 
