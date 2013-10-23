@@ -22,6 +22,8 @@ script:
   - cd ..
   - make opwig_test
   - ./test/opwig_test
+  - make opa_test
+  - ./test/opa_test
 
 
 notifications:
