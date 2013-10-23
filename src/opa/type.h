@@ -2,15 +2,26 @@
 #ifndef OUROBOROS_SCRIPT_VIRTUALTYPE_H_
 #define OUROBOROS_SCRIPT_VIRTUALTYPE_H_
 
-#include <vector>
-
 #include <opa/defs.h>
+
+#include <vector>
+#include <typeinfo>
+#include <typeindex>
 
 extern "C" {
 struct swig_type_info {};
 }
 
 namespace opa {
+
+enum class Convertibility {
+    NONE, IS_BASE, INHERITS
+};
+
+void DefineConversion (const std::type_index& from, const std::type_index& to,
+                       const Convertibility& conversion);
+
+Convertibility CheckConversion (const std::type_index& from, const std::type_index& to);
 
 class VirtualType {
 
