@@ -100,6 +100,12 @@ target_link_libraries (
   libouroboros
 )
 
+cxx_executable (opa_test src gtest_main src/config.h)
+target_link_libraries (
+  opa_test
+  libouroboros
+)
+
 set (OUROBOROS_TEST_DUMP_DIR ${CMAKE_CURRENT_BINARY_DIR}/dump)
 
 configure_file (
