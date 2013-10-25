@@ -5,6 +5,7 @@
 #include <opa/defs.h>
 
 #include <vector>
+#include <unordered_map>
 #include <typeinfo>
 #include <typeindex>
 
@@ -18,10 +19,16 @@ enum class Convertibility {
     NONE, IS_BASE, INHERITS
 };
 
+using HeritageTable = std::unordered_map<std::type_index, std::vector<std::type_index>>;
+
+Convertibility CheckConversion (const std::type_index& from, const std::type_index& to);
+
+void ClearConversions ();
+
 void DefineConversion (const std::type_index& from, const std::type_index& to,
                        const Convertibility& conversion);
 
-Convertibility CheckConversion (const std::type_index& from, const std::type_index& to);
+void DefineConversion (const HeritageTable& table);
 
 class VirtualType {
 
