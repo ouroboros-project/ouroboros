@@ -13,7 +13,8 @@ SET(OUROBOROS_SRC
     ./src/opa/scriptmanager.cxx 
     ./src/opa/scriptmanager.h 
     ./src/opa/type.h
-    ./src/opa/type.cxx
+    ./src/opa/type/conversionregistry.h
+    ./src/opa/type/conversionregistry.cxx
     ./src/opa/virtualdata.h 
     ./src/opa/virtualobj.cxx 
     ./src/opa/virtualobj.h 
