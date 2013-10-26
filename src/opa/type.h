@@ -21,14 +21,25 @@ enum class Convertibility {
 
 using HeritageTable = std::unordered_map<std::type_index, std::vector<std::type_index>>;
 
-Convertibility CheckConversion (const std::type_index& from, const std::type_index& to);
+class ConversionRegistry final {
 
-void ClearConversions ();
+  public:
 
-void DefineConversion (const std::type_index& from, const std::type_index& to,
-                       const Convertibility& conversion);
+    Convertibility CheckConversion (const std::type_index& from, const std::type_index& to);
 
-void DefineConversion (const HeritageTable& table);
+    void DefineConversion (const std::type_index& from, const std::type_index& to,
+                           const Convertibility& conversion);
+
+    void DefineConversion (const HeritageTable& table);
+
+  private:
+
+    template <typename T>
+    using TypeRegistry = std::unordered_map<std::type_index, T>;
+
+    TypeRegistry<TypeRegistry<Convertibility>> registry_;
+
+};
 
 class VirtualType {
 

@@ -20,11 +20,10 @@ class ConversionRegistryTest : public ::testing::Test {
 
   protected:
 
-    HeritageTable table_;
+    ConversionRegistry  registry_;
+    HeritageTable       table_;
 
-    virtual void SetUp () {
-        ClearConversions();
-    }
+    virtual void SetUp () {}
 
     void BuildSmallTable () {
         table_ = {
@@ -43,39 +42,39 @@ class ConversionRegistryTest : public ::testing::Test {
     
     template <typename T, typename S>
     void CheckTwoWayConversion () {
-        EXPECT_EQ(Convertibility::INHERITS, opa::CheckConversion(typeid(S), typeid(T)));
-        EXPECT_EQ(Convertibility::IS_BASE, opa::CheckConversion(typeid(T), typeid(S)));
+        EXPECT_EQ(Convertibility::INHERITS, registry_.CheckConversion(typeid(S), typeid(T)));
+        EXPECT_EQ(Convertibility::IS_BASE, registry_.CheckConversion(typeid(T), typeid(S)));
     }
     
     template <typename T, typename S>
     void CheckTwoWayNonConversion () {
-        EXPECT_EQ(Convertibility::NONE, opa::CheckConversion(typeid(S), typeid(T)));
-        EXPECT_EQ(Convertibility::NONE, opa::CheckConversion(typeid(T), typeid(S)));
+        EXPECT_EQ(Convertibility::NONE, registry_.CheckConversion(typeid(S), typeid(T)));
+        EXPECT_EQ(Convertibility::NONE, registry_.CheckConversion(typeid(T), typeid(S)));
     }
 
 };
 
 TEST_F (ConversionRegistryTest, DefineAndCheck) {
-    DefineConversion(typeid(B), typeid(A), Convertibility::INHERITS);
-    EXPECT_EQ(Convertibility::NONE, CheckConversion(typeid(B), typeid(int)));
-    EXPECT_EQ(Convertibility::INHERITS, opa::CheckConversion(typeid(B), typeid(A)));
+    registry_.DefineConversion(typeid(B), typeid(A), Convertibility::INHERITS);
+    EXPECT_EQ(Convertibility::NONE, registry_.CheckConversion(typeid(B), typeid(int)));
+    EXPECT_EQ(Convertibility::INHERITS, registry_.CheckConversion(typeid(B), typeid(A)));
 }
 
 TEST_F (ConversionRegistryTest, CheckNonExistant) {
-    EXPECT_EQ(Convertibility::NONE, CheckConversion(typeid(B), typeid(int)));
-    EXPECT_EQ(Convertibility::NONE, CheckConversion(typeid(B), typeid(A)));
+    EXPECT_EQ(Convertibility::NONE, registry_.CheckConversion(typeid(B), typeid(int)));
+    EXPECT_EQ(Convertibility::NONE, registry_.CheckConversion(typeid(B), typeid(A)));
 }
 
 TEST_F (ConversionRegistryTest, CheckEmptyTable) {
-    DefineConversion(table_);
-    EXPECT_EQ(Convertibility::NONE, CheckConversion(typeid(B), typeid(int)));
-    EXPECT_EQ(Convertibility::NONE, CheckConversion(typeid(B), typeid(A)));
+    registry_.DefineConversion(table_);
+    EXPECT_EQ(Convertibility::NONE, registry_.CheckConversion(typeid(B), typeid(int)));
+    EXPECT_EQ(Convertibility::NONE, registry_.CheckConversion(typeid(B), typeid(A)));
 }
 
 TEST_F (ConversionRegistryTest, CheckSmallTable) {
     BuildSmallTable();
-    DefineConversion(table_);
-    EXPECT_EQ(Convertibility::NONE, CheckConversion(typeid(B), typeid(int)));
+    registry_.DefineConversion(table_);
+    EXPECT_EQ(Convertibility::NONE, registry_.CheckConversion(typeid(B), typeid(int)));
     CheckTwoWayConversion<A,B>();
     CheckTwoWayNonConversion<A,E>();
     CheckTwoWayNonConversion<F,B>();
@@ -84,8 +83,8 @@ TEST_F (ConversionRegistryTest, CheckSmallTable) {
 
 TEST_F (ConversionRegistryTest, CheckBigTable) {
     BuildBigTable();
-    DefineConversion(table_);
-    EXPECT_EQ(Convertibility::NONE, CheckConversion(typeid(B), typeid(int)));
+    registry_.DefineConversion(table_);
+    EXPECT_EQ(Convertibility::NONE, registry_.CheckConversion(typeid(B), typeid(int)));
     CheckTwoWayConversion<A,B>();
     CheckTwoWayConversion<A,C>();
     CheckTwoWayConversion<A,D>();
