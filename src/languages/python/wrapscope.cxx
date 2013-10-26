@@ -86,7 +86,7 @@ string WrapScope::full_dotted_name() const {
 std::string WrapScope::nested_name() const {
     string fullName = name_;
     Ptr<WrapScope> mod = parent_;
-    while (mod) {
+    while (mod->parent()) {
         fullName = mod->name() + "::" + fullName;
         mod = mod->parent();
         if (!mod->parent())
