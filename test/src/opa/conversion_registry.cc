@@ -1,8 +1,9 @@
 
-#include <opa/type.h>
+#include <opa/type/conversionregistry.h>
 #include <gtest/gtest.h>
 
 namespace opa {
+namespace type {
 namespace testing {
 
 namespace {
@@ -98,5 +99,6 @@ TEST_F (ConversionRegistryTest, CheckBigTable) {
 }
 
 } // namespace testing
+} // namespace type
 } // namespace opa
 

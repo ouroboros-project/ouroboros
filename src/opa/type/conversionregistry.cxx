@@ -1,7 +1,8 @@
 
-#include <opa/type.h>
+#include <opa/type/conversionregistry.h>
 
 namespace opa {
+namespace type {
 
 using std::unordered_map;
 using std::type_index;
@@ -26,5 +27,6 @@ void ConversionRegistry::DefineConversion (const HeritageTable& table) {
         }
 }
 
+} // namespace type
 } // namespace opa
 
