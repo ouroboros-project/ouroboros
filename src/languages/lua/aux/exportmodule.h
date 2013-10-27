@@ -4,6 +4,7 @@
 
 #include <opa/utils/uncopyable.h>
 
+#include <languages/lua/converter.h>
 #include <languages/lua/state.h>
 
 #include <string>
@@ -192,11 +193,6 @@ inline const luaL_Reg* ModuleInfo::VerifyAndGet (const std::string& name) const 
     return it->second;
 }
 
-struct UserData {
-    void            *obj;
-    std::type_index type;
-};
-
 int ExportModule (State&& L, const ModuleInfo* info);
 
 template <typename T>
@@ -205,11 +201,9 @@ inline int Construct (lua_State* L_) {
     // Stack: [module]
     L.getmetatable(1);
     // Stack: [module, mttable]
+    Converter(L_).TypeToScript(new T);
     L.pushudata(sizeof(UserData));
     // Stack: [module, mttable, newobj]
-    UserData *udata = static_cast<UserData*>(L.touserdata(-1));
-    udata->obj = static_cast<void*>(new T);
-    udata->type = typeid(T*);
     L.getfield(2, "__vtable");
     // Stack: [module, mttable, newobj, vtable]
     L.setmetatable(3);

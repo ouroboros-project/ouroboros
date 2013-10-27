@@ -12,6 +12,8 @@ typedef int (*lua_CFunction)(lua_State*);
 
 #include <list>
 #include <map>
+#include <typeinfo>
+#include <typeindex>
 
 namespace opa {
 namespace lua {
@@ -30,6 +32,11 @@ UData AsUData(const T* p) {
 }
 
 typedef lua_CFunction inittype;
+
+struct UserData {
+    void            *obj;
+    std::type_index type;
+};
 
 #define LUA_INIT_FUNCTION_NAME(name) luaopen_##name
 #define LUA_INIT_FUNCTION_SIGNATURE(name) int LUA_INIT_FUNCTION_NAME(name)(lua_State*)

@@ -4,7 +4,6 @@
 
 #include <languages/lua/state.h>
 #include <languages/lua/primitive.h>
-#include <languages/lua/aux/exportmodule.h>
 
 #include <string>
 #include <stdexcept>
@@ -58,7 +57,10 @@ template <typename T>
 class Converter::ConversionToScript<T, std::false_type> final {
     public:
         void Convert (State &L, T value) {
-            throw std::runtime_error("Not implemented =)");
+            L.pushudata(sizeof(UserData));
+            UserData *udata = static_cast<UserData*>(L.touserdata(-1));
+            udata->obj = static_cast<void*>(value);
+            udata->type = typeid(T);
         }
 };
 
@@ -76,7 +78,7 @@ template <typename T>
 class Converter::ConversionToType<T, std::false_type> final {
   public:
     T Convert (State &L, int index) {
-        aux::UserData *udata = static_cast<aux::UserData*>(L.touserdata(index));
+        UserData *udata = static_cast<UserData*>(L.touserdata(index));
         if (!udata || udata->type != typeid(T))
             throw std::runtime_error("type mismatch at index "+std::to_string(index));
         return static_cast<T>(udata->obj);
