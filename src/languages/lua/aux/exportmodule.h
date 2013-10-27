@@ -4,11 +4,14 @@
 
 #include <opa/utils/uncopyable.h>
 
+#include <languages/lua/converter.h>
 #include <languages/lua/state.h>
 
 #include <string>
 #include <list>
 #include <unordered_map>
+#include <typeinfo>
+#include <typeindex>
 
 namespace opa {
 namespace lua {
@@ -190,10 +193,6 @@ inline const luaL_Reg* ModuleInfo::VerifyAndGet (const std::string& name) const 
     return it->second;
 }
 
-struct UserData {
-    void *obj;
-};
-
 int ExportModule (State&& L, const ModuleInfo* info);
 
 template <typename T>
@@ -202,10 +201,8 @@ inline int Construct (lua_State* L_) {
     // Stack: [module]
     L.getmetatable(1);
     // Stack: [module, mttable]
-    L.pushudata(sizeof(UserData));
+    Converter(L_).TypeToScript(new T);
     // Stack: [module, mttable, newobj]
-    UserData *udata = static_cast<UserData*>(L.touserdata(-1));
-    udata->obj = static_cast<void*>(new T);
     L.getfield(2, "__vtable");
     // Stack: [module, mttable, newobj, vtable]
     L.setmetatable(3);

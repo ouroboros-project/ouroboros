@@ -3,6 +3,7 @@
 #define OUROBOROS_SCRIPT_LUA_PRIMITIVE_H_
 
 #include <languages/lua/header.h>
+#include <type_traits>
 
 namespace opa {
 namespace lua {
@@ -23,6 +24,8 @@ namespace lua {
 #define DEFINE_LUA_PRIMITIVE_OP(name) \
     template <class T> \
     class LUA_OPNAME(name) { \
+      public: \
+        using PrimitiveType = std::false_type; \
       private: \
         LUA_OPNAME(name)() {} \
         void primitive(); \
@@ -32,6 +35,7 @@ namespace lua {
     template <partial> \
     class LUA_OPNAME(name)<type> { \
       public: \
+        using PrimitiveType = std::true_type; \
         static ret primitive(lua_State* L, arg) { \
             exp; \
         } \
