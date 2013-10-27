@@ -49,8 +49,16 @@ class Converter final {
 template <typename T>
 class Converter::ConversionToScript<T, std::true_type> final {
     public:
-        inline void Convert (State &L, T value) {
+        void Convert (State &L, T value) {
             L.pushprimitive<T>(value);
+        }
+};
+
+template <typename T>
+class Converter::ConversionToScript<T, std::false_type> final {
+    public:
+        void Convert (State &L, T value) {
+            throw std::runtime_error("Not implemented =)");
         }
 };
 
