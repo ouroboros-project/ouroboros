@@ -77,7 +77,7 @@ class Converter::ConversionToType<T, std::false_type> final {
   public:
     T Convert (State &L, int index) {
         aux::UserData *udata = static_cast<aux::UserData*>(L.touserdata(index));
-        if (udata->type != typeid(T))
+        if (!udata || udata->type != typeid(T))
             throw std::runtime_error("type mismatch at index "+std::to_string(index));
         return static_cast<T>(udata->obj);
     }

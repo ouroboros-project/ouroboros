@@ -2,6 +2,7 @@
 SET(OUROBOROS_LUA_SRC 
     ./auxlib.h 
     ./converter.h 
+    ./converter.cxx 
     ./basegear.cxx 
     ./basegear.h 
     ./bootstrapgear.cxx 
