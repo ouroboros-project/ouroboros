@@ -25,7 +25,7 @@ class Converter final {
     /// [0,+1,-]
     template <typename T>
     void TypeToScript (T value) {
-        ConversionToScript<T, typename lua_push<T>::PrimitiveType>().Convert(L_, value);
+        ConversionToScript<T, typename lua_to<T>::PrimitiveType>().Convert(L_, value);
     }
 
     /// [0,0,-]
