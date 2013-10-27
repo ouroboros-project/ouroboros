@@ -10,8 +10,6 @@
 #include <string>
 #include <list>
 #include <unordered_map>
-#include <typeinfo>
-#include <typeindex>
 
 namespace opa {
 namespace lua {
