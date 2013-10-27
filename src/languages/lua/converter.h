@@ -3,9 +3,12 @@
 #define OPA_LUA_CONVERTER_H_
 
 #include <languages/lua/state.h>
+#include <languages/lua/aux/exportmodule.h>
 
 #include <string>
 #include <stdexcept>
+#include <typeinfo>
+#include <typeindex>
 
 namespace opa {
 namespace lua {
@@ -40,8 +43,12 @@ template <typename T>
 inline T Converter::ScriptToType (int index) {
     if (index < 0 || index > L_.gettop())
         throw std::runtime_error("invalid stack index "+std::to_string(index));
-    if (!L_.isprimitive<T>(index))
-        throw std::runtime_error("type mismatch at index "+std::to_string(index));
+    if (!L_.isprimitive<T>(index)) {
+        aux::UserData *udata = static_cast<aux::UserData*>(L_.touserdata(index));
+        if (udata->type != typeid(T))
+            throw std::runtime_error("type mismatch at index "+std::to_string(index));
+        return static_cast<T>(udata->obj);
+    }
     return L_.toprimitive<T>(index);
 }
 

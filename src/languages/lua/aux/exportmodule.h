@@ -9,6 +9,8 @@
 #include <string>
 #include <list>
 #include <unordered_map>
+#include <typeinfo>
+#include <typeindex>
 
 namespace opa {
 namespace lua {
@@ -191,7 +193,8 @@ inline const luaL_Reg* ModuleInfo::VerifyAndGet (const std::string& name) const 
 }
 
 struct UserData {
-    void *obj;
+    void            *obj;
+    std::type_index type;
 };
 
 int ExportModule (State&& L, const ModuleInfo* info);
@@ -206,6 +209,7 @@ inline int Construct (lua_State* L_) {
     // Stack: [module, mttable, newobj]
     UserData *udata = static_cast<UserData*>(L.touserdata(-1));
     udata->obj = static_cast<void*>(new T);
+    udata->type = typeid(T*);
     L.getfield(2, "__vtable");
     // Stack: [module, mttable, newobj, vtable]
     L.setmetatable(3);
