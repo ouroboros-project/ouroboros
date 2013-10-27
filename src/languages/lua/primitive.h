@@ -25,7 +25,8 @@ namespace lua {
     template <class T> \
     class LUA_OPNAME(name) { \
       public: \
-        using PrimitiveType = std::false_type; \
+        /*using PrimitiveType = std::false_type;*/ \
+        typedef std::false_type PrimitiveType; \
       private: \
         LUA_OPNAME(name)() {} \
         void primitive(); \
@@ -35,7 +36,8 @@ namespace lua {
     template <partial> \
     class LUA_OPNAME(name)<type> { \
       public: \
-        using PrimitiveType = std::true_type; \
+        /*using PrimitiveType = std::true_type;*/ \
+        typedef std::true_type PrimitiveType; \
         static ret primitive(lua_State* L, arg) { \
             exp; \
         } \
