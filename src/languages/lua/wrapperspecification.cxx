@@ -72,11 +72,7 @@ string WrapperSpecification::WrapFunction (const Ptr<const opwig::md::Function>&
     if (is_class) {
         string type = state_.current_module()->name;
         func_code
-              << "    " << type << " *self = static_cast<" << type << "*>(\n"
-              << "        static_cast<opa::lua::aux::UserData*>(\n"
-              << "            convert.ScriptToType<void*>(1)\n"
-              << "        )->obj\n"
-              << "    );\n";
+              << "    " << type << " *self = convert.ScriptToType<" << type << "*>(1);\n";
     }
     if (num_params > 0)
         args_code

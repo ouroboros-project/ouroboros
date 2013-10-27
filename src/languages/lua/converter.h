@@ -60,7 +60,7 @@ class Converter::ConversionToType<T, std::true_type> final {
     T Convert (State &L, int index) {
         if (index < 0 || index > L.gettop())
             throw std::runtime_error("invalid stack index "+std::to_string(index));
-        return L_.toprimitive<T>(index);
+        return L.toprimitive<T>(index);
     }
 };
 
@@ -68,7 +68,7 @@ template <typename T>
 class Converter::ConversionToType<T, std::false_type> final {
   public:
     T Convert (State &L, int index) {
-        aux::UserData *udata = static_cast<aux::UserData*>(L_.touserdata(index));
+        aux::UserData *udata = static_cast<aux::UserData*>(L.touserdata(index));
         if (udata->type != typeid(T))
             throw std::runtime_error("type mismatch at index "+std::to_string(index));
         return static_cast<T>(udata->obj);
