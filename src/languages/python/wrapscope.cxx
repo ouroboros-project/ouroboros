@@ -64,9 +64,10 @@ std::string WrapScope::GenerateGetSetTable(const std::string& base_nspace) const
     for (auto var : variables_) {
         string var_name = var->name();
         string full_var_name = base_nspace + "::" + GetWrappedNestedName(var);
-        table << TAB << "{const_cast<char*>(\"" << var_name << "\"), (getter)" << full_var_name << "_getter";
-        table << ", (setter)" << full_var_name << "_setter";
-        table << ", const_cast<char*>(\"C++ class variable wrap\"), NULL }," << endl;
+        table << TAB << "{ const_cast<char*>(\"" << var_name << "\")," << endl;
+        table << TAB << "  (getter)" << full_var_name << "_getter," << endl;
+        table << TAB << "  (setter)" << full_var_name << "_setter," << endl;
+        table << TAB << "  const_cast<char*>(\"C++ class variable wrap\"), NULL }," << endl;
     }
     table << TAB << "{NULL} //sentinel" << endl;
     table << "};" << endl;
