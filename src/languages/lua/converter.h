@@ -3,12 +3,14 @@
 #define OPA_LUA_CONVERTER_H_
 
 #include <languages/lua/state.h>
+#include <languages/lua/primitive.h>
 #include <languages/lua/aux/exportmodule.h>
 
 #include <string>
 #include <stdexcept>
 #include <typeinfo>
 #include <typeindex>
+#include <type_traits>
 
 namespace opa {
 namespace lua {
@@ -22,49 +24,56 @@ class Converter final {
 
     /// [0,+1,-]
     template <typename T>
-    void TypeToScript (T value);
+    void TypeToScript (T value) {
+        ConversionToScript<T, lua_push<T>::PrimitiveType>().Convert(L_, value);
+    }
 
     /// [0,0,-]
     template <typename T>
-    T ScriptToType (int index);
+    T ScriptToType (int index) {
+        return ConversionToType<T, lua_to<T>::PrimitiveType>().Convert(L_, index);
+    }
 
   private:
 
-    State       L_;
+    template <typename T, typename PrimitiveType>
+    class ConversionToType;
+
+    template <typename T, typename PrimitiveType>
+    class ConversionToScript;
+
+    State L_;
 
 };
 
 template <typename T>
-inline void Converter::TypeToScript (T value) {
-    L_.pushprimitive<T>(value);
-}
+class Converter::ConversionToScript<T, std::true_type> final {
+    public:
+        inline void Convert (State &L, T value) {
+            L.pushprimitive<T>(value);
+        }
+};
 
 template <typename T>
-inline T Converter::ScriptToType (int index) {
-    if (index < 0 || index > L_.gettop())
-        throw std::runtime_error("invalid stack index "+std::to_string(index));
-    if (!L_.isprimitive<T>(index)) {
+class Converter::ConversionToType<T, std::true_type> final {
+  public:
+    T Convert (State &L, int index) {
+        if (index < 0 || index > L.gettop())
+            throw std::runtime_error("invalid stack index "+std::to_string(index));
+        return L_.toprimitive<T>(index);
+    }
+};
+
+template <typename T>
+class Converter::ConversionToType<T, std::false_type> final {
+  public:
+    T Convert (State &L, int index) {
         aux::UserData *udata = static_cast<aux::UserData*>(L_.touserdata(index));
         if (udata->type != typeid(T))
             throw std::runtime_error("type mismatch at index "+std::to_string(index));
         return static_cast<T>(udata->obj);
     }
-    return L_.toprimitive<T>(index);
-}
-
-template <>
-inline bool Converter::ScriptToType<bool> (int index) {
-    if (index < 0 || index > L_.gettop())
-        throw std::runtime_error("invalid stack index "+std::to_string(index));
-    return L_.toboolean(index);
-}
-
-template <>
-inline void* Converter::ScriptToType<void*> (int index) {
-    if (index < 0 || index > L_.gettop())
-        throw std::runtime_error("invalid stack index "+std::to_string(index));
-    return L_.touserdata(index);
-}
+};
 
 }
 } // namespace opa
