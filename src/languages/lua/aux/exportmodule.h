@@ -202,7 +202,6 @@ inline int Construct (lua_State* L_) {
     L.getmetatable(1);
     // Stack: [module, mttable]
     Converter(L_).TypeToScript(new T);
-    L.pushudata(sizeof(UserData));
     // Stack: [module, mttable, newobj]
     L.getfield(2, "__vtable");
     // Stack: [module, mttable, newobj, vtable]
