@@ -138,11 +138,7 @@ string WrapperSpecification::WrapVariable (const Ptr<const opwig::md::Variable>&
           << "            \"Error: '%s' atribute cannot be accessed without an object.\\n\",\n"
           << "            \"" << DumpNamespaceNesting() << obj->name() << "\"\n"
           << "        );\n"
-          << "    " << self_type << " *self = static_cast<" << self_type << "*>(\n"
-          << "        static_cast<opa::lua::aux::UserData*>(\n"
-          << "            convert.ScriptToType<void*>(1)\n"
-          << "        )->obj\n"
-          << "    );\n"
+          << "    " << self_type << " *self = convert.ScriptToType<" << self_type << "*>(1);\n"
           << "    convert.TypeToScript<" << type << ">(self->" << obj->name() << ");\n";
     else
         code
@@ -163,11 +159,7 @@ string WrapperSpecification::WrapVariable (const Ptr<const opwig::md::Variable>&
           << "            \"Error: '%s' atribute cannot be set without an object or value.\\n\",\n"
           << "            \"" << DumpNamespaceNesting() << obj->name() << "\"\n"
           << "        );\n"
-          << "    " << self_type << " *self = static_cast<" << self_type << "*>(\n"
-          << "        static_cast<opa::lua::aux::UserData*>(\n"
-          << "            convert.ScriptToType<void*>(1)\n"
-          << "        )->obj\n"
-          << "    );\n";
+          << "    " << self_type << " *self = convert.ScriptToType<" << self_type << "*>(1);\n";
         code
           << "    " << type << " value;\n"
           << "    try {\n"
