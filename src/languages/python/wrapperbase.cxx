@@ -15,6 +15,12 @@ using std::endl;
 using std::string;
 using std::to_string;
 
+PyObject* GenericRepr(OPWIGPyObject* self)
+{
+    return PyString_FromFormat("<OuroborosWrap: instance of '%s' at %p>",
+                               self->ob_type->tp_name, self->obj);
+}
+
 bool NumArgsOk(PyObject* args, int num) {
     if (static_cast<int>(PyTuple_Size(args)) != num) {
         string msg = "expected "+to_string(num)+" parameters, but received "+to_string(PyTuple_Size(args))+".";

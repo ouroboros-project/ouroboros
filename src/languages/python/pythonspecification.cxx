@@ -66,8 +66,7 @@ void HandleWrapScopeForInitFunc(stringstream& block, const Ptr<WrapScope>& modul
     block << "PyMODINIT_FUNC" << endl;
     block << GetInitFuncNameForModule(module->name()) << "(void) {" << endl;
     block << TAB;
-    if (module->parent())
-        block << "PyObject* " << module->name() << "_mod = ";
+    block << "PyObject* " << module->name() << "_mod = ";
     block << "Py_InitModule(\"" << module->full_dotted_name() << "\", " << module->GetMethodTableName() << ");" << endl;
 
     if (module->parent()) {
@@ -206,9 +205,7 @@ string PythonSpecification::OpenClass(const Ptr<const opwig::md::Class>& obj) {
     stringstream ocb; //open class block
 
     ocb << "namespace " << obj->name() << " { //entering CLASS namespace " << obj->name() << endl;
-    ocb << "typedef struct _" << GetTypeObjNameForClass(obj->name()) << " {" << endl;
-    ocb << TAB << "PyObject_HEAD" << endl;
-    ocb << TAB << "void* obj;" << endl;
+    ocb << "struct " << GetTypeObjNameForClass(obj->name()) << " : opa::python::wrapper::OPWIGPyObject {" << endl;
     ocb << TAB << "typedef " << obj->nested_name() << " type;" << endl;
     ocb << TAB << "void construct(PyObject* args, PyObject* kwds)" << endl;
     ocb << TAB << "try {" << endl;
@@ -225,9 +222,10 @@ string PythonSpecification::OpenClass(const Ptr<const opwig::md::Class>& obj) {
         args << "fArg" << i;
     }*/
     ocb << TAB << TAB << "this->obj = new " << obj->nested_name() << "("<< args.str() << ");" << endl;
+    ocb << TAB << TAB << "this->type_id = typeid(" << obj->nested_name() << ");" << endl;
     ocb << TAB << "}" << endl;
-    ocb << TAB << "catch (std::exception& e) { FuncErrorHandling(e); }" << endl;
-    ocb << "} " << GetTypeObjNameForClass(obj->name()) << ";" << endl;
+    ocb << TAB << "catch (std::exception& e) { FuncErrorHandling(e); this->obj = nullptr; }" << endl;
+    ocb << "};" << endl;
     
     return ocb.str();
 }
@@ -246,7 +244,7 @@ string PythonSpecification::CloseClass(const Ptr<const opwig::md::Class>& obj) {
     ccb << TAB << "0," << endl;
     ccb << TAB << "(destructor)opa::python::wrapper::GenericDealloc<" << tObjName << ">," << endl;
     ccb << TAB << "0, 0, 0, 0," << endl;
-    ccb << TAB << "(reprfunc)opa::python::wrapper::GenericRepr<" << tObjName << ">," << endl;
+    ccb << TAB << "(reprfunc)opa::python::wrapper::GenericRepr," << endl;
     ccb << TAB << "0, 0, 0, 0, 0, 0, 0, 0, 0," << endl;
     ccb << TAB << "Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE," << endl;
     ccb << TAB << "\"wrapped C++ type\"," << endl;
