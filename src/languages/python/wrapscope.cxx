@@ -18,6 +18,23 @@ using opwig::md::Function;
 using opwig::md::Variable;
 using opwig::gen::ScriptModule;
 
+WrapScope::WrapScope(const std::string& name, bool is_class) : name_(name), is_class_(is_class) {
+    if (is_class_)
+        name_ = name_ + "_wrap";
+}
+WrapScope::WrapScope(const std::string& name, bool is_class, const opwig::md::Ptr<WrapScope>& parent)
+     : name_(name), is_class_(is_class), parent_(parent) {
+    if (is_class_)
+        name_ = name_ + "_wrap";
+}
+
+string WrapScope::class_name() const {
+    if (is_class_) {
+        return name_.substr(0, name_.size()-5); // 5 -> lenght of '_wrap'
+    }
+    return "NOT_A_CLASS";
+}
+
 void WrapScope::AddFunction(const Ptr<const Function>& func) {
     functions_.push_back(func);
 }
@@ -34,7 +51,7 @@ string WrapScope::GenerateMethodTable(const string& base_nspace) const {
     table << "static PyMethodDef " << GetMethodTableName() << "[] = {" << endl;
     for (auto func : functions_) {
         string func_name = func->name();
-        string full_func_name = base_nspace + "::" + GetWrappedNestedName(func);
+        string full_func_name = base_nspace + "::" + nested_name() + "::" + FUNC_PREFIX + func_name;
         if (is_class_)
             full_func_name = "(PyCFunction)" + full_func_name;
         table << TAB << "{\"" << func_name << "\", " << full_func_name;
@@ -63,7 +80,7 @@ std::string WrapScope::GenerateGetSetTable(const std::string& base_nspace) const
     table << "static PyGetSetDef " << GetGetSetTableName() << "[] = {" << endl;
     for (auto var : variables_) {
         string var_name = var->name();
-        string full_var_name = base_nspace + "::" + GetWrappedNestedName(var);
+        string full_var_name = base_nspace + "::" + nested_name() + "::" + FUNC_PREFIX + var_name;
         table << TAB << "{ const_cast<char*>(\"" << var_name << "\")," << endl;
         table << TAB << "  (getter)" << full_var_name << "_getter," << endl;
         table << TAB << "  (setter)" << full_var_name << "_setter," << endl;

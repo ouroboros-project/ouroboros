@@ -76,8 +76,8 @@ void HandleWrapScopeForInitFunc(stringstream& block, const Ptr<WrapScope>& modul
     }
     for (auto subm : module->sub_modules() ) {
         if (subm->is_class()) {
-            string typeName = BASE_NSPACE + "::" + subm->nested_name() + "::" + GetTypeNameForClass(subm->name());
-            block << TAB << "AddTypeToModule(" << module->name() << "_mod, \"" << subm->name() << "\", &" << typeName << ");" << endl;
+            string typeName = BASE_NSPACE + "::" + subm->nested_name() + "::" + GetTypeNameForClass(subm->class_name());
+            block << TAB << "AddTypeToModule(" << module->name() << "_mod, \"" << subm->class_name() << "\", &" << typeName << ");" << endl;
         }
     }
     block << "}" << endl;
@@ -102,7 +102,7 @@ string PythonSpecification::WrapFunction(const Ptr<const opwig::md::Function>& o
     stringstream func;
     string self_type = "PyObject";
     if (current_->is_class()) {
-        self_type = GetTypeObjNameForClass(current_->name());
+        self_type = GetTypeObjNameForClass(current_->class_name());
     }
     func << "PyObject* " << FUNC_PREFIX << obj->name() << "(" << self_type << "* py_self, PyObject* args)" << endl;
     func << "try {" << endl;
@@ -157,7 +157,7 @@ string PythonSpecification::WrapVariable(const Ptr<const opwig::md::Variable>& o
         func << "catch (std::exception& e) { return FuncErrorHandling(e); }" << endl;
     }
     else {
-        std::string self_type = GetTypeObjNameForClass(current_->name());
+        std::string self_type = GetTypeObjNameForClass(current_->class_name());
         func << "PyObject* " << FUNC_PREFIX << obj->name() << "_getter(" << self_type;
         func << "* py_self, void *closure)" << endl;
         func << "try {" << endl;
@@ -204,7 +204,7 @@ string PythonSpecification::OpenClass(const Ptr<const opwig::md::Class>& obj) {
     PushScope(obj->name(), true);
     stringstream ocb; //open class block
 
-    ocb << "namespace " << obj->name() << " { //entering CLASS namespace " << obj->name() << endl;
+    ocb << "namespace " << current_->name() << " { //entering CLASS namespace " << obj->name() << endl;
     ocb << "struct " << GetTypeObjNameForClass(obj->name()) << " : opa::python::wrapper::OPWIGPyObject {" << endl;
     ocb << TAB << "typedef " << obj->nested_name() << " type;" << endl;
     ocb << TAB << "void construct(PyObject* args, PyObject* kwds)" << endl;
