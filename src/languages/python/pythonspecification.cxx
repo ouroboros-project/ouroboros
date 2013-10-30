@@ -77,7 +77,8 @@ void HandleWrapScopeForInitFunc(stringstream& block, const Ptr<WrapScope>& modul
     for (auto subm : module->sub_modules() ) {
         if (subm->is_class()) {
             string typeName = BASE_NSPACE + "::" + subm->nested_name() + "::" + GetTypeNameForClass(subm->class_name());
-            block << TAB << "AddTypeToModule(" << module->name() << "_mod, \"" << subm->class_name() << "\", &" << typeName << ");" << endl;
+            block << TAB << "AddTypeToModule(" << module->name() << "_mod, \"" << subm->class_name();
+            block << "\", &" << typeName << ", typeid(::" << subm->nested_name(true) << "));" << endl;
         }
     }
     block << "}" << endl;

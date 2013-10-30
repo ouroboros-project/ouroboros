@@ -101,8 +101,10 @@ string WrapScope::full_dotted_name() const {
     return fullName;
 }
 
-std::string WrapScope::nested_name() const {
+std::string WrapScope::nested_name(bool use_class_name) const {
     string fullName = name_;
+    if (use_class_name)
+        fullName = class_name();
     Ptr<WrapScope> mod = parent_;
     while (mod->parent()) {
         fullName = mod->name() + "::" + fullName;

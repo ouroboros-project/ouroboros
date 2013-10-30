@@ -50,7 +50,7 @@ class WrapScope final {
     std::string full_dotted_name() const;
     /** Returns a '::'-separated path name, from the root scope to this one (should be equal to the nested_name()
         of the md::Scope that generated this). */
-    std::string nested_name() const;
+    std::string nested_name(bool use_class_name=false) const;
 
     bool is_class() const { return is_class_; }
     const opwig::md::Ptr<WrapScope>& parent() const { return parent_; }

@@ -24,7 +24,7 @@ void AddToParentModule(PyObject* mChild, const std::string& childName, const std
 PyObject* FuncErrorHandling(const std::exception& e);
 
 /// Adds a type to a module.
-void AddTypeToModule(PyObject* module, const char* typeName, PyTypeObject* type);
+void AddTypeToModule(PyObject* module, const char* typeName, PyTypeObject* type, const std::type_index& type_id);
 
 
 /**************

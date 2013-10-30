@@ -2,10 +2,16 @@
 #define OUROBOROS_SCRIPT_PYTHON_CONVERTER_H_
 
 #include <Python.h>
+
+#include <string>
+#include <map>
+#include <typeinfo>
+#include <typeindex>
+
 #include <opa/converter.h>
 #include <opa/exceptions.h>
-#include <string>
-#include <typeinfo>
+#include <languages/python/wrapperbase.h>
+
 
 namespace opa {
 namespace python {
@@ -36,14 +42,13 @@ public:
     CONVERTER_IMPL_TYPE_TO_SCRIPT(PyObject*) {
         //implement templatized TypeToScript<T> method
         //it receives a T value parameter and should return a ScriptObj
-        std::string tname (typeid(value).name());
-        throw InternalVMError("Python", "[Converter] conversion method TypeToScript<"+tname+"> not implemented");
+        return Conversion<T>().TypeToScript(value);
     }
     
     CONVERTER_IMPL_SCRIPT_TO_TYPE(PyObject*) {
         //implement templatized ScriptToType<T> method
         //it receives a ScriptObj value parameter and should return a T
-        throw InternalVMError("Python", "[Converter] conversion method ScriptToType<T> not implemented");
+        return Conversion<T>().ScriptToType(value);
     }
     
     template <typename T>
@@ -54,12 +59,67 @@ public:
         return ScriptToType<T>(arg);
     }
 
+    /** Registers a python type that is a wrap to a C++ type, in order to
+        enable conversion of said type between C++ and Python. */
+    static void RegisterWrappedType(const std::type_index& type_id, PyTypeObject* py_type) {
+        wrapped_types_[type_id] = py_type;
+    }
+
 private:
     bool in_wrapper_;
     int arg_index_;
+
+    static std::map<std::type_index, PyTypeObject* > wrapped_types_;
+
+    template <typename T>
+    class Conversion;
 };
 
 PRIMITIVE_CONVERTER_TEMPLATES(PythonConverter, PyObject*)
+
+/// basic generic conversion implementation
+template <typename T>
+class PythonConverter::Conversion {
+public:
+    PyObject* TypeToScript(T value) {
+        std::string tname (typeid(value).name());
+        throw InternalVMError("Python", "[Converter] conversion method TypeToScript<"+tname+"> not implemented");
+    }
+    
+    T ScriptToType(PyObject* value) {
+        std::string tname (typeid(T).name());
+        throw InternalVMError("Python", "[Converter] conversion method ScriptToType<"+tname+"> not implemented");
+    }
+};
+
+/// generic user_class* conversion implementation
+template <typename T>
+class PythonConverter::Conversion<T*> {
+public:
+    PyObject* TypeToScript(T* value) {
+        /*
+        -if value == nullptr, return PyNone
+        -get PyTypeObject of T  [WAT]
+        -use tp_new/tp_alloc to allocate python object, place value in it and return it
+        */
+        std::string tname (typeid(T).name());
+        throw InternalVMError("Python", "[Converter] conversion method TypeToScript<"+tname+"> not implemented FOR T* PARTIAL");
+        return nullptr;
+    }
+    
+    T* ScriptToType(PyObject* value) {
+        /*
+        -check if value is PyNone, if so, return nullptr
+        -check if value's type is of one of ours  [WAT]
+        -cast value to OPWIGPyObject
+        -check value type_id (from OPWIGPyObject) to typeid(T)
+        -if type ids match, cast value->obj to T and return it.
+        */
+        std::string tname (typeid(T).name());
+        throw InternalVMError("Python", "[Converter] conversion method ScriptToType<"+tname+"> not implemented FOR T* PARTIAL");
+        return nullptr;
+    }
+};
 
 }
 } /* namespace opa */
