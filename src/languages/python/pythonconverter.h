@@ -5,6 +5,7 @@
 
 #include <string>
 #include <map>
+#include <unordered_set>
 #include <typeinfo>
 #include <typeindex>
 
@@ -63,6 +64,10 @@ public:
         enable conversion of said type between C++ and Python. */
     static void RegisterWrappedType(const std::type_index& type_id, PyTypeObject* py_type) {
         wrapped_types_[type_id] = py_type;
+        if (!types_set_.insert(py_type).second) {
+            std::string tname (type_id.name());
+            throw InternalVMError("Python", "[Converter] could not register wrapped type '"+tname+"'.");
+        }
     }
 
 private:
@@ -70,6 +75,7 @@ private:
     int arg_index_;
 
     static std::map<std::type_index, PyTypeObject* > wrapped_types_;
+    static std::unordered_set<PyTypeObject* > types_set_;
 
     template <typename T>
     class Conversion;
@@ -97,27 +103,54 @@ template <typename T>
 class PythonConverter::Conversion<T*> {
 public:
     PyObject* TypeToScript(T* value) {
-        /*
-        -if value == nullptr, return PyNone
-        -get PyTypeObject of T  [WAT]
-        -use tp_new/tp_alloc to allocate python object, place value in it and return it
-        */
-        std::string tname (typeid(T).name());
-        throw InternalVMError("Python", "[Converter] conversion method TypeToScript<"+tname+"> not implemented FOR T* PARTIAL");
-        return nullptr;
+        // special case - check if nullptr for None
+        if (value == nullptr) {
+            Py_RETURN_NONE;
+        }
+        // check if we know the target type
+        if (!wrapped_types_.count(typeid(T))) {
+            std::string tname (typeid(T).name());
+            throw InternalVMError("Python", "[Converter] TypeToScript conversion failed - type '"+tname+"' not registered.");
+        }
+        // get the python type object corresponding to target type
+        PyTypeObject* type = wrapped_types_[typeid(T)];
+        // allocate new python object of our target python type
+        PyObject* py_value = type->tp_alloc(type, 0); //TODO: this PyObject allocation/initialization might be wrong...
+        if (py_value == nullptr) {
+            std::string pyname (type->tp_name);
+            throw InternalVMError("Python", "[Converter] TypeToScript conversion failed - could not allocate a '"+pyname+"' object.");
+        }
+        // cast it to one of our python objects
+        wrapper::OPWIGPyObject* opwig_value = reinterpret_cast<wrapper::OPWIGPyObject*>(py_value);
+        if (opwig_value->obj != nullptr)
+            throw InternalVMError("Python", "[Converter] TypeToScript conversion failed - new python object with non-null obj.");
+        // set the values and return the python object
+        opwig_value->obj = static_cast<void*>(value);
+        opwig_value->type_id = typeid(T);
+        return py_value;
     }
     
     T* ScriptToType(PyObject* value) {
-        /*
-        -check if value is PyNone, if so, return nullptr
-        -check if value's type is of one of ours  [WAT]
-        -cast value to OPWIGPyObject
-        -check value type_id (from OPWIGPyObject) to typeid(T)
-        -if type ids match, cast value->obj to T and return it.
-        */
-        std::string tname (typeid(T).name());
-        throw InternalVMError("Python", "[Converter] conversion method ScriptToType<"+tname+"> not implemented FOR T* PARTIAL");
-        return nullptr;
+        // special case - check if is None
+        if (value == Py_None) {
+            return nullptr;
+        }
+        // check if we know the type we received
+        if (!types_set_.count(value->ob_type)) {
+            std::string pyname (value->ob_type->tp_name);
+            throw InternalVMError("Python", "[Conversion] ScriptToType conversion failed - unregistered given type '"+pyname+"'.");
+        }
+        // cast it to one of our objects
+        wrapper::OPWIGPyObject* py_value = reinterpret_cast<wrapper::OPWIGPyObject*>(value);
+        // check if types match
+        if (py_value->type_id != typeid(T)) {
+            std::string expname (typeid(T).name());
+            std::string givname (py_value->type_id.name());
+            throw InternalVMError("Python",
+                "[Converter] ScriptToType conversion failed - given type '"+givname+"' uncompatible with expected type '"+expname+"'");
+        }
+        // return contained C++ pointer
+        return static_cast<T*>(py_value->obj);
     }
 };
 

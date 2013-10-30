@@ -223,7 +223,6 @@ string PythonSpecification::OpenClass(const Ptr<const opwig::md::Class>& obj) {
         args << "fArg" << i;
     }*/
     ocb << TAB << TAB << "this->obj = new " << obj->nested_name() << "("<< args.str() << ");" << endl;
-    ocb << TAB << TAB << "this->type_id = typeid(" << obj->nested_name() << ");" << endl;
     ocb << TAB << "}" << endl;
     ocb << TAB << "catch (std::exception& e) { FuncErrorHandling(e); this->obj = nullptr; }" << endl;
     ocb << "};" << endl;
