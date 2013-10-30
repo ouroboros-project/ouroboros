@@ -28,6 +28,10 @@ namespace python {
         RAISE(message, false); \
     }
 
+//defining the static wrapped types map.
+std::map<std::type_index, PyTypeObject* > PythonConverter::wrapped_types_ ;
+std::unordered_set<PyTypeObject* > PythonConverter::types_set_;
+
 //////////////////
 // script -> C++ methods
 bool PythonConverter::ScriptToBool(PyObject* value) const {

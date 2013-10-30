@@ -6,6 +6,8 @@
 #include <string>
 #include <exception>
 
+#include <languages/python/pythonconverter.h>
+
 namespace opa {
 namespace python {
 namespace wrapper {
@@ -14,6 +16,12 @@ using std::cout;
 using std::endl;
 using std::string;
 using std::to_string;
+
+PyObject* GenericRepr(OPWIGPyObject* self)
+{
+    return PyString_FromFormat("<OuroborosWrap: instance of '%s' at %p>",
+                               self->ob_type->tp_name, self->obj);
+}
 
 bool NumArgsOk(PyObject* args, int num) {
     if (static_cast<int>(PyTuple_Size(args)) != num) {
@@ -41,18 +49,18 @@ void AddToParentModule(PyObject* mChild, const string& childName, const string& 
 }
 
 PyObject* FuncErrorHandling(const std::exception& e) {
-    cout << "[ERROR IN C++]" << e.what() << endl;
+    cout << "[Python - ERROR IN C++ function wrapping]" << endl;
     if (PyErr_Occurred()==nullptr)   PyErr_SetString(PyExc_RuntimeError, e.what());
     return nullptr;
 }
 
-void AddTypeToModule(PyObject* module, const char* typeName, PyTypeObject* type) {
+void AddTypeToModule(PyObject* module, const char* typeName, PyTypeObject* type, const std::type_index& type_id) {
     if (PyType_Ready(type) < 0)
         return;
     Py_INCREF(type);
     PyModule_AddObject(module, typeName, (PyObject*)type);
+    PythonConverter::RegisterWrappedType(type_id, type);
 }
-
 
 } /* namespace wrapper */
 } /* namespace python */

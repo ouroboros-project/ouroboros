@@ -25,10 +25,8 @@ class WrapScope final {
      : name_(name), is_class_(false) {}
     WrapScope(const std::string& name, const opwig::md::Ptr<WrapScope>& parent)
      : name_(name), is_class_(false), parent_(parent) {}
-    WrapScope(const std::string& name, bool is_class)
-     : name_(name), is_class_(is_class) {}
-    WrapScope(const std::string& name, bool is_class, const opwig::md::Ptr<WrapScope>& parent)
-     : name_(name), is_class_(is_class), parent_(parent) {}
+    WrapScope(const std::string& name, bool is_class);
+    WrapScope(const std::string& name, bool is_class, const opwig::md::Ptr<WrapScope>& parent);
     ~WrapScope() {}
 
     void AddFunction(const opwig::md::Ptr<const opwig::md::Function>& func);
@@ -42,14 +40,17 @@ class WrapScope final {
 
     void AddSubModule(const opwig::md::Ptr<WrapScope>& subm) { sub_modules_.push_back(subm); }
     
-    /// Returns the name of this scope (should be equal to the name of the md::Scope that generated this).
+    /** Returns the name of this scope. It should be equal to the name of the md::Namespace that generated this scope, it will
+        be diferent for md::Classes */
     std::string name() const { return name_; }
+    /// Returns the name of the class that generated this scope (should be equal to the name of the md::Class that generated this).
+    std::string class_name() const;
     /** Returns a dot-separated path name, from the root scope to this one (generating the
         dotted-path notation for python). */
     std::string full_dotted_name() const;
     /** Returns a '::'-separated path name, from the root scope to this one (should be equal to the nested_name()
         of the md::Scope that generated this). */
-    std::string nested_name() const;
+    std::string nested_name(bool use_class_name=false) const;
 
     bool is_class() const { return is_class_; }
     const opwig::md::Ptr<WrapScope>& parent() const { return parent_; }
