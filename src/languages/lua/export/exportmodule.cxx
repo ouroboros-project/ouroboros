@@ -1,5 +1,5 @@
 
-#include <languages/lua/aux/exportmodule.h>
+#include <languages/lua/export/exportmodule.h>
 
 #include <iostream>
 

@@ -31,7 +31,7 @@ string WrapList (const Ptr<ModuleWrap>& module, WrappedMember member, const stri
 
 string MiddleBlockCode (const string& module_name) {
     return
-        "#include <languages/lua/aux/exportmodule.h>\n"
+        "#include <languages/lua/export/exportmodule.h>\n"
         "#include <languages/lua/luamachine.h>\n"
         "#include <languages/lua/converter.h>\n"
         "#include <languages/lua/header.h>\n"
