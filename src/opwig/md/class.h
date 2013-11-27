@@ -82,7 +82,7 @@ class Class final : public Scope {
     Ptr<Function> destructor_;
 
     Class (const std::string& class_name, const std::list<parser::BaseSpecifier>& the_base_specifiers) : 
-        Scope::Scope(class_name), base_specifiers_(the_base_specifiers) {
+        Scope(class_name), base_specifiers_(the_base_specifiers) {
             SetAccessSpecifier(AccessSpecifier::PRIVATE);
         }
 
