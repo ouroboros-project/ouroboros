@@ -7,6 +7,8 @@
 #include <string>
 #include <sstream>
 
+#include <iostream>
+
 namespace opa {
 namespace python {
 
@@ -51,7 +53,7 @@ string WrapScope::GenerateMethodTable(const string& base_nspace) const {
     table << "static PyMethodDef " << GetMethodTableName() << "[] = {" << endl;
     for (auto func : functions_) {
         string func_name = func->name();
-        string full_func_name = base_nspace + "::" + nested_name() + "::" + FUNC_PREFIX + func_name;
+        string full_func_name = base_nspace + (nested_name().empty() ? "" : "::" + nested_name()) + "::" + FUNC_PREFIX + func_name;
         if (is_class_)
             full_func_name = "(PyCFunction)" + full_func_name;
         table << TAB << "{\"" << func_name << "\", " << full_func_name;
@@ -80,7 +82,7 @@ std::string WrapScope::GenerateGetSetTable(const std::string& base_nspace) const
     table << "static PyGetSetDef " << GetGetSetTableName() << "[] = {" << endl;
     for (auto var : variables_) {
         string var_name = var->name();
-        string full_var_name = base_nspace + "::" + nested_name() + "::" + FUNC_PREFIX + var_name;
+        string full_var_name = base_nspace + (nested_name().empty() ? "" : "::" + nested_name()) + "::" + FUNC_PREFIX + var_name;
         table << TAB << "{ const_cast<char*>(\"" << var_name << "\")," << endl;
         table << TAB << "  (getter)" << full_var_name << "_getter," << endl;
         table << TAB << "  (setter)" << full_var_name << "_setter," << endl;
@@ -101,8 +103,8 @@ string WrapScope::full_dotted_name() const {
     return fullName;
 }
 
-std::string WrapScope::nested_name(bool use_class_name) const {
-    string fullName = name_;
+string WrapScope::nested_name(bool use_class_name) const {
+    /*string fullName = name_;
     if (use_class_name)
         fullName = class_name();
     Ptr<WrapScope> mod = parent_;
@@ -112,7 +114,22 @@ std::string WrapScope::nested_name(bool use_class_name) const {
         if (!mod->parent())
             break;
     }
-    return fullName;
+    return fullName;*/
+    
+    using std::cout;
+
+    cout << "RUNNING nested_name for " << name_ << endl;
+    if (parent_) {
+        string prefix = parent_->nested_name();
+        cout << "PREFIX: " << prefix << endl;
+        if (!prefix.empty()) {
+            prefix = prefix + "::";
+        }
+        cout << "return is " << prefix + (use_class_name ? class_name() : name_) << endl;
+        return prefix + (use_class_name ? class_name() : name_);
+    }
+    else
+        return "";
 }
 
 
