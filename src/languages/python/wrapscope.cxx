@@ -7,8 +7,6 @@
 #include <string>
 #include <sstream>
 
-#include <iostream>
-
 namespace opa {
 namespace python {
 
@@ -104,28 +102,11 @@ string WrapScope::full_dotted_name() const {
 }
 
 string WrapScope::nested_name(bool use_class_name) const {
-    /*string fullName = name_;
-    if (use_class_name)
-        fullName = class_name();
-    Ptr<WrapScope> mod = parent_;
-    while (mod->parent()) {
-        fullName = mod->name() + "::" + fullName;
-        mod = mod->parent();
-        if (!mod->parent())
-            break;
-    }
-    return fullName;*/
-    
-    using std::cout;
-
-    cout << "RUNNING nested_name for " << name_ << endl;
     if (parent_) {
         string prefix = parent_->nested_name();
-        cout << "PREFIX: " << prefix << endl;
         if (!prefix.empty()) {
             prefix = prefix + "::";
         }
-        cout << "return is " << prefix + (use_class_name ? class_name() : name_) << endl;
         return prefix + (use_class_name ? class_name() : name_);
     }
     else
