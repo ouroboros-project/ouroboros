@@ -70,6 +70,8 @@ class Converter::ConversionToType<T, std::true_type> final {
     T Convert (State &L, int index) {
         if (index < 0 || index > L.gettop())
             throw std::runtime_error("invalid stack index "+std::to_string(index));
+        if (!L.isprimitive<T>(index))
+            throw std::runtime_error("type mismatch at index "+std::to_string(index));
         return L.toprimitive<T>(index);
     }
 };
