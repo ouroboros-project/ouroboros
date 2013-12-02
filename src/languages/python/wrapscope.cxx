@@ -93,7 +93,7 @@ std::string WrapScope::GenerateGetSetTable(const std::string& base_nspace) const
 
 string WrapScope::full_dotted_name() const {
     string fullName = name_;
-    Ptr<WrapScope> mod = parent_;
+    Ptr<WrapScope> mod = parent_.lock();
     while (mod) {
         fullName = mod->name() + "." + fullName;
         mod = mod->parent();
@@ -102,8 +102,8 @@ string WrapScope::full_dotted_name() const {
 }
 
 string WrapScope::nested_name(bool use_class_name) const {
-    if (parent_) {
-        string prefix = parent_->nested_name();
+    if (!parent_.expired()) {
+        string prefix = parent_.lock()->nested_name();
         if (!prefix.empty()) {
             prefix = prefix + "::";
         }

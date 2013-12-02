@@ -8,7 +8,7 @@ namespace md {
 using std::string;
 
 string MetadataObject::nested_name(const string& separator, bool includeGlobalSeparator) const {
-    Ptr<Scope> scope = parent_;
+    Ptr<Scope> scope = parent_.lock();
     string nestedname = name_;
     while (scope) {
         nestedname = scope->name() + separator + nestedname;

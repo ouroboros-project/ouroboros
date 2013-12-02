@@ -53,7 +53,7 @@ class WrapScope final {
     std::string nested_name(bool use_class_name=false) const;
 
     bool is_class() const { return is_class_; }
-    const opwig::md::Ptr<WrapScope>& parent() const { return parent_; }
+    const opwig::md::Ptr<WrapScope> parent() const { return parent_.lock(); }
     const std::list<opwig::md::Ptr<WrapScope>>& sub_modules() const { return sub_modules_; }
 
     std::list<opwig::gen::ScriptModule> ConvertTreeToScriptModuleList() const;
@@ -63,7 +63,7 @@ class WrapScope final {
     bool is_class_;
     std::list<opwig::md::Ptr<const opwig::md::Function>> functions_;
     std::list<opwig::md::Ptr<const opwig::md::Variable>> variables_;
-    opwig::md::Ptr<WrapScope> parent_;
+    opwig::md::WeakPtr<WrapScope> parent_;
     std::list<opwig::md::Ptr<WrapScope>> sub_modules_;
 
     void auxConvertToModuleList(std::list<opwig::gen::ScriptModule>& moduleList) const;

@@ -41,7 +41,7 @@ class MetadataObject {
     void set_access (AccessSpecifier new_access) { access_ = new_access; }
     
     /// Gets the parent scope of this metadata object.
-    const Ptr<Scope> parent() const { return parent_; }
+    const Ptr<Scope> parent() const { return parent_.lock(); }
     
     /// Sets the parent scope of this metadata object.
     void set_parent(Ptr<Scope> parent_scope) { parent_ = parent_scope; }
@@ -58,7 +58,7 @@ class MetadataObject {
     
     std::string name_;
     AccessSpecifier access_;
-    Ptr<Scope> parent_;
+    WeakPtr<Scope> parent_;
 };
 
 } // namespace md
