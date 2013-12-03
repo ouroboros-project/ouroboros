@@ -1,6 +1,6 @@
 
-#ifndef OPA_LUA_AUX_EXPORTMODULE_H_
-#define OPA_LUA_AUX_EXPORTMODULE_H_
+#ifndef OPA_LUA_WRAP_MODULE_H_
+#define OPA_LUA_WRAP_MODULE_H_
 
 #include <opa/utils/uncopyable.h>
 
@@ -13,11 +13,11 @@
 
 namespace opa {
 namespace lua {
-namespace aux {
+namespace wrap {
 
 /// Represents information about a Lua module to be initialized.
-/** Mainly used by opa::lua::aux::ExportModule.
- ** @see opa::lua::aux::ExportModule
+/** Mainly used by opa::lua::wrap::ExportModule.
+ ** @see opa::lua::wrap::ExportModule
  */
 class ModuleInfo : public utils::Uncopyable {
 
@@ -220,9 +220,9 @@ inline int Destruct (lua_State* L_) {
     return 0;
 }
 
-} // namespace aux
+} // namespace wrap
 } // namespace lua
 } // namespace opa
 
-#endif
+#endif // OPA_LUA_WRAP_MODULE_H_
 
