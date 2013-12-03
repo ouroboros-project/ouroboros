@@ -28,9 +28,10 @@ TEST (DeclaratorTest, ParametersInformation) {
         EXPECT_TRUE(equal(parameters_check.begin(), parameters_check.end(), parameters.begin()));
     }
     /* Multiple parameter list */ {
-        ParameterList parameters = {{Type::Create("type1",false), "name1"},
-                                    {Type::Create("type2",false), "name2"},
-                                    {Type::Create("type3",false), "name3"}};
+        auto p1 = Parameter( Type::Create("type1", false), "name1" ),
+            p2 = Parameter( Type::Create("type2", false), "name2" ),
+            p3 = Parameter( Type::Create("type3", false), "name3" );
+        ParameterList parameters = { p1, p2, p3 };
         declarator.set_parameters(parameters);
         EXPECT_TRUE(declarator.has_parameters());
         const ParameterList parameters_check = declarator.parameters();

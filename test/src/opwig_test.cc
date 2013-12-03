@@ -40,6 +40,7 @@ using std::function;
 using opwig::md::Ptr;
 using opwig::md::Type;
 using opwig::md::Variable;
+using opwig::md::Parameter;
 using opwig::md::ParameterList;
 using opwig::md::Function;
 using opwig::md::Enum;

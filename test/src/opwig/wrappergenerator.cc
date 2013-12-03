@@ -143,10 +143,14 @@ WrapperTestCase  SIMPLE_GLOBAL_FUNCTIONS = {
 }
 
 TEST_F (WrapperGeneratorTest, SimpleGlobalFunctions) {
-    given_scope_->AddNestedFunction(Function::Create("Wat", Type::Create("CppRetType",false), {}, false, false));
-    given_scope_->AddNestedFunction(Function::Create("DoStuff", Type::Create("CppRetType",false), 
-                                                    {{Type::Create("CppType0",false), "n0"}, {Type::Create("CppType1",false), "n1"}},
-                                                    false, false));
+    given_scope_->AddNestedFunction(
+        Function::Create("Wat", Type::Create("CppRetType",false), ParameterList(), false, false));
+    
+    Parameter p1 = { Type::Create("CppType0", false), "n0" },
+        p2 = { Type::Create("CppType1", false), "n1" };
+    given_scope_->AddNestedFunction(
+        Function::Create("DoStuff", Type::Create("CppRetType",false), { p1, p2 }, false, false));
+
     Generate();
     GenerateCodeMatches(SIMPLE_GLOBAL_FUNCTIONS);
 }
