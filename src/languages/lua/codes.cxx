@@ -31,7 +31,7 @@ string WrapList (const Ptr<ModuleWrap>& module, WrappedMember member, const stri
 
 string MiddleBlockCode (const string& module_name) {
     return
-        "#include <languages/lua/export/exportmodule.h>\n"
+        "#include <languages/lua/wrap/module.h>\n"
         "#include <languages/lua/luamachine.h>\n"
         "#include <languages/lua/converter.h>\n"
         "#include <languages/lua/header.h>\n"
@@ -52,8 +52,8 @@ string MiddleBlockCode (const string& module_name) {
         "using opa::lua::LuaMachine;\n"
         "using opa::lua::State;\n"
         "using opa::lua::Constant;\n"
-        "using opa::lua::aux::ModuleInfo;\n"
-        "using opa::lua::aux::ExportModule;\n"
+        "using opa::lua::wrap::ModuleInfo;\n"
+        "using opa::lua::wrap::ExportModule;\n"
         "\n"
         "// Begin wrappers\n\n"
         "namespace generated {\n\n";
@@ -91,8 +91,8 @@ string CloseModuleBlock (const Ptr<ModuleWrap>& module) {
     if (module->is_class())
         code
           << "},\n"
-          << "    opa::lua::aux::Construct<" << module->name << ">,\n"
-          << "    opa::lua::aux::Destruct<" << module->name << ">,\n"
+          << "    opa::lua::wrap::Construct<" << module->name << ">,\n"
+          << "    opa::lua::wrap::Destruct<" << module->name << ">,\n"
           << "    true\n";
     else
         code

@@ -1,11 +1,11 @@
 
-#include <languages/lua/export/exportmodule.h>
+#include <languages/lua/wrap/module.h>
 
 #include <iostream>
 
 namespace opa {
 namespace lua {
-namespace aux {
+namespace wrap {
 
 using std::string;
 
@@ -284,7 +284,7 @@ int ExportModule (State&& L, const ModuleInfo* info) {
     return 1;
 }
 
-} // namespace aux
+} // namespace wrap
 } // namespace lua
 } // namespace opa
 

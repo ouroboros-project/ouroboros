@@ -28,8 +28,8 @@ SET(OUROBOROS_LUA_SRC
     ./wrapperstate.cxx
     ./wrapperstate.h
 
-    ./export/exportmodule.h
-    ./export/exportmodule.cxx
+    ./wrap/module.h
+    ./wrap/module.cxx
 )
 
 find_package (Lua51)
