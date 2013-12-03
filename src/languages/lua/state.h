@@ -85,6 +85,7 @@ class State {
     bool isstring (int index) const { return !!(lua_isstring(L_, index)); }
     bool isfunction (int index) const { return !!(lua_isfunction(L_, index)); }
     bool istable (int index) const { return !!(lua_istable(L_, index)); }
+    bool isuserdata (int index) const { return !!(lua_isuserdata(L_, index)); }
 
 
     template <class T>

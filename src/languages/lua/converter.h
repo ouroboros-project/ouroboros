@@ -57,6 +57,10 @@ template <typename T>
 class Converter::ConversionToScript<T, std::false_type> final {
     public:
         void Convert (State &L, T value) {
+            if (value == nullptr) {
+              L.pushnil();
+              return;
+            }
             L.pushudata(sizeof(UserData));
             UserData *udata = static_cast<UserData*>(L.touserdata(-1));
             udata->obj = static_cast<void*>(value);
@@ -80,6 +84,10 @@ template <typename T>
 class Converter::ConversionToType<T, std::false_type> final {
   public:
     T Convert (State &L, int index) {
+        if (index < 0 || index > L.gettop())
+            throw std::runtime_error("invalid stack index "+std::to_string(index));
+        if (!L.isuserdata(index))
+            throw std::runtime_error("stack index "+std::to_string(index)+" is not an userdata");
         UserData *udata = static_cast<UserData*>(L.touserdata(index));
         if (!udata || udata->type != typeid(T))
             throw std::runtime_error("type mismatch at index "+std::to_string(index));
