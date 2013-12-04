@@ -3,12 +3,16 @@ protected:
 };
 
 TEST_F (MDFunctionTest, Create) {
-    Ptr<Function> var = Function::Create("funcname", Type::Create("returntype", false), 
-                                        {{Type::Create("type0", false), "name0"}, {Type::Create("type1",false), "name1"}},
+    Parameter p1 = { Type::Create("type0", false), "name0" },
+        p2 = { Type::Create("type1", false), "name1" };
+    Ptr<Function> var = Function::Create("funcname", 
+                                        Type::Create("returntype", false), 
+                                        { p1, p2 },
                                         false, false);
     ASSERT_TRUE(static_cast<bool>(var));
     EXPECT_EQ("funcname", var->name());
     EXPECT_EQ("returntype", var->return_type()->full_type());
+    ASSERT_EQ(2u, var->num_parameters());
     EXPECT_EQ("type0", var->parameter_type(0)->full_type());
     EXPECT_EQ("name0", var->parameter_name(0));
     EXPECT_EQ("type1", var->parameter_type(1)->full_type());

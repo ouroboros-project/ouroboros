@@ -29,19 +29,36 @@ set (
   ${CMAKE_CURRENT_LIST_DIR}/mdparser-parse.cxx
 )
 
-add_custom_command (
-  OUTPUT  ${OPWIG_MDPARSER_GENERATED_SRC}
-  COMMAND bisonc++ ARGS --parsefun-source=mdparser-parse.cxx
-                        --baseclass-header=mdparserbase.h
-                        --class-header=mdparser.h
-                        --implementation-header=mdparser.ih
-                        -V
-                        #-t
-                        #--error-verbose
-                        mdparser.gr
-  DEPENDS ${OPWIG_MDPARSER_GRAMMAR_SRC}
-  WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
-)
+if(NOT WIN32)
+  add_custom_command (
+    OUTPUT  ${OPWIG_MDPARSER_GENERATED_SRC}
+    COMMAND bisonc++ ARGS --parsefun-source=mdparser-parse.cxx
+                          --baseclass-header=mdparserbase.h
+                          --class-header=mdparser.h
+                          --implementation-header=mdparser.ih
+                          -V
+                          #-t
+                          #--error-verbose
+                          mdparser.gr
+    DEPENDS ${OPWIG_MDPARSER_GRAMMAR_SRC}
+    WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
+  )
+endif(NOT WIN32)
+if(MSVC)
+  FILE(READ ${CMAKE_CURRENT_LIST_DIR}/mdparserbase.h FILE_CONTENT)
+  STRING(REPLACE 
+          "SType(SType &&tmp) = default;"
+          "SType(SType &&tmp) : std::shared_ptr<Base>(std::move(static_cast<std::shared_ptr<Base>&&>(tmp))) {}"
+          FILE_MOD "${FILE_CONTENT}")
+  STRING(REPLACE 
+          "SType &operator=(SType &&tmp) = default;"
+          "SType &operator=(SType &&tmp) { *static_cast<std::shared_ptr<Base>*>(this) = std::move(static_cast<std::shared_ptr<Base>&&>(tmp)); return *this; }"
+          FILE_OUT "${FILE_MOD}")
+  FILE(WRITE ${CMAKE_CURRENT_LIST_DIR}/mdparserbase.h "${FILE_OUT}")
+  UNSET(FILE_CONTENT)
+  UNSET(FILE_MOD)
+  UNSET(FILE_OUT)
+endif(MSVC)
 
 set_source_files_properties (
   ${OPWIG_MDPARSER_GENERATED_SRC}
@@ -79,12 +96,14 @@ set (
   ${CMAKE_CURRENT_LIST_DIR}/mdscanner-lex.cxx
 )
 
-add_custom_command (
-  OUTPUT  ${OPWIG_MDSCANNER_GENERATED_SRC}
-  COMMAND flexc++ ARGS mdscanner.lex
-  DEPENDS ${OPWIG_MDSCANNER_LEX_SRC} ${OPWIG_MDPARSER_GENERATED_SRC}
-  WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
-)
+if(NOT WIN32)
+  add_custom_command (
+    OUTPUT  ${OPWIG_MDSCANNER_GENERATED_SRC}
+    COMMAND flexc++ ARGS mdscanner.lex
+    DEPENDS ${OPWIG_MDSCANNER_LEX_SRC} ${OPWIG_MDPARSER_GENERATED_SRC}
+    WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
+  )
+endif(NOT WIN32)
 
 set_source_files_properties (
   ${OPWIG_MDSCANNER_GENERATED_SRC}
