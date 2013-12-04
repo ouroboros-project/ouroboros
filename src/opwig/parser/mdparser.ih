@@ -6,6 +6,7 @@
 #include <opwig/parser/mdparser.h>
 
 #include <iostream>
+#include <ciso646> // For not, and and similars in Visual Studio. Should be empty for most compilers.
 
 // $insert namespace-open
 namespace opwig {
