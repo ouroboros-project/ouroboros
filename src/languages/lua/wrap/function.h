@@ -8,6 +8,8 @@
 #include <languages/lua/state.h>
 
 #include <type_traits>
+#include <utility>
+#include <string>
 
 namespace opa {
 namespace lua {
@@ -58,6 +60,31 @@ template <typename Signature>
 inline void PushNativeFunction (State& L, Signature* func) {
   L.pushudata(reinterpret_cast<void*>(func));
   L.pushcfunction(&Function<Signature>::Wrap, 1);
+}
+
+template <typename... Entries>
+class FunctionList;
+
+template <typename Signature, typename... Entries>
+class FunctionList<std::pair<std::string, Signature>, Entries...> {
+  public:
+    using Entry = std::pair<std::string, Signature>;
+    static void Insert (State& L, int index, const Entry& entry, Entries... entries) {
+      PushNativeFunction(L, entry.second);
+      L.setfield(index, entry.first);
+      FunctionList<Entries...>::Insert(L, index, entries...);
+    }
+};
+
+template <>
+class FunctionList<> {
+  public:
+    static void Insert (State& L, int index) {}
+};
+
+template <typename... Entries>
+inline void InsertNativeFunctions (State& L, int index, Entries... entries) {
+  FunctionList<Entries...>::Insert(L, index, entries...);
 }
 
 } // namespace wrap
