@@ -15,17 +15,17 @@ namespace wrap {
 
 template <typename R, typename... Args>
 class NativeCall {
-  public:
-    using FunctionPtr = R (*) (Args...);
-    static int Run (State&& L) {
-      FunctionPtr func = static_cast<FunctionPtr>(L.touserdata(lua_upvalueindex(1)));
-      Helper<MakeIndexes<sizeof...(Args)>, std::is_void<R>::value>>::Call(L, func);
-      return 1;
-    }
   private:
     template <typename Ind, bool void_flag>
     struct Helper;
-    
+  public:
+    using FunctionPtr = R (*) (Args...);
+    static int Run (State&& L) {
+      FunctionPtr func = reinterpret_cast<FunctionPtr>(L.touserdata(lua_upvalueindex(1)));
+      Helper<typename MakeIndexes<sizeof...(Args)>::type, std::is_void<R>::value>::Call(L, func);
+      return 1;
+    }
+  private:
     template <size_t... I, template<size_t...> class Ind>
     struct Helper<Ind<I...>, false> {
       static void Call (State& L, FunctionPtr func) {
@@ -44,9 +44,7 @@ class NativeCall {
 };
 
 template <typename Signature>
-class Function {
-  static_assert(false, "Not a function.");
-};
+class Function;
 
 template <typename R, typename... Args>
 class Function<R (Args...)> {
@@ -58,7 +56,7 @@ class Function<R (Args...)> {
 
 template <typename Signature>
 inline void PushNativeFunction (State& L, Signature* func) {
-  L.pushudata(static_cast<void*>(func));
+  L.pushudata(reinterpret_cast<void*>(func));
   L.pushcfunction(&Function<Signature>::Wrap, 1);
 }
 

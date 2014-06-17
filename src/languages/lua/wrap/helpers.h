@@ -15,20 +15,20 @@ struct MakeIndexes {
 };
 
 template <size_t... I>
-struct MakeIndexes<0, I...> {
+struct MakeIndexes<0u, I...> {
   using type = Indexes<I...>;
 };
 
 template <size_t I, typename First, typename... Args>
 struct TypeAt {
-  static_assert(I >= sizeof...(Args), "Index out of bounds");
+  static_assert(I < 1+sizeof...(Args), "Index out of bounds");
   using type = typename TypeAt<I-1, Args...>::type;
 };
 
-template <typename First>
-struct TypeAt<0, First> {
+template <typename First, typename... Args>
+struct TypeAt<0u, First, Args...> {
   using type = First;
-}
+};
 
 } // namespace wrap
 } // namespace lua
