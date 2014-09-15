@@ -23,25 +23,30 @@ class NativeCall {
   public:
     using FunctionPtr = R (*) (Args...);
     static int Run (State&& L) {
-      FunctionPtr func = reinterpret_cast<FunctionPtr>(L.touserdata(lua_upvalueindex(1)));
-      Helper<typename MakeIndexes<sizeof...(Args)>::type, std::is_void<R>::value>::Call(L, func);
-      return 1;
+        FunctionPtr func = reinterpret_cast<FunctionPtr>(L.touserdata(lua_upvalueindex(1)));
+        int nargs;
+        if ((nargs = L.gettop()) < sizeof...(Args))
+          // TODO can we know the function name?
+          return luaL_error(L, "Error: expected %d arguments but received only %d.\n",
+                            (sizeof...(Args)), nargs);
+        Helper<typename MakeIndexes<sizeof...(Args)>::type, std::is_void<R>::value>::Call(L, func);
+        return 1;
     }
   private:
     template <size_t... I, template<size_t...> class Ind>
     struct Helper<Ind<I...>, false> {
-      static void Call (State& L, FunctionPtr func) {
-        Converter conv(L);
-        conv.TypeToScript<R>(func(conv.ScriptToType<typename TypeAt<I, Args...>::type>(I+1)...));
-      }
+        static void Call (State& L, FunctionPtr func) {
+            Converter conv(L);
+            conv.TypeToScript<R>(func(conv.ScriptToType<typename TypeAt<I, Args...>::type>(I+1)...));
+        }
     };
     
     template <size_t... I, template<size_t...> class Ind>
     struct Helper<Ind<I...>, true> {
-      static void Call (State& L, FunctionPtr func) {
-        Converter conv(L);
-        func(conv.ScriptToType<typename TypeAt<I, Args...>::type>(I+1)...);
-      }
+        static void Call (State& L, FunctionPtr func) {
+            Converter conv(L);
+            func(conv.ScriptToType<typename TypeAt<I, Args...>::type>(I+1)...);
+        }
     };
 };
 
