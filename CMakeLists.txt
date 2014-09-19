@@ -152,11 +152,6 @@ set_target_properties (libouroboros PROPERTIES
     VERSION ${OUROBOROS_VERSION}
 )
 
-if(OUROBOROS_BUILD_TESTS)
-    add_subdirectory (test)
-endif(OUROBOROS_BUILD_TESTS)
-
-
 CONFIGURE_FILE(
   "${SRC_DIR}/opa/config.h.in"
   "${SRC_DIR}/opa/config.h"
@@ -184,4 +179,38 @@ if (NOT ${CMAKE_HOME_DIRECTORY} STREQUAL ${CMAKE_CURRENT_LIST_DIR})
     PARENT_SCOPE
   )
 endif ()
+
+
+#########################
+find_program(CLANGINTROSPECTOR_EXECUTABLE clang-introspector)
+
+function(ouroboros_export_metadata target)
+	get_target_property(TARGET_INCLUDE_DIRECTORIES ${target} INCLUDE_DIRECTORIES)
+
+	set(INCLUDE_COMMMAND)
+	foreach(it ${TARGET_INCLUDE_DIRECTORIES})
+		list(APPEND INCLUDE_COMMMAND "-I${it}")
+		#set(INCLUDE_COMMMAND "${INCLUDE_COMMMAND} -I${it}")
+	endforeach()
+	
+	set(METADATA_FILES)
+	foreach(it ${ARGN})
+		set(OUTPUT_FILE_NAME ${CMAKE_CURRENT_BINARY_DIR}/metadata/${it}.json)
+		add_custom_command(OUTPUT ${OUTPUT_FILE_NAME}
+							COMMAND ${CLANGINTROSPECTOR_EXECUTABLE} ARGS ${CMAKE_CURRENT_SOURCE_DIR}/${it} "--" -x c++ ${INCLUDE_COMMMAND} > ${OUTPUT_FILE_NAME}
+							DEPENDS ${it})
+		list(APPEND METADATA_FILES ${OUTPUT_FILE_NAME})
+	endforeach()
+	add_custom_target(${target}-metadata
+						DEPENDS ${METADATA_FILES})
+endfunction(ouroboros_export_metadata)
+
+function(ouroboros_create_wrappers target language)
+endfunction(ouroboros_create_wrappers)
+
+#########################
+
+if(OUROBOROS_BUILD_TESTS)
+    add_subdirectory (test)
+endif(OUROBOROS_BUILD_TESTS)
 
