@@ -190,7 +190,6 @@ function(ouroboros_export_metadata target)
 	set(INCLUDE_COMMMAND)
 	foreach(it ${TARGET_INCLUDE_DIRECTORIES})
 		list(APPEND INCLUDE_COMMMAND "-I${it}")
-		#set(INCLUDE_COMMMAND "${INCLUDE_COMMMAND} -I${it}")
 	endforeach()
 	
 	set(METADATA_FILES)
@@ -198,7 +197,7 @@ function(ouroboros_export_metadata target)
 		set(OUTPUT_FILE_NAME ${CMAKE_CURRENT_BINARY_DIR}/metadata/${it}.json)
 		add_custom_command(OUTPUT ${OUTPUT_FILE_NAME}
 							COMMAND ${CLANGINTROSPECTOR_EXECUTABLE} ARGS ${CMAKE_CURRENT_SOURCE_DIR}/${it} "--" -x c++ ${INCLUDE_COMMMAND} > ${OUTPUT_FILE_NAME}
-							DEPENDS ${it})
+							DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${it})
 		list(APPEND METADATA_FILES ${OUTPUT_FILE_NAME})
 	endforeach()
 	add_custom_target(${target}-metadata
