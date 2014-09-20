@@ -21,6 +21,9 @@ class Converter final {
     Converter (lua_State *L)
         : L_(L) {}
 
+    Converter (const State& L)
+        : L_(L) {}
+
     /// [0,+1,-]
     template <typename T>
     void TypeToScript (T value) {
