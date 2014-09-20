@@ -1,6 +1,4 @@
 
-include (src/opwig/parser/generate.cmake)
-
 SET(OUROBOROS_SRC 
     ./src/opa/script.h 
     ./src/opa/baseproxy.h 
@@ -49,7 +47,4 @@ SET(OUROBOROS_SRC
     ./src/opwig/gen/wrappergenerator.h
     ./src/opwig/gen/wrappergenerator.cxx
     ./src/opwig/gen/wrapperspecification.h
-
-    ${OPWIG_MDPARSER_SRC}
-    ${OPWIG_MDSCANNER_SRC}
 )

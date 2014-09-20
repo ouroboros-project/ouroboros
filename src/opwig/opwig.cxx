@@ -1,5 +1,4 @@
 
-#include <opwig/parser/mdparser.h>
 #include <opwig/gen/proxygenerator.h>
 #include <opwig/gen/wrappergenerator.h>
 #include <opwig/gen/wrapperspecification.h>
@@ -57,13 +56,14 @@ int Execute (const string& module_name, const list<string>& inputs,
             std::cerr << OPWIG_MARK << "Failed to open source \"" << input << "\". Error:" << std::endl;
             return EXIT_FAILURE;
         }
-        opwig::MDParser parser(in, global);
+        /*
+        opwig::MDParser parser(in, global);           
         
         std::cout << OPWIG_MARK << "Parsing source \"" << input << "\"" << std::endl;
         if (parser.parse()) {
             std::cerr << OPWIG_MARK << "Failed to parse C++ code." << std::endl;
             return EXIT_FAILURE;
-        }
+        }*/
     }
 
     opwig::gen::WrapperGenerator(inputs, output_dir).Generate(module_name, global, language_spec);

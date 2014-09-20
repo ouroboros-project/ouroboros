@@ -5,8 +5,7 @@
 #include <opwig/md/scope.h>
 #include <opwig/md/ptr.h>
 #include <opwig/md/semanticerror.h>
-
-#include <opwig/parser/basespecifier.h>
+#include <opwig/md/basespecifier.h>
 
 #include <string>
 #include <list>
@@ -27,14 +26,14 @@ class Class final : public Scope {
     * @return A smart pointer containing a new Class instance.
     */
     static Ptr<Class> Create (const std::string& class_name,
-                              const std::list<parser::BaseSpecifier>& the_base_specifiers);
+                              const std::list<BaseSpecifier>& the_base_specifiers);
     
     /// Gets the list of BaseSpecifiers (parser struct depicting a base class) of this class.
     /** Gets the list of parser::BaseSpecifier of this class, which are structs used by the parser
         to define the base classes of a class.
     * @return A list of BaseSpecifier.
     */
-    const std::list<parser::BaseSpecifier>& base_specifiers() const { return base_specifiers_; }
+    const std::list<BaseSpecifier>& base_specifiers() const { return base_specifiers_; }
     
     /// Gets the list of constructors of this class.
     /** Gets the list of constructors of this class.
@@ -76,19 +75,19 @@ class Class final : public Scope {
     bool AddNestedFunction (Ptr<Function> nested) override;
 
   private:
-    std::list<parser::BaseSpecifier> base_specifiers_;
+    std::list<BaseSpecifier> base_specifiers_;
     
     std::vector<Ptr<Function>> constructors_;
     Ptr<Function> destructor_;
 
-    Class (const std::string& class_name, const std::list<parser::BaseSpecifier>& the_base_specifiers) : 
+    Class (const std::string& class_name, const std::list<BaseSpecifier>& the_base_specifiers) : 
         Scope(class_name), base_specifiers_(the_base_specifiers) {
             SetAccessSpecifier(AccessSpecifier::PRIVATE);
         }
 
 };
 
-inline Ptr<Class> Class::Create (const std::string& class_name, const std::list<parser::BaseSpecifier>& the_base_specifiers) {
+inline Ptr<Class> Class::Create (const std::string& class_name, const std::list<BaseSpecifier>& the_base_specifiers) {
     return Ptr<Class>(new Class(class_name, the_base_specifiers));
 }
 
