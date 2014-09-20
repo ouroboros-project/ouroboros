@@ -114,55 +114,18 @@ endforeach( OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES )
 
 ##########################
 ## Add libouroboros target
-
-CONFIGURE_FILE(
-  "${SRC_DIR}/opa/config.h.in"
-  "${SRC_DIR}/opa/config.h"
-)
-
-add_library (libouroboros ${OUROBOROS_OPA_SRC})
-                     
-set_target_properties (libouroboros PROPERTIES 
-    LINK_FLAGS "${LDFLAGS}"
-    PROJECT_NAME OUROBOROS
-    OUTPUT_NAME ouroboros${OUROBOROS_BIGVERSION}
-    OUTPUT_NAME_DEBUG ouroboros${OUROBOROS_BIGVERSION}-dbg
-    SOVERSION ${OUROBOROS_VERSION_PATCH}
-    VERSION ${OUROBOROS_VERSION}
-)
-
-install(TARGETS libouroboros
-    DESTINATION lib
-#    CONFIGURATIONS Release
-)
-install(
-  DIRECTORY   src/ouroboros
-  DESTINATION include/ouroboros${OUROBOROS_BIGVERSION}
-  FILES_MATCHING PATTERN "*.h" PATTERN "*.th" PATTERN "*.tcc"
-)
-
-# Export relevant variables to parent scope in case add_subdirectory has been
-# used.
-
-if (NOT ${CMAKE_HOME_DIRECTORY} STREQUAL ${CMAKE_CURRENT_LIST_DIR})
-  set (OUROBOROS_INCLUDE_DIR ${OUROBOROS_SRC_DIR} PARENT_SCOPE)
-  set (
-    OUROBOROS_WRAP_HELPER
-    ${CMAKE_CURRENT_LIST_DIR}/cmake/wrap_helper.cmake
-    PARENT_SCOPE
-  )
-endif ()
-
+add_subdirectory(src/opa)
 
 ##########################
 # Create opwig
 
 if (OUROBOROS_CREATE_BINDINGS)
+    add_subdirectory( src/opwig )
+    
     include (cmake/opwig.cmake)
     add_subdirectory( src/languages )
     
     find_program(CLANGINTROSPECTOR_EXECUTABLE clang-introspector)
-
     function(ouroboros_export_metadata target)
         get_target_property(TARGET_INCLUDE_DIRECTORIES ${target} INCLUDE_DIRECTORIES)
 
