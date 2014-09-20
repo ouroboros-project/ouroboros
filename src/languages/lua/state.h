@@ -12,6 +12,7 @@
 #include <languages/lua/defs.h>
 #include <languages/lua/primitive.h>
 #include <languages/lua/auxlib.h>
+#include <languages/lua/wrap/pushable.h>
 
 namespace opa {
 namespace lua {
@@ -50,6 +51,7 @@ class State {
     void pushudata (T* value) { pushudata(AsUData(value)); }
     template <class T>
     void pushprimitive(T value) { lua_push<T>::primitive(L_, value); }
+    void push(const wrap::Pushable& pushable) { pushable.PushOnto(*this); }
 
     void pop (int n) { lua_pop(L_, n); }
 

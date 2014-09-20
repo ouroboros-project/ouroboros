@@ -3,6 +3,7 @@
 #define OPA_LUA_WRAP_FUNCTION_H_
 
 #include <languages/lua/wrap/helpers.h>
+#include <languages/lua/wrap/pushable.h>
 
 #include <languages/lua/converter.h>
 #include <languages/lua/state.h>
@@ -54,11 +55,20 @@ template <typename Signature>
 class Function;
 
 template <typename R, typename... Args>
-class Function<R (Args...)> {
+class Function<R (Args...)> final : public Pushable {
   public:
-    static int Wrap (lua_State *L) {
-      return NativeCall<R, Args...>::Run(L);
+    using PtrType = R (*)(Args...);
+    Function(const std::string& the_name, const PtrType& the_function_ptr)
+        : Pushable(the_name), function_ptr_(the_function_ptr) {}
+    void PushOnto(State &L) const override {
+        L.pushudata(reinterpret_cast<void*>(function_ptr_));
+        L.pushcfunction(&Wrap, 1);
     }
+  private:
+    static int Wrap (lua_State *L) {
+        return NativeCall<R, Args...>::Run(L);
+    }
+    PtrType function_ptr_;
 };
 
 template <typename Signature>

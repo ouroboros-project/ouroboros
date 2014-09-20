@@ -174,6 +174,16 @@ int UniversalMemberSetter (lua_State *L_) {
     return 0;
 }
 
+/// [-0, +0, -]
+/*  Uses the table on the top of the stack.
+ **/
+void RegisterFunctions (State& L, const ModuleInfo::FunctionList& functions) {
+    for (const auto& func : functions) {
+        L.push(*func);
+        L.setfield(-2, func->name());
+    }
+}
+
 /// [-1,+1,-]
 void PrepareObjMetatable (State& L, const ModuleInfo* info) {
     // Stack: [module, mttable]
@@ -182,10 +192,10 @@ void PrepareObjMetatable (State& L, const ModuleInfo* info) {
     /* Getters and methods */ {
         L.newtable();
         // Stack: [module, mttable, vtable, getters]
-        luaL_register(L, NULL, info->member_getters());
+        RegisterFunctions(L, info->member_getters());
         L.newtable();
         // Stack: [module, mttable, vtable, getters, methods]
-        luaL_register(L, NULL, info->member_functions());
+        RegisterFunctions(L, info->member_functions());
         // Stack: [module, mttable, vtable, getters, methods]
         L.pushcfunction(UniversalMemberGetter, 2);
         // Stack: [module, mttable, vtable, __index]
@@ -195,7 +205,7 @@ void PrepareObjMetatable (State& L, const ModuleInfo* info) {
     /* Setters */ {
         L.newtable();
         // Stack: [module, mttable, vtable, setters]
-        luaL_register(L, NULL, info->member_setters());
+        RegisterFunctions(L, info->member_setters());
         // Stack: [module, mttable, vtable, setters]
         L.pushcfunction(UniversalMemberSetter, 1);
         // Stack: [module, mttable, vtable, __newindex]
@@ -220,7 +230,7 @@ void PrepareMetatable (State& L, const ModuleInfo* info) {
     /* Getters */ {
         L.newtable();
         // Stack: [module, mttable, getters]
-        luaL_register(L, NULL, info->getters());
+        RegisterFunctions(L, info->getters());
         // Stack: [module, mttable, getters]
         L.pushcfunction(UniversalGetter, 1);
         // Stack: [module, mttable, __index]
@@ -230,7 +240,7 @@ void PrepareMetatable (State& L, const ModuleInfo* info) {
     /* Setters */ {
         L.newtable();
         // Stack: [module, mttable, setters]
-        luaL_register(L, NULL, info->setters());
+        RegisterFunctions(L, info->setters());
         // Stack: [module, mttable, setters]
         L.pushcfunction(UniversalSetter, 1);
         // Stack: [module, mttable, __newindex]
@@ -276,7 +286,7 @@ int ExportModule (State&& L, const ModuleInfo* info) {
         ExportSubmodule(L, submodule_info->name(), submodule_info->init_function());
     // Stack: [module]
     // Register module's functions.
-    luaL_register(L, NULL, info->functions());
+    RegisterFunctions(L, info->functions());
     // Stack: [module];
     // Set module metatable.
     PrepareMetatable(L, info);

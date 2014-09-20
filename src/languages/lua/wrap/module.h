@@ -6,10 +6,13 @@
 
 #include <languages/lua/converter.h>
 #include <languages/lua/state.h>
+#include <languages/lua/wrap/pushable.h>
 
 #include <string>
 #include <list>
+#include <vector>
 #include <unordered_map>
+#include <memory>
 
 namespace opa {
 namespace lua {
@@ -23,7 +26,8 @@ class ModuleInfo : public utils::Uncopyable {
 
   public:
 
-    using FunctionTable = std::unordered_map<std::string, luaL_Reg*>;
+    using FunctionList = std::vector<std::shared_ptr<Pushable>>;
+    using FunctionTable = std::unordered_map<std::string, FunctionList>;
 
     /// Constructor.
     /** The luaL_Reg[] parameters are arrays of lua_CFunction's, used by luaL_register().
@@ -34,7 +38,7 @@ class ModuleInfo : public utils::Uncopyable {
      ** @param the_children   The module's child modules.
      */
     ModuleInfo (const std::string& the_name, lua_CFunction the_init_function,
-                const FunctionTable& the_function_table,
+                FunctionTable the_function_table,
                 const std::list<ModuleInfo*>& the_children,
                 lua_CFunction the_constructor = nullptr,
                 lua_CFunction the_desctructor = nullptr,
@@ -61,34 +65,34 @@ class ModuleInfo : public utils::Uncopyable {
     const ModuleInfo* parent () const;
 
     /// Gives the module's functions array.
-    /** @return const luaL_Reg* The module's functions.
+    /** @return const FunctionList& The module's functions.
      */
-    const luaL_Reg* functions () const;
+    const FunctionList& functions () const;
 
     /// Gives the module's getters array.
-    /** @return const luaL_Reg* The module's getters.
+    /** @return const FunctionList& The module's getters.
      */
-    const luaL_Reg* getters () const;
+    const FunctionList& getters () const;
 
     /// Gives the module's setter array.
-    /** @return const luaL_Reg* The module's setters.
+    /** @return const FunctionList& The module's setters.
      */
-    const luaL_Reg* setters () const;
+    const FunctionList& setters () const;
 
     /// Gives the module's member getters array.
-    /** @return const luaL_Reg* The module's member getters.
+    /** @return const FunctionList& The module's member getters.
      */
-    const luaL_Reg* member_getters () const;
+    const FunctionList& member_getters () const;
 
     /// Gives the module's member setters array.
-    /** @return const luaL_Reg* The module's member setters.
+    /** @return const FunctionList& The module's member setters.
      */
-    const luaL_Reg* member_setters () const;
+    const FunctionList& member_setters () const;
 
     /// Gives the module's member functions array.
-    /** @return const luaL_Reg* The module's methods.
+    /** @return const FunctionList& The module's methods.
      */
-    const luaL_Reg* member_functions () const;
+    const FunctionList& member_functions () const;
 
     /// Gives the module's constructor function (if there is one).
     /** @return lua_CFunction The module's constructor.
@@ -116,18 +120,16 @@ class ModuleInfo : public utils::Uncopyable {
     lua_CFunction           destructor_;
     bool                    is_class_;
 
-    const luaL_Reg* VerifyAndGet (const std::string& name) const;
-
 };
 
 inline ModuleInfo::ModuleInfo (const std::string& the_name, lua_CFunction the_init_function,
-                               const FunctionTable& the_function_table,
+                               FunctionTable the_function_table,
                                const std::list<ModuleInfo*>& the_children,
                                lua_CFunction the_constructor, lua_CFunction the_desctructor,
                                bool the_class_flag)
-    : name_(the_name), init_function_(the_init_function), function_table_(the_function_table),
-      parent_(nullptr), children_(the_children), constructor_(the_constructor),
-      destructor_(the_desctructor), is_class_(the_class_flag) {
+    : name_(the_name), init_function_(the_init_function),
+      function_table_(std::move(the_function_table)), parent_(nullptr), children_(the_children),
+      constructor_(the_constructor), destructor_(the_desctructor), is_class_(the_class_flag) {
     for (auto& child : children_)
         child->parent_ = this;
 }
@@ -148,28 +150,28 @@ inline const ModuleInfo* ModuleInfo::parent () const {
     return parent_;
 }
 
-inline const luaL_Reg* ModuleInfo::functions () const {
-    return VerifyAndGet("functions");
+inline const ModuleInfo::FunctionList& ModuleInfo::functions () const {
+    return function_table_.at("functions");
 }
 
-inline const luaL_Reg* ModuleInfo::getters () const {
-    return VerifyAndGet("getters");
+inline const ModuleInfo::FunctionList& ModuleInfo::getters () const {
+    return function_table_.at("getters");
 }
 
-inline const luaL_Reg* ModuleInfo::setters () const {
-    return VerifyAndGet("setters");
+inline const ModuleInfo::FunctionList& ModuleInfo::setters () const {
+    return function_table_.at("setters");
 }
 
-inline const luaL_Reg* ModuleInfo::member_getters () const {
-    return VerifyAndGet("member_getters");
+inline const ModuleInfo::FunctionList& ModuleInfo::member_getters () const {
+    return function_table_.at("member_getters");
 }
 
-inline const luaL_Reg* ModuleInfo::member_setters () const {
-    return VerifyAndGet("member_setters");
+inline const ModuleInfo::FunctionList& ModuleInfo::member_setters () const {
+    return function_table_.at("member_setters");
 }
 
-inline const luaL_Reg* ModuleInfo::member_functions () const {
-    return VerifyAndGet("member_functions");
+inline const ModuleInfo::FunctionList& ModuleInfo::member_functions () const {
+    return function_table_.at("member_functions");
 }
 
 inline lua_CFunction ModuleInfo::constructor () const {
@@ -182,13 +184,6 @@ inline lua_CFunction ModuleInfo::destructor () const {
 
 inline const std::list<ModuleInfo*>& ModuleInfo::children () const {
     return children_;
-}
-
-inline const luaL_Reg* ModuleInfo::VerifyAndGet (const std::string& name) const {
-    auto it = function_table_.find(name);
-    if (it == function_table_.end())
-      return nullptr;
-    return it->second;
 }
 
 int ExportModule (State&& L, const ModuleInfo* info);
