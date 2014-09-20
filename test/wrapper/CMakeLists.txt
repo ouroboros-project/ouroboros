@@ -1,6 +1,5 @@
 
-if(CLANGINTROSPECTOR_EXECUTABLE_FOUND)
-
+if(CLANGINTROSPECTOR_EXECUTABLE)
 	add_library(libwrappertest binary.cc)
 
 	set(MAHHEADERS
