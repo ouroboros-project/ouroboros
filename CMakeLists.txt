@@ -185,26 +185,34 @@ endif ()
 find_program(CLANGINTROSPECTOR_EXECUTABLE clang-introspector)
 
 function(ouroboros_export_metadata target)
-	get_target_property(TARGET_INCLUDE_DIRECTORIES ${target} INCLUDE_DIRECTORIES)
+    get_target_property(TARGET_INCLUDE_DIRECTORIES ${target} INCLUDE_DIRECTORIES)
 
-	set(INCLUDE_COMMMAND)
-	foreach(it ${TARGET_INCLUDE_DIRECTORIES})
-		list(APPEND INCLUDE_COMMMAND "-I${it}")
-	endforeach()
-	
-	set(METADATA_FILES)
-	foreach(it ${ARGN})
-		set(OUTPUT_FILE_NAME ${CMAKE_CURRENT_BINARY_DIR}/metadata/${it}.json)
-		add_custom_command(OUTPUT ${OUTPUT_FILE_NAME}
-							COMMAND ${CLANGINTROSPECTOR_EXECUTABLE} ARGS ${CMAKE_CURRENT_SOURCE_DIR}/${it} "--" -x c++ ${INCLUDE_COMMMAND} > ${OUTPUT_FILE_NAME}
-							DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${it})
-		list(APPEND METADATA_FILES ${OUTPUT_FILE_NAME})
-	endforeach()
-	add_custom_target(${target}-metadata
-						DEPENDS ${METADATA_FILES})
+    set(INCLUDE_COMMMAND)
+    foreach(it ${TARGET_INCLUDE_DIRECTORIES})
+        list(APPEND INCLUDE_COMMMAND "-I${it}")
+    endforeach()
+    
+    set(METADATA_FILES)
+    foreach(it ${ARGN})
+        set(OUTPUT_FILE_NAME ${CMAKE_CURRENT_BINARY_DIR}/metadata/${it}.json)
+        add_custom_command(OUTPUT ${OUTPUT_FILE_NAME}
+                            COMMAND ${CLANGINTROSPECTOR_EXECUTABLE}
+                            ARGS ${CMAKE_CURRENT_SOURCE_DIR}/${it} "--" -x c++ ${INCLUDE_COMMMAND} > ${OUTPUT_FILE_NAME}
+                            DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${it})
+        list(APPEND METADATA_FILES ${OUTPUT_FILE_NAME})
+    endforeach()
+    add_custom_target(${target}-metadata
+                        DEPENDS ${METADATA_FILES})
+    set(OUROBOROS_METADATAFILES_${target} ${METADATA_FILES} PARENT_SCOPE)
 endfunction(ouroboros_export_metadata)
 
 function(ouroboros_create_wrappers target language)
+    set(WRAPPER_FILE "${target}-${language}-wrapper.cc")
+    add_custom_command(OUTPUT ${WRAPPER_FILE}
+                       COMMAND opwig-${language}
+                       ARGS ${OUROBOROS_METADATAFILES_${target}} -o ${WRAPPER_FILE})
+    add_library(${target}-${language} ${WRAPPER_FILE})
+    target_link_libraries(${target}-${language} ${target})
 endfunction(ouroboros_create_wrappers)
 
 #########################
