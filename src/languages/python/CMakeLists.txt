@@ -34,13 +34,11 @@ message ("-- Python module added.")
 
 add_library (libouroboros-python ${OUROBOROS_PYTHON_SRC})
 
-target_link_libraries (libouroboros-python  ${OUROBOROS_PYTHON_LIBRARIES})
-
-target_link_libraries (libouroboros-python LINK_INTERFACE_LIBRARIES ${OUROBOROS_PYTHON_LIBRARIES})
-
-target_link_libraries (libouroboros-python libouroboros)
-
-target_link_libraries (libouroboros-python LINK_INTERFACE_LIBRARIES libouroboros)
+target_link_libraries (libouroboros-python 
+    LINK_PUBLIC
+    ${OUROBOROS_PYTHON_LIBRARIES}
+    libouroboros
+)
 
 set_target_properties (libouroboros-python PROPERTIES 
     LINK_FLAGS "${LDFLAGS}"

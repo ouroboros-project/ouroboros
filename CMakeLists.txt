@@ -62,10 +62,10 @@ elseif (MSVC)
     add_definitions(/D_CRT_SECURE_NO_WARNINGS /D_VARIADIC_MAX=10 /W4 /wd4100 /wd4127 /wd4201 /wd4211 /wd4250 /wd4706 /fp:fast /MP)
 endif ()
 
-# ${OUROBOROS_SRC} está definido?
-if (NOT OUROBOROS_SRC)
-    message (FATAL_ERROR "Error: OUROBOROS_SRC not defined! Please do so in the file src/src_list.cmake!")
-endif (NOT OUROBOROS_SRC)
+# ${OUROBOROS_OPA_SRC} está definido?
+if (NOT OUROBOROS_OPA_SRC)
+    message (FATAL_ERROR "Error: OUROBOROS_OPA_SRC not defined! Please do so in the file src/src_list.cmake!")
+endif (NOT OUROBOROS_OPA_SRC)
 
 include_directories (${OUROBOROS_SRC_DIR})
 include (cmake/ouroboros.cmake)
@@ -112,37 +112,16 @@ foreach( OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES} )
     set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_CURRENT_SOURCE_DIR}/${LIB_DIR} )
 endforeach( OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES )
 
-include (cmake/opwig.cmake)
+##########################
+## Add libouroboros target
 
-if (OUROBOROS_CREATE_BINDINGS)
-    add_subdirectory( src/languages )
-endif (OUROBOROS_CREATE_BINDINGS)
+CONFIGURE_FILE(
+  "${SRC_DIR}/opa/config.h.in"
+  "${SRC_DIR}/opa/config.h"
+)
 
-add_library (libouroboros ${OUROBOROS_SRC} ${GENERATED_SRC})
-
-if (CMAKE_COMPILER_IS_GNUCXX)
-    set (EXTRA_LIBRARIES m ${EXTRA_LIBRARIES})
-endif (CMAKE_COMPILER_IS_GNUCXX)
-if (MINGW)
-    set (EXTRA_LIBRARIES mingw32 ${EXTRA_LIBRARIES})
-endif (MINGW)
-if (WIN32)
-    set (EXTRA_LIBRARIES Ws2_32 ${EXTRA_LIBRARIES})
-endif (WIN32)
-
-
-# We could use LINK_PUBLIC here, but it's a new feature in cmake 2.8.7, so we'd rather not require the newest version.
-
-message ("OUROBOROS LIBRARIES: ${OUROBOROS_LIBRARIES}")
-
-target_link_libraries (libouroboros
-                       ${EXTRA_LIBRARIES}
-                       ${OUROBOROS_LIBRARIES})
-
-target_link_libraries (libouroboros LINK_INTERFACE_LIBRARIES 
-                       ${EXTRA_LIBRARIES}
-                       ${OUROBOROS_LIBRARIES})
-                      
+add_library (libouroboros ${OUROBOROS_OPA_SRC})
+                     
 set_target_properties (libouroboros PROPERTIES 
     LINK_FLAGS "${LDFLAGS}"
     PROJECT_NAME OUROBOROS
@@ -152,16 +131,10 @@ set_target_properties (libouroboros PROPERTIES
     VERSION ${OUROBOROS_VERSION}
 )
 
-CONFIGURE_FILE(
-  "${SRC_DIR}/opa/config.h.in"
-  "${SRC_DIR}/opa/config.h"
-)
-
 install(TARGETS libouroboros
     DESTINATION lib
 #    CONFIGURATIONS Release
 )
-
 install(
   DIRECTORY   src/ouroboros
   DESTINATION include/ouroboros${OUROBOROS_BIGVERSION}
@@ -181,39 +154,52 @@ if (NOT ${CMAKE_HOME_DIRECTORY} STREQUAL ${CMAKE_CURRENT_LIST_DIR})
 endif ()
 
 
-#########################
-find_program(CLANGINTROSPECTOR_EXECUTABLE clang-introspector)
+##########################
+# Create opwig
 
-function(ouroboros_export_metadata target)
-    get_target_property(TARGET_INCLUDE_DIRECTORIES ${target} INCLUDE_DIRECTORIES)
-
-    set(INCLUDE_COMMMAND)
-    foreach(it ${TARGET_INCLUDE_DIRECTORIES})
-        list(APPEND INCLUDE_COMMMAND "-I${it}")
-    endforeach()
+if (OUROBOROS_CREATE_BINDINGS)
+    include (cmake/opwig.cmake)
+    add_subdirectory( src/languages )
     
-    set(METADATA_FILES)
-    foreach(it ${ARGN})
-        set(OUTPUT_FILE_NAME ${CMAKE_CURRENT_BINARY_DIR}/metadata/${it}.json)
-        add_custom_command(OUTPUT ${OUTPUT_FILE_NAME}
-                            COMMAND ${CLANGINTROSPECTOR_EXECUTABLE}
-                            ARGS ${CMAKE_CURRENT_SOURCE_DIR}/${it} "--" -x c++ ${INCLUDE_COMMMAND} > ${OUTPUT_FILE_NAME}
-                            DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${it})
-        list(APPEND METADATA_FILES ${OUTPUT_FILE_NAME})
-    endforeach()
-    add_custom_target(${target}-metadata
-                        DEPENDS ${METADATA_FILES})
-    set(OUROBOROS_METADATAFILES_${target} ${METADATA_FILES} PARENT_SCOPE)
-endfunction(ouroboros_export_metadata)
+    find_program(CLANGINTROSPECTOR_EXECUTABLE clang-introspector)
 
-function(ouroboros_create_wrappers target language)
-    set(WRAPPER_FILE "${target}-${language}-wrapper.cc")
-    add_custom_command(OUTPUT ${WRAPPER_FILE}
-                       COMMAND opwig-${language}
-                       ARGS ${OUROBOROS_METADATAFILES_${target}} -o ${WRAPPER_FILE})
-    add_library(${target}-${language} ${WRAPPER_FILE})
-    target_link_libraries(${target}-${language} ${target})
-endfunction(ouroboros_create_wrappers)
+    function(ouroboros_export_metadata target)
+        get_target_property(TARGET_INCLUDE_DIRECTORIES ${target} INCLUDE_DIRECTORIES)
+
+        set(INCLUDE_COMMMAND)
+        foreach(it ${TARGET_INCLUDE_DIRECTORIES})
+            list(APPEND INCLUDE_COMMMAND "-I${it}")
+        endforeach()
+        
+        set(METADATA_FILES)
+        foreach(it ${ARGN})
+            set(OUTPUT_FILE_NAME ${CMAKE_CURRENT_BINARY_DIR}/metadata/${it}.json)
+            add_custom_command(OUTPUT ${OUTPUT_FILE_NAME}
+                                COMMAND ${CLANGINTROSPECTOR_EXECUTABLE}
+                                ARGS ${CMAKE_CURRENT_SOURCE_DIR}/${it} "--" -x c++ ${INCLUDE_COMMMAND} > ${OUTPUT_FILE_NAME}
+                                DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${it})
+            list(APPEND METADATA_FILES ${OUTPUT_FILE_NAME})
+        endforeach()
+        add_custom_target(${target}-metadata
+                            DEPENDS ${METADATA_FILES})
+        set(OUROBOROS_METADATAFILES_${target} ${METADATA_FILES} PARENT_SCOPE)
+    endfunction(ouroboros_export_metadata)
+
+    function(ouroboros_create_wrappers target language)
+        set(WRAPPER_FILE "${target}-${language}-wrapper.cc")
+        add_custom_command(OUTPUT ${WRAPPER_FILE}
+                           COMMAND opwig-${language}
+                           ARGS ${OUROBOROS_METADATAFILES_${target}} -o ${WRAPPER_FILE})
+        add_library(${target}-${language} ${WRAPPER_FILE})
+        target_link_libraries(${target}-${language} ${target})
+    endfunction(ouroboros_create_wrappers)
+endif (OUROBOROS_CREATE_BINDINGS)
+
+
+
+
+#########################
+
 
 #########################
 

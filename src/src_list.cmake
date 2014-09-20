@@ -1,5 +1,5 @@
 
-SET(OUROBOROS_SRC 
+SET(OUROBOROS_OPA_SRC 
     ./src/opa/script.h 
     ./src/opa/baseproxy.h 
     ./src/opa/converter.h
@@ -19,8 +19,10 @@ SET(OUROBOROS_SRC
     ./src/opa/virtualprimitive.h 
     ./src/opa/utils/idgenerator.cxx 
     ./src/opa/utils/idgenerator.h 
-    ./src/opa/utils/uncopyable.h 
+    ./src/opa/utils/uncopyable.h
+)
 
+SET(OUROBOROS_OPWIG_SRC
     ./src/opwig/opwig.h
     ./src/opwig/opwig.cxx
     ./src/opwig/md/accessspecifier.h
