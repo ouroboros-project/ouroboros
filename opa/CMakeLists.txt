@@ -27,7 +27,7 @@ CONFIGURE_FILE(
 )
 
 add_library (libouroboros ${OUROBOROS_OPA_SRC})
-target_include_directories(libouroboros PUBLIC src)
+target_include_directories(libouroboros PUBLIC src ${CMAKE_CURRENT_BINARY_DIR}/src)
                      
 set_target_properties (libouroboros PROPERTIES 
     LINK_FLAGS "${LDFLAGS}"

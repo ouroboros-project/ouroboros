@@ -1,4 +1,4 @@
-#include <python/opwig/wrapperbase.h>
+#include <python/opa/wrapperbase.h>
 
 #include <Python.h>
 
