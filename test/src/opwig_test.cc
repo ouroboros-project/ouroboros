@@ -211,8 +211,22 @@ TEST_F(MDBaseTest, ManualTesting) {
 "namespaces": ["opa", "opa::dahora"],
 "classes": [
     {
+        "base_class": [],
         "name": "BaseProxy",
-        "qualified_name": "opa::BaseProxy"
+        "qualified_name": "opa::BaseProxy",
+        "methods": [
+            {
+                "access": "public",
+                "const": true,
+                "deleted": false,
+                "name": "get_proxy_vobj",
+                "params": [],
+                "pure": false,
+                "qualified_name": "opa::BaseProxy::get_proxy_vobj",
+                "return": "opa::VirtualObj",
+                "virtual": false
+            }
+        ]
     }
 ],
 "functions": []
