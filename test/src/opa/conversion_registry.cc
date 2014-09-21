@@ -27,20 +27,16 @@ class ConversionRegistryTest : public ::testing::Test {
     virtual void SetUp () {}
 
     void BuildSmallTable () {
-        std::initializer_list<typename HeritageTable::value_type> il = {
-            { typeid(B), { typeid(A) } }
-        };
-        table_ = il;
+        table_.clear();
+        table_.insert({ typeid(B), { typeid(A) } });
     }
 
     void BuildBigTable () {
-        std::initializer_list<typename HeritageTable::value_type> il = {
-          { typeid(B), { typeid(A) } },
-          { typeid(C), { typeid(A) } },
-          { typeid(D), { typeid(B), typeid(A) } },
-          { typeid(F), { typeid(C), typeid(E), typeid(A) } }
-        };
-        table_ = il;
+        table_.clear();
+        table_.insert({ typeid(B), { typeid(A) } });
+        table_.insert({ typeid(C), { typeid(A) } });
+        table_.insert({ typeid(D), { typeid(B), typeid(A) } });
+        table_.insert({ typeid(F), { typeid(C), typeid(E), typeid(A) } });
     }
     
     template <typename T, typename S>
