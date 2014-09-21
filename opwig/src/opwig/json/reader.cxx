@@ -3,6 +3,7 @@
 
 #include <opwig/md/accessspecifier.h>
 #include <opwig/md/function.h>
+#include <opwig/json/exceptions.h>
 
 #include <libjson.h>
 
@@ -39,6 +40,9 @@ namespace json {
                 auto name = full_name.substr(prev_pos, pos - prev_pos);
                 Ptr<Scope> next = result->NestedClass(name);
                 result = next ? next : result->NestedNamespace(name);
+                if (!result) {
+                    throw MissingScope(name, full_name);
+                }
                 prev_pos = pos + 2;
             }
             return std::make_pair(result, full_name.substr(prev_pos));
@@ -92,8 +96,9 @@ bool Reader::parse() {
 
         std::list<md::BaseSpecifier> base_specifiers;
         for (const auto& base : c["base_class"]) {
-            auto base_class = FindClass(global_, base["name"].as_string());
-            base_specifiers.emplace_back(base_class, false, access_specifier_mapper.at(base["access"].as_string()));
+            base_specifiers.emplace_back(base["name"].as_string(),
+                                         false,
+                                         access_specifier_mapper.at(base["access"].as_string()));
         }
         Ptr<Class> tc = Class::Create(name, base_specifiers);
 

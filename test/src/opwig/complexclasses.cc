@@ -45,7 +45,7 @@ TEST_F (MDComplexClassesTest, StandardClassDefinition) {
     auto abc = TestNamespace("abc", AccessSpecifier::PUBLIC, 0u, 0u, 1u, 0u);
     auto c = TestClass(abc, "name", AccessSpecifier::PUBLIC, 1u, 2u, 0u);
     TestClassAttributes(c, 1u, 1u, true);
-    TestClassBaseByIndex(c, 0, global_->NestedClass("base"), false, AccessSpecifier::PUBLIC);
+    TestClassBaseByIndex(c, 0, ("base"), false, AccessSpecifier::PUBLIC);
     TestClassDestructor(c, true, AccessSpecifier::PUBLIC);
     auto ctor = TestClassConstructorByIndex(c, 0, AccessSpecifier::PUBLIC);
     TestFunctionParameter(ctor, 0, "", "int");

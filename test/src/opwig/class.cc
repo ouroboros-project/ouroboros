@@ -3,23 +3,19 @@ protected:
 };
 
 TEST_F (MDClassTest, CreateBaseSpecifier) {
-    Ptr<Class> c = Class::Create("name", {});
-
-    BaseSpecifier bspec (c, true, AccessSpecifier::PUBLIC);
-    EXPECT_EQ(bspec.base(), c);
+    BaseSpecifier bspec ("name", true, AccessSpecifier::PUBLIC);
+    EXPECT_EQ(bspec.base(), "name");
     EXPECT_TRUE(bspec.is_virtual());
     EXPECT_EQ(bspec.access_specifier(), AccessSpecifier::PUBLIC);
 }
 
 TEST_F (MDClassTest, CreateClass) {
-    Ptr<Class> bclass = Class::Create("bname", {});
-
     list<BaseSpecifier> bspecs;
-    bspecs.push_back( BaseSpecifier (bclass, true, AccessSpecifier::PUBLIC) );
+    bspecs.push_back(BaseSpecifier("bname", true, AccessSpecifier::PUBLIC));
     Ptr<Class> c = Class::Create("cname", bspecs);
     EXPECT_TRUE(static_cast<bool>(c));
     EXPECT_EQ(c->name(), "cname");
-    EXPECT_EQ(c->base_specifiers().front().base(), bclass);
+    EXPECT_EQ(c->base_specifiers().front().base(), "bname");
     EXPECT_TRUE(c->base_specifiers().front().is_virtual());
     EXPECT_EQ(c->base_specifiers().front().access_specifier(), AccessSpecifier::PUBLIC);   
 }
@@ -36,7 +32,7 @@ TEST_F (MDClassTest, DerivedNamedClass) {
     
     auto c = TestClass("name", AccessSpecifier::PUBLIC, 0u, 0u, 0u);
     TestClassAttributes(c, 1u, 0u, false);
-    TestClassBaseByIndex(c, 0, global_->NestedClass("base"), false, AccessSpecifier::PROTECTED);
+    TestClassBaseByIndex(c, 0, ("base"), false, AccessSpecifier::PROTECTED);
 }
 
 TEST_F (MDClassTest, MultipleDerivedNamedClass) {
@@ -45,10 +41,10 @@ TEST_F (MDClassTest, MultipleDerivedNamedClass) {
     auto c = TestClass("name", AccessSpecifier::PUBLIC, 0u, 0u, 0u);
     TestClassAttributes(c, 4u, 0u, false);
 
-    TestClassBaseByIndex(c, 0, global_->NestedClass("base1"), false, AccessSpecifier::PRIVATE);
-    TestClassBaseByIndex(c, 1, global_->NestedClass("base2"), false, AccessSpecifier::PUBLIC);
-    TestClassBaseByIndex(c, 2, global_->NestedClass("base3"), false, AccessSpecifier::PROTECTED);
-    TestClassBaseByIndex(c, 3, global_->NestedClass("base4"), false, AccessSpecifier::PUBLIC);
+    TestClassBaseByIndex(c, 0, ("base1"), false, AccessSpecifier::PRIVATE);
+    TestClassBaseByIndex(c, 1, ("base2"), false, AccessSpecifier::PUBLIC);
+    TestClassBaseByIndex(c, 2, ("base3"), false, AccessSpecifier::PROTECTED);
+    TestClassBaseByIndex(c, 3, ("base4"), false, AccessSpecifier::PUBLIC);
 }
  
 TEST_F (MDClassTest, ClassInNamespace) {

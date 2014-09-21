@@ -28,6 +28,7 @@ SET(OUROBOROS_OPWIG_SRC
     src/opwig/gen/wrapperspecification.h
     src/opwig/json/reader.h
     src/opwig/json/reader.cxx
+    src/opwig/json/exceptions.h
 )
 
 add_library(libopwig-common ${OUROBOROS_OPWIG_SRC})

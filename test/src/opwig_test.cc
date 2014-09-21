@@ -170,7 +170,7 @@ class MDBaseTest : public ::testing::Test {
         ASSERT_EQ(destructorDefined, static_cast<bool>(c->destructor()));
     }
 
-    void TestClassBaseByIndex(Ptr<const Class> c, int baseIndex, Ptr<const Class> base, bool is_virtual, AccessSpecifier access) {
+    void TestClassBaseByIndex(Ptr<const Class> c, int baseIndex, const std::string& base, bool is_virtual, AccessSpecifier access) {
         auto bspec = c->base_specifiers().begin();
         for (int i = 0; i < baseIndex; i++, bspec++);
 
