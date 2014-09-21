@@ -1,12 +1,7 @@
 
 #include <opwig/json/reader.h>
 
-#include <opwig/gen/proxygenerator.h>
-#include <opwig/gen/wrappergenerator.h>
-#include <opwig/gen/wrapperspecification.h>
-#include <opwig/md/ptr.h>
-#include <opwig/md/namespace.h>
-#include <opwig/json/reader.h>
+#include <libjson.h>
 
 #include <list>
 #include <string>
@@ -18,57 +13,52 @@ using std::list;
 using std::string;
 using std::ifstream;
 using opwig::md::Ptr;
-using opwig::gen::WrapperSpecification;
-
-namespace {
-
-const string  OPWIG_MARK = "[opwig] ";
-list<string>  include_dirs;
-
-bool OpenHeader (const string& filename, ifstream& in) {
-    for (auto include_dir : include_dirs) {
-        in.open(include_dir+"/"+filename);
-        if (in.good())
-            return true;
-        in.close();
-    }
-    in.open(filename);
-    if (in.good())
-        return true;
-    in.close();
-    return false;
-}
-
-}
+using opwig::md::Namespace;
+using opwig::md::Scope;
+using opwig::md::Class;
 
 namespace opwig {
-namespace gen {
+namespace json {
 
-void IncludeDirectory (const string& dir) {
-    include_dirs.push_back(dir);
-}
-
-int Execute (const string& module_name, const list<string>& inputs,
-             const Ptr<WrapperSpecification>& language_spec, const string& output_dir) {
-    
-    Ptr<opwig::md::Namespace> global = opwig::md::Namespace::Create("");
-    for (string input : inputs) {
-        ifstream in;
-        if (!OpenHeader(input, in)) {
-            std::cerr << OPWIG_MARK << "Failed to open source \"" << input << "\". Error:" << std::endl;
-            return EXIT_FAILURE;
-        }
-        opwig::json::Reader parser(in, global);           
-        
-        std::cout << OPWIG_MARK << "Parsing source \"" << input << "\"" << std::endl;
-        if (parser.parse()) {
-            std::cerr << OPWIG_MARK << "Failed to parse C++ code." << std::endl;
-            return EXIT_FAILURE;
+    namespace {
+        std::pair<Ptr<Scope>, std::string> GetScopeAndName(Ptr<Scope> initial_scope, const std::string& full_name) {
+            auto result = initial_scope;
+            std::size_t pos = 0, prev_pos = 0;
+            while ((pos = full_name.find("::", prev_pos)) != std::string::npos) {
+                auto name = full_name.substr(prev_pos, pos - prev_pos);
+                Ptr<Scope> next = result->NestedClass(name);
+                result = next ? next : result->NestedNamespace(name);
+                prev_pos = pos + 2;
+            }
+            return std::make_pair(result, full_name.substr(prev_pos));
         }
     }
 
-    opwig::gen::WrapperGenerator(inputs, output_dir).Generate(module_name, global, language_spec);
-    return EXIT_SUCCESS;
+Reader::Reader(std::istream& in, md::Ptr<md::Namespace> global)
+    : global_(global)
+{
+    in.seekg(0, std::ios::end);
+    contents_.resize(in.tellg());
+    in.seekg(0, std::ios::beg);
+    in.read(&contents_[0], contents_.size());
+}
+
+Reader::Reader(const std::string& s, md::Ptr<md::Namespace> global)
+    : contents_(s)
+    , global_(global) {}
+
+bool Reader::parse() {
+
+    auto json_root = libjson::parse(contents_);
+
+    for (const auto& ns : json_root["namespaces"]) {
+        Ptr<Scope> scope;
+        std::string name;
+        std::tie(scope, name) = GetScopeAndName(global_, ns.as_string());
+        scope->AddNestedNamespace(md::Namespace::Create(name));
+    }
+
+    return false;
 }
 
 } // namespace gen 

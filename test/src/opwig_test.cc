@@ -60,8 +60,6 @@ class MDBaseTest : public ::testing::Test {
         return RunParse(str, false);
     }
     int RunParse(const string& str, bool debug) {
-        EXPECT_TRUE(false); // NYI
-
         Ptr<Namespace> global = Namespace::Create("");
         Reader reader(str, global);
         bool ret = reader.parse();
@@ -206,6 +204,21 @@ class MDBaseTest : public ::testing::Test {
         EXPECT_TRUE(equal(values.begin(), values.end(), var->values().begin()));
     }
 };
+
+TEST_F(MDBaseTest, ManualTesting) {
+    RunParse(R"(
+{
+"namespaces": ["opa", "opa::dahora"],
+"classes": [
+    {
+        "name": "BaseProxy",
+        "qualified_name": "opa::BaseProxy"
+    }
+],
+"functions": []
+}
+)");
+}
 
 // Units
 //#include <opwig/declspecifier.cc>
