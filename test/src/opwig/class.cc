@@ -21,14 +21,32 @@ TEST_F (MDClassTest, CreateClass) {
 }
 
 TEST_F (MDClassTest, NamedClass) {
-    ASSERT_EQ(RunParse("class name {};"), 0);
+    auto x = RunParse(R"({
+    "classes": [
+        {
+            "name": "name",
+            "qualified_name": "name",
+            "base_class": [],
+            "methods": []
+        }
+    ]})");
+    ASSERT_EQ(x, 0);
     
     auto c = TestClass("name", AccessSpecifier::PUBLIC, 0u, 0u, 0u);
     TestClassAttributes(c, 0u, 0u, false);
 }
 
 TEST_F (MDClassTest, DerivedNamedClass) {
-    ASSERT_EQ(RunParse("class name : protected base {};"), 0);
+    auto x = RunParse(R"({
+    "classes": [
+        {
+            "name": "name",
+            "qualified_name": "name",
+            "base_class": [{ "access": "protected", "name": "base" }],
+            "methods": []
+        }
+    ]})");
+    ASSERT_EQ(x, 0);
     
     auto c = TestClass("name", AccessSpecifier::PUBLIC, 0u, 0u, 0u);
     TestClassAttributes(c, 1u, 0u, false);
@@ -36,7 +54,21 @@ TEST_F (MDClassTest, DerivedNamedClass) {
 }
 
 TEST_F (MDClassTest, MultipleDerivedNamedClass) {
-    ASSERT_EQ(RunParse("class name : virtual base1, public base2, protected virtual base3, virtual public base4 {};"), 0);
+    auto x = RunParse(R"({
+    "classes": [
+        {
+            "name": "name",
+            "qualified_name": "name",
+            "base_class": [
+                { "access": "private", "name": "base1" },
+                { "access": "public", "name": "base2" },
+                { "access": "protected", "name": "base3" },
+                { "access": "public", "name": "base4" }
+            ],
+            "methods": []
+        }
+    ]})");
+    ASSERT_EQ(x, 0);
     
     auto c = TestClass("name", AccessSpecifier::PUBLIC, 0u, 0u, 0u);
     TestClassAttributes(c, 4u, 0u, false);
@@ -48,7 +80,16 @@ TEST_F (MDClassTest, MultipleDerivedNamedClass) {
 }
  
 TEST_F (MDClassTest, ClassInNamespace) {
-    ASSERT_EQ(RunParse("namespace abc { class name {}; }"), 0);
+    auto x = RunParse(R"({
+    "namespaces": [ "abc" ],
+    "classes": [
+        {
+            "name": "name",
+            "qualified_name": "abc::name",
+            "methods": []
+        }
+    ]})");
+    ASSERT_EQ(x, 0);
     
     auto abc = TestNamespace("abc", AccessSpecifier::PUBLIC, 0u, 0u, 1u, 0u);
     
@@ -57,8 +98,22 @@ TEST_F (MDClassTest, ClassInNamespace) {
 }
  
 TEST_F (MDClassTest, ClassInAndOutOfNamespace) {
-    ASSERT_EQ(RunParse("class name {}; namespace abc { class name {}; }"), 0);
- 
+    auto x = RunParse(R"({
+    "namespaces": [ "abc" ],
+    "classes": [
+        {
+            "name": "name",
+            "qualified_name": "name",
+            "methods": []
+        },
+        {
+            "name": "name",
+            "qualified_name": "abc::name",
+            "methods": []
+        }
+    ]})");
+    ASSERT_EQ(x, 0);
+
     auto c = TestClass("name", AccessSpecifier::PUBLIC, 0u, 0u, 0u);
     TestClassAttributes(c, 0u, 0u, false);
     
@@ -69,7 +124,20 @@ TEST_F (MDClassTest, ClassInAndOutOfNamespace) {
 
 
 TEST_F (MDClassTest, ClassInClass) {
-    ASSERT_EQ(RunParse("class abc { class name {}; };"), 0);
+    auto x = RunParse(R"({
+    "classes": [
+        {
+            "name": "abc",
+            "qualified_name": "abc",
+            "methods": []
+        },
+        {
+            "name": "name",
+            "qualified_name": "abc::name",
+            "methods": []
+        }
+    ]})");
+    ASSERT_EQ(x, 0);
     
     auto abc = TestClass("abc", AccessSpecifier::PUBLIC, 0u, 0u, 1u);
     TestClassAttributes(abc, 0u, 0u, false);
@@ -83,6 +151,25 @@ TEST_F (MDClassTest, ChildClassWithSameName) {
 }
 
 TEST_F (MDClassTest, ClassInClassInClass) {
+    auto x = RunParse(R"({
+    "classes": [
+        {
+            "name": "name",
+            "qualified_name": "name",
+            "methods": []
+        },
+        {
+            "name": "middle",
+            "qualified_name": "name::middle",
+            "methods": []
+        },
+        {
+            "name": "name",
+            "qualified_name": "name::middle::name",
+            "methods": []
+        }
+    ]})");
+    ASSERT_EQ(x, 0);
     ASSERT_EQ(RunParse("class name { class middle { class name {}; }; };"), 0);
     
     auto c1 = TestClass("name", AccessSpecifier::PUBLIC, 0u, 0u, 1u);

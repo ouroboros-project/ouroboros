@@ -95,6 +95,7 @@ bool Reader::parse() {
         std::tie(scope, name) = GetScopeAndName(global_, c["qualified_name"].as_string());
 
         std::list<md::BaseSpecifier> base_specifiers;
+        if (c.find("base_class") != c.end())
         for (const auto& base : c["base_class"]) {
             base_specifiers.emplace_back(base["name"].as_string(),
                                          false,
@@ -102,6 +103,7 @@ bool Reader::parse() {
         }
         Ptr<Class> tc = Class::Create(name, base_specifiers);
 
+        if (c.find("methods") != c.end())
         for (const auto& method : c["methods"]) {
 
             std::vector<md::Parameter> parameter_list;
