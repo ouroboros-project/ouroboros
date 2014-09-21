@@ -36,23 +36,7 @@ TEST_F (MDClassTest, DerivedNamedClass) {
     
     auto c = TestClass("name", AccessSpecifier::PUBLIC, 0u, 0u, 0u);
     TestClassAttributes(c, 1u, 0u, false);
-    TestClassBaseByIndex(c, 0, "base", false, AccessSpecifier::PROTECTED);
-}
-
-TEST_F (MDClassTest, DerivedVirtualNamedClass) {
-    ASSERT_EQ(RunParse("class name : protected virtual base {};"), 0);
-    
-    auto c = TestClass("name", AccessSpecifier::PUBLIC, 0u, 0u, 0u);
-    TestClassAttributes(c, 1u, 0u, false);
-    TestClassBaseByIndex(c, 0, "base", true, AccessSpecifier::PROTECTED);
-}
-
-TEST_F (MDClassTest, DerivedVirtualNamedClass2) {
-    ASSERT_EQ(RunParse("class name : virtual base {};"), 0);
-    
-    auto c = TestClass("name", AccessSpecifier::PUBLIC, 0u, 0u, 0u);
-    TestClassAttributes(c, 1u, 0u, false);
-    TestClassBaseByIndex(c, 0, "base", true, AccessSpecifier::PRIVATE);
+    TestClassBaseByIndex(c, 0, global_->NestedClass("base"), false, AccessSpecifier::PROTECTED);
 }
 
 TEST_F (MDClassTest, MultipleDerivedNamedClass) {
@@ -61,10 +45,10 @@ TEST_F (MDClassTest, MultipleDerivedNamedClass) {
     auto c = TestClass("name", AccessSpecifier::PUBLIC, 0u, 0u, 0u);
     TestClassAttributes(c, 4u, 0u, false);
 
-    TestClassBaseByIndex(c, 0, "base1", true, AccessSpecifier::PRIVATE);
-    TestClassBaseByIndex(c, 1, "base2", false, AccessSpecifier::PUBLIC);
-    TestClassBaseByIndex(c, 2, "base3", true, AccessSpecifier::PROTECTED);
-    TestClassBaseByIndex(c, 3, "base4", true, AccessSpecifier::PUBLIC);
+    TestClassBaseByIndex(c, 0, global_->NestedClass("base1"), false, AccessSpecifier::PRIVATE);
+    TestClassBaseByIndex(c, 1, global_->NestedClass("base2"), false, AccessSpecifier::PUBLIC);
+    TestClassBaseByIndex(c, 2, global_->NestedClass("base3"), false, AccessSpecifier::PROTECTED);
+    TestClassBaseByIndex(c, 3, global_->NestedClass("base4"), false, AccessSpecifier::PUBLIC);
 }
  
 TEST_F (MDClassTest, ClassInNamespace) {

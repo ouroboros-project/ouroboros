@@ -76,6 +76,7 @@ bool Reader::parse() {
 
     auto void_type = md::Type::Create("void", false);
 
+    if (json_root.find("namespaces") != json_root.end())
     for (const auto& ns : json_root["namespaces"]) {
         Ptr<Scope> scope;
         std::string name;
@@ -83,6 +84,7 @@ bool Reader::parse() {
         scope->AddNestedNamespace(md::Namespace::Create(name));
     }
 
+    if (json_root.find("classes") != json_root.end())
     for (const auto& c : json_root["classes"]) {
         Ptr<Scope> scope;
         std::string name;
@@ -116,7 +118,7 @@ bool Reader::parse() {
         scope->AddNestedClass(tc);
     }
 
-    return false;
+    return true;
 }
 
 } // namespace gen 

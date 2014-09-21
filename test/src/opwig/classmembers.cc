@@ -14,7 +14,7 @@ TEST_F (MDClassMembersTest, SingleVariableDerivedClass) {
     ASSERT_EQ(RunParse("class name : public base { type var; };"), 0);
     auto c = TestClass("name", AccessSpecifier::PUBLIC, 1u, 0u, 0u);
     TestClassAttributes(c, 1u, 0u, false);
-    TestClassBaseByIndex(c, 0, "base", false, AccessSpecifier::PUBLIC);
+    TestClassBaseByIndex(c, 0, global_->NestedClass("base"), false, AccessSpecifier::PUBLIC);
     TestVariable(c, "var", "type", AccessSpecifier::PRIVATE);
 }
 

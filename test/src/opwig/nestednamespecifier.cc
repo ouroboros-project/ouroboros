@@ -53,15 +53,47 @@ TEST_F (MDNestedNamesTest, NonExistentPath) {
 }
 
 TEST_F (MDNestedNamesTest, ClassWithNestedBases) {
-    ASSERT_EQ(RunParse("class name : virtual foo::base1, public ::bar::base2, protected virtual ::base3 {};"), 0);
-    TestScopeChildNums(global_, 0u, 0u, 1u, 0u);
+    auto x = RunParse(R"({
+    "namespaces": [ "foo", "bar" ],
+    "classes": [
+        {
+            "name": "base1",
+            "qualified_name": "foo::base1",
+            "base_class": [],
+            "methods": []
+        },
+        {
+            "name": "base2",
+            "qualified_name": "bar::base2",
+            "base_class": [],
+            "methods": []
+        },
+        {
+            "name": "base3",
+            "qualified_name": "base3",
+            "base_class": [],
+            "methods": []
+        },
+        {
+            "name": "name",
+            "qualified_name": "name",
+            "base_class": [
+                { "access": "private", "name": "foo::base1" },
+                { "access": "public", "name": "bar::base2" },
+                { "access": "protected", "name": "base3" }
+            ],
+            "methods": []
+        }
+    ]})");
+    ASSERT_EQ(x, 0);
+    TestScopeChildNums(global_, 0u, 0u, 2u, 2u);
     
     auto c = TestClass("name", AccessSpecifier::PUBLIC, 0u, 0u, 0u);
     TestClassAttributes(c, 3u, 0u, false);
 
-    TestClassBaseByIndex(c, 0, "foo::base1", true, AccessSpecifier::PRIVATE);
-    TestClassBaseByIndex(c, 1, "::bar::base2", false, AccessSpecifier::PUBLIC);
-    TestClassBaseByIndex(c, 2, "::base3", true, AccessSpecifier::PROTECTED);
+    TestClassBaseByIndex(c, 0, global_->NestedNamespace("foo")->NestedClass("base1"), false, AccessSpecifier::PRIVATE);
+    TestClassBaseByIndex(c, 1, global_->NestedNamespace("bar")->NestedClass("base2"), false, AccessSpecifier::PUBLIC);
+    TestClassBaseByIndex(c, 2, global_->NestedClass("base3"), false, AccessSpecifier::PROTECTED);
 }
 
 TEST_F (MDNestedNamesTest, AddingFunctionToAnotherScope) {
