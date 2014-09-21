@@ -26,6 +26,8 @@ SET(OUROBOROS_OPWIG_SRC
     src/opwig/gen/wrappergenerator.h
     src/opwig/gen/wrappergenerator.cxx
     src/opwig/gen/wrapperspecification.h
+    src/opwig/json/reader.h
+    src/opwig/json/reader.cxx
 )
 
 add_library(libopwig-common ${OUROBOROS_OPWIG_SRC})
