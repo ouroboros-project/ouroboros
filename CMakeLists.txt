@@ -1,5 +1,5 @@
-# Requires CMake 2.8 or newer.
-cmake_minimum_required (VERSION 2.8)
+cmake_minimum_required (VERSION 2.8.11)
+# 2.8.11 for target_include_directories
 
 project (ouroboros CXX C)
 set (OUROBOROS_VERSION_MAJOR 0)
