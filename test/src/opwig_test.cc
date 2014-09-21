@@ -7,14 +7,13 @@
 #include <opwig/md/accessspecifier.h>
 #include <opwig/md/semanticerror.h>
 #include <opwig/md/nestednamespecifier.h>
-#include <opwig/parser/mdparser.h>
 #include <opwig/parser/declarator.h>
+
+#include "config.h"
 
 #include <opwig/gen/proxygenerator.h>
 #include <opwig/gen/wrappergenerator.h>
 #include <opwig/gen/wrapperspecification.h>
-
-#include <config.h>
 
 #include <gtest/gtest.h>
 
@@ -49,11 +48,9 @@ using opwig::md::Namespace;
 using opwig::md::Class;
 using opwig::md::AccessSpecifier;
 using opwig::md::NestedNameSpecifier;
+using opwig::md::BaseSpecifier;
 
-using opwig::parser::BaseSpecifier;
 using opwig::parser::Declarator;
-using opwig::parser::DeclSpecifier;
-using opwig::MDParser;
 
 class MDBaseTest : public ::testing::Test {
   protected:
@@ -63,6 +60,8 @@ class MDBaseTest : public ::testing::Test {
         return RunParse(str, false);
     }
     int RunParse(const string& str, bool debug) {
+        EXPECT_TRUE(false); // NYI
+        /*
         istringstream input (str);
         MDParser parser(input);
         parser.setDebug(debug);
@@ -70,11 +69,16 @@ class MDBaseTest : public ::testing::Test {
         global_ = parser.global_namespace();
         EXPECT_TRUE(static_cast<bool>(global_));
         return ret;
+        */
+        return 0;
     }
     void RunParseThrow(const string& str) {
+        EXPECT_TRUE(false); // NYI
+        /*
         istringstream input (str);
         MDParser parser(input);
         EXPECT_THROW(parser.parse(), std::exception);
+        */
     }
     
     //////////// variable
@@ -174,8 +178,8 @@ class MDBaseTest : public ::testing::Test {
     void TestClassBaseByIndex(Ptr<const Class> c, int baseIndex, const string& name, bool is_virtual, AccessSpecifier access) {
         auto bspec = c->base_specifiers().begin();
         for (int i = 0; i < baseIndex; i++, bspec++);
-        
-        EXPECT_EQ(name, bspec->nested_name().ToString());
+
+        EXPECT_EQ(c, bspec->base());
         EXPECT_EQ(is_virtual, bspec->is_virtual());
         EXPECT_EQ(access, bspec->access_specifier());   
     }
@@ -207,7 +211,7 @@ class MDBaseTest : public ::testing::Test {
 };
 
 // Units
-#include <opwig/declspecifier.cc>
+//#include <opwig/declspecifier.cc>
 #include <opwig/declarator.cc>
 
 // Features - Parsing

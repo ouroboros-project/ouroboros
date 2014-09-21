@@ -3,19 +3,23 @@ protected:
 };
 
 TEST_F (MDClassTest, CreateBaseSpecifier) {
-    BaseSpecifier bspec (NestedNameSpecifier("name"), true, AccessSpecifier::PUBLIC);
-    EXPECT_EQ(bspec.name(), "name");
+    Ptr<Class> c = Class::Create("name", {});
+
+    BaseSpecifier bspec (c, true, AccessSpecifier::PUBLIC);
+    EXPECT_EQ(bspec.base(), c);
     EXPECT_TRUE(bspec.is_virtual());
     EXPECT_EQ(bspec.access_specifier(), AccessSpecifier::PUBLIC);
 }
 
 TEST_F (MDClassTest, CreateClass) {
+    Ptr<Class> bclass = Class::Create("bname", {});
+
     list<BaseSpecifier> bspecs;
-    bspecs.push_back( BaseSpecifier (NestedNameSpecifier("name"), true, AccessSpecifier::PUBLIC) );
+    bspecs.push_back( BaseSpecifier (bclass, true, AccessSpecifier::PUBLIC) );
     Ptr<Class> c = Class::Create("cname", bspecs);
     EXPECT_TRUE(static_cast<bool>(c));
     EXPECT_EQ(c->name(), "cname");
-    EXPECT_EQ(c->base_specifiers().front().name(), "name");
+    EXPECT_EQ(c->base_specifiers().front().base(), bclass);
     EXPECT_TRUE(c->base_specifiers().front().is_virtual());
     EXPECT_EQ(c->base_specifiers().front().access_specifier(), AccessSpecifier::PUBLIC);   
 }

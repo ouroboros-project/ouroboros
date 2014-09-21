@@ -49,7 +49,7 @@ include(internal_utils.cmake)
 config_compiler_and_linker()  # Defined in internal_utils.cmake.
 
 # Where Google Test's .h files can be found.
-include_directories("gtest" "${gtest_BINARY_DIR}")
+include_directories("." "gtest" "${CMAKE_CURRENT_BINARY_DIR}/src" "${gtest_BINARY_DIR}")
 
 # Where Google Test's libraries can be found.
 link_directories(${gtest_BINARY_DIR}/gtest_src)
@@ -89,6 +89,12 @@ include_directories("src")
 
 cxx_executable (ouroboros_test src "gtest_main;libouroboros")
 
+set (OUROBOROS_TEST_DUMP_DIR ${CMAKE_CURRENT_BINARY_DIR}/dump)
+configure_file (
+  "src/config.h.in"
+  "src/config.h"
+)
+
 add_executable (oldscript_test EXCLUDE_FROM_ALL script_test.cxx )
 target_link_libraries (
   oldscript_test
@@ -100,19 +106,12 @@ target_link_libraries (
 cxx_executable (opwig_test src gtest_main src/config.h)
 target_link_libraries (
   opwig_test
-  libouroboros
+  libopwig-common
 )
 
 cxx_executable (opa_test src gtest_main src/config.h)
 target_link_libraries (
   opa_test
   libouroboros
-)
-
-set (OUROBOROS_TEST_DUMP_DIR ${CMAKE_CURRENT_BINARY_DIR}/dump)
-
-configure_file (
-  "src/config.h.in"
-  "src/config.h"
 )
 
