@@ -12,7 +12,7 @@ protected:
 
 
 TEST_F (MDNamespaceTest, EmptyFile) {
-    EXPECT_EQ(RunParse(""), 0);
+    ASSERT_EQ(RunParse(""), 0);
     TestScopeChildNums(global_, 0u, 0u, 0u, 0u);
 }
 

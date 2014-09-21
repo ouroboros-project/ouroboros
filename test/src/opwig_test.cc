@@ -29,6 +29,7 @@
 #include <algorithm>
 #include <functional>
 #include <exception>
+#include <stdexcept>
 
 using std::vector;
 using std::string;
@@ -70,7 +71,7 @@ class MDBaseTest : public ::testing::Test {
         EXPECT_TRUE(static_cast<bool>(global_));
         return ret;
         */
-        return 0;
+        return -255;
     }
     void RunParseThrow(const string& str) {
         EXPECT_TRUE(false); // NYI
