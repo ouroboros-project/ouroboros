@@ -46,8 +46,6 @@ CONFIGURE_FILE(
     "doxystuff/Doxyfile"
 )
 
-include (${SRC_DIR}/src_list.cmake)
-
 # LDFLAGS: flags for the linker
 set (LDFLAGS "" CACHE STRING "flags sent to the linker")
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
@@ -61,11 +59,6 @@ if (UNIX OR MINGW)
 elseif (MSVC) 
     add_definitions(/D_CRT_SECURE_NO_WARNINGS /D_VARIADIC_MAX=10 /W4 /wd4100 /wd4127 /wd4201 /wd4211 /wd4250 /wd4706 /fp:fast /MP)
 endif ()
-
-# ${OUROBOROS_OPA_SRC} está definido?
-if (NOT OUROBOROS_OPA_SRC)
-    message (FATAL_ERROR "Error: OUROBOROS_OPA_SRC not defined! Please do so in the file src/src_list.cmake!")
-endif (NOT OUROBOROS_OPA_SRC)
 
 include_directories (${OUROBOROS_SRC_DIR})
 include (cmake/ouroboros.cmake)
@@ -114,16 +107,16 @@ endforeach( OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES )
 
 ##########################
 ## Add libouroboros target
-add_subdirectory(src/opa)
+add_subdirectory(opa)
 
 ##########################
 # Create opwig
 
 if (OUROBOROS_CREATE_BINDINGS)
-    add_subdirectory( src/opwig )
+    add_subdirectory( opwig )
     
     include (cmake/opwig.cmake)
-    add_subdirectory( src/languages )
+    add_subdirectory( languages )
     
     find_program(CLANGINTROSPECTOR_EXECUTABLE clang-introspector)
     function(ouroboros_export_metadata target)
