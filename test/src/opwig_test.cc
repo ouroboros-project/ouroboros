@@ -7,7 +7,6 @@
 #include <opwig/md/accessspecifier.h>
 #include <opwig/md/semanticerror.h>
 #include <opwig/md/nestednamespecifier.h>
-#include <opwig/parser/declarator.h>
 
 #include "config.h"
 
@@ -50,8 +49,6 @@ using opwig::md::Class;
 using opwig::md::AccessSpecifier;
 using opwig::md::NestedNameSpecifier;
 using opwig::md::BaseSpecifier;
-
-using opwig::parser::Declarator;
 
 class MDBaseTest : public ::testing::Test {
   protected:
@@ -213,7 +210,7 @@ class MDBaseTest : public ::testing::Test {
 
 // Units
 //#include <opwig/declspecifier.cc>
-#include <opwig/declarator.cc>
+//#include <opwig/declarator.cc>
 
 // Features - Parsing
 #include <opwig/nestednamespecifier.cc>

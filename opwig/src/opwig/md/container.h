@@ -30,6 +30,9 @@ class Container {
       public:
         typename Table::const_iterator begin () const { return objects_.begin(); }
         typename Table::const_iterator end () const { return objects_.end(); }
+
+        Iterable& operator=(const Iterable&) = delete;
+
       private:
         friend class Container;
         const Table& objects_;

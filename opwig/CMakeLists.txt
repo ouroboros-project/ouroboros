@@ -30,5 +30,6 @@ SET(OUROBOROS_OPWIG_SRC
 
 add_library(libopwig-common ${OUROBOROS_OPWIG_SRC})
 target_include_directories(libopwig-common PUBLIC src)
+target_link_libraries(libopwig-common libjson)
 
 
