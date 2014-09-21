@@ -111,6 +111,7 @@ add_subdirectory(opa)
 # Create opwig
 
 if (OUROBOROS_CREATE_BINDINGS)
+    add_subdirectory( externals/libjson )
     add_subdirectory( opwig )
     
     include (cmake/opwig.cmake)
