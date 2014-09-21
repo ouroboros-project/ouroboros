@@ -5,6 +5,12 @@
 #include <string>
 #include <exception>
 
+#ifdef _MSC_VER
+#define NOEXCEPT throw()
+#else
+#define NOEXCEPT noexcept(true)
+#endif
+
 namespace opwig {
 namespace json {
 
@@ -14,7 +20,7 @@ public:
      : reason_("Missing scope '" + scope_name +
                "' for qualified name: '" + full_name + "'.") {}
                
-    const char* what() const override {
+    const char* what() const NOEXCEPT override {
         return reason_.c_str();
     }
 private:
