@@ -5,7 +5,6 @@
 #include <opwig/md/ptr.h>
 #include <opwig/md/namespace.h>
 
-#include <list>
 #include <string>
 #include <istream>
 

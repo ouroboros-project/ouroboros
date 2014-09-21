@@ -7,6 +7,7 @@
 #include <opwig/md/accessspecifier.h>
 #include <opwig/md/semanticerror.h>
 #include <opwig/md/nestednamespecifier.h>
+#include <opwig/json/reader.h>
 
 #include "config.h"
 
@@ -49,6 +50,7 @@ using opwig::md::Class;
 using opwig::md::AccessSpecifier;
 using opwig::md::NestedNameSpecifier;
 using opwig::md::BaseSpecifier;
+using opwig::json::Reader;
 
 class MDBaseTest : public ::testing::Test {
   protected:
@@ -59,16 +61,13 @@ class MDBaseTest : public ::testing::Test {
     }
     int RunParse(const string& str, bool debug) {
         EXPECT_TRUE(false); // NYI
-        /*
-        istringstream input (str);
-        MDParser parser(input);
-        parser.setDebug(debug);
-        int ret = parser.parse();
-        global_ = parser.global_namespace();
-        EXPECT_TRUE(static_cast<bool>(global_));
-        return ret;
-        */
-        return -255;
+
+        Ptr<Namespace> global = Namespace::Create("");
+        Reader reader(str, global);
+        bool ret = reader.parse();
+        global_ = global;
+
+        return ret ? 0 : 1;
     }
     void RunParseThrow(const string& str) {
         EXPECT_TRUE(false); // NYI
