@@ -3,14 +3,15 @@
 
 #include <Python.h>
 
+#include <python/opa/wrapperbase.h>
+#include <opa/converter.h>
+#include <opa/exceptions.h>
+
 #include <string>
 #include <map>
 #include <unordered_set>
 #include <typeinfo>
 #include <typeindex>
-
-#include <opa/converter.h>
-#include <opa/exceptions.h>
 
 namespace opa {
 namespace python {
