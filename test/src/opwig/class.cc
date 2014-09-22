@@ -21,7 +21,7 @@ TEST_F (MDClassTest, CreateClass) {
 }
 
 TEST_F (MDClassTest, NamedClass) {
-    auto x = RunParse(R"({
+    auto json = R"({
     "classes": [
         {
             "name": "name",
@@ -29,15 +29,15 @@ TEST_F (MDClassTest, NamedClass) {
             "base_class": [],
             "methods": []
         }
-    ]})");
-    ASSERT_EQ(x, 0);
+    ]})";
+    ASSERT_EQ(RunParse(json), 0);
     
     auto c = TestClass("name", AccessSpecifier::PUBLIC, 0u, 0u, 0u);
     TestClassAttributes(c, 0u, 0u, false);
 }
 
 TEST_F (MDClassTest, DerivedNamedClass) {
-    auto x = RunParse(R"({
+    auto json = R"({
     "classes": [
         {
             "name": "name",
@@ -45,8 +45,8 @@ TEST_F (MDClassTest, DerivedNamedClass) {
             "base_class": [{ "access": "protected", "name": "base" }],
             "methods": []
         }
-    ]})");
-    ASSERT_EQ(x, 0);
+    ]})";
+    ASSERT_EQ(RunParse(json), 0);
     
     auto c = TestClass("name", AccessSpecifier::PUBLIC, 0u, 0u, 0u);
     TestClassAttributes(c, 1u, 0u, false);
@@ -54,7 +54,7 @@ TEST_F (MDClassTest, DerivedNamedClass) {
 }
 
 TEST_F (MDClassTest, MultipleDerivedNamedClass) {
-    auto x = RunParse(R"({
+    auto json = R"({
     "classes": [
         {
             "name": "name",
@@ -67,8 +67,8 @@ TEST_F (MDClassTest, MultipleDerivedNamedClass) {
             ],
             "methods": []
         }
-    ]})");
-    ASSERT_EQ(x, 0);
+    ]})";
+    ASSERT_EQ(RunParse(json), 0);
     
     auto c = TestClass("name", AccessSpecifier::PUBLIC, 0u, 0u, 0u);
     TestClassAttributes(c, 4u, 0u, false);
@@ -80,7 +80,7 @@ TEST_F (MDClassTest, MultipleDerivedNamedClass) {
 }
  
 TEST_F (MDClassTest, ClassInNamespace) {
-    auto x = RunParse(R"({
+    auto json = R"({
     "namespaces": [ "abc" ],
     "classes": [
         {
@@ -88,8 +88,8 @@ TEST_F (MDClassTest, ClassInNamespace) {
             "qualified_name": "abc::name",
             "methods": []
         }
-    ]})");
-    ASSERT_EQ(x, 0);
+    ]})";
+    ASSERT_EQ(RunParse(json), 0);
     
     auto abc = TestNamespace("abc", AccessSpecifier::PUBLIC, 0u, 0u, 1u, 0u);
     
@@ -98,7 +98,7 @@ TEST_F (MDClassTest, ClassInNamespace) {
 }
  
 TEST_F (MDClassTest, ClassInAndOutOfNamespace) {
-    auto x = RunParse(R"({
+    auto json = R"({
     "namespaces": [ "abc" ],
     "classes": [
         {
@@ -111,8 +111,8 @@ TEST_F (MDClassTest, ClassInAndOutOfNamespace) {
             "qualified_name": "abc::name",
             "methods": []
         }
-    ]})");
-    ASSERT_EQ(x, 0);
+    ]})";
+    ASSERT_EQ(RunParse(json), 0);
 
     auto c = TestClass("name", AccessSpecifier::PUBLIC, 0u, 0u, 0u);
     TestClassAttributes(c, 0u, 0u, false);
@@ -124,7 +124,7 @@ TEST_F (MDClassTest, ClassInAndOutOfNamespace) {
 
 
 TEST_F (MDClassTest, ClassInClass) {
-    auto x = RunParse(R"({
+    auto json = R"({
     "classes": [
         {
             "name": "abc",
@@ -136,8 +136,8 @@ TEST_F (MDClassTest, ClassInClass) {
             "qualified_name": "abc::name",
             "methods": []
         }
-    ]})");
-    ASSERT_EQ(x, 0);
+    ]})";
+    ASSERT_EQ(RunParse(json), 0);
     
     auto abc = TestClass("abc", AccessSpecifier::PUBLIC, 0u, 0u, 1u);
     TestClassAttributes(abc, 0u, 0u, false);
@@ -151,7 +151,7 @@ TEST_F (MDClassTest, ChildClassWithSameName) {
 }
 
 TEST_F (MDClassTest, ClassInClassInClass) {
-    auto x = RunParse(R"({
+    auto json = R"({
     "classes": [
         {
             "name": "name",
@@ -168,9 +168,8 @@ TEST_F (MDClassTest, ClassInClassInClass) {
             "qualified_name": "name::middle::name",
             "methods": []
         }
-    ]})");
-    ASSERT_EQ(x, 0);
-    ASSERT_EQ(RunParse("class name { class middle { class name {}; }; };"), 0);
+    ]})";
+    ASSERT_EQ(RunParse(json), 0);
     
     auto c1 = TestClass("name", AccessSpecifier::PUBLIC, 0u, 0u, 1u);
     TestClassAttributes(c1, 0u, 0u, false);
