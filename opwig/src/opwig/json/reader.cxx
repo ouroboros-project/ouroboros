@@ -118,6 +118,7 @@ bool Reader::parse() {
                                              method["pure"].as_bool(),
                                              method["virtual"].as_bool());
             func->set_deleted(method["deleted"].as_bool());
+            // FIXME: where is const?
             func->set_access(access_specifier_mapper.at(method["access"].as_string()));
             tc->AddNestedFunction(func);
         }

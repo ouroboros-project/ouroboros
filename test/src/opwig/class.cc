@@ -182,8 +182,46 @@ TEST_F (MDClassTest, ClassInClassInClass) {
 }
 
 TEST_F (MDClassTest, ComplexClassInClass) {
-    ASSERT_EQ(RunParse("class name { public: name* func() {} private: class name2 { name* func(type); }; };"), 0);
-    
+    auto json = R"({
+    "classes": [
+        {
+            "name": "name",
+            "qualified_name": "name",
+            "methods": [
+                {
+                    "name": "func",
+                    "qualified_name": "name::func",
+                    "access": "public",
+                    "deleted": false,
+                    "virtual": false,
+                    "const": false,
+                    "pure": false,
+                    "return" : "name*",
+                    "params": []
+                }
+            ]
+        },
+        {
+            "name": "name2",
+            "qualified_name": "name::name2",
+            "access": "private",
+            "methods": [
+                {
+                    "name": "func",
+                    "qualified_name": "name::name2::func",
+                    "access": "private",
+                    "deleted": false,
+                    "virtual": false,
+                    "const": false,
+                    "pure": false,
+                    "return" : "name*",
+                    "params": ["type"]
+                }
+            ]
+        }
+    ]})";
+    ASSERT_EQ(RunParse(json), 0);
+
     auto c1 = TestClass("name", AccessSpecifier::PUBLIC, 0u, 1u, 1u);
     TestClassAttributes(c1, 0u, 0u, false);
 
