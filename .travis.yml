@@ -2,6 +2,7 @@ language: cpp
 
 compiler:
   - gcc
+  - clang
 
 cache: apt
 
@@ -12,7 +13,7 @@ before_install:
 
 install:
   - sudo apt-get install cmake liblua5.1-0-dev python-dev
-  - if [ "$CXX" = "g++" ]; then sudo apt-get install --force-yes g++-4.7; fi
+  - sudo apt-get install --force-yes g++-4.7
   - if [ "$CXX" = "g++" ]; then export CXX="g++-4.7" CC="gcc-4.7"; fi
 
 script:
