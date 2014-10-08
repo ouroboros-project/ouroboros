@@ -174,7 +174,7 @@ TEST_F (MDClassTest, ChildClassWithSameName) {
 }
 
 TEST_F (MDClassTest, ClassInClassInClass) {
-    auto json = R"({
+    auto x = RunParse(R"({
     "classes": [
         {
             "name": "name",
