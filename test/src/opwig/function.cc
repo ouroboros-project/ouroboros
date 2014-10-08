@@ -158,16 +158,51 @@ TEST_F (MDFunctionTest, GlobalMultipleArgFunction) {
 //}
 
 TEST_F (MDFunctionTest, ManyDifferentFunctions) {
-    string input(
-        "rtype0 name0(ptype0, ptype1);"
-        "rtype1 name1(ptype0 pname0, ptype1);"
-        "rtype2 name2(ptype0 pname0, ptype1 pname1);"
-        "rtype3 name3(ptype0 *pname0[]);"
-        "namespace abc {"
-        "  rtype2 name0(ptype0, ptype1 pnameX);"
-        "}"
-    );
-    ASSERT_EQ(RunParse(input), 0);
+    auto x = RunParse(R"({
+    "namespaces": [ "abc" ],
+    "functions": [
+        {
+            "name": "name0",
+            "qualified_name": "name0",
+            "access": "public",
+            "params": [ "ptype0", "ptype1" ],
+            "return": "rtype0",
+            "deleted": false
+        },
+        {
+            "name": "name1",
+            "qualified_name": "name1",
+            "access": "public",
+            "params": [ "ptype0", "ptype1" ],
+            "return": "rtype1",
+            "deleted": false
+        },
+        {
+            "name": "name2",
+            "qualified_name": "name2",
+            "access": "public",
+            "params": [ "ptype0", "ptype1" ],
+            "return": "rtype2",
+            "deleted": false
+        },
+        {
+            "name": "name3",
+            "qualified_name": "name3",
+            "access": "public",
+            "params": [ "ptype0 **" ],
+            "return": "rtype3",
+            "deleted": false
+        },
+        {
+            "name": "name0",
+            "qualified_name": "abc::name0",
+            "access": "public",
+            "params": [ "ptype0", "ptype1" ],
+            "return": "rtype2",
+            "deleted": false
+        }
+    ]})");
+    ASSERT_EQ(x, 0);
     TestScopeChildNums(global_, 0u, 4u, 0u, 1u);
     
     /* first */ {
