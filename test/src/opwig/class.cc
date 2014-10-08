@@ -155,7 +155,22 @@ TEST_F (MDClassTest, ClassInClass) {
 }
 
 TEST_F (MDClassTest, ChildClassWithSameName) {
-    ASSERT_EQ(RunParse("class name { class name {}; };"), 1);
+    RunParseThrow(R"({
+    "classes": [
+        {
+            "name": "name",
+            "qualified_name": "name",
+            "access": "public",
+            "methods": []
+        },
+        {
+            "name": "name",
+            "qualified_name": "name::name",
+            "access": "private",
+            "methods": []
+        }
+    ]})");
+    //ASSERT_EQ(RunParse("class name { class name {}; };"), 1);
 }
 
 TEST_F (MDClassTest, ClassInClassInClass) {
