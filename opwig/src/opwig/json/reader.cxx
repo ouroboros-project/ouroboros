@@ -113,7 +113,10 @@ bool Reader::parse() {
         Ptr<Scope> scope;
         std::string name;
         std::tie(scope, name) = GetScopeAndName(global_, ns.as_string());
-        scope->AddNestedNamespace(md::Namespace::Create(name));
+
+        auto newns = md::Namespace::Create(name);
+        newns->set_access(md::AccessSpecifier::PUBLIC);
+        scope->AddNestedNamespace(newns);
     }
 
     if (json_root.find("classes") != json_root.end())
@@ -130,6 +133,7 @@ bool Reader::parse() {
                                          access_specifier_mapper.at(base["access"].as_string()));
         }
         Ptr<Class> tc = Class::Create(name, base_specifiers);
+        tc->set_access(access_specifier_mapper.at(c["access"].as_string()));
 
         if (c.find("methods") != c.end())
         for (const auto& method : c["methods"]) {

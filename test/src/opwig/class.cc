@@ -27,6 +27,7 @@ TEST_F (MDClassTest, NamedClass) {
             "name": "name",
             "qualified_name": "name",
             "base_class": [],
+            "access": "public",
             "methods": []
         }
     ]})";
@@ -43,6 +44,7 @@ TEST_F (MDClassTest, DerivedNamedClass) {
             "name": "name",
             "qualified_name": "name",
             "base_class": [{ "access": "protected", "name": "base" }],
+            "access": "public",
             "methods": []
         }
     ]})";
@@ -65,6 +67,7 @@ TEST_F (MDClassTest, MultipleDerivedNamedClass) {
                 { "access": "protected", "name": "base3" },
                 { "access": "public", "name": "base4" }
             ],
+            "access": "public",
             "methods": []
         }
     ]})";
@@ -87,6 +90,7 @@ TEST_F (MDClassTest, ClassInNamespace) {
             "name": "name",
             "qualified_name": "abc::name",
             "methods": []
+            "access": "public",
         }
     ]})";
     ASSERT_EQ(RunParse(json), 0);
@@ -104,11 +108,13 @@ TEST_F (MDClassTest, ClassInAndOutOfNamespace) {
         {
             "name": "name",
             "qualified_name": "name",
+            "access": "public",
             "methods": []
         },
         {
             "name": "name",
             "qualified_name": "abc::name",
+            "access": "public",
             "methods": []
         }
     ]})";
@@ -129,11 +135,13 @@ TEST_F (MDClassTest, ClassInClass) {
         {
             "name": "abc",
             "qualified_name": "abc",
+            "access": "public",
             "methods": []
         },
         {
             "name": "name",
             "qualified_name": "abc::name",
+            "access": "public",
             "methods": []
         }
     ]})";
@@ -156,20 +164,23 @@ TEST_F (MDClassTest, ClassInClassInClass) {
         {
             "name": "name",
             "qualified_name": "name",
+            "access": "public",
             "methods": []
         },
         {
             "name": "middle",
             "qualified_name": "name::middle",
+            "access": "private",
             "methods": []
         },
         {
             "name": "name",
             "qualified_name": "name::middle::name",
+            "access": "private",
             "methods": []
         }
-    ]})";
-    ASSERT_EQ(RunParse(json), 0);
+    ]})");
+    ASSERT_EQ(x, 0);
     
     auto c1 = TestClass("name", AccessSpecifier::PUBLIC, 0u, 0u, 1u);
     TestClassAttributes(c1, 0u, 0u, false);
@@ -182,22 +193,22 @@ TEST_F (MDClassTest, ClassInClassInClass) {
 }
 
 TEST_F (MDClassTest, ComplexClassInClass) {
-    auto json = R"({
+    auto x = RunParse(R"({
     "classes": [
         {
             "name": "name",
             "qualified_name": "name",
+            "access": "public",
             "methods": [
                 {
                     "name": "func",
                     "qualified_name": "name::func",
                     "access": "public",
-                    "deleted": false,
+                    "params": [],
+                    "return": "name *",
                     "virtual": false,
-                    "const": false,
                     "pure": false,
-                    "return" : "name*",
-                    "params": []
+                    "deleted": false
                 }
             ]
         },
@@ -210,18 +221,18 @@ TEST_F (MDClassTest, ComplexClassInClass) {
                     "name": "func",
                     "qualified_name": "name::name2::func",
                     "access": "private",
-                    "deleted": false,
+                    "params": [ "type" ],
+                    "return": "name *",
                     "virtual": false,
-                    "const": false,
                     "pure": false,
-                    "return" : "name*",
-                    "params": ["type"]
+                    "deleted": false
                 }
             ]
         }
-    ]})";
-    ASSERT_EQ(RunParse(json), 0);
-
+    ]})");
+    ASSERT_EQ(x, 0);
+    //ASSERT_EQ(RunParse("class name { public: name* func() {} private: class name2 { name* func(type); }; };"), 0);
+    
     auto c1 = TestClass("name", AccessSpecifier::PUBLIC, 0u, 1u, 1u);
     TestClassAttributes(c1, 0u, 0u, false);
 

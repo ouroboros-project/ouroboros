@@ -40,7 +40,7 @@ class Container {
             : objects_(the_objects) {}
     };
 
-    Container() : current_access_(AccessSpecifier::PRIVATE) {}
+    Container() {}
     
     /// Virtual destructor.
     virtual ~Container () {}
@@ -73,7 +73,6 @@ class Container {
 
   protected:
   
-    AccessSpecifier                     current_access_;
     Table                               objects_;
     std::map<std::string, std::string>  name_to_ids_;
     
@@ -90,7 +89,6 @@ inline bool Container<T>::Add (Ptr<T> mdObj) {
     auto check = objects_.find(id);
     if (check != objects_.end())
         return false;
-    mdObj->set_access(current_access_);
     objects_[id] = mdObj;
     name_to_ids_[mdObj->name()] = id;
     return true;
