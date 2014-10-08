@@ -141,13 +141,13 @@ TEST_F (MDFunctionTest, GlobalMultipleArgFunction) {
     TestFunctionParameter(f, 2, "", "type2");
 }
 
-TEST_F (MDFunctionTest, GlobalSingleArgVirtualFunction) {
-    ASSERT_EQ(RunParse("virtual rtype name(type);"), 0);
-    TestScopeChildNums(global_, 0u, 1u, 0u, 0u);
-    
-    auto f = TestFunction("name(type)", "name", "rtype", AccessSpecifier::PUBLIC, false, true);
-    TestFunctionParameter(f, 0, "", "type");
-}
+//TEST_F (MDFunctionTest, GlobalSingleArgVirtualFunction) {
+//    ASSERT_EQ(RunParse("virtual rtype name(type);"), 0);
+//    TestScopeChildNums(global_, 0u, 1u, 0u, 0u);
+//    
+//    auto f = TestFunction("name(type)", "name", "rtype", AccessSpecifier::PUBLIC, false, true);
+//    TestFunctionParameter(f, 0, "", "type");
+//}
 
 TEST_F (MDFunctionTest, GlobalBadDoubleVirtualFunction) {
     RunParseThrow("virtual virtual rtype func();");
