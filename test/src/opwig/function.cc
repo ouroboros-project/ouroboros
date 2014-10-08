@@ -43,7 +43,17 @@ TEST_F (MDFunctionTest, GlobalNoArgFunction) {
 }
 
 TEST_F (MDFunctionTest, GlobalSingleArgFunction) {
-    ASSERT_EQ(RunParse("rtype name(type);"), 0);
+    auto x = RunParse(R"({
+    "functions": [
+        {
+            "name": "name",
+            "qualified_name": "name",
+            "params": [ "type" ],
+            "return": "rtype",
+            "deleted": false
+        }
+    ]})");
+    ASSERT_EQ(x, 0);
     TestScopeChildNums(global_, 0u, 1u, 0u, 0u);
     
     auto f = TestFunction("name(type)", "name", "rtype", AccessSpecifier::PUBLIC, false);
