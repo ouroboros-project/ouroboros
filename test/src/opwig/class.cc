@@ -89,8 +89,8 @@ TEST_F (MDClassTest, ClassInNamespace) {
         {
             "name": "name",
             "qualified_name": "abc::name",
-            "methods": []
-            "access": "public",
+            "methods": [],
+            "access": "public"
         }
     ]})";
     ASSERT_EQ(RunParse(json), 0);
@@ -141,7 +141,7 @@ TEST_F (MDClassTest, ClassInClass) {
         {
             "name": "name",
             "qualified_name": "abc::name",
-            "access": "public",
+            "access": "private",
             "methods": []
         }
     ]})";
