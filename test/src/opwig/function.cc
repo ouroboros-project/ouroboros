@@ -329,7 +329,26 @@ TEST_F (MDFunctionTest, MultiFunctionDefinition) {
 }*/
 
 TEST_F (MDFunctionTest, FunctionOverload) {
-    ASSERT_EQ(RunParse("rtype func(type0, type1); rtype func(type0) {}"), 0);
+    auto x = RunParse(R"({
+    "functions": [
+        {
+            "name": "func",
+            "qualified_name": "func",
+            "access": "public",
+            "params": [ "type0", "type1" ],
+            "return": "rtype",
+            "deleted": false
+        },
+        {
+            "name": "func",
+            "qualified_name": "func",
+            "access": "public",
+            "params": [ "type0" ],
+            "return": "rtype",
+            "deleted": false
+        }
+    ]})");
+    ASSERT_EQ(x, 0);
     TestScopeChildNums(global_, 0u, 2u, 0u, 0u);
     
     auto f = TestFunction("func(type0,type1)", "func", "rtype", AccessSpecifier::PUBLIC, false);
@@ -341,7 +360,26 @@ TEST_F (MDFunctionTest, FunctionOverload) {
 }
 
 TEST_F (MDFunctionTest, FunctionOverload2) {
-    ASSERT_EQ(RunParse("rtype func(type0, type1); void func() {}"), 0);
+    auto x = RunParse(R"({
+    "functions": [
+        {
+            "name": "func",
+            "qualified_name": "func",
+            "access": "public",
+            "params": [ "type0", "type1" ],
+            "return": "rtype",
+            "deleted": false
+        },
+        {
+            "name": "func",
+            "qualified_name": "func",
+            "access": "public",
+            "params": [],
+            "return": "rtype",
+            "deleted": false
+        }
+    ]})");
+    ASSERT_EQ(x, 0);
     TestScopeChildNums(global_, 0u, 2u, 0u, 0u);
     
     auto f = TestFunction("func(type0,type1)", "func", "rtype", AccessSpecifier::PUBLIC, false);
@@ -353,6 +391,7 @@ TEST_F (MDFunctionTest, FunctionOverload2) {
 }
 
 TEST_F (MDFunctionTest, FunctionWithParamInitializer) {
+    ASSERT_TRUE(false); // NYI
     ASSERT_EQ(RunParse("rtype* func (type0 arg1 = blabla);"), 0);
     TestScopeChildNums(global_, 0u, 1u, 0u, 0u);
 
@@ -361,6 +400,7 @@ TEST_F (MDFunctionTest, FunctionWithParamInitializer) {
 }
 
 TEST_F (MDFunctionTest, FunctionWithMultiParamInitializer) {
+    ASSERT_TRUE(false); // NYI
     ASSERT_EQ(RunParse("rtype* func (type0 arg1 = blabla, const char *const arg2 = \"tralala\");"), 0);
     TestScopeChildNums(global_, 0u, 1u, 0u, 0u);
 
