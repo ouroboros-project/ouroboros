@@ -221,8 +221,8 @@ TEST_F (MDFunctionTest, ManyDifferentFunctions) {
         TestFunctionParameter(f, 1, "pname1", "ptype1");
     }
     /* forth */ {
-        auto f = TestFunction("name3(ptype0 *)", "name3", "rtype3", AccessSpecifier::PUBLIC, false);
-        TestFunctionParameter(f, 0, "pname0", "ptype0 *");
+        auto f = TestFunction("name3(ptype0 **)", "name3", "rtype3", AccessSpecifier::PUBLIC, false);
+        TestFunctionParameter(f, 0, "pname0", "ptype0 **");
     }
     /* fifth */ {
         auto abc = TestNamespace("abc", AccessSpecifier::PUBLIC, 0u, 1u, 0u, 0u);
@@ -375,7 +375,7 @@ TEST_F (MDFunctionTest, FunctionOverload2) {
             "qualified_name": "func",
             "access": "public",
             "params": [],
-            "return": "rtype",
+            "return": "void",
             "deleted": false
         }
     ]})");
