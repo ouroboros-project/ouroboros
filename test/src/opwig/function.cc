@@ -263,17 +263,55 @@ TEST_F (MDFunctionTest, SimpleFunctionDefinitionOutsideNamespace) {
 }*/
 
 TEST_F (MDFunctionTest, DuplicateDeclaration) {
-    RunParseThrow("rtype func(); rtype func();");
+    RunParseThrow(R"({
+    "functions": [
+        {
+            "name": "func",
+            "qualified_name": "func",
+            "access": "public",
+            "params": [],
+            "return": "rtype",
+            "deleted": false
+        },
+        {
+            "name": "func",
+            "qualified_name": "func",
+            "access": "public",
+            "params": [],
+            "return": "rtype",
+            "deleted": false
+        }
+    ]})");
 }
 
+/* Definition test...
 TEST_F (MDFunctionTest, DuplicateDefinition) {
     RunParseThrow("rtype func() {} rtype func() {}");
-}
+}*/
 
 TEST_F (MDFunctionTest, ReturnTypeMismatch) {
-    RunParseThrow("rtype func(); crash func() {}");
+    RunParseThrow(R"({
+    "functions": [
+        {
+            "name": "func",
+            "qualified_name": "func",
+            "access": "public",
+            "params": [],
+            "return": "rtype",
+            "deleted": false
+        },
+        {
+            "name": "func",
+            "qualified_name": "func",
+            "access": "public",
+            "params": [],
+            "return": "crash",
+            "deleted": false
+        }
+    ]})");
 }
 
+/* Definition test...
 TEST_F (MDFunctionTest, InvalidDefinition) {
     RunParseThrow("rtype func {}");
 }
@@ -288,7 +326,7 @@ TEST_F (MDFunctionTest, MultiFunctionDefinition) {
     
     f = TestFunction("func2(type0)", "func2", "rtype", AccessSpecifier::PUBLIC, false);
     TestFunctionParameter(f, 0, "", "type0");
-}
+}*/
 
 TEST_F (MDFunctionTest, FunctionOverload) {
     ASSERT_EQ(RunParse("rtype func(type0, type1); rtype func(type0) {}"), 0);
