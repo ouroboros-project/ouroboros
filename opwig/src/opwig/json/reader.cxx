@@ -35,6 +35,8 @@ namespace {
         { "public", md::AccessSpecifier::PUBLIC },
     };
 
+    std::map<std::string, Ptr<md::Type>> types;
+
     std::pair<Ptr<Scope>, std::string> GetScopeAndName(Ptr<Scope> initial_scope, const std::string& full_name) {
         auto result = initial_scope;
         std::size_t pos = 0, prev_pos = 0;
@@ -62,15 +64,23 @@ namespace {
         return json_type;
     }
 
+    Ptr<md::Type> FindType(const std::string& json_type) {
+        std::string fixed = FixTypename(json_type);
+        auto& x = types[fixed];
+        if (!x) {
+            x = md::Type::Create(fixed, false);
+        }
+        return x;
+    }
+
     Ptr<md::Function> CreateFunction(const JSONNode& data, bool is_method) {
         std::vector<md::Parameter> parameter_list;
         for (const auto& param : data["params"]) {
-            // FIXME: parameter_list.emplace_back(FixTypename(param.as_string()));
-            parameter_list.emplace_back(void_type);
+            parameter_list.emplace_back(FindType(param.as_string()));
         }
 
         auto func = md::Function::Create(data["name"].as_string(),
-                                         void_type, // FIXME: method["return"].as_string(),
+                                         FindType(data["return"].as_string()),
                                          parameter_list,
                                          is_method ? data["pure"].as_bool() : false,
                                          is_method ? data["virtual"].as_bool() : false);
