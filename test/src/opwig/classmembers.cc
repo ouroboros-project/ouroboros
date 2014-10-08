@@ -44,6 +44,7 @@ TEST_F (MDClassMembersTest, SinglePureFunction) {
     TestFunctionParameter(f, 0, "", "type");
 }
 
+/* This is testing an implementation detail...
 TEST_F (MDClassMembersTest, ClassWithAccessSpecifier) {
     ASSERT_EQ(RunParse("class name { protected: };"), 0);
     auto c = TestClass("name", AccessSpecifier::PUBLIC, 0u, 0u, 0u);
@@ -51,6 +52,7 @@ TEST_F (MDClassMembersTest, ClassWithAccessSpecifier) {
 
     EXPECT_EQ(c->GetAccessSpecifier(), AccessSpecifier::PROTECTED);
 }
+*/
 
 TEST_F (MDClassMembersTest, SingleVarAndFunction) {
     ASSERT_EQ(RunParse("class name { type var; rtype func(type); };"), 0);
