@@ -149,13 +149,13 @@ TEST_F (MDFunctionTest, GlobalMultipleArgFunction) {
 //    TestFunctionParameter(f, 0, "", "type");
 //}
 
-TEST_F (MDFunctionTest, GlobalBadDoubleVirtualFunction) {
-    RunParseThrow("virtual virtual rtype func();");
-}
+//TEST_F (MDFunctionTest, GlobalBadDoubleVirtualFunction) {
+//    RunParseThrow("virtual virtual rtype func();");
+//}
 
-TEST_F (MDFunctionTest, GlobalBadDoubleReturnTypeFunction) {
-    ASSERT_EQ(1, RunParse("rtype virtual rtype func();"));
-}
+//TEST_F (MDFunctionTest, GlobalBadDoubleReturnTypeFunction) {
+//    ASSERT_EQ(1, RunParse("rtype virtual rtype func();"));
+//}
 
 TEST_F (MDFunctionTest, ManyDifferentFunctions) {
     string input(
