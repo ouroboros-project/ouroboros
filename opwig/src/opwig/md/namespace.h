@@ -24,9 +24,7 @@ class Namespace final : public Scope {
 
   private:
 
-    Namespace (const std::string& the_name) : Scope(the_name) {
-        SetAccessSpecifier(AccessSpecifier::PUBLIC);
-    }
+    Namespace (const std::string& the_name) : Scope(the_name) {}
 
 };
 

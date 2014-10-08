@@ -64,14 +64,6 @@ class Container {
 
     /// Returns STL-iterable interface.
     Iterable Iterate () const { return Iterable(objects_); }
-
-    /// Gets the current access specifier for this container.
-    AccessSpecifier GetCurrentAccessSpecifier () const { return current_access_; }
-    
-    /// Sets the current access specifier for this container.
-    void SetCurrentAccessSpecifier (AccessSpecifier current_access) {
-        current_access_ = current_access;
-    }
     
     /// Checks if the given id exists within this container.
     bool HasID(const std::string& id) const;

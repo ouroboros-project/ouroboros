@@ -121,14 +121,7 @@ class Scope : public MetadataObject, public std::enable_shared_from_this<Scope> 
     
     /*****************************************************/
     /*** GENERAL METHODS ***/
-    
-    /// Gets the current access specifier of this scope (and its containers).
-    virtual AccessSpecifier GetAccessSpecifier () const;
-    
-    /// Sets the current access specifier of this scope (and its containers) to the given access
-    /// specifier.
-    virtual void SetAccessSpecifier(AccessSpecifier new_access);
-    
+       
     /// Checks if the given id exists within this scope.
     virtual bool HasID(const std::string& obj_id) const;
 

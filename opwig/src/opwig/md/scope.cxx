@@ -154,19 +154,6 @@ Container<Enum>::Iterable Scope::IterateEnums() const {
 /*****************************************************/
 /*** GENERAL METHODS ***/
 
-AccessSpecifier Scope::GetAccessSpecifier () const {
-    // Since we set all containers' access specifier at the same time, here we only need to grab one of them
-    return namespaces_.GetCurrentAccessSpecifier();
-}
-
-void Scope::SetAccessSpecifier(AccessSpecifier new_access) {
-    namespaces_.SetCurrentAccessSpecifier(new_access);
-    variables_.SetCurrentAccessSpecifier(new_access);
-    classes_.SetCurrentAccessSpecifier(new_access);
-    functions_.SetCurrentAccessSpecifier(new_access);
-    enums_.SetCurrentAccessSpecifier(new_access);
-}
-
 bool Scope::HasID(const string& obj_id) const {
     return namespaces_.HasID(obj_id) || 
            variables_.HasID(obj_id) ||
