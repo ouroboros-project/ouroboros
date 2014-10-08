@@ -30,6 +30,7 @@ TEST_F (MDFunctionTest, GlobalNoArgFunction) {
         {
             "name": "name",
             "qualified_name": "name",
+            "access": "public",
             "params": [],
             "return": "rtype",
             "deleted": false
@@ -48,6 +49,7 @@ TEST_F (MDFunctionTest, GlobalSingleArgFunction) {
         {
             "name": "name",
             "qualified_name": "name",
+            "access": "public",
             "params": [ "type" ],
             "return": "rtype",
             "deleted": false
@@ -61,7 +63,18 @@ TEST_F (MDFunctionTest, GlobalSingleArgFunction) {
 }
 
 TEST_F (MDFunctionTest, GlobalSinglePointerArgFunction) {
-    ASSERT_EQ(RunParse("rtype name(type* arg);"), 0);
+    auto x = RunParse(R"({
+    "functions": [
+        {
+            "name": "name",
+            "qualified_name": "name",
+            "access": "public",
+            "params": [ "type *" ],
+            "return": "rtype",
+            "deleted": false
+        }
+    ]})");
+    ASSERT_EQ(x, 0);
     TestScopeChildNums(global_, 0u, 1u, 0u, 0u);
     
     auto f = TestFunction("name(type *)", "name", "rtype", AccessSpecifier::PUBLIC, false);
@@ -69,7 +82,18 @@ TEST_F (MDFunctionTest, GlobalSinglePointerArgFunction) {
 }
 
 TEST_F (MDFunctionTest, GlobalSingleConstRefArgFunction) {
-    ASSERT_EQ(RunParse("rtype name(const type& arg);"), 0);
+    auto x = RunParse(R"({
+    "functions": [
+        {
+            "name": "name",
+            "qualified_name": "name",
+            "access": "public",
+            "params": [ "const type &" ],
+            "return": "rtype",
+            "deleted": false
+        }
+    ]})");
+    ASSERT_EQ(x, 0);
     TestScopeChildNums(global_, 0u, 1u, 0u, 0u);
     
     auto f = TestFunction("name(const type &)", "name", "rtype", AccessSpecifier::PUBLIC, false);
@@ -77,7 +101,18 @@ TEST_F (MDFunctionTest, GlobalSingleConstRefArgFunction) {
 }
 
 TEST_F (MDFunctionTest, GlobalDoubleArgFunction) {
-    ASSERT_EQ(RunParse("rtype name(type0, type1);"), 0);
+    auto x = RunParse(R"({
+    "functions": [
+        {
+            "name": "name",
+            "qualified_name": "name",
+            "access": "public",
+            "params": [ "type0", "type1" ],
+            "return": "rtype",
+            "deleted": false
+        }
+    ]})");
+    ASSERT_EQ(x, 0);
     TestScopeChildNums(global_, 0u, 1u, 0u, 0u);
     
     auto f = TestFunction("name(type0,type1)", "name", "rtype", AccessSpecifier::PUBLIC, false);
@@ -86,7 +121,18 @@ TEST_F (MDFunctionTest, GlobalDoubleArgFunction) {
 }
 
 TEST_F (MDFunctionTest, GlobalMultipleArgFunction) {
-    ASSERT_EQ(RunParse("rtype name(type0, type1, type2);"), 0);
+    auto x = RunParse(R"({
+    "functions": [
+        {
+            "name": "name",
+            "qualified_name": "name",
+            "access": "public",
+            "params": [ "type0", "type1", "type2" ],
+            "return": "rtype",
+            "deleted": false
+        }
+    ]})");
+    ASSERT_EQ(x, 0);
     TestScopeChildNums(global_, 0u, 1u, 0u, 0u);
     
     auto f = TestFunction("name(type0,type1,type2)", "name", "rtype", AccessSpecifier::PUBLIC, false);
