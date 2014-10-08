@@ -116,6 +116,7 @@ class MDBaseTest : public ::testing::Test {
     }
     
     void TestFunctionNoParameters(Ptr<const Function> func) {
+        ASSERT_TRUE(static_cast<bool>(func));
         EXPECT_THROW(func->parameter_type(0), std::out_of_range);
         EXPECT_THROW(func->parameter_name(0), std::out_of_range);
     }
