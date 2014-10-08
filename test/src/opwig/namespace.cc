@@ -12,7 +12,8 @@ protected:
 
 
 TEST_F (MDNamespaceTest, EmptyFile) {
-    ASSERT_EQ(RunParse(""), 0);
+    auto x = RunParse(R"({})");
+    ASSERT_EQ(x, 0);
     TestScopeChildNums(global_, 0u, 0u, 0u, 0u);
 }
 
@@ -59,16 +60,20 @@ TEST_F (MDNamespaceTest, AddManyFunctions) {
 
 
 TEST_F (MDNamespaceTest, SingleEmptyNamespace) {
-    string test00 = "namespace abc {}";
-    ASSERT_EQ(RunParse(test00), 0);
+    auto x = RunParse(R"({
+    "namespaces": [ "abc" ]
+    })");
+    ASSERT_EQ(x, 0);
     TestScopeChildNums(global_, 0u, 0u, 0u, 1u);
     
     TestNamespace("abc", AccessSpecifier::PUBLIC, 0u, 0u, 0u, 0u);
 }
 
 TEST_F (MDNamespaceTest, TwoEmptyNamespaces) {
-    string test01 = "namespace abc {} namespace def {}";
-    ASSERT_EQ(RunParse(test01), 0);
+    auto x = RunParse(R"({
+    "namespaces": [ "abc", "def" ]
+    })");
+    ASSERT_EQ(x, 0);
     TestScopeChildNums(global_, 0u, 0u, 0u, 2u);
     
     TestNamespace("abc", AccessSpecifier::PUBLIC, 0u, 0u, 0u, 0u);
@@ -76,8 +81,10 @@ TEST_F (MDNamespaceTest, TwoEmptyNamespaces) {
 }
 
 TEST_F (MDNamespaceTest, SingleNestedNamespace) {
-    string test02 = "namespace abc { namespace def {} }";
-    ASSERT_EQ(RunParse(test02), 0);
+    auto x = RunParse(R"({
+    "namespaces": [ "abc", "abc::def" ]
+    })");
+    ASSERT_EQ(x, 0);
     TestScopeChildNums(global_, 0u, 0u, 0u, 1u);
     
     auto abc = TestNamespace("abc", AccessSpecifier::PUBLIC, 0u, 0u, 0u, 1u);
