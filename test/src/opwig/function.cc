@@ -232,6 +232,7 @@ TEST_F (MDFunctionTest, ManyDifferentFunctions) {
     }
 }
 
+/* No sense testing definitions
 TEST_F (MDFunctionTest, SimpleFunctionDefinition) {
     ASSERT_EQ(RunParse("rtype name(type0 arg1, type1) { return rtype; }"), 0);
     TestScopeChildNums(global_, 0u, 1u, 0u, 0u);
@@ -259,7 +260,7 @@ TEST_F (MDFunctionTest, SimpleFunctionDefinitionOutsideNamespace) {
     auto f = TestFunction(abc, "name(type0,type1)", "name", "rtype", AccessSpecifier::PUBLIC, false);
     TestFunctionParameter(f, 0, "arg1", "type0");
     TestFunctionParameter(f, 1, "", "type1");
-}
+}*/
 
 TEST_F (MDFunctionTest, DuplicateDeclaration) {
     RunParseThrow("rtype func(); rtype func();");
