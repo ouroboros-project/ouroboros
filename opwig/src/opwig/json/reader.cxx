@@ -83,7 +83,9 @@ namespace {
         }
 
         auto func = md::Function::Create(data["name"].as_string(),
-                                         FindType(data["return"].as_string()),
+                                         data.find("return") != data.end()
+                                            ? FindType(data["return"].as_string())
+                                            : nullptr,
                                          parameter_list,
                                          is_method ? data["pure"].as_bool() : false,
                                          is_method ? data["virtual"].as_bool() : false);
