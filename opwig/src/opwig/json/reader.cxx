@@ -2,7 +2,10 @@
 #include <opwig/json/reader.h>
 
 #include <opwig/md/accessspecifier.h>
+#include <opwig/md/namespace.h>
 #include <opwig/md/function.h>
+#include <opwig/md/class.h>
+#include <opwig/md/variable.h>
 #include <opwig/json/exceptions.h>
 
 #include <libjson.h>
@@ -150,6 +153,17 @@ bool Reader::parse() {
         std::string name;
         std::tie(scope, name) = GetScopeAndName(global_, f["qualified_name"].as_string());
         scope->AddNestedFunction(CreateFunction(f, false));
+    }
+
+    if (json_root.find("variables") != json_root.end())
+    for (const auto& v : json_root["variables"]) {
+        Ptr<Scope> scope;
+        std::string name;
+        std::tie(scope, name) = GetScopeAndName(global_, v["qualified_name"].as_string());
+
+        auto var = md::Variable::Create(name, FindType(v["type"].as_string()));
+        var->set_access(access_specifier_mapper.at(v["access"].as_string()));
+        scope->AddGlobalVariable(var);
     }
 
     return true;
