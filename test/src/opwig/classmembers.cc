@@ -3,7 +3,27 @@ protected:
 };
 
 TEST_F (MDClassMembersTest, SingleVariable) {
-    ASSERT_EQ(RunParse("class name { type var; };"), 0);
+    auto json = R"({
+    "classes": [
+        {
+            "name": "name",
+            "qualified_name": "name",
+            "access": "public",
+            "base_class": [],
+            "methods": []
+        }
+    ],
+    "variables": [
+        {
+            "name": "var",
+            "qualified_name": "name::var",
+            "access": "private",
+            "type": "type"
+        }
+    ]
+    })";
+    ASSERT_EQ(RunParse(json), 0);
+    //ASSERT_EQ(RunParse("class name { type var; };"), 0);
     
     auto c = TestClass("name", AccessSpecifier::PUBLIC, 1u, 0u, 0u);
     TestClassAttributes(c, 0u, 0u, false);
