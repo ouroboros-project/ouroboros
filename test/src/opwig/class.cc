@@ -262,7 +262,61 @@ TEST_F (MDClassTest, ComplexClassInClass) {
 }
 
 TEST_F (MDClassTest, ClassInClassWithConstructors) {
-    ASSERT_EQ(RunParse("class name { public: name() {} private: class name2 { name2(type); name* name(); }; };"), 0);
+    auto json = R"({
+    "classes": [
+        {
+            "access": "public",
+            "base_class": [],
+            "methods": [
+                {
+                    "access": "public",
+                    "const": false,
+                    "deleted": false,
+                    "name": "name",
+                    "params": [],
+                    "pure": false,
+                    "qualified_name": "name::name",
+                    "virtual": false
+                }
+            ],
+            "name": "name",
+            "qualified_name": "name"
+        },
+        {
+            "access": "private",
+            "base_class": [],
+            "methods": [
+                {
+                    "access": "private",
+                    "const": false,
+                    "deleted": false,
+                    "name": "name2",
+                    "params": [ "type" ],
+                    "pure": false,
+                    "qualified_name": "name::name2::name2",
+                    "virtual": false
+                },
+                {
+                    "access": "private",
+                    "const": false,
+                    "deleted": false,
+                    "name": "name",
+                    "params": [],
+                    "pure": false,
+                    "qualified_name": "name::name2::name",
+                    "return": "class name *",
+                    "virtual": false
+                }
+            ],
+            "name": "name2",
+            "qualified_name": "name::name2"
+        }
+    ],
+    "functions": [],
+    "namespaces": []
+})";
+    ASSERT_EQ(RunParse(json), 0);
+    //ASSERT_EQ(RunParse("class name { public: name() {} private: class name2 { name2(type); name* name(); }; };"), 0);
     
     auto c1 = TestClass("name", AccessSpecifier::PUBLIC, 0u, 0u, 1u);
     TestClassAttributes(c1, 0u, 1u, false);
