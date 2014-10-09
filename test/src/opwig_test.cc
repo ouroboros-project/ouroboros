@@ -68,12 +68,9 @@ class MDBaseTest : public ::testing::Test {
         return ret ? 0 : 1;
     }
     void RunParseThrow(const string& str) {
-        EXPECT_TRUE(false); // NYI
-        /*
-        istringstream input (str);
-        MDParser parser(input);
-        EXPECT_THROW(parser.parse(), std::exception);
-        */
+        Ptr<Namespace> global = Namespace::Create("");
+        Reader reader(str, global);
+        EXPECT_THROW(reader.parse(), std::exception);
     }
     
     //////////// variable
