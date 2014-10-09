@@ -391,8 +391,23 @@ TEST_F (MDFunctionTest, FunctionOverload2) {
 }
 
 TEST_F (MDFunctionTest, FunctionWithParamInitializer) {
-    ASSERT_TRUE(false); // NYI
-    ASSERT_EQ(RunParse("rtype* func (type0 arg1 = blabla);"), 0);
+    // TODO: add the default value to the meta data?
+    auto json = R"({
+    "functions": [
+        {
+            "access": "public",
+            "deleted": false,
+            "name": "func",
+            "params": [
+                "type0"
+            ],
+            "qualified_name": "func",
+            "return": "rtype *"
+        }
+    ]
+})";
+    ASSERT_EQ(RunParse(json), 0);
+    //ASSERT_EQ(RunParse("rtype* func (type0 arg1 = blabla);"), 0);
     TestScopeChildNums(global_, 0u, 1u, 0u, 0u);
 
     auto f = TestFunction("func(type0)", "func", "rtype *", AccessSpecifier::PUBLIC, false);
@@ -400,11 +415,27 @@ TEST_F (MDFunctionTest, FunctionWithParamInitializer) {
 }
 
 TEST_F (MDFunctionTest, FunctionWithMultiParamInitializer) {
-    ASSERT_TRUE(false); // NYI
-    ASSERT_EQ(RunParse("rtype* func (type0 arg1 = blabla, const char *const arg2 = \"tralala\");"), 0);
+    // TODO: add the default value to the meta data?
+    auto json = R"({
+    "functions": [
+        {
+            "access": "public",
+            "deleted": false,
+            "name": "func",
+            "params": [
+                "type0",
+                "const char *const"
+            ],
+            "qualified_name": "func",
+            "return": "rtype *"
+        }
+    ]
+})";
+    ASSERT_EQ(RunParse(json), 0);
+    //ASSERT_EQ(RunParse("rtype* func (type0 arg1 = blabla, const char *const arg2 = \"tralala\");"), 0);
     TestScopeChildNums(global_, 0u, 1u, 0u, 0u);
 
-    auto f = TestFunction("func(type0,const char * const)", "func", "rtype *", AccessSpecifier::PUBLIC, false);
+    auto f = TestFunction("func(type0,const char *const)", "func", "rtype *", AccessSpecifier::PUBLIC, false);
     TestFunctionParameter(f, 0, "arg1", "type0");
-    TestFunctionParameter(f, 1, "arg2", "const char * const");
+    TestFunctionParameter(f, 1, "arg2", "const char *const");
 }
