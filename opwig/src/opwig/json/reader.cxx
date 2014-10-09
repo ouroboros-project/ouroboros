@@ -92,6 +92,11 @@ namespace {
         // FIXME: where is const?
         return func;
     }
+
+    md::AccessSpecifier GetAccessSpecifier(const JSONNode& data) {
+        // TODO: throw better exception
+        return access_specifier_mapper.at(data.at("access").as_string());
+    }
 }
 
 Reader::Reader(std::istream& in, md::Ptr<md::Namespace> global)
@@ -112,7 +117,7 @@ bool Reader::parse() {
     auto json_root = libjson::parse(contents_);
 
     if (json_root.find("namespaces") != json_root.end())
-    for (const auto& ns : json_root["namespaces"]) {
+    for (const auto& ns : json_root.at("namespaces")) {
         Ptr<Scope> scope;
         std::string name;
         std::tie(scope, name) = GetScopeAndName(global_, ns.as_string());
@@ -123,23 +128,23 @@ bool Reader::parse() {
     }
 
     if (json_root.find("classes") != json_root.end())
-    for (const auto& c : json_root["classes"]) {
+    for (const auto& c : json_root.at("classes")) {
         Ptr<Scope> scope;
         std::string name;
-        std::tie(scope, name) = GetScopeAndName(global_, c["qualified_name"].as_string());
+        std::tie(scope, name) = GetScopeAndName(global_, c.at("qualified_name").as_string());
 
         std::list<md::BaseSpecifier> base_specifiers;
         if (c.find("base_class") != c.end())
-        for (const auto& base : c["base_class"]) {
-            base_specifiers.emplace_back(base["name"].as_string(),
+        for (const auto& base : c.at("base_class")) {
+            base_specifiers.emplace_back(base.at("name").as_string(),
                                          false,
-                                         access_specifier_mapper.at(base["access"].as_string()));
+                                         GetAccessSpecifier(base));
         }
         Ptr<Class> tc = Class::Create(name, base_specifiers);
-        tc->set_access(access_specifier_mapper.at(c["access"].as_string()));
+        tc->set_access(GetAccessSpecifier(c));
 
         if (c.find("methods") != c.end())
-        for (const auto& method : c["methods"]) {
+        for (const auto& method : c.at("methods")) {
             auto func = CreateFunction(method, true);
             tc->AddNestedFunction(func);
         }
@@ -148,21 +153,21 @@ bool Reader::parse() {
     }
 
     if (json_root.find("functions") != json_root.end())
-    for (const auto& f : json_root["functions"]) {
+    for (const auto& f : json_root.at("functions")) {
         Ptr<Scope> scope;
         std::string name;
-        std::tie(scope, name) = GetScopeAndName(global_, f["qualified_name"].as_string());
+        std::tie(scope, name) = GetScopeAndName(global_, f.at("qualified_name").as_string());
         scope->AddNestedFunction(CreateFunction(f, false));
     }
 
     if (json_root.find("variables") != json_root.end())
-    for (const auto& v : json_root["variables"]) {
+    for (const auto& v : json_root.at("variables")) {
         Ptr<Scope> scope;
         std::string name;
-        std::tie(scope, name) = GetScopeAndName(global_, v["qualified_name"].as_string());
+        std::tie(scope, name) = GetScopeAndName(global_, v.at("qualified_name").as_string());
 
-        auto var = md::Variable::Create(name, FindType(v["type"].as_string()));
-        var->set_access(access_specifier_mapper.at(v["access"].as_string()));
+        auto var = md::Variable::Create(name, FindType(v.at("type").as_string()));
+        var->set_access(GetAccessSpecifier(v));
         scope->AddGlobalVariable(var);
     }
 
