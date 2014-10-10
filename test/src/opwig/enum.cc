@@ -3,19 +3,53 @@ protected:
 };
 
 TEST_F (MDEnumTest, SimpleEnum) {
-    ASSERT_EQ(RunParse("enum name {Sup};"), 0);
+    auto json = R"({
+    "enums": [
+        {
+            "access": "public",
+            "name": "name",
+            "qualified_name": "name",
+            "scoped": false,
+            "values": [
+                "Sup"
+            ]
+        }
+    ]
+})";
+    ASSERT_EQ(RunParse(json), 0);
+    //ASSERT_EQ(RunParse("enum name {Sup};"), 0);
     TestScopeChildNums(global_, 0u, 0u, 0u, 0u, 1u);
 
     vector<string> values = {"Sup"};
     TestEnum("name", AccessSpecifier::PUBLIC, "", values);
 }
 
+/* TODO: Anonymous enum are OK
 TEST_F (MDEnumTest, AnonymousEnum) {
-    RunParseThrow("enum {Sup, Dude};");
+    auto json = R"({
+})";
+    ASSERT_EQ(RunParse(json), 0);
+    //RunParseThrow("enum {Sup, Dude};");
 }
+*/
 
 TEST_F (MDEnumTest, SimpleEnumWithExpressions) {
-    ASSERT_EQ(RunParse("enum name {Sup = 0x123, Dude=tralala};"), 0);
+    auto json = R"({
+    "enums": [
+        {
+            "access": "public",
+            "name": "name",
+            "qualified_name": "name",
+            "scoped": false,
+            "values": [
+                "Sup",
+                "Dude"
+            ]
+        }
+    ]
+})";
+    ASSERT_EQ(RunParse(json), 0);
+    //ASSERT_EQ(RunParse("enum name {Sup = 0x123, Dude};"), 0);
     TestScopeChildNums(global_, 0u, 0u, 0u, 0u, 1u);
 
     vector<string> values = {"Sup", "Dude"};
@@ -23,22 +57,57 @@ TEST_F (MDEnumTest, SimpleEnumWithExpressions) {
 }
 
 TEST_F (MDEnumTest, EnumWithBases) {
-    ASSERT_EQ(RunParse("enum name : double {Sup, Dude};"), 0);
+    auto json = R"({
+    "enums": [
+        {
+            "access": "public",
+            "name": "name",
+            "qualified_name": "name",
+            "scoped": false,
+            "values": [
+                "Sup",
+                "Dude"
+            ]
+        }
+    ]
+})";
+    ASSERT_EQ(RunParse(json), 0);
+    //ASSERT_EQ(RunParse("enum name : char {Sup, Dude};"), 0);
     TestScopeChildNums(global_, 0u, 0u, 0u, 0u, 1u);
 
     vector<string> values = {"Sup", "Dude"};
-    TestEnum("name", AccessSpecifier::PUBLIC, "double", values);
+    TestEnum("name", AccessSpecifier::PUBLIC, "char", values);
 }
 
+/* Dunno.
 TEST_F (MDEnumTest, EnumWithErroneousBase) {
     EXPECT_EQ(RunParse("enum name : wat {Sup, Dude};"), 1);
     EXPECT_EQ(RunParse("enum name : void {Sup, Dude};"), 1);
     EXPECT_EQ(RunParse("enum name : foo::bar {Sup, Dude};"), 1);
     EXPECT_EQ(RunParse("enum name : ::foo::bar {Sup, Dude};"), 1);
 }
+*/
 
 TEST_F (MDEnumTest, EnumInNamespace) {
-    ASSERT_EQ(RunParse("namespace abc { enum name {Sup, Dude}; }"), 0);
+    auto json = R"({
+    "enums": [
+        {
+            "access": "public",
+            "name": "name",
+            "qualified_name": "abc::name",
+            "scoped": false,
+            "values": [
+                "Sup",
+                "Dude"
+            ]
+        }
+    ],
+    "namespaces": [
+        "abc"
+    ]
+})";
+    ASSERT_EQ(RunParse(json), 0);
+    //ASSERT_EQ(RunParse("namespace abc { enum name {Sup, Dude}; }"), 0);
     TestScopeChildNums(global_, 0u, 0u, 0u, 1u, 0u);
 
     auto abc = TestNamespace("abc", AccessSpecifier::PUBLIC, 0u, 0u, 0u, 0u, 1u);
@@ -46,6 +115,7 @@ TEST_F (MDEnumTest, EnumInNamespace) {
     TestEnum(abc, "name", AccessSpecifier::PUBLIC, "", values);
 }
 
+/* Redundant
 TEST_F (MDEnumTest, EnumOutsideNamespace) {
     ASSERT_EQ(RunParse("namespace abc { } enum abc::name {Sup, Dude};"), 0);
     TestScopeChildNums(global_, 0u, 0u, 0u, 1u, 0u);
@@ -63,3 +133,4 @@ TEST_F (MDEnumTest, EnumInAndOutsideNamespace) {
     vector<string> values = {"Sup", "Dude"};
     TestEnum(abc, "name", AccessSpecifier::PUBLIC, "", values);
 }
+*/
