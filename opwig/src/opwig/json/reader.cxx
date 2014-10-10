@@ -116,6 +116,10 @@ Reader::Reader(const std::string& s, md::Ptr<md::Namespace> global)
 
 bool Reader::parse() {
 
+    if (!libjson::is_valid(contents_)) {
+        throw InvalidJson();
+    }
+
     auto json_root = libjson::parse(contents_);
 
     if (json_root.find("namespaces") != json_root.end())

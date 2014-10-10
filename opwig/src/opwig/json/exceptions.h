@@ -27,6 +27,18 @@ private:
     std::string reason_;
 };
 
+class InvalidJson : public std::exception {
+public:
+    InvalidJson()
+        : reason_("The given input does not contain a valid JSON structure.") {}
+
+    const char* what() const NOEXCEPT override{
+        return reason_.c_str();
+    }
+private:
+    std::string reason_;
+};
+
 } // namespace json
 } // namespace opwig
 
