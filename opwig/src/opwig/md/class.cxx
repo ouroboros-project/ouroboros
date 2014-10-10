@@ -21,5 +21,12 @@ bool Class::AddNestedFunction (Ptr<Function> nested) {
     return Scope::AddNestedFunction(nested);
 }
 
+bool Class::AddNestedClass(Ptr<Class> nested) {
+    if (nested->name() == name_) {
+        throw SemanticError("A nested class can't have the same name as the parent class.");
+    }
+    return Scope::AddNestedClass(nested);
+}
+
 }
 }
