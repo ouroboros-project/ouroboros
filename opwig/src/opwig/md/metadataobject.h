@@ -54,7 +54,9 @@ class MetadataObject {
     
   protected:
   
-    MetadataObject(const std::string& obj_name) : name_(obj_name) {};
+    MetadataObject(const std::string& obj_name)
+        : name_(obj_name)
+        , access_(AccessSpecifier::PUBLIC) {}
     
     std::string name_;
     AccessSpecifier access_;
