@@ -17,7 +17,6 @@
 #include <fstream>
 #include <memory>
 #include <map>
-#include <regex>
 
 using std::list;
 using std::string;
@@ -64,9 +63,21 @@ namespace {
         return scope->NestedClass(name);
     }
 
+    void str_replace( string &s, const string &search, const string &replace ) {
+        for( size_t pos = 0; ; pos += replace.length() ) {
+            pos = s.find( search, pos );
+            if( pos == string::npos ) break;
+
+            s.erase( pos, search.length() );
+            s.insert( pos, replace );
+        }
+    }
+
     std::string FixTypename(const std::string& json_type) {
-        std::regex sub("(class|struct) ");
-        return std::regex_replace(json_type, sub, "");
+        std::string result = json_type;
+        str_replace(result, "class ", "");
+        str_replace(result, "struct ", "");
+        return result;
     }
 
     Ptr<md::Type> FindType(const std::string& json_type) {
