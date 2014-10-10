@@ -104,6 +104,9 @@ target_link_libraries (
 )
 
 cxx_executable (opwig_test src gtest_main src/config.h)
+add_custom_command(TARGET opwig_test POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${OUROBOROS_TEST_DUMP_DIR}
+)
 target_link_libraries (
   opwig_test
   libopwig-common
