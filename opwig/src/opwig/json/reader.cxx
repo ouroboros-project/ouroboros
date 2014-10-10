@@ -6,6 +6,7 @@
 #include <opwig/md/function.h>
 #include <opwig/md/class.h>
 #include <opwig/md/variable.h>
+#include <opwig/md/enum.h>
 #include <opwig/json/exceptions.h>
 
 #include <libjson.h>
@@ -175,6 +176,22 @@ bool Reader::parse() {
         auto var = md::Variable::Create(name, FindType(v.at("type").as_string()));
         var->set_access(GetAccessSpecifier(v));
         scope->AddGlobalVariable(var);
+    }
+
+    if (json_root.find("enums") != json_root.end())
+    for (const auto& e : json_root.at("enums")) {
+        Ptr<Scope> scope;
+        std::string name;
+        std::tie(scope, name) = GetScopeAndName(global_, e.at("qualified_name").as_string());
+
+        std::vector<std::string> values;
+        for (const auto& val : e.at("values")) {
+            values.push_back(val.as_string());
+        }
+
+        auto var = md::Enum::Create(name, "", values);
+        var->set_access(GetAccessSpecifier(e));
+        scope->AddNestedEnum(var);
     }
 
     return true;
