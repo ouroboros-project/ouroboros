@@ -17,6 +17,7 @@
 #include <fstream>
 #include <memory>
 #include <map>
+#include <regex>
 
 using std::list;
 using std::string;
@@ -64,8 +65,8 @@ namespace {
     }
 
     std::string FixTypename(const std::string& json_type) {
-        // FIXME: remove 'class', 'struct' words
-        return json_type;
+        std::regex sub("(class|struct) ");
+        return std::regex_replace(json_type, sub, "");
     }
 
     Ptr<md::Type> FindType(const std::string& json_type) {
