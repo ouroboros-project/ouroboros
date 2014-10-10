@@ -94,7 +94,7 @@
  *  JSON_BINARY is used to support binary, which is base64 encoded and decoded by libjson,
  *  if this option is not turned off, no base64 support is included
  */
-#define JSON_BINARY
+//#define JSON_BINARY
 
 
 /*
@@ -102,7 +102,7 @@
  *  and decoding.  This may be useful if you want to obfuscate your json, or send binary data over
  *  a network
  */
-#define JSON_EXPOSE_BASE64
+//#define JSON_EXPOSE_BASE64
 
 
 /*
@@ -185,7 +185,7 @@
  *  read and parse json, this allows it to write back out.  Changing the value of the writer
  *  changes how libjson compiles, and how fast it will go when writing
  */
-#define JSON_WRITE_PRIORITY MED
+//#define JSON_WRITE_PRIORITY MED
 
 
 /*
@@ -223,7 +223,7 @@
  *  parsing json that has comments in it as it simply ignores them, but with this option
  *  it keeps the comments and allows you to insert further comments
  */
-#define JSON_COMMENTS
+//#define JSON_COMMENTS
 
 
 /*
