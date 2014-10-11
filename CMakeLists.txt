@@ -113,7 +113,9 @@ if (OUROBOROS_CREATE_BINDINGS)
         set(METADATA_FILES)
         foreach(it ${ARGN})
             set(OUTPUT_FILE_NAME ${CMAKE_CURRENT_BINARY_DIR}/metadata/${it}.json)
+            get_filename_component(OUTPUT_FILE_DIR ${OUTPUT_FILE_NAME} PATH)
             add_custom_command(OUTPUT ${OUTPUT_FILE_NAME}
+                                COMMAND ${CMAKE_COMMAND} -E make_directory ${OUTPUT_FILE_DIR}
                                 COMMAND ${CLANGINTROSPECTOR_EXECUTABLE}
                                 ARGS ${CMAKE_CURRENT_SOURCE_DIR}/${it} "--" -x c++ ${INCLUDE_COMMMAND} > ${OUTPUT_FILE_NAME}
                                 DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${it})
