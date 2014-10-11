@@ -33,9 +33,8 @@ class WrapperGenerator {
     * @param output_dir Directory to write generated source files.
     * @param file_extension Optional parameter to define the extension of the generated source file.
     */
-    WrapperGenerator (const std::list<std::string>& input_files, const std::string& output_dir,
-                      const std::string& file_extension="cxx")
-        : input_files_(input_files), output_dir_(output_dir), wrap_file_extension_(file_extension) {}
+    WrapperGenerator (const std::list<std::string>& input_files, const std::string& output_file)
+        : input_files_(input_files), output_file_(output_file) {}
     
     /// Virtual destructor.
     virtual ~WrapperGenerator() {}
@@ -53,8 +52,7 @@ class WrapperGenerator {
     
   protected:
     std::list<std::string> input_files_;
-    std::string output_dir_;
-    std::string wrap_file_extension_;
+    std::string output_file_;
     
     std::ofstream wrap_file_;
     md::Ptr<WrapperSpecification> spec_;

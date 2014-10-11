@@ -38,7 +38,7 @@ namespace opwig {
 namespace gen {
 
 int Execute (const string& module_name, const list<string>& inputs,
-             const Ptr<WrapperSpecification>& language_spec, const string& output_dir) {
+             const Ptr<WrapperSpecification>& language_spec, const string& output_file) {
     
     Ptr<opwig::md::Namespace> global = opwig::md::Namespace::Create("");
     list<string> headers;
@@ -60,7 +60,7 @@ int Execute (const string& module_name, const list<string>& inputs,
             headers.push_back(header);
     }
 
-    opwig::gen::WrapperGenerator(headers, output_dir).Generate(module_name, global, language_spec);
+    opwig::gen::WrapperGenerator(headers, output_file).Generate(module_name, global, language_spec);
     return EXIT_SUCCESS;
 }
 

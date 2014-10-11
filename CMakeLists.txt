@@ -133,7 +133,7 @@ if (OUROBOROS_CREATE_BINDINGS)
             set(OUTDIR "${CMAKE_CURRENT_BINARY_DIR}")
         endif()
         string(MAKE_C_IDENTIFIER ${TARGET} MODULE_NAME)
-        set(WRAPPER_FILE "${CMAKE_CURRENT_BINARY_DIR}/${LANGUAGE}_${MODULE_NAME}_wrap.cxx")
+        set(WRAPPER_FILE "${OUTDIR}/${LANGUAGE}_${MODULE_NAME}_wrap.cxx")
         set(OUROBOROS_SPECIFIC_EXECUTABLE opwig-${LANGUAGE})
         
         if (UNIX OR MINGW)
@@ -148,7 +148,7 @@ if (OUROBOROS_CREATE_BINDINGS)
             OUTPUT  ${WRAPPER_FILE}
             COMMAND ${OUROBOROS_SPECIFIC_EXECUTABLE}
             ARGS    --module-name=${MODULE_NAME}
-                    --output-dir="${OUTDIR}"
+                    --output-file="${WRAPPER_FILE}"
                     ${OUROBOROS_METADATAFILES_${TARGET}}
             DEPENDS ${OUROBOROS_SPECIFIC_EXECUTABLE} ${OUROBOROS_METADATAFILES_${TARGET}}
         )

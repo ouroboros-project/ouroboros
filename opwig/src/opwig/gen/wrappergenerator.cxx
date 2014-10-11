@@ -24,8 +24,7 @@ void WrapperGenerator::Generate (const string& module_name, const Ptr<const md::
                                  const Ptr<WrapperSpecification>& spec) {
     spec_ = spec;
     
-    wrap_file_.open(output_dir_+"/"+spec->wrapper_name()+"_"+module_name+"_wrap."+wrap_file_extension_,
-                   ios_base::out);
+    wrap_file_.open(output_file_, ios_base::out);
     
     wrap_file_ << spec->FileHeader() << endl;
     

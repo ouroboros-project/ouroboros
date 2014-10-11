@@ -23,7 +23,7 @@ class WrapperSpecification;
 */
 int Execute (const std::string& module_name, const std::list<std::string>& inputs,
              const md::Ptr<gen::WrapperSpecification>& language_spec,
-             const std::string& output_dir);
+             const std::string& output_file);
 
 /// An "int main()"-friendlier version of OPWIG's main function.
 /** @param argc C main's argc.
@@ -40,23 +40,27 @@ int Execute (int argc, char **argv) {
     using gen::WrapperSpecification;
     list<string>  inputs;
     string        module_name = "Module";
-    string        output_dir  = ".";
+    string        output_file = "";
     for (++argv, --argc; argc; ++argv, --argc) {
         size_t namearg_len = sizeof("--module-name=")-1,
-               dirarg_len  = sizeof("--output-dir=")-1;
+               dirarg_len  = sizeof("--output-file=")-1;
         string arg = *argv;
         if (arg.substr(0, namearg_len) == "--module-name=")
             module_name = arg.substr(namearg_len);
-        else if (arg.substr(0, dirarg_len) == "--output-dir=")
-            output_dir = arg.substr(dirarg_len);
+        else if (arg.substr(0, dirarg_len) == "--output-file=")
+            output_file = arg.substr(dirarg_len);
         else
             inputs.push_back(*argv);
+    }
+    auto spec = Ptr<WrapperSpecification>(new Specification(module_name));
+    if (output_file.empty()) {
+        output_file = spec->wrapper_name() + "_" + module_name + "_wrap.cxx";
     }
     return Execute(
         module_name,
         inputs,
-        Ptr<WrapperSpecification>(new Specification(module_name)),
-        output_dir
+        spec,
+        output_file
     );
 }
 
