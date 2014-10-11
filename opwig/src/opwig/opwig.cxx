@@ -41,6 +41,8 @@ int Execute (const string& module_name, const list<string>& inputs,
              const Ptr<WrapperSpecification>& language_spec, const string& output_dir) {
     
     Ptr<opwig::md::Namespace> global = opwig::md::Namespace::Create("");
+    list<string> headers;
+   
     for (string input : inputs) {
         ifstream in;
         if (!OpenHeader(input, in)) {
@@ -54,9 +56,11 @@ int Execute (const string& module_name, const list<string>& inputs,
             std::cerr << OPWIG_MARK << "Failed to JSON metadata." << std::endl;
             return EXIT_FAILURE;
         }
+        for (const string& header : parser.metadata_headers())
+            headers.push_back(header);
     }
 
-    opwig::gen::WrapperGenerator(inputs, output_dir).Generate(module_name, global, language_spec);
+    opwig::gen::WrapperGenerator(headers, output_dir).Generate(module_name, global, language_spec);
     return EXIT_SUCCESS;
 }
 

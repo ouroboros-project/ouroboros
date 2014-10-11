@@ -6,6 +6,7 @@
 #include <opwig/md/namespace.h>
 
 #include <string>
+#include <list>
 #include <istream>
 
 namespace opwig {
@@ -18,10 +19,14 @@ public:
 
     /// Parses the json tree, populating the namespace.
     bool parse();
+    const std::list<std::string>& metadata_headers() {
+        return metadata_headers_;
+    }
 
 private:
     std::string contents_;
     md::Ptr<md::Namespace> global_;
+    std::list<std::string> metadata_headers_;
 };
 
 } // namespace json
