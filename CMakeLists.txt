@@ -130,7 +130,7 @@ if (OUROBOROS_CREATE_BINDINGS)
         else()
             set(OUTDIR "${CMAKE_CURRENT_BINARY_DIR}")
         endif()
-        string(REPLACE "-" "_" MODULE_NAME ${TARGET})
+        string(MAKE_C_IDENTIFIER ${TARGET} MODULE_NAME)
         set(WRAPPER_FILE "${CMAKE_CURRENT_BINARY_DIR}/${LANGUAGE}_${MODULE_NAME}_wrap.cxx")
         set(OUROBOROS_SPECIFIC_EXECUTABLE opwig-${LANGUAGE})
         
