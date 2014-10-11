@@ -38,6 +38,8 @@ CONFIGURE_FILE(
 # LDFLAGS: flags for the linker
 set (LDFLAGS "" CACHE STRING "flags sent to the linker")
 
+set_property(GLOBAL PROPERTY USE_FOLDERS TRUE)
+
 if (UNIX OR MINGW)
     # if g++ for *nix or MinGW for Windows:
     add_definitions(-Wall -ansi -U_FORTIFY_SOURCE -msse2 -std=gnu++0x)
@@ -78,13 +80,15 @@ include (CPack)
 # Code found on http://stackoverflow.com/questions/7747857/in-cmake-how-do-i-work-around-the-debug-and-release-directories-visual-studio-2
 
 # First for the generic no-config case (e.g. with mingw)
+set( CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${BIN_DIR} )
 set( CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${LIB_DIR} )
 set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${LIB_DIR} )
 # Second, for multi-config builds (e.g. msvc)
 foreach( OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES} )
-    string( TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG )
-    set( CMAKE_LIBRARY_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_CURRENT_BINARY_DIR}/${LIB_DIR} )
-    set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_CURRENT_BINARY_DIR}/${LIB_DIR} )
+    string( TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG_UPPER )
+    set( CMAKE_RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG_UPPER} ${CMAKE_CURRENT_BINARY_DIR}/${OUTPUTCONFIG}/${BIN_DIR} )
+    set( CMAKE_LIBRARY_OUTPUT_DIRECTORY_${OUTPUTCONFIG_UPPER} ${CMAKE_CURRENT_BINARY_DIR}/${OUTPUTCONFIG}/${LIB_DIR} )
+    set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG_UPPER} ${CMAKE_CURRENT_BINARY_DIR}/${OUTPUTCONFIG}/${LIB_DIR} )
 endforeach( OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES )
 
 ##########################
@@ -100,7 +104,7 @@ if (OUROBOROS_CREATE_BINDINGS)
        
     include (cmake/opwig.cmake)
     add_subdirectory( languages )
-    
+        
     find_program(CLANGINTROSPECTOR_EXECUTABLE clang-introspector)
     function(ouroboros_export_metadata target)
         get_target_property(TARGET_INCLUDE_DIRECTORIES ${target} INCLUDE_DIRECTORIES)
@@ -124,6 +128,11 @@ if (OUROBOROS_CREATE_BINDINGS)
         add_custom_target(${target}-metadata
                             DEPENDS ${METADATA_FILES})
         set(OUROBOROS_METADATAFILES_${target} ${METADATA_FILES} PARENT_SCOPE)
+        
+        get_target_property(TARGET_FOLDER ${target} FOLDER)
+        if(TARGET_FOLDER)
+            set_target_properties (${target}-metadata PROPERTIES FOLDER ${TARGET_FOLDER}/Generated)
+        endif()
     endfunction(ouroboros_export_metadata)
 
     function(ouroboros_create_wrappers TARGET LANGUAGE)
@@ -154,6 +163,11 @@ if (OUROBOROS_CREATE_BINDINGS)
         )
         add_library(${TARGET}-${LANGUAGE} ${WRAPPER_FILE})
         target_link_libraries(${TARGET}-${LANGUAGE} ${TARGET} libouroboros-${LANGUAGE})
+        
+        get_target_property(TARGET_FOLDER ${TARGET} FOLDER)
+        if(TARGET_FOLDER)
+            set_target_properties (${TARGET}-${LANGUAGE} PROPERTIES FOLDER ${TARGET_FOLDER}/Generated)
+        endif()
         
         unset (OUROBOROS_SPECIFIC_EXECUTABLE)
     endfunction(ouroboros_create_wrappers)

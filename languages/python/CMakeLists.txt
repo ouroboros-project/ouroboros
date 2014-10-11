@@ -25,29 +25,32 @@ find_package (PythonLibs 2.6 REQUIRED)
 
 message ("-- Python module added.")
 
+#########
+# OPA
+
 add_library (libouroboros-python ${OUROBOROS_PYTHON_OPA_SRC})
+target_link_libraries (libouroboros-python LINK_PUBLIC libouroboros ${PYTHON_LIBRARIES})
 target_include_directories(libouroboros-python PUBLIC ".." ${PYTHON_INCLUDE_DIRS})
 
-target_link_libraries (libouroboros-python 
-    LINK_PUBLIC
-    ${PYTHON_LIBRARIES}
-    libouroboros
-)
-
 set_target_properties (libouroboros-python PROPERTIES 
-    LINK_FLAGS "${LDFLAGS}"
     PROJECT_NAME OUROBOROS-PYTHON
-    OUTPUT_NAME ouroboros-python${FRAMEWORK_BIGVERSION}
-    OUTPUT_NAME_DEBUG ouroboros-python${FRAMEWORK_BIGVERSION}-dbg
-    SOVERSION ${FRAMEWORK_VERSION_PATCH}
-    VERSION ${FRAMEWORK_VERSION}
+    OUTPUT_NAME ouroboros-python
+    OUTPUT_NAME_DEBUG ouroboros-python-dbg
+    FOLDER "opa"
 )
 
-######
+########
+# OPWIG
 
 add_library(libopwig-python ${OUROBOROS_PYTHON_OPWIG_SRC})
 target_link_libraries(libopwig-python LINK_PUBLIC libopwig-common)
 target_include_directories(libopwig-python PUBLIC "..")
+set_target_properties (libopwig-python PROPERTIES 
+    OUTPUT_NAME opwig-python
+    OUTPUT_NAME_DEBUG opwig-python-dbg
+    FOLDER "opwig"
+)
+
 
 ouroboros_generate_opwig (
   python

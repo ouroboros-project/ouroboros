@@ -128,6 +128,7 @@ function(cxx_library_with_type name type cxx_flags)
   if (CMAKE_USE_PTHREADS_INIT)
     target_link_libraries(${name} ${CMAKE_THREAD_LIBS_INIT})
   endif()
+  set_target_properties (${name} PROPERTIES FOLDER "Tests")
 endfunction()
 
 ########################################################################
@@ -163,6 +164,7 @@ function(cxx_executable_with_flags name cxx_flags libs)
   foreach (lib "${libs}")
     target_link_libraries(${name} ${lib})
   endforeach()
+  set_target_properties (${name} PROPERTIES FOLDER "Tests")
 endfunction()
 
 # cxx_executable(name dir lib srcs...)

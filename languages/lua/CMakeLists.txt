@@ -38,33 +38,32 @@ find_package (Lua51 REQUIRED)
 
 message ("-- Lua module added.")
 
-add_library (libouroboros-lua ${OUROBOROS_LUA_OPA_SRC})
-target_include_directories(libouroboros-lua 
-    PUBLIC
-    ".."
-    ${LUA_INCLUDE_DIR}
-)
+#########
+# OPA
 
-target_link_libraries (libouroboros-lua
-    LINK_PUBLIC
-    ${LUA_LIBRARIES}
-    libouroboros
-)
+add_library (libouroboros-lua ${OUROBOROS_LUA_OPA_SRC})
+target_link_libraries (libouroboros-lua LINK_PUBLIC libouroboros ${LUA_LIBRARIES})
+target_include_directories(libouroboros-lua PUBLIC ".." ${LUA_INCLUDE_DIR})
 
 set_target_properties (libouroboros-lua PROPERTIES 
-    LINK_FLAGS "${LDFLAGS}"
     PROJECT_NAME OUROBOROS-LUA
-    OUTPUT_NAME ouroboros-lua${FRAMEWORK_BIGVERSION}
-    OUTPUT_NAME_DEBUG ouroboros-lua${FRAMEWORK_BIGVERSION}-dbg
-    SOVERSION ${FRAMEWORK_VERSION_PATCH}
-    VERSION ${FRAMEWORK_VERSION}
+    OUTPUT_NAME ouroboros-lua
+    OUTPUT_NAME_DEBUG ouroboros-lua-dbg
+    FOLDER "opa"
 )
 
-#####
+########
+# OPWIG
 
 add_library(libopwig-lua ${OUROBOROS_LUA_OPWIG_SRC})
 target_link_libraries(libopwig-lua LINK_PUBLIC libopwig-common)
 target_include_directories(libopwig-lua PUBLIC "..")
+
+set_target_properties (libopwig-lua PROPERTIES 
+    OUTPUT_NAME opwig-lua
+    OUTPUT_NAME_DEBUG opwig-lua-dbg
+    FOLDER "opwig"
+)
 
 ouroboros_generate_opwig (
   lua

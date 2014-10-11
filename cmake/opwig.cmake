@@ -16,5 +16,6 @@ function (ouroboros_generate_opwig LANGUAGE HEADER SPECIFICATION)
     libopwig-common
     libopwig-${LANGUAGE}
   )
+  set_target_properties (${OPWIG_GENERATED_NAME} PROPERTIES FOLDER "opwig")
 endfunction (ouroboros_generate_opwig)
 

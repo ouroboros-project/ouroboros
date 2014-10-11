@@ -32,10 +32,9 @@ target_include_directories(libouroboros PUBLIC src ${CMAKE_CURRENT_BINARY_DIR}/s
 set_target_properties (libouroboros PROPERTIES 
     LINK_FLAGS "${LDFLAGS}"
     PROJECT_NAME OUROBOROS
-    OUTPUT_NAME ouroboros${OUROBOROS_BIGVERSION}
-    OUTPUT_NAME_DEBUG ouroboros${OUROBOROS_BIGVERSION}-dbg
-    SOVERSION ${OUROBOROS_VERSION_PATCH}
-    VERSION ${OUROBOROS_VERSION}
+    OUTPUT_NAME ouroboros
+    OUTPUT_NAME_DEBUG ouroboros-dbg
+    FOLDER "opa"
 )
 
 install(TARGETS libouroboros
@@ -44,6 +43,6 @@ install(TARGETS libouroboros
 )
 install(
   DIRECTORY   src/opa/ouroboros
-  DESTINATION include/ouroboros${OUROBOROS_BIGVERSION}
+  DESTINATION include/ouroboros
   FILES_MATCHING PATTERN "*.h" PATTERN "*.th" PATTERN "*.tcc"
 )

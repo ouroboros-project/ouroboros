@@ -96,6 +96,7 @@ configure_file (
 )
 
 add_executable (oldscript_test EXCLUDE_FROM_ALL script_test.cxx )
+set_target_properties (oldscript_test PROPERTIES FOLDER "Tests")
 target_link_libraries (
   oldscript_test
   libouroboros
@@ -104,17 +105,10 @@ target_link_libraries (
 )
 
 cxx_executable (opwig_test src gtest_main src/config.h)
+target_link_libraries (opwig_test libopwig-common )
 add_custom_command(TARGET opwig_test POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E make_directory ${OUROBOROS_TEST_DUMP_DIR}
 )
-target_link_libraries (
-  opwig_test
-  libopwig-common
-)
 
 cxx_executable (opa_test src gtest_main src/config.h)
-target_link_libraries (
-  opa_test
-  libouroboros
-)
-
+target_link_libraries (opa_test libouroboros)
