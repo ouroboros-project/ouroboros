@@ -135,6 +135,11 @@ bool Reader::parse() {
 
     auto json_root = libjson::parse(contents_);
 
+    if (json_root.find("headers") != json_root.end())
+    for (const auto& header : json_root.at("headers")) {
+        metadata_headers_.push_back(header.as_string());
+    }
+
     if (json_root.find("namespaces") != json_root.end())
     for (const auto& ns : json_root.at("namespaces")) {
         Ptr<Scope> scope;
