@@ -11,13 +11,6 @@ namespace gen {
 
 class WrapperSpecification;
 
-/// Includes a new directory to be taken into consideration while parsing source code.
-/** OPWIG looks for the files to be parsed using this directories. The order in which it does
- ** so is the same order they are added using this function.
- ** @param dir The included directory.
- **/
-void IncludeDirectory (const std::string& dir);
-
 /// Main function for OPWIG.
 /** It executes OPWIG to generate a module with the given name in the specified output directory,
     wrapping the given input files, for a given language.
@@ -50,15 +43,12 @@ int Execute (int argc, char **argv) {
     string        output_dir  = ".";
     for (++argv, --argc; argc; ++argv, --argc) {
         size_t namearg_len = sizeof("--module-name=")-1,
-               dirarg_len  = sizeof("--output-dir=")-1,
-               include_len = sizeof("-I")-1;
+               dirarg_len  = sizeof("--output-dir=")-1;
         string arg = *argv;
         if (arg.substr(0, namearg_len) == "--module-name=")
             module_name = arg.substr(namearg_len);
         else if (arg.substr(0, dirarg_len) == "--output-dir=")
             output_dir = arg.substr(dirarg_len);
-        else if (arg.substr(0, include_len) == "-I")
-            opwig::gen::IncludeDirectory(arg.substr(include_len));
         else
             inputs.push_back(*argv);
     }

@@ -23,15 +23,8 @@ using opwig::gen::WrapperSpecification;
 namespace {
 
 const string  OPWIG_MARK = "[opwig] ";
-list<string>  include_dirs;
 
-bool OpenHeader (const string& filename, ifstream& in) {
-    for (auto include_dir : include_dirs) {
-        in.open(include_dir+"/"+filename);
-        if (in.good())
-            return true;
-        in.close();
-    }
+bool OpenHeader(const string& filename, ifstream& in) {
     in.open(filename);
     if (in.good())
         return true;
@@ -44,10 +37,6 @@ bool OpenHeader (const string& filename, ifstream& in) {
 namespace opwig {
 namespace gen {
 
-void IncludeDirectory (const string& dir) {
-    include_dirs.push_back(dir);
-}
-
 int Execute (const string& module_name, const list<string>& inputs,
              const Ptr<WrapperSpecification>& language_spec, const string& output_dir) {
     
@@ -55,14 +44,14 @@ int Execute (const string& module_name, const list<string>& inputs,
     for (string input : inputs) {
         ifstream in;
         if (!OpenHeader(input, in)) {
-            std::cerr << OPWIG_MARK << "Failed to open source \"" << input << "\". Error:" << std::endl;
+            std::cerr << OPWIG_MARK << "Failed to open JSON file \"" << input << "\". Error:" << std::endl;
             return EXIT_FAILURE;
         }
         opwig::json::Reader parser(in, global);           
         
-        std::cout << OPWIG_MARK << "Parsing source \"" << input << "\"" << std::endl;
-        if (parser.parse()) {
-            std::cerr << OPWIG_MARK << "Failed to parse C++ code." << std::endl;
+        std::cout << OPWIG_MARK << "Parsing JSON file \"" << input << "\"" << std::endl;
+        if (!parser.parse()) {
+            std::cerr << OPWIG_MARK << "Failed to JSON metadata." << std::endl;
             return EXIT_FAILURE;
         }
     }
