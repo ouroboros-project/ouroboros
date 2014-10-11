@@ -23,17 +23,6 @@ option(OUROBOROS_CREATE_BINDINGS "Set to ON to generate bindings for supported s
 option(OUROBOROS_LUA_BINDINGS "Set to ON to enable Lua as one of the languages to create bindings." ON)
 option(OUROBOROS_PYTHON_BINDINGS "Set to ON to enable Python as one of the languages to create bindings." ON)
 
-if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-    SET (CHECKMAC "#define ISMAC")
-endif ()
-
-IF (UNIVERSAL)
-    # Necessary for a Mac Universal Binary
-    SET (CMAKE_OSX_ARCHITECTURES ppc;i386;x86_64)
-    SET (CMAKE_OSX_SYSROOT /Developer/SDKs/MacOSX10.5.sdk)
-    SET (MACOSX_DEPLOYMENT_TARGET 10.5)
-ENDIF ()
-
 # Important build locations.
 set (SRC_DIR src)
 set (LIB_DIR lib)
@@ -48,11 +37,7 @@ CONFIGURE_FILE(
 
 # LDFLAGS: flags for the linker
 set (LDFLAGS "" CACHE STRING "flags sent to the linker")
-if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-    LIST(APPEND LDFLAGS "-mmacosx-version-min=10.5")
-endif ()
 
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG")
 if (UNIX OR MINGW)
     # if g++ for *nix or MinGW for Windows:
     add_definitions(-Wall -ansi -U_FORTIFY_SOURCE -msse2 -std=gnu++0x)
@@ -61,7 +46,6 @@ elseif (MSVC)
 endif ()
 
 include_directories (${OUROBOROS_SRC_DIR})
-include (cmake/ouroboros.cmake)
 
 ##########################################
 # Package Configuration
@@ -113,7 +97,7 @@ add_subdirectory(opa)
 if (OUROBOROS_CREATE_BINDINGS)
     add_subdirectory( externals/libjson )
     add_subdirectory( opwig )
-    
+       
     include (cmake/opwig.cmake)
     add_subdirectory( languages )
     
@@ -140,13 +124,29 @@ if (OUROBOROS_CREATE_BINDINGS)
         set(OUROBOROS_METADATAFILES_${target} ${METADATA_FILES} PARENT_SCOPE)
     endfunction(ouroboros_export_metadata)
 
-    function(ouroboros_create_wrappers target language)
-        set(WRAPPER_FILE "${target}-${language}-wrapper.cc")
-        add_custom_command(OUTPUT ${WRAPPER_FILE}
-                           COMMAND opwig-${language}
-                           ARGS ${OUROBOROS_METADATAFILES_${target}} -o ${WRAPPER_FILE})
-        add_library(${target}-${language} ${WRAPPER_FILE})
-        target_link_libraries(${target}-${language} ${target})
+    function(ouroboros_create_wrappers TARGET LANGUAGE)
+        set(WRAPPER_FILE "${LANGUAGE}_${TARGET}_wrap.cxx")
+        set(OUROBOROS_SPECIFIC_EXECUTABLE opwig-${language})
+        
+        set_source_files_properties (
+            ${WRAPPER_FILE}
+            PROPERTIES
+            GENERATED 1
+            COMPILE_FLAGS -std=c++11
+        )
+        add_custom_command (
+            OUTPUT  ${WRAPPER_FILE}
+            COMMAND ${OUROBOROS_SPECIFIC_EXECUTABLE}
+            ARGS    --module-name=${MODULE_NAME}
+                    --output-dir=${OUTDIR}
+                    ${OUROBOROS_METADATAFILES_${TARGET}}
+            DEPENDS ${OUROBOROS_SPECIFIC_EXECUTABLE} ${OUROBOROS_METADATAFILES_${TARGET}}
+            WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
+        )
+        add_library(${TARGET}-${LANGUAGE} ${WRAPPER_FILE})
+        target_link_libraries(${TARGET}-${LANGUAGE} ${TARGET})
+        
+        unset (OUROBOROS_SPECIFIC_EXECUTABLE)
     endfunction(ouroboros_create_wrappers)
 endif (OUROBOROS_CREATE_BINDINGS)
 

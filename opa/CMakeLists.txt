@@ -47,15 +47,3 @@ install(
   DESTINATION include/ouroboros${OUROBOROS_BIGVERSION}
   FILES_MATCHING PATTERN "*.h" PATTERN "*.th" PATTERN "*.tcc"
 )
-
-# Export relevant variables to parent scope in case add_subdirectory has been
-# used.
-
-if (NOT ${CMAKE_HOME_DIRECTORY} STREQUAL ${CMAKE_CURRENT_LIST_DIR})
-  set (OUROBOROS_INCLUDE_DIR ${OUROBOROS_SRC_DIR} PARENT_SCOPE)
-  set (
-    OUROBOROS_WRAP_HELPER
-    ${CMAKE_CURRENT_LIST_DIR}/cmake/wrap_helper.cmake
-    PARENT_SCOPE
-  )
-endif ()

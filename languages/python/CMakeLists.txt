@@ -23,15 +23,6 @@ SET(OUROBOROS_PYTHON_OPWIG_SRC
 
 find_package (PythonLibs 2.6 REQUIRED)
 
-include_directories ()
-
-set (OUROBOROS_PYTHON_LIBRARIES)
-if(PYTHON_DEBUG_LIBRARY AND (CMAKE_VERSION VERSION_LESS "2.8.8"))
-    LIST(APPEND OUROBOROS_PYTHON_LIBRARIES optimized;${PYTHON_LIBRARIES};debug;${PYTHON_DEBUG_LIBRARY})
-else()
-    LIST(APPEND OUROBOROS_PYTHON_LIBRARIES ${PYTHON_LIBRARIES})
-endif()
-
 message ("-- Python module added.")
 
 add_library (libouroboros-python ${OUROBOROS_PYTHON_OPA_SRC})
@@ -39,7 +30,7 @@ target_include_directories(libouroboros-python PUBLIC ".." ${PYTHON_INCLUDE_DIRS
 
 target_link_libraries (libouroboros-python 
     LINK_PUBLIC
-    ${OUROBOROS_PYTHON_LIBRARIES}
+    ${PYTHON_LIBRARIES}
     libouroboros
 )
 
@@ -51,8 +42,6 @@ set_target_properties (libouroboros-python PROPERTIES
     SOVERSION ${FRAMEWORK_VERSION_PATCH}
     VERSION ${FRAMEWORK_VERSION}
 )
-
-ouroboros_add_langmodule(Python libouroboros-python)
 
 ######
 

@@ -60,9 +60,6 @@ set_target_properties (libouroboros-lua PROPERTIES
     VERSION ${FRAMEWORK_VERSION}
 )
 
-ouroboros_add_langmodule (Lua libouroboros-lua)
-
-
 #####
 
 add_library(libopwig-lua ${OUROBOROS_LUA_OPWIG_SRC})
