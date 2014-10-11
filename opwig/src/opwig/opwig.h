@@ -5,6 +5,7 @@
 #include <opwig/md/ptr.h>
 #include <list>
 #include <string>
+#include <opwig/gen/wrapperspecification.h>
 
 namespace opwig {
 namespace gen {

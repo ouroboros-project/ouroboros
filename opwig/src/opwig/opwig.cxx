@@ -3,7 +3,6 @@
 
 #include <opwig/gen/proxygenerator.h>
 #include <opwig/gen/wrappergenerator.h>
-#include <opwig/gen/wrapperspecification.h>
 #include <opwig/md/ptr.h>
 #include <opwig/md/namespace.h>
 #include <opwig/json/reader.h>
