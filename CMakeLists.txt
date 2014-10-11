@@ -125,26 +125,32 @@ if (OUROBOROS_CREATE_BINDINGS)
     endfunction(ouroboros_export_metadata)
 
     function(ouroboros_create_wrappers TARGET LANGUAGE)
-        set(WRAPPER_FILE "${LANGUAGE}_${TARGET}_wrap.cxx")
-        set(OUROBOROS_SPECIFIC_EXECUTABLE opwig-${language})
+        if(DEFINED ARGV2)
+            set(OUTDIR "${ARGV2}")
+        else()
+            set(OUTDIR "${CMAKE_CURRENT_BINARY_DIR}")
+        endif()
+        set(WRAPPER_FILE "${CMAKE_CURRENT_BINARY_DIR}/${LANGUAGE}_${TARGET}_wrap.cxx")
+        set(OUROBOROS_SPECIFIC_EXECUTABLE opwig-${LANGUAGE})
         
-        set_source_files_properties (
-            ${WRAPPER_FILE}
-            PROPERTIES
-            GENERATED 1
-            COMPILE_FLAGS -std=c++11
-        )
+        if (UNIX OR MINGW)
+            set_source_files_properties (
+                ${WRAPPER_FILE}
+                PROPERTIES
+                GENERATED 1
+                COMPILE_FLAGS -std=c++11
+            )
+        endif()
         add_custom_command (
             OUTPUT  ${WRAPPER_FILE}
             COMMAND ${OUROBOROS_SPECIFIC_EXECUTABLE}
-            ARGS    --module-name=${MODULE_NAME}
-                    --output-dir=${OUTDIR}
+            ARGS    --module-name=${TARGET}
+                    --output-dir="${OUTDIR}"
                     ${OUROBOROS_METADATAFILES_${TARGET}}
             DEPENDS ${OUROBOROS_SPECIFIC_EXECUTABLE} ${OUROBOROS_METADATAFILES_${TARGET}}
-            WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
         )
         add_library(${TARGET}-${LANGUAGE} ${WRAPPER_FILE})
-        target_link_libraries(${TARGET}-${LANGUAGE} ${TARGET})
+        target_link_libraries(${TARGET}-${LANGUAGE} ${TARGET} libouroboros-${LANGUAGE})
         
         unset (OUROBOROS_SPECIFIC_EXECUTABLE)
     endfunction(ouroboros_create_wrappers)
