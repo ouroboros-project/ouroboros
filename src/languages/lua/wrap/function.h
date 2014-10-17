@@ -24,13 +24,16 @@ class NativeCall {
   public:
     using FunctionPtr = R (*) (Args...);
     static int Run (State&& L) {
-        FunctionPtr func = reinterpret_cast<FunctionPtr>(L.touserdata(lua_upvalueindex(1)));
+        // TODO can we know the function name?
+        FunctionPtr func = reinterpret_cast<FunctionPtr>(
+            L.touserdata(lua_upvalueindex(1)));
         int nargs;
         if ((nargs = L.gettop()) < sizeof...(Args))
-          // TODO can we know the function name?
-          return luaL_error(L, "Error: expected %d arguments but received only %d.\n",
-                            (sizeof...(Args)), nargs);
-        Helper<typename MakeIndexes<sizeof...(Args)>::type, std::is_void<R>::value>::Call(L, func);
+          return luaL_error(
+              L, "Error: expected %d arguments but received only %d.\n",
+              (sizeof...(Args)), nargs);
+        using Indices = typename MakeIndexes<sizeof...(Args)>::type;
+        Helper<Indices, std::is_void<R>::value>::Call(L, func);
         return 1;
     }
   private:
@@ -38,7 +41,8 @@ class NativeCall {
     struct Helper<Ind<I...>, false> {
         static void Call (State& L, FunctionPtr func) {
             Converter conv(L);
-            conv.TypeToScript<R>(func(conv.ScriptToType<typename TypeAt<I, Args...>::type>(I+1)...));
+            conv.TypeToScript<R>(func(
+                conv.ScriptToType<typename TypeAt<I, Args...>::type>(I+1)...));
         }
     };
     
