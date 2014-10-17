@@ -56,10 +56,12 @@ class Converter::ConversionToScript<T, std::true_type> final {
         }
 };
 
+// TODO: non primitive should get their respective metatables
+
 template <typename T>
-class Converter::ConversionToScript<T, std::false_type> final {
+class Converter::ConversionToScript<T*, std::false_type> final {
     public:
-        void Convert (State &L, T value) {
+        void Convert (State &L, T* value) {
             if (value == nullptr) {
               L.pushnil();
               return;
@@ -67,7 +69,29 @@ class Converter::ConversionToScript<T, std::false_type> final {
             L.pushudata(sizeof(UserData));
             UserData *udata = static_cast<UserData*>(L.touserdata(-1));
             udata->obj = static_cast<void*>(value);
-            udata->type = typeid(T);
+            udata->type = typeid(*value);
+        }
+};
+
+template <typename T>
+class Converter::ConversionToScript<T&, std::false_type> final {
+    public:
+        void Convert (State &L, T& value) {
+            L.pushudata(sizeof(UserData));
+            UserData *udata = static_cast<UserData*>(L.touserdata(-1));
+            udata->obj = static_cast<void*>(&value);
+            udata->type = typeid(value);
+        }
+};
+
+template <typename T>
+class Converter::ConversionToScript<const T&, std::false_type> final {
+    public:
+        void Convert (State &L, const T& value) {
+            L.pushudata(sizeof(UserData));
+            UserData *udata = static_cast<UserData*>(L.touserdata(-1));
+            udata->obj = const_cast<void*>(static_cast<const void*>(&value));
+            udata->type = typeid(value);
         }
 };
 

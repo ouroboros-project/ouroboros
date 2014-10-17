@@ -105,7 +105,7 @@ class ModuleInfo : public utils::Uncopyable {
      */
     lua_CFunction destructor () const;
 
-    /// Gives red-only access toe the module's submodules.
+    /// Gives read-only access to the module's submodules.
     /** @return const std::list<ModuleInfo>& The module's children.
      */
     const std::list<ModuleInfo*>& children () const;

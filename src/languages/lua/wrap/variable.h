@@ -16,22 +16,43 @@ namespace opa {
 namespace lua {
 namespace wrap {
 
+template <typename T, bool IsPrimitive>
+class NativeGetter;
+
+template <typename T>
+class NativeGetter<T, true> {
+  public:
+    static int Run (State &&L) {
+        auto variable_ptr = static_cast<const T*>(
+            L.touserdata(lua_upvalueindex(1)));
+        Converter(L).TypeToScript(*variable_ptr);
+        return 1;
+    }
+};
+
+template <typename T>
+class NativeGetter<T, false> {
+  public:
+    static int Run (State &&L) {
+        auto variable_ptr = static_cast<const T*>(
+            L.touserdata(lua_upvalueindex(1)));
+        Converter(L).TypeToScript<const T&>(*variable_ptr);
+        return 1;
+    }
+};
+
 template <typename T>
 class VariableGetter final : public Pushable {
   public:
     VariableGetter(const std::string& the_name, const T* the_variable_ptr)
         : Pushable(the_name), variable_ptr_(the_variable_ptr) {}
     void PushOnto(State &L) const override {
-        L.pushudata(reinterpret_cast<const void*>(variable_ptr_));
+        L.pushudata(static_cast<const void*>(variable_ptr_));
         L.pushcfunction(&Wrap, 1);
     }
   private:
-    static int Wrap (lua_State *L_) {
-        State L(L_);
-        auto the_variable_ptr = reinterpret_cast<const T*>(
-            L.touserdata(lua_upvalueindex(1)));
-        Converter(L).TypeToScript<T>(*the_variable_ptr);
-        return 1;
+    static int Wrap (lua_State *L) {
+        return NativeGetter<T, lua_to<T>::PrimitiveType::value>::Run(L);
     }
     const T *variable_ptr_;
 };
