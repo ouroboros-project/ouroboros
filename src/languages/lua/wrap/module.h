@@ -26,6 +26,7 @@ class ModuleInfo : public utils::Uncopyable {
 
   public:
 
+    // I hope someday I can use unique_ptrs for the Pushables here.
     using FunctionList = std::vector<std::shared_ptr<Pushable>>;
     using FunctionTable = std::unordered_map<std::string, FunctionList>;
 
@@ -38,7 +39,7 @@ class ModuleInfo : public utils::Uncopyable {
      ** @param the_children   The module's child modules.
      */
     ModuleInfo (const std::string& the_name, lua_CFunction the_init_function,
-                FunctionTable the_function_table,
+                const FunctionTable& the_function_table,
                 const std::list<ModuleInfo*>& the_children,
                 lua_CFunction the_constructor = nullptr,
                 lua_CFunction the_desctructor = nullptr,
@@ -123,7 +124,7 @@ class ModuleInfo : public utils::Uncopyable {
 };
 
 inline ModuleInfo::ModuleInfo (const std::string& the_name, lua_CFunction the_init_function,
-                               FunctionTable the_function_table,
+                               const FunctionTable& the_function_table,
                                const std::list<ModuleInfo*>& the_children,
                                lua_CFunction the_constructor, lua_CFunction the_desctructor,
                                bool the_class_flag)
