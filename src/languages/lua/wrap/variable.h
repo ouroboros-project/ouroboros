@@ -16,6 +16,10 @@ namespace opa {
 namespace lua {
 namespace wrap {
 
+/** @name Native getter
+ ** @{
+ */
+
 template <typename T, bool IsPrimitive>
 class NativeGetter;
 
@@ -41,12 +45,32 @@ class NativeGetter<T, false> {
     }
 };
 
+/** @}
+ */
+
+/** @name Native setter
+ ** @{
+ */
+
+template <typename T>
+class NativeSetter {
+  public:
+    static int Run (State L) {
+        auto variable_ptr = static_cast<T*>(L.touserdata(lua_upvalueindex(1)));
+        *variable_ptr = Converter(L).ScriptToType<T>(1);
+        return 0;
+    }
+};
+
+/** @}
+ */
+
 template <typename T>
 class VariableGetter final : public Pushable {
   public:
     VariableGetter(const std::string& the_name, const T* the_variable_ptr)
         : Pushable(the_name), variable_ptr_(the_variable_ptr) {}
-    void PushOnto(State &L) const override {
+    void PushOnto(State& L) const override {
         L.pushudata(static_cast<const void*>(variable_ptr_));
         L.pushcfunction(&Wrap, 1);
     }
@@ -55,6 +79,22 @@ class VariableGetter final : public Pushable {
         return NativeGetter<T, lua_to<T>::PrimitiveType::value>::Run(L);
     }
     const T *variable_ptr_;
+};
+
+template <typename T>
+class VariableSetter final : public Pushable {
+  public:
+    VariableSetter(const std::string& the_name, T* the_variable_ptr)
+        : Pushable(the_name), variable_ptr_(the_variable_ptr) {}
+    void PushOnto(State& L) const override {
+        L.pushudata(static_cast<const void*>(variable_ptr_));
+        L.pushcfunction(&Wrap, 1);
+    }
+  private:
+    static int Wrap (lua_State *L) {
+        return NativeSetter<T>::Run(L);
+    }
+    T *variable_ptr_;
 };
 
 } // namespace wrap

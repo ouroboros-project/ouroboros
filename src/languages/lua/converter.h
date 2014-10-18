@@ -118,7 +118,7 @@ class Converter::ConversionToType<T, std::false_type> final {
         UserData *udata = static_cast<UserData*>(L.touserdata(index));
         if (!udata || udata->type != typeid(T))
             throw std::runtime_error("type mismatch at index "+std::to_string(index));
-        return static_cast<T>(udata->obj);
+        return *(static_cast<T*>(udata->obj));
     }
 };
 

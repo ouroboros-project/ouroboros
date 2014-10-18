@@ -114,6 +114,7 @@ DEFINE_LUA_PRIMITIVE_OP(is);
     DEFINE_LUA_IS(type, lua_is##name(L, index))
 
 DEFINE_LUA_SIMPLE_IS(const char*, string);
+DEFINE_LUA_SIMPLE_IS(std::string, string);
 DEFINE_LUA_IS(bool, !lua_isnone(L, index));
 DEFINE_LUA_SIMPLE_IS(int, number);
 DEFINE_LUA_SIMPLE_IS(double, number);
