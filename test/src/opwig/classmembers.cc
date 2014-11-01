@@ -3,7 +3,27 @@ protected:
 };
 
 TEST_F (MDClassMembersTest, SingleVariable) {
-    ASSERT_EQ(RunParse("class name { type var; };"), 0);
+    auto json = R"({
+    "classes": [
+        {
+            "name": "name",
+            "qualified_name": "name",
+            "access": "public",
+            "base_class": [],
+            "methods": []
+        }
+    ],
+    "variables": [
+        {
+            "name": "var",
+            "qualified_name": "name::var",
+            "access": "private",
+            "type": "type"
+        }
+    ]
+    })";
+    ASSERT_EQ(RunParse(json), 0);
+    //ASSERT_EQ(RunParse("class name { type var; };"), 0);
     
     auto c = TestClass("name", AccessSpecifier::PUBLIC, 1u, 0u, 0u);
     TestClassAttributes(c, 0u, 0u, false);
@@ -11,15 +31,63 @@ TEST_F (MDClassMembersTest, SingleVariable) {
 }
 
 TEST_F (MDClassMembersTest, SingleVariableDerivedClass) {
-    ASSERT_EQ(RunParse("class name : public base { type var; };"), 0);
+    auto json = R"({
+    "classes": [
+        {
+            "name": "name",
+            "qualified_name": "name",
+            "access": "public",
+            "base_class": [{ "access": "public", "name": "base" }],
+            "methods": []
+        }
+    ],
+    "variables": [
+        {
+            "name": "var",
+            "qualified_name": "name::var",
+            "access": "private",
+            "type": "type"
+        }
+    ]
+    })";
+    ASSERT_EQ(RunParse(json), 0);
+    //ASSERT_EQ(RunParse("class name : public base { type var; };"), 0);
+
     auto c = TestClass("name", AccessSpecifier::PUBLIC, 1u, 0u, 0u);
     TestClassAttributes(c, 1u, 0u, false);
-    TestClassBaseByIndex(c, 0, "base", false, AccessSpecifier::PUBLIC);
+    TestClassBaseByIndex(c, 0, ("base"), false, AccessSpecifier::PUBLIC);
     TestVariable(c, "var", "type", AccessSpecifier::PRIVATE);
 }
 
 TEST_F (MDClassMembersTest, MultiVariable) {
-    ASSERT_EQ(RunParse("class name { type var, var2; };"), 0);
+    auto json = R"({
+    "classes": [
+        {
+            "name": "name",
+            "qualified_name": "name",
+            "access": "public",
+            "base_class": [],
+            "methods": []
+        }
+    ],
+    "variables": [
+        {
+            "name": "var",
+            "qualified_name": "name::var",
+            "access": "private",
+            "type": "type"
+        },
+        {
+            "name": "var2",
+            "qualified_name": "name::var2",
+            "access": "private",
+            "type": "type"
+        }
+    ]
+    })";
+    ASSERT_EQ(RunParse(json), 0);
+    //ASSERT_EQ(RunParse("class name { type var, var2; };"), 0);
+
     auto c = TestClass("name", AccessSpecifier::PUBLIC, 2u, 0u, 0u);
     TestClassAttributes(c, 0u, 0u, false);
     TestVariable(c, "var", "type", AccessSpecifier::PRIVATE);
@@ -27,7 +95,29 @@ TEST_F (MDClassMembersTest, MultiVariable) {
 }
 
 TEST_F (MDClassMembersTest, SingleFunction) {
-    ASSERT_EQ(RunParse("class name { rtype func(type); };"), 0);
+    auto json = R"({
+    "classes": [
+        {
+            "name": "name",
+            "qualified_name": "name",
+            "access": "public",
+            "methods": [
+                {
+                    "name": "func",
+                    "qualified_name": "name::func",
+                    "access": "private",
+                    "params": [ "type" ],
+                    "return": "rtype",
+                    "virtual": false,
+                    "pure": false,
+                    "deleted": false
+                }
+            ]
+        }
+    ]})";
+    ASSERT_EQ(RunParse(json), 0);
+    //ASSERT_EQ(RunParse("class name { rtype func(type); };"), 0);
+
     auto c = TestClass("name", AccessSpecifier::PUBLIC, 0u, 1u, 0u);
     TestClassAttributes(c, 0u, 0u, false);
 
@@ -36,14 +126,40 @@ TEST_F (MDClassMembersTest, SingleFunction) {
 }
 
 TEST_F (MDClassMembersTest, SinglePureFunction) {
-    ASSERT_EQ(RunParse("class name { rtype func(type) = 0; };"), 0);
+    auto json = R"({
+    "classes": [
+        {
+            "access": "public",
+            "base_class": [],
+            "methods": [
+                {
+                    "access": "private",
+                    "const": false,
+                    "deleted": false,
+                    "name": "func",
+                    "params": [ "type" ],
+                    "pure": true,
+                    "qualified_name": "name::func",
+                    "return": "rtype",
+                    "virtual": true
+                }
+            ],
+            "name": "name",
+            "qualified_name": "name"
+        }
+    ]
+})";
+    ASSERT_EQ(RunParse(json), 0);
+    //ASSERT_EQ(RunParse("class name { virtual rtype func(type) = 0; };"), 0);
+
     auto c = TestClass("name", AccessSpecifier::PUBLIC, 0u, 1u, 0u);
     TestClassAttributes(c, 0u, 0u, false);
 
-    auto f = TestFunction(c, "func(type)", "func", "rtype", AccessSpecifier::PRIVATE, true);
+    auto f = TestFunction(c, "func(type)", "func", "rtype", AccessSpecifier::PRIVATE, true, true);
     TestFunctionParameter(f, 0, "", "type");
 }
 
+/* This is testing an implementation detail...
 TEST_F (MDClassMembersTest, ClassWithAccessSpecifier) {
     ASSERT_EQ(RunParse("class name { protected: };"), 0);
     auto c = TestClass("name", AccessSpecifier::PUBLIC, 0u, 0u, 0u);
@@ -51,9 +167,41 @@ TEST_F (MDClassMembersTest, ClassWithAccessSpecifier) {
 
     EXPECT_EQ(c->GetAccessSpecifier(), AccessSpecifier::PROTECTED);
 }
+*/
 
 TEST_F (MDClassMembersTest, SingleVarAndFunction) {
-    ASSERT_EQ(RunParse("class name { type var; rtype func(type); };"), 0);
+    auto json = R"({
+    "classes": [
+        {
+            "name": "name",
+            "qualified_name": "name",
+            "access": "public",
+            "methods": [
+                {
+                    "name": "func",
+                    "qualified_name": "name::func",
+                    "access": "private",
+                    "params": [ "type" ],
+                    "return": "rtype",
+                    "virtual": false,
+                    "pure": false,
+                    "deleted": false
+                }
+            ]
+        }
+    ],
+    "variables": [
+        {
+            "name": "var",
+            "qualified_name": "name::var",
+            "access": "private",
+            "type": "type"
+        }
+    ]
+    })";
+    ASSERT_EQ(RunParse(json), 0);
+    //ASSERT_EQ(RunParse("class name { type var; rtype func(type); };"), 0);
+
     auto c = TestClass("name", AccessSpecifier::PUBLIC, 1u, 1u, 0u);
     TestClassAttributes(c, 0u, 0u, false);
 
@@ -63,7 +211,30 @@ TEST_F (MDClassMembersTest, SingleVarAndFunction) {
 }
 
 TEST_F (MDClassMembersTest, SingleFunctionWithAccessSpecifier) {
-    ASSERT_EQ(RunParse("class name { public: rtype func(type); };"), 0);
+    auto json = R"({
+    "classes": [
+        {
+            "name": "name",
+            "qualified_name": "name",
+            "access": "public",
+            "methods": [
+                {
+                    "name": "func",
+                    "qualified_name": "name::func",
+                    "access": "public",
+                    "params": [ "type" ],
+                    "return": "rtype",
+                    "virtual": false,
+                    "pure": false,
+                    "deleted": false
+                }
+            ]
+        }
+    ]
+    })";
+    ASSERT_EQ(RunParse(json), 0);
+    //ASSERT_EQ(RunParse("class name { public: rtype func(type); };"), 0);
+
     auto c = TestClass("name", AccessSpecifier::PUBLIC, 0u, 1u, 0u);
     TestClassAttributes(c, 0u, 0u, false);
 
@@ -72,7 +243,38 @@ TEST_F (MDClassMembersTest, SingleFunctionWithAccessSpecifier) {
 }
 
 TEST_F (MDClassMembersTest, VarAndFunctionWithMultiAccessSpecifiers) {
-    ASSERT_EQ(RunParse("class name { public: rtype func(type); protected: type var; };"), 0);
+    auto json = R"({
+    "classes": [
+        {
+            "name": "name",
+            "qualified_name": "name",
+            "access": "public",
+            "methods": [
+                {
+                    "name": "func",
+                    "qualified_name": "name::func",
+                    "access": "public",
+                    "params": [ "type" ],
+                    "return": "rtype",
+                    "virtual": false,
+                    "pure": false,
+                    "deleted": false
+                }
+            ]
+        }
+    ],
+    "variables": [
+        {
+            "name": "var",
+            "qualified_name": "name::var",
+            "access": "protected",
+            "type": "type"
+        }
+    ]
+    })";
+    ASSERT_EQ(RunParse(json), 0);
+    //ASSERT_EQ(RunParse("class name { public: rtype func(type); protected: type var; };"), 0);
+
     auto c = TestClass("name", AccessSpecifier::PUBLIC, 1u, 1u, 0u);
     TestClassAttributes(c, 0u, 0u, false);
 
@@ -82,16 +284,82 @@ TEST_F (MDClassMembersTest, VarAndFunctionWithMultiAccessSpecifiers) {
 }
 
 TEST_F (MDClassMembersTest, NestedNamespaceError) {
-    EXPECT_EQ(RunParse("class name { namespace erro {} };"), 1);
+    auto json = R"({
+    "namespaces": [ "name::erro" ],
+    "classes": [
+        {
+            "name": "name",
+            "qualified_name": "name",
+            "access": "public",
+            "methods": []
+        }
+    ]
+    })";
+    RunParseThrow(json);
+    //EXPECT_EQ(RunParse("class name { namespace erro {} };"), 1);
 }
 
 TEST_F (MDClassMembersTest, NamesConflict) {
-    RunParseThrow("class name { type var; rtype var(type); };");
+    auto json = R"({
+    "classes": [
+        {
+            "name": "name",
+            "qualified_name": "name",
+            "access": "public",
+            "methods": [
+                {
+                    "name": "var",
+                    "qualified_name": "name::var",
+                    "access": "private",
+                    "params": [ "type" ],
+                    "return": "rtype",
+                    "virtual": false,
+                    "pure": false,
+                    "deleted": false
+                }
+            ]
+        }
+    ],
+    "variables": [
+        {
+            "name": "var",
+            "qualified_name": "name::var",
+            "access": "private",
+            "type": "type"
+        }
+    ]
+    })";
+    RunParseThrow(json);
+    //RunParseThrow("class name { type var; rtype var(type); };");
 }
 
 
 TEST_F (MDClassMembersTest, SingleConstructor) {
-    ASSERT_EQ(RunParse("class name { name(type); };"), 0);
+    auto json = R"({
+    "classes": [
+        {
+            "access": "public",
+            "base_class": [],
+            "methods": [
+                {
+                    "access": "private",
+                    "const": false,
+                    "deleted": false,
+                    "name": "name",
+                    "params": [ "type" ],
+                    "pure": false,
+                    "qualified_name": "name::name",
+                    "virtual": false
+                }
+            ],
+            "name": "name",
+            "qualified_name": "name"
+        }
+    ]
+})";
+    ASSERT_EQ(RunParse(json), 0);
+    //ASSERT_EQ(RunParse("class name { name(type); };"), 0);
+
     auto c = TestClass("name", AccessSpecifier::PUBLIC, 0u, 0u, 0u);
     TestClassAttributes(c, 0u, 1u, false);
     auto ctor = TestClassConstructorByIndex(c, 0, AccessSpecifier::PRIVATE);
@@ -100,7 +368,41 @@ TEST_F (MDClassMembersTest, SingleConstructor) {
 
 
 TEST_F (MDClassMembersTest, MultiConstructor) {
-    ASSERT_EQ(RunParse("class name { name(); name(type); };"), 0);
+    auto json = R"({
+    "classes": [
+    {
+        "access": "public",
+            "base_class" : [],
+            "methods" : [
+        {
+            "access": "private",
+                "const" : false,
+                "deleted" : false,
+                "name" : "name",
+                "params" : [],
+                "pure" : false,
+                "qualified_name" : "name::name",
+                "virtual" : false
+        },
+        {
+            "access": "private",
+            "const" : false,
+            "deleted" : false,
+            "name" : "name",
+            "params" : [ "type" ],
+            "pure" : false,
+            "qualified_name" : "name::name",
+            "virtual" : false
+        }
+            ],
+            "name": "name",
+            "qualified_name" : "name"
+    }
+    ]
+})";
+    ASSERT_EQ(RunParse(json), 0);
+    //ASSERT_EQ(RunParse("class name { name(); name(type); };"), 0);
+
     auto c = TestClass("name", AccessSpecifier::PUBLIC, 0u, 0u, 0u);
     TestClassAttributes(c, 0u, 2u, false);
     auto ctor = TestClassConstructorByIndex(c, 0, AccessSpecifier::PRIVATE);
@@ -110,7 +412,41 @@ TEST_F (MDClassMembersTest, MultiConstructor) {
 }
 
 TEST_F (MDClassMembersTest, MultiConstructorWithAccess) {
-    ASSERT_EQ(RunParse("class name { public: name(type); protected: name(); };"), 0);
+    auto json = R"({
+    "classes": [
+        {
+            "access": "public",
+            "base_class": [],
+            "methods": [
+                {
+                    "access": "public",
+                    "const": false,
+                    "deleted": false,
+                    "name": "name",
+                    "params": [ "type" ],
+                    "pure": false,
+                    "qualified_name": "name::name",
+                    "virtual": false
+                },
+                {
+                    "access": "protected",
+                    "const": false,
+                    "deleted": false,
+                    "name": "name",
+                    "params": [],
+                    "pure": false,
+                    "qualified_name": "name::name",
+                    "virtual": false
+                }
+            ],
+            "name": "name",
+            "qualified_name": "name"
+        }
+    ]
+})";
+    ASSERT_EQ(RunParse(json), 0);
+    //ASSERT_EQ(RunParse("class name { public: name(type); protected: name(); };"), 0);
+
     auto c = TestClass("name", AccessSpecifier::PUBLIC, 0u, 0u, 0u);
     TestClassAttributes(c, 0u, 2u, false);
     auto ctor = TestClassConstructorByIndex(c, 0, AccessSpecifier::PUBLIC);
@@ -121,7 +457,31 @@ TEST_F (MDClassMembersTest, MultiConstructorWithAccess) {
 
 
 TEST_F (MDClassMembersTest, SingleDestructor) {
-    ASSERT_EQ(RunParse("class name { ~name(); };"), 0);
+    auto json = R"({
+    "classes": [
+        {
+            "access": "public",
+            "base_class": [],
+            "methods": [
+                {
+                    "access": "private",
+                    "const": false,
+                    "deleted": false,
+                    "name": "~name",
+                    "params": [],
+                    "pure": false,
+                    "qualified_name": "name::~name",
+                    "virtual": false
+                }
+            ],
+            "name": "name",
+            "qualified_name": "name"
+        }
+    ]
+})";
+    ASSERT_EQ(RunParse(json), 0);
+    //ASSERT_EQ(RunParse("class name { ~name(); };"), 0);
+
     auto c = TestClass("name", AccessSpecifier::PUBLIC, 0u, 0u, 0u);
     TestClassAttributes(c, 0u, 0u, true);
     TestClassDestructor(c, false, AccessSpecifier::PRIVATE);
@@ -131,7 +491,31 @@ TEST_F (MDClassMembersTest, SingleDestructor) {
 
 
 TEST_F (MDClassMembersTest, VirtualDestructor) {
-    ASSERT_EQ(RunParse("class name { virtual ~name(); };"), 0);
+    auto json = R"({
+    "classes": [
+        {
+            "access": "public",
+            "base_class": [],
+            "methods": [
+                {
+                    "access": "private",
+                    "const": false,
+                    "deleted": false,
+                    "name": "~name",
+                    "params": [],
+                    "pure": false,
+                    "qualified_name": "name::~name",
+                    "virtual": true
+                }
+            ],
+            "name": "name",
+            "qualified_name": "name"
+        }
+    ]
+})";
+    ASSERT_EQ(RunParse(json), 0);
+    //ASSERT_EQ(RunParse("class name { virtual ~name(); };"), 0);
+
     auto c = TestClass("name", AccessSpecifier::PUBLIC, 0u, 0u, 0u);
     TestClassAttributes(c, 0u, 0u, true);
     TestClassDestructor(c, true, AccessSpecifier::PRIVATE);
@@ -140,7 +524,41 @@ TEST_F (MDClassMembersTest, VirtualDestructor) {
 }
 
 TEST_F (MDClassMembersTest, ConstructorAndDestructorWithAccess) {
-    ASSERT_EQ(RunParse("class name { public: ~name(); protected: name(type); };"), 0);
+    auto json = R"({
+    "classes": [
+        {
+            "access": "public",
+            "base_class": [],
+            "methods": [
+                {
+                    "access": "public",
+                    "const": false,
+                    "deleted": false,
+                    "name": "~name",
+                    "params": [],
+                    "pure": false,
+                    "qualified_name": "name::~name",
+                    "virtual": false
+                },
+                {
+                    "access": "protected",
+                    "const": false,
+                    "deleted": false,
+                    "name": "name",
+                    "params": [ "type" ],
+                    "pure": false,
+                    "qualified_name": "name::name",
+                    "virtual": false
+                }
+            ],
+            "name": "name",
+            "qualified_name": "name"
+        }
+    ]
+})";
+    ASSERT_EQ(RunParse(json), 0);
+    //ASSERT_EQ(RunParse("class name { public: ~name(); protected: name(type); };"), 0);
+
     auto c = TestClass("name", AccessSpecifier::PUBLIC, 0u, 0u, 0u);
     TestClassAttributes(c, 0u, 1u, true);
     TestClassDestructor(c, false, AccessSpecifier::PUBLIC);
@@ -149,8 +567,13 @@ TEST_F (MDClassMembersTest, ConstructorAndDestructorWithAccess) {
     TestFunctionParameter(ctor, 0, "", "type");
 }
 
+/* Definition tests...
 TEST_F (MDClassMembersTest, SingleConstructorDefinition) {
-    ASSERT_EQ(RunParse("class name { name(type) {} };"), 0);
+    auto json = R"({
+})";
+    ASSERT_EQ(RunParse(json), 0);
+    //ASSERT_EQ(RunParse("class name { name(type) {} };"), 0);
+
     auto c = TestClass("name", AccessSpecifier::PUBLIC, 0u, 0u, 0u);
     TestClassAttributes(c, 0u, 1u, false);
     auto ctor = TestClassConstructorByIndex(c, 0, AccessSpecifier::PRIVATE);
@@ -158,7 +581,11 @@ TEST_F (MDClassMembersTest, SingleConstructorDefinition) {
 }
 
 TEST_F (MDClassMembersTest, SingleConstructorDefinitionWithInitializer) {
-    ASSERT_EQ(RunParse("class name { name(type) : foo(bar), dafuq(0 = 1) {} };"), 0);
+    auto json = R"({
+})";
+    ASSERT_EQ(RunParse(json), 0);
+    //ASSERT_EQ(RunParse("class name { name(type) : foo(bar), dafuq(0 = 1) {} };"), 0);
+
     auto c = TestClass("name", AccessSpecifier::PUBLIC, 0u, 0u, 0u);
     TestClassAttributes(c, 0u, 1u, false);
     auto ctor = TestClassConstructorByIndex(c, 0, AccessSpecifier::PRIVATE);
@@ -166,7 +593,11 @@ TEST_F (MDClassMembersTest, SingleConstructorDefinitionWithInitializer) {
 }
 
 TEST_F (MDClassMembersTest, MultiConstructorDefinition) {
-    ASSERT_EQ(RunParse("class name { public: name(type) {} protected: name() {} };"), 0);
+    auto json = R"({
+})";
+    ASSERT_EQ(RunParse(json), 0);
+    //ASSERT_EQ(RunParse("class name { public: name(type) {} protected: name() {} };"), 0);
+
     auto c = TestClass("name", AccessSpecifier::PUBLIC, 0u, 0u, 0u);
     TestClassAttributes(c, 0u, 2u, false);
     auto ctor = TestClassConstructorByIndex(c, 0, AccessSpecifier::PUBLIC);
@@ -176,7 +607,11 @@ TEST_F (MDClassMembersTest, MultiConstructorDefinition) {
 }
 
 TEST_F (MDClassMembersTest, SingleDestructorDefinition) {
-    ASSERT_EQ(RunParse("class name { ~name() {} };"), 0);
+    auto json = R"({
+})";
+    ASSERT_EQ(RunParse(json), 0);
+    //ASSERT_EQ(RunParse("class name { ~name() {} };"), 0);
+
     auto c = TestClass("name", AccessSpecifier::PUBLIC, 0u, 0u, 0u);
     TestClassAttributes(c, 0u, 0u, true);
     TestClassDestructor(c, false, AccessSpecifier::PRIVATE);
@@ -185,7 +620,11 @@ TEST_F (MDClassMembersTest, SingleDestructorDefinition) {
 }
 
 TEST_F (MDClassMembersTest, ConstructorAndDestructorDefinition) {
-    ASSERT_EQ(RunParse("class name { public: ~name(){} protected: name(type){} name(type,type2){} };"), 0);
+    auto json = R"({
+})";
+    ASSERT_EQ(RunParse(json), 0);
+    //ASSERT_EQ(RunParse("class name { public: ~name(){} protected: name(type){} name(type,type2){} };"), 0);
+
     auto c = TestClass("name", AccessSpecifier::PUBLIC, 0u, 0u, 0u);
     TestClassAttributes(c, 0u, 2u, true);
     TestClassDestructor(c, false, AccessSpecifier::PUBLIC);
@@ -196,3 +635,4 @@ TEST_F (MDClassMembersTest, ConstructorAndDestructorDefinition) {
     TestFunctionParameter(ctor, 0, "", "type");
     TestFunctionParameter(ctor, 1, "", "type2");
 }
+*/

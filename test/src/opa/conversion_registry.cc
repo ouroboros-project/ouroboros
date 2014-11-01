@@ -27,18 +27,16 @@ class ConversionRegistryTest : public ::testing::Test {
     virtual void SetUp () {}
 
     void BuildSmallTable () {
-        table_ = {
-          { typeid(B), { typeid(A) } }
-        };
+        table_.clear();
+        table_.insert({ typeid(B), { typeid(A) } });
     }
 
     void BuildBigTable () {
-        table_ = {
-          { typeid(B), { typeid(A) } },
-          { typeid(C), { typeid(A) } },
-          { typeid(D), { typeid(B), typeid(A) } },
-          { typeid(F), { typeid(C), typeid(E), typeid(A) } }
-        };
+        table_.clear();
+        table_.insert({ typeid(B), { typeid(A) } });
+        table_.insert({ typeid(C), { typeid(A) } });
+        table_.insert({ typeid(D), { typeid(B), typeid(A) } });
+        table_.insert({ typeid(F), { typeid(C), typeid(E), typeid(A) } });
     }
     
     template <typename T, typename S>

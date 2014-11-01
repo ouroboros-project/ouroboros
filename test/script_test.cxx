@@ -4,8 +4,8 @@
 #include <opa/script.h>
 #include <opa/scriptmanager.h>
 #include <opa/virtualobj.h>
-#include <languages/lua/luamachine.h>
-#include <languages/python/pythonmachine.h>
+#include <lua/opa/luamachine.h>
+#include <python/opa/pythonmachine.h>
 
 #include <cstdlib>
 

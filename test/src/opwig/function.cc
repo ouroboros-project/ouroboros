@@ -25,7 +25,18 @@ TEST_F (MDFunctionTest, Create) {
 }
 
 TEST_F (MDFunctionTest, GlobalNoArgFunction) {
-    ASSERT_EQ(RunParse("rtype name();"), 0);
+    auto x = RunParse(R"({
+    "functions": [
+        {
+            "name": "name",
+            "qualified_name": "name",
+            "access": "public",
+            "params": [],
+            "return": "rtype",
+            "deleted": false
+        }
+    ]})");
+    ASSERT_EQ(x, 0);
     TestScopeChildNums(global_, 0u, 1u, 0u, 0u);
     
     auto f = TestFunction("name()", "name", "rtype", AccessSpecifier::PUBLIC, false);
@@ -33,7 +44,18 @@ TEST_F (MDFunctionTest, GlobalNoArgFunction) {
 }
 
 TEST_F (MDFunctionTest, GlobalSingleArgFunction) {
-    ASSERT_EQ(RunParse("rtype name(type);"), 0);
+    auto x = RunParse(R"({
+    "functions": [
+        {
+            "name": "name",
+            "qualified_name": "name",
+            "access": "public",
+            "params": [ "type" ],
+            "return": "rtype",
+            "deleted": false
+        }
+    ]})");
+    ASSERT_EQ(x, 0);
     TestScopeChildNums(global_, 0u, 1u, 0u, 0u);
     
     auto f = TestFunction("name(type)", "name", "rtype", AccessSpecifier::PUBLIC, false);
@@ -41,7 +63,18 @@ TEST_F (MDFunctionTest, GlobalSingleArgFunction) {
 }
 
 TEST_F (MDFunctionTest, GlobalSinglePointerArgFunction) {
-    ASSERT_EQ(RunParse("rtype name(type* arg);"), 0);
+    auto x = RunParse(R"({
+    "functions": [
+        {
+            "name": "name",
+            "qualified_name": "name",
+            "access": "public",
+            "params": [ "type *" ],
+            "return": "rtype",
+            "deleted": false
+        }
+    ]})");
+    ASSERT_EQ(x, 0);
     TestScopeChildNums(global_, 0u, 1u, 0u, 0u);
     
     auto f = TestFunction("name(type *)", "name", "rtype", AccessSpecifier::PUBLIC, false);
@@ -49,7 +82,18 @@ TEST_F (MDFunctionTest, GlobalSinglePointerArgFunction) {
 }
 
 TEST_F (MDFunctionTest, GlobalSingleConstRefArgFunction) {
-    ASSERT_EQ(RunParse("rtype name(const type& arg);"), 0);
+    auto x = RunParse(R"({
+    "functions": [
+        {
+            "name": "name",
+            "qualified_name": "name",
+            "access": "public",
+            "params": [ "const type &" ],
+            "return": "rtype",
+            "deleted": false
+        }
+    ]})");
+    ASSERT_EQ(x, 0);
     TestScopeChildNums(global_, 0u, 1u, 0u, 0u);
     
     auto f = TestFunction("name(const type &)", "name", "rtype", AccessSpecifier::PUBLIC, false);
@@ -57,7 +101,18 @@ TEST_F (MDFunctionTest, GlobalSingleConstRefArgFunction) {
 }
 
 TEST_F (MDFunctionTest, GlobalDoubleArgFunction) {
-    ASSERT_EQ(RunParse("rtype name(type0, type1);"), 0);
+    auto x = RunParse(R"({
+    "functions": [
+        {
+            "name": "name",
+            "qualified_name": "name",
+            "access": "public",
+            "params": [ "type0", "type1" ],
+            "return": "rtype",
+            "deleted": false
+        }
+    ]})");
+    ASSERT_EQ(x, 0);
     TestScopeChildNums(global_, 0u, 1u, 0u, 0u);
     
     auto f = TestFunction("name(type0,type1)", "name", "rtype", AccessSpecifier::PUBLIC, false);
@@ -66,7 +121,18 @@ TEST_F (MDFunctionTest, GlobalDoubleArgFunction) {
 }
 
 TEST_F (MDFunctionTest, GlobalMultipleArgFunction) {
-    ASSERT_EQ(RunParse("rtype name(type0, type1, type2);"), 0);
+    auto x = RunParse(R"({
+    "functions": [
+        {
+            "name": "name",
+            "qualified_name": "name",
+            "access": "public",
+            "params": [ "type0", "type1", "type2" ],
+            "return": "rtype",
+            "deleted": false
+        }
+    ]})");
+    ASSERT_EQ(x, 0);
     TestScopeChildNums(global_, 0u, 1u, 0u, 0u);
     
     auto f = TestFunction("name(type0,type1,type2)", "name", "rtype", AccessSpecifier::PUBLIC, false);
@@ -75,33 +141,68 @@ TEST_F (MDFunctionTest, GlobalMultipleArgFunction) {
     TestFunctionParameter(f, 2, "", "type2");
 }
 
-TEST_F (MDFunctionTest, GlobalSingleArgVirtualFunction) {
-    ASSERT_EQ(RunParse("virtual rtype name(type);"), 0);
-    TestScopeChildNums(global_, 0u, 1u, 0u, 0u);
-    
-    auto f = TestFunction("name(type)", "name", "rtype", AccessSpecifier::PUBLIC, false, true);
-    TestFunctionParameter(f, 0, "", "type");
-}
+//TEST_F (MDFunctionTest, GlobalSingleArgVirtualFunction) {
+//    ASSERT_EQ(RunParse("virtual rtype name(type);"), 0);
+//    TestScopeChildNums(global_, 0u, 1u, 0u, 0u);
+//    
+//    auto f = TestFunction("name(type)", "name", "rtype", AccessSpecifier::PUBLIC, false, true);
+//    TestFunctionParameter(f, 0, "", "type");
+//}
 
-TEST_F (MDFunctionTest, GlobalBadDoubleVirtualFunction) {
-    RunParseThrow("virtual virtual rtype func();");
-}
+//TEST_F (MDFunctionTest, GlobalBadDoubleVirtualFunction) {
+//    RunParseThrow("virtual virtual rtype func();");
+//}
 
-TEST_F (MDFunctionTest, GlobalBadDoubleReturnTypeFunction) {
-    ASSERT_EQ(1, RunParse("rtype virtual rtype func();"));
-}
+//TEST_F (MDFunctionTest, GlobalBadDoubleReturnTypeFunction) {
+//    ASSERT_EQ(1, RunParse("rtype virtual rtype func();"));
+//}
 
 TEST_F (MDFunctionTest, ManyDifferentFunctions) {
-    string input(
-        "rtype0 name0(ptype0, ptype1);"
-        "rtype1 name1(ptype0 pname0, ptype1);"
-        "rtype2 name2(ptype0 pname0, ptype1 pname1);"
-        "rtype3 name3(ptype0 *pname0[]);"
-        "namespace abc {"
-        "  rtype2 name0(ptype0, ptype1 pnameX);"
-        "}"
-    );
-    ASSERT_EQ(RunParse(input), 0);
+    auto x = RunParse(R"({
+    "namespaces": [ "abc" ],
+    "functions": [
+        {
+            "name": "name0",
+            "qualified_name": "name0",
+            "access": "public",
+            "params": [ "ptype0", "ptype1" ],
+            "return": "rtype0",
+            "deleted": false
+        },
+        {
+            "name": "name1",
+            "qualified_name": "name1",
+            "access": "public",
+            "params": [ "ptype0", "ptype1" ],
+            "return": "rtype1",
+            "deleted": false
+        },
+        {
+            "name": "name2",
+            "qualified_name": "name2",
+            "access": "public",
+            "params": [ "ptype0", "ptype1" ],
+            "return": "rtype2",
+            "deleted": false
+        },
+        {
+            "name": "name3",
+            "qualified_name": "name3",
+            "access": "public",
+            "params": [ "ptype0 **" ],
+            "return": "rtype3",
+            "deleted": false
+        },
+        {
+            "name": "name0",
+            "qualified_name": "abc::name0",
+            "access": "public",
+            "params": [ "ptype0", "ptype1" ],
+            "return": "rtype2",
+            "deleted": false
+        }
+    ]})");
+    ASSERT_EQ(x, 0);
     TestScopeChildNums(global_, 0u, 4u, 0u, 1u);
     
     /* first */ {
@@ -120,8 +221,8 @@ TEST_F (MDFunctionTest, ManyDifferentFunctions) {
         TestFunctionParameter(f, 1, "pname1", "ptype1");
     }
     /* forth */ {
-        auto f = TestFunction("name3(ptype0 *)", "name3", "rtype3", AccessSpecifier::PUBLIC, false);
-        TestFunctionParameter(f, 0, "pname0", "ptype0 *");
+        auto f = TestFunction("name3(ptype0 **)", "name3", "rtype3", AccessSpecifier::PUBLIC, false);
+        TestFunctionParameter(f, 0, "pname0", "ptype0 **");
     }
     /* fifth */ {
         auto abc = TestNamespace("abc", AccessSpecifier::PUBLIC, 0u, 1u, 0u, 0u);
@@ -131,6 +232,7 @@ TEST_F (MDFunctionTest, ManyDifferentFunctions) {
     }
 }
 
+/* No sense testing definitions
 TEST_F (MDFunctionTest, SimpleFunctionDefinition) {
     ASSERT_EQ(RunParse("rtype name(type0 arg1, type1) { return rtype; }"), 0);
     TestScopeChildNums(global_, 0u, 1u, 0u, 0u);
@@ -158,20 +260,58 @@ TEST_F (MDFunctionTest, SimpleFunctionDefinitionOutsideNamespace) {
     auto f = TestFunction(abc, "name(type0,type1)", "name", "rtype", AccessSpecifier::PUBLIC, false);
     TestFunctionParameter(f, 0, "arg1", "type0");
     TestFunctionParameter(f, 1, "", "type1");
-}
+}*/
 
 TEST_F (MDFunctionTest, DuplicateDeclaration) {
-    RunParseThrow("rtype func(); rtype func();");
+    RunParseThrow(R"({
+    "functions": [
+        {
+            "name": "func",
+            "qualified_name": "func",
+            "access": "public",
+            "params": [],
+            "return": "rtype",
+            "deleted": false
+        },
+        {
+            "name": "func",
+            "qualified_name": "func",
+            "access": "public",
+            "params": [],
+            "return": "rtype",
+            "deleted": false
+        }
+    ]})");
 }
 
+/* Definition test...
 TEST_F (MDFunctionTest, DuplicateDefinition) {
     RunParseThrow("rtype func() {} rtype func() {}");
-}
+}*/
 
 TEST_F (MDFunctionTest, ReturnTypeMismatch) {
-    RunParseThrow("rtype func(); crash func() {}");
+    RunParseThrow(R"({
+    "functions": [
+        {
+            "name": "func",
+            "qualified_name": "func",
+            "access": "public",
+            "params": [],
+            "return": "rtype",
+            "deleted": false
+        },
+        {
+            "name": "func",
+            "qualified_name": "func",
+            "access": "public",
+            "params": [],
+            "return": "crash",
+            "deleted": false
+        }
+    ]})");
 }
 
+/* Definition test...
 TEST_F (MDFunctionTest, InvalidDefinition) {
     RunParseThrow("rtype func {}");
 }
@@ -186,10 +326,29 @@ TEST_F (MDFunctionTest, MultiFunctionDefinition) {
     
     f = TestFunction("func2(type0)", "func2", "rtype", AccessSpecifier::PUBLIC, false);
     TestFunctionParameter(f, 0, "", "type0");
-}
+}*/
 
 TEST_F (MDFunctionTest, FunctionOverload) {
-    ASSERT_EQ(RunParse("rtype func(type0, type1); rtype func(type0) {}"), 0);
+    auto x = RunParse(R"({
+    "functions": [
+        {
+            "name": "func",
+            "qualified_name": "func",
+            "access": "public",
+            "params": [ "type0", "type1" ],
+            "return": "rtype",
+            "deleted": false
+        },
+        {
+            "name": "func",
+            "qualified_name": "func",
+            "access": "public",
+            "params": [ "type0" ],
+            "return": "rtype",
+            "deleted": false
+        }
+    ]})");
+    ASSERT_EQ(x, 0);
     TestScopeChildNums(global_, 0u, 2u, 0u, 0u);
     
     auto f = TestFunction("func(type0,type1)", "func", "rtype", AccessSpecifier::PUBLIC, false);
@@ -201,7 +360,26 @@ TEST_F (MDFunctionTest, FunctionOverload) {
 }
 
 TEST_F (MDFunctionTest, FunctionOverload2) {
-    ASSERT_EQ(RunParse("rtype func(type0, type1); void func() {}"), 0);
+    auto x = RunParse(R"({
+    "functions": [
+        {
+            "name": "func",
+            "qualified_name": "func",
+            "access": "public",
+            "params": [ "type0", "type1" ],
+            "return": "rtype",
+            "deleted": false
+        },
+        {
+            "name": "func",
+            "qualified_name": "func",
+            "access": "public",
+            "params": [],
+            "return": "void",
+            "deleted": false
+        }
+    ]})");
+    ASSERT_EQ(x, 0);
     TestScopeChildNums(global_, 0u, 2u, 0u, 0u);
     
     auto f = TestFunction("func(type0,type1)", "func", "rtype", AccessSpecifier::PUBLIC, false);
@@ -213,7 +391,23 @@ TEST_F (MDFunctionTest, FunctionOverload2) {
 }
 
 TEST_F (MDFunctionTest, FunctionWithParamInitializer) {
-    ASSERT_EQ(RunParse("rtype* func (type0 arg1 = blabla);"), 0);
+    // TODO: add the default value to the meta data?
+    auto json = R"({
+    "functions": [
+        {
+            "access": "public",
+            "deleted": false,
+            "name": "func",
+            "params": [
+                "type0"
+            ],
+            "qualified_name": "func",
+            "return": "rtype *"
+        }
+    ]
+})";
+    ASSERT_EQ(RunParse(json), 0);
+    //ASSERT_EQ(RunParse("rtype* func (type0 arg1 = blabla);"), 0);
     TestScopeChildNums(global_, 0u, 1u, 0u, 0u);
 
     auto f = TestFunction("func(type0)", "func", "rtype *", AccessSpecifier::PUBLIC, false);
@@ -221,10 +415,27 @@ TEST_F (MDFunctionTest, FunctionWithParamInitializer) {
 }
 
 TEST_F (MDFunctionTest, FunctionWithMultiParamInitializer) {
-    ASSERT_EQ(RunParse("rtype* func (type0 arg1 = blabla, const char *const arg2 = \"tralala\");"), 0);
+    // TODO: add the default value to the meta data?
+    auto json = R"({
+    "functions": [
+        {
+            "access": "public",
+            "deleted": false,
+            "name": "func",
+            "params": [
+                "type0",
+                "const char *const"
+            ],
+            "qualified_name": "func",
+            "return": "rtype *"
+        }
+    ]
+})";
+    ASSERT_EQ(RunParse(json), 0);
+    //ASSERT_EQ(RunParse("rtype* func (type0 arg1 = blabla, const char *const arg2 = \"tralala\");"), 0);
     TestScopeChildNums(global_, 0u, 1u, 0u, 0u);
 
-    auto f = TestFunction("func(type0,const char * const)", "func", "rtype *", AccessSpecifier::PUBLIC, false);
+    auto f = TestFunction("func(type0,const char *const)", "func", "rtype *", AccessSpecifier::PUBLIC, false);
     TestFunctionParameter(f, 0, "arg1", "type0");
-    TestFunctionParameter(f, 1, "arg2", "const char * const");
+    TestFunctionParameter(f, 1, "arg2", "const char *const");
 }

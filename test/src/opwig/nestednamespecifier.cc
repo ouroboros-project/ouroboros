@@ -32,40 +32,95 @@ TEST_F (MDNestedNamesTest, NonEmptyPath) {
 }
 
 TEST_F (MDNestedNamesTest, VariableWithSimplePath) {
-    ASSERT_EQ(RunParse("foo::type var = 0;"), 0);
-    TestScopeChildNums(global_, 1u, 0u, 0u, 0u);
+    auto json = R"({
+    "variables": [
+        {
+            "name": "var",
+            "qualified_name": "var",
+            "access": "public",
+            "type": "foo::type"
+        }
+    ]
+})";
+    ASSERT_EQ(RunParse(json), 0);
+    //ASSERT_EQ(RunParse("foo::type var = 0;"), 0);
 
+    TestScopeChildNums(global_, 1u, 0u, 0u, 0u);
     TestVariable("var", "foo::type", AccessSpecifier::PUBLIC);
 }
 
 TEST_F (MDNestedNamesTest, FunctionWithSimpleAndGlobalPath) {
-    ASSERT_EQ(RunParse("foo::rtype name(::type0 wat, bar::type1);"), 0);
+    auto json = R"({
+    "functions": [
+        {
+            "access": "public",
+            "deleted": false,
+            "name": "name",
+            "params": [
+                "type0", "bar::type1"
+            ],
+            "qualified_name": "name",
+            "return": "foo::rtype"
+        }
+    ]
+})";
+    ASSERT_EQ(RunParse(json), 0);
+    //ASSERT_EQ(RunParse("foo::rtype name(::type0 wat, bar::type1);"), 0);
+
     TestScopeChildNums(global_, 0u, 1u, 0u, 0u);
     
-    auto f = TestFunction("name(::type0,bar::type1)", "name", "foo::rtype", AccessSpecifier::PUBLIC, false);
-    TestFunctionParameter(f, 0, "wat", "::type0");
+    auto f = TestFunction("name(type0,bar::type1)", "name", "foo::rtype", AccessSpecifier::PUBLIC, false);
+    TestFunctionParameter(f, 0, "wat", "type0");
     TestFunctionParameter(f, 1, "", "bar::type1");
 }
 
 TEST_F (MDNestedNamesTest, NonExistentPath) {
-    string test13 = "type thisdoesnotexist::func();";
-    RunParseThrow(test13);
+    auto json = R"({
+    "functions": [
+        {
+            "access": "public",
+            "deleted": false,
+            "name": "func",
+            "params": [],
+            "qualified_name": "thisdoesnotexist::func",
+            "return": "type"
+        }
+    ]
+})";
+    RunParseThrow(json);
+    //string test13 = "type thisdoesnotexist::func();";
+    
 }
 
 TEST_F (MDNestedNamesTest, ClassWithNestedBases) {
-    ASSERT_EQ(RunParse("class name : virtual foo::base1, public ::bar::base2, protected virtual ::base3 {};"), 0);
+    auto x = RunParse(R"({
+    "classes": [
+        {
+            "name": "name",
+            "qualified_name": "name",
+            "access": "public",
+            "base_class": [
+                { "access": "private", "name": "foo::base1" },
+                { "access": "public", "name": "bar::base2" },
+                { "access": "protected", "name": "base3" }
+            ],
+            "methods": []
+        }
+    ]})");
+    ASSERT_EQ(x, 0);
     TestScopeChildNums(global_, 0u, 0u, 1u, 0u);
     
     auto c = TestClass("name", AccessSpecifier::PUBLIC, 0u, 0u, 0u);
     TestClassAttributes(c, 3u, 0u, false);
 
-    TestClassBaseByIndex(c, 0, "foo::base1", true, AccessSpecifier::PRIVATE);
-    TestClassBaseByIndex(c, 1, "::bar::base2", false, AccessSpecifier::PUBLIC);
-    TestClassBaseByIndex(c, 2, "::base3", true, AccessSpecifier::PROTECTED);
+    TestClassBaseByIndex(c, 0, "foo::base1", false, AccessSpecifier::PRIVATE);
+    TestClassBaseByIndex(c, 1, "bar::base2", false, AccessSpecifier::PUBLIC);
+    TestClassBaseByIndex(c, 2, "base3", false, AccessSpecifier::PROTECTED);
 }
 
+/* This code doesn't even compile with clang...
 TEST_F (MDNestedNamesTest, AddingFunctionToAnotherScope) {
-    ASSERT_EQ(RunParse("class name {}; type name::func(name arg1, name arg2);"), 0);
+    //ASSERT_EQ(RunParse("class name {}; type name::func(name arg1, name arg2);"), 0);
     TestScopeChildNums(global_, 0u, 0u, 1u, 0u);
 
     auto c = TestClass("name", AccessSpecifier::PUBLIC, 0u, 1u, 0u);
@@ -75,6 +130,7 @@ TEST_F (MDNestedNamesTest, AddingFunctionToAnotherScope) {
     TestFunctionParameter(f, 0, "arg1", "name");
     TestFunctionParameter(f, 1, "arg2", "name");
 }
+*/
 
 //TODO: The following test fails with exception bad_cast... While this test should fail
 //(gcc also fails with it), it should not fail with bad_cast...
@@ -93,6 +149,8 @@ TEST_F (MDNestedNamesTest, AddingFunctionToAnotherScope) {
     TestFunctionParameter(f, 0, "", "type");
 }*/
 
+/* Not exactly usefull.
 TEST_F (MDNestedNamesTest, AddingFunctionToAnotherScopeFromGlobalError) {
     RunParseThrow("namespace wat { type name::func(type); } class name {};");
 }
+*/

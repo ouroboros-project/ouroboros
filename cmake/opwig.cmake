@@ -13,8 +13,9 @@ function (ouroboros_generate_opwig LANGUAGE HEADER SPECIFICATION)
   add_executable (${OPWIG_GENERATED_NAME} ${OPWIG_GENERATED_MAIN})
   target_link_libraries (
     ${OPWIG_GENERATED_NAME}
-    libouroboros
-    libouroboros-${LANGUAGE}
+    libopwig-common
+    libopwig-${LANGUAGE}
   )
+  set_target_properties (${OPWIG_GENERATED_NAME} PROPERTIES FOLDER "opwig")
 endfunction (ouroboros_generate_opwig)
 

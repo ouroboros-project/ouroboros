@@ -14,31 +14,97 @@ TEST_F (MDVariableTest, Create) {
 }
 
 TEST_F (MDVariableTest, SingleVariable) {
-    ASSERT_EQ(RunParse("type var = 0;"), 0);
+    auto json = R"({
+    "variables": [
+        {
+            "access": "public",
+            "name": "var",
+            "qualified_name": "var",
+            "static": false,
+            "type": "int"
+        }
+    ]
+})";
+    ASSERT_EQ(RunParse(json), 0);
+    //ASSERT_EQ(RunParse("int var = 0;"), 0);
 
-    TestVariable("var", "type", AccessSpecifier::PUBLIC);
+    TestVariable("var", "int", AccessSpecifier::PUBLIC);
 }
 
 TEST_F (MDVariableTest, SinglePointerVariable) {
-    ASSERT_EQ(RunParse("type *var = 0;"), 0);
+    auto json = R"({
+    "variables": [
+        {
+            "access": "public",
+            "name": "var",
+            "qualified_name": "var",
+            "static": false,
+            "type": "int *"
+        }
+    ]
+})";
+    ASSERT_EQ(RunParse(json), 0);
+    //ASSERT_EQ(RunParse("int *var = 0;"), 0);
 
-    TestVariable("var", "type *", AccessSpecifier::PUBLIC);
+    TestVariable("var", "int *", AccessSpecifier::PUBLIC);
 }
 
 TEST_F (MDVariableTest, MultiVariable) {
-    ASSERT_EQ(RunParse("type1 var1 = \"test\"; type2 var2 = 2;"), 0);
+    auto json = R"({
+    "variables": [
+        {
+            "access": "public",
+            "name": "var1",
+            "qualified_name": "var1",
+            "static": false,
+            "type": "char *"
+        },
+        {
+            "access": "public",
+            "name": "var2",
+            "qualified_name": "var2",
+            "static": false,
+            "type": "int"
+        }
+    ]
+})";
+    ASSERT_EQ(RunParse(json), 0);
+    //ASSERT_EQ(RunParse("char* var1 = \"test\"; int var2 = 2;"), 0);
     TestScopeChildNums(global_, 2u, 0u, 0u, 0u);
     
-    TestVariable("var1", "type1", AccessSpecifier::PUBLIC);
-    TestVariable("var2", "type2", AccessSpecifier::PUBLIC);
+    TestVariable("var1", "char *", AccessSpecifier::PUBLIC);
+    TestVariable("var2", "int", AccessSpecifier::PUBLIC);
 }
 
 TEST_F (MDVariableTest, VariableConflict) {
-    RunParseThrow("type var = 0; type2 var;");
+    auto json = R"(
+    "variables": [
+        {
+            "access": "public",
+            "name": "var",
+            "qualified_name": "var",
+            "static": false,
+            "type": "int"
+        },
+        {
+            "access": "public",
+            "name": "var",
+            "qualified_name": "var",
+            "static": false,
+            "type": "double"
+        }
+    ]
+)";
+    RunParseThrow(json);
+    //RunParseThrow("int var = 0; double var;");
 }
 
+/* Pointless tests for json input.
 TEST_F (MDVariableTest, VariableSequence) {
-    ASSERT_EQ(RunParse("type var1, var2, var3;"), 0);
+    auto json = R"({
+})";
+    ASSERT_EQ(RunParse(json), 0);
+    //ASSERT_EQ(RunParse("type var1, var2, var3;"), 0);
     TestScopeChildNums(global_, 3u, 0u, 0u, 0u);
     
     TestVariable("var1", "type", AccessSpecifier::PUBLIC);
@@ -47,32 +113,74 @@ TEST_F (MDVariableTest, VariableSequence) {
 }
 
 TEST_F (MDVariableTest, VariableSequenceWithInitializer) {
-    ASSERT_EQ(RunParse("type var1 = 1, var2 = 2, var3 = 3;"), 0);
+    auto json = R"({
+})";
+    ASSERT_EQ(RunParse(json), 0);
+    //ASSERT_EQ(RunParse("type var1 = 1, var2 = 2, var3 = 3;"), 0);
     TestScopeChildNums(global_, 3u, 0u, 0u, 0u);
     
     TestVariable("var1", "type", AccessSpecifier::PUBLIC);
     TestVariable("var2", "type", AccessSpecifier::PUBLIC);
     TestVariable("var3", "type", AccessSpecifier::PUBLIC);
-}
+} */
 
 TEST_F (MDVariableTest, VariableInNamespace) {
-    ASSERT_EQ(RunParse("namespace abc { type var; }"), 0);
+    auto json = R"({
+    "namespaces": [
+        "abc"
+    ],
+    "variables": [
+        {
+            "access": "public",
+            "name": "var",
+            "qualified_name": "abc::var",
+            "static": false,
+            "type": "int"
+        }
+    ]
+})";
+    ASSERT_EQ(RunParse(json), 0);
+    //ASSERT_EQ(RunParse("namespace abc { int var; }"), 0);
     TestScopeChildNums(global_, 0u, 0u, 0u, 1u);
     
     auto abc = TestNamespace("abc", AccessSpecifier::PUBLIC, 1u, 0u, 0u, 0u);
-    TestVariable(abc, "var", "type", AccessSpecifier::PUBLIC);
+    TestVariable(abc, "var", "int", AccessSpecifier::PUBLIC);
 }
 
 TEST_F (MDVariableTest, VariableWithPtrConst) {
-    ASSERT_EQ(RunParse("type *const var = 0;"), 0);
+    auto json = R"({
+    "variables": [
+        {
+            "access": "public",
+            "name": "var",
+            "qualified_name": "var",
+            "static": false,
+            "type": "int *const"
+        }
+    ]
+})";
+    ASSERT_EQ(RunParse(json), 0);
+    //ASSERT_EQ(RunParse("int *const var = 0;"), 0);
     TestScopeChildNums(global_, 1u, 0u, 0u, 0u);
 
-    TestVariable("var", "type * const", AccessSpecifier::PUBLIC);
+    TestVariable("var", "int *const", AccessSpecifier::PUBLIC);
 }
 
 TEST_F (MDVariableTest, ConstVariableWithPtrConst) {
-    ASSERT_EQ(RunParse("const type *const var = 0;"), 0);
+    auto json = R"({
+    "variables": [
+        {
+            "access": "public",
+            "name": "var",
+            "qualified_name": "var",
+            "static": false,
+            "type": "const int *const"
+        }
+    ]
+})";
+    ASSERT_EQ(RunParse(json), 0);
+    //ASSERT_EQ(RunParse("const int *const var = 0;"), 0);
     TestScopeChildNums(global_, 1u, 0u, 0u, 0u);
 
-    TestVariable("var", "const type * const", AccessSpecifier::PUBLIC);
+    TestVariable("var", "const int *const", AccessSpecifier::PUBLIC);
 }
