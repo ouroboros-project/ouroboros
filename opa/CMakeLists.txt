@@ -27,7 +27,10 @@ CONFIGURE_FILE(
 )
 
 add_library (libouroboros ${OUROBOROS_OPA_SRC})
-target_include_directories(libouroboros PUBLIC src ${CMAKE_CURRENT_BINARY_DIR}/src)
+target_include_directories(libouroboros PUBLIC
+    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>"
+    "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/src>"
+)
                      
 set_target_properties (libouroboros PROPERTIES 
     LINK_FLAGS "${LDFLAGS}"
@@ -38,9 +41,11 @@ set_target_properties (libouroboros PROPERTIES
 )
 
 install(TARGETS libouroboros
-    DESTINATION lib
-#    CONFIGURATIONS Release
+    EXPORT Ouroboros
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
 )
+
 install(
   DIRECTORY   src/opa/ouroboros
   DESTINATION include/ouroboros

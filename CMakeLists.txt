@@ -11,6 +11,7 @@ set (GROUP_NAME "Ouroboros Team")
 set (HOME_URL "http://uspgamedev.org/")
 set (CONTACT_MAIL "kazuo256@gmail.com;fernando_aluani@hotmail.com")
 set (OUROBOROS_INSTALL_LOCATION share/ouroboros)
+set (ConfigPackageLocation share/cmake)
 
 message ("=== Ouroboros Project version ${OUROBOROS_VERSION} ===")
 
@@ -178,6 +179,11 @@ endif (OUROBOROS_CREATE_BINDINGS)
 
 #########################
 
+install(EXPORT Ouroboros
+  FILE OuroborosTargets.cmake
+  #NAMESPACE Ouroboros::
+  DESTINATION ${ConfigPackageLocation}
+)
 
 #########################
 
