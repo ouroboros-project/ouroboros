@@ -146,6 +146,8 @@ bool Reader::parse() {
         std::string name;
         std::tie(scope, name) = GetScopeAndName(global_, ns.as_string());
 
+        if (scope->NestedNamespace(name)) continue;
+
         auto newns = md::Namespace::Create(name);
         newns->set_access(md::AccessSpecifier::PUBLIC);
         scope->AddNestedNamespace(newns);
