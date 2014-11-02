@@ -4,13 +4,6 @@ find_program(OPI_EXECUTABLE opi
 )
 
 function(ouroboros_export_metadata target)
-    get_target_property(TARGET_INCLUDE_DIRECTORIES ${target} INCLUDE_DIRECTORIES)
-
-    set(INCLUDE_COMMMAND)
-    foreach(it ${TARGET_INCLUDE_DIRECTORIES})
-        list(APPEND INCLUDE_COMMMAND "-I${it}")
-    endforeach()
-    
     set(METADATA_FILES)
     foreach(it ${ARGN})
         set(OUTPUT_FILE_NAME ${CMAKE_CURRENT_BINARY_DIR}/metadata/${it}.json)
@@ -18,7 +11,11 @@ function(ouroboros_export_metadata target)
         add_custom_command(OUTPUT ${OUTPUT_FILE_NAME}
                             COMMAND ${CMAKE_COMMAND} -E make_directory ${OUTPUT_FILE_DIR}
                             COMMAND ${OPI_EXECUTABLE}
-                            ARGS ${CMAKE_CURRENT_SOURCE_DIR}/${it} "--" -x c++ ${INCLUDE_COMMMAND} > ${OUTPUT_FILE_NAME}
+                            ARGS 
+                                ${CMAKE_CURRENT_SOURCE_DIR}/${it}
+                                "--" -x c++
+                                -I"$<JOIN:$<TARGET_PROPERTY:${target},INCLUDE_DIRECTORIES>,\" -I\">"
+                                > ${OUTPUT_FILE_NAME}
                             DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${it})
         list(APPEND METADATA_FILES ${OUTPUT_FILE_NAME})
     endforeach()
