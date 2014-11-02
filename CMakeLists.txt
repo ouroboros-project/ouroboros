@@ -10,7 +10,6 @@ set (OUROBOROS_VERSION ${OUROBOROS_BIGVERSION}.${OUROBOROS_VERSION_PATCH})
 set (GROUP_NAME "Ouroboros Team")
 set (HOME_URL "http://uspgamedev.org/")
 set (CONTACT_MAIL "kazuo256@gmail.com;fernando_aluani@hotmail.com")
-set (OUROBOROS_INSTALL_LOCATION share/ouroboros)
 set (ConfigPackageLocation share/cmake)
 
 message ("=== Ouroboros Project version ${OUROBOROS_VERSION} ===")
@@ -23,13 +22,9 @@ option(OUROBOROS_BUILD_TESTS "Set to ON to enable building tests." ON)
 option(OUROBOROS_LUA_BINDINGS "Set to ON to enable Lua as one of the languages to create bindings." ON)
 option(OUROBOROS_PYTHON_BINDINGS "Set to ON to enable Python as one of the languages to create bindings." ON)
 
-# Important build locations.
-set (SRC_DIR src)
-set (LIB_DIR lib)
-set (BIN_DIR bin)
 
-set(OUROBOROS_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/${SRC_DIR})
-
+# FIXME: this is completely broken...
+set(OUROBOROS_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 CONFIGURE_FILE(
     "doxystuff/Doxyfile.in"
     "doxystuff/Doxyfile"
@@ -48,6 +43,8 @@ endif ()
 ##########################################
 # Bit hacky way so all the output files are placed on the ${LIB_DIR} folder.
 # Code found on http://stackoverflow.com/questions/7747857/in-cmake-how-do-i-work-around-the-debug-and-release-directories-visual-studio-2
+set (LIB_DIR lib)
+set (BIN_DIR bin)
 
 # First for the generic no-config case (e.g. with mingw)
 set( CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${BIN_DIR} )
@@ -77,9 +74,25 @@ add_subdirectory( languages )
 
 #########################
 
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+  "${CMAKE_CURRENT_BINARY_DIR}/OuroborosConfigVersion.cmake"
+  VERSION ${OUROBOROS_VERSION}
+  COMPATIBILITY AnyNewerVersion
+)
+
 install(EXPORT Ouroboros
   FILE OuroborosTargets.cmake
   DESTINATION ${ConfigPackageLocation}
+)
+
+install(
+  FILES
+    cmake/OuroborosConfig.cmake
+    cmake/OuroborosOPWIG.cmake
+    "${CMAKE_CURRENT_BINARY_DIR}/OuroborosConfigVersion.cmake"
+  DESTINATION
+    ${ConfigPackageLocation}
 )
 
 #########################
