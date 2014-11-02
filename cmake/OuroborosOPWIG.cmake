@@ -1,5 +1,7 @@
 
-find_program(CLANGINTROSPECTOR_EXECUTABLE clang-introspector)
+find_program(OPI_EXECUTABLE opi
+    PATHS ENV OPI_DIR
+)
 
 function(ouroboros_export_metadata target)
     get_target_property(TARGET_INCLUDE_DIRECTORIES ${target} INCLUDE_DIRECTORIES)
@@ -15,7 +17,7 @@ function(ouroboros_export_metadata target)
         get_filename_component(OUTPUT_FILE_DIR ${OUTPUT_FILE_NAME} PATH)
         add_custom_command(OUTPUT ${OUTPUT_FILE_NAME}
                             COMMAND ${CMAKE_COMMAND} -E make_directory ${OUTPUT_FILE_DIR}
-                            COMMAND ${CLANGINTROSPECTOR_EXECUTABLE}
+                            COMMAND ${OPI_EXECUTABLE}
                             ARGS ${CMAKE_CURRENT_SOURCE_DIR}/${it} "--" -x c++ ${INCLUDE_COMMMAND} > ${OUTPUT_FILE_NAME}
                             DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${it})
         list(APPEND METADATA_FILES ${OUTPUT_FILE_NAME})
