@@ -32,12 +32,10 @@ SET(OUROBOROS_OPWIG_SRC
 )
 
 add_library(libopwig-common ${OUROBOROS_OPWIG_SRC})
-target_include_directories(libopwig-common PUBLIC src)
+target_include_directories(libopwig-common PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
 target_link_libraries(libopwig-common libjson)
 set_target_properties (libopwig-common PROPERTIES 
     OUTPUT_NAME opwig-common
     OUTPUT_NAME_DEBUG opwig-common-dbg
     FOLDER "opwig"
 )
-
-

@@ -43,7 +43,7 @@ message ("-- Lua module added.")
 
 add_library (libouroboros-lua ${OUROBOROS_LUA_OPA_SRC})
 target_link_libraries (libouroboros-lua LINK_PUBLIC libouroboros ${LUA_LIBRARIES})
-target_include_directories(libouroboros-lua PUBLIC ".." ${LUA_INCLUDE_DIR})
+target_include_directories(libouroboros-lua PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>" ${LUA_INCLUDE_DIR})
 
 set_target_properties (libouroboros-lua PROPERTIES 
     PROJECT_NAME OUROBOROS-LUA
@@ -52,12 +52,18 @@ set_target_properties (libouroboros-lua PROPERTIES
     FOLDER "opa"
 )
 
+install(TARGETS libouroboros-lua
+    EXPORT OuroborosLua
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
+)
+
 ########
 # OPWIG
 
 add_library(libopwig-lua ${OUROBOROS_LUA_OPWIG_SRC})
 target_link_libraries(libopwig-lua LINK_PUBLIC libopwig-common)
-target_include_directories(libopwig-lua PUBLIC "..")
+target_include_directories(libopwig-lua PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
 
 set_target_properties (libopwig-lua PROPERTIES 
     OUTPUT_NAME opwig-lua
@@ -72,9 +78,18 @@ ouroboros_generate_opwig (
   libopwig-lua
 )
 
-install(TARGETS libouroboros-lua
-    DESTINATION lib
-#    CONFIGURATIONS Release
+install(TARGETS opwig-lua
+    EXPORT OuroborosLua
+    RUNTIME DESTINATION bin
+    CONFIGURATIONS Release
 )
 
-install(DIRECTORY . DESTINATION include/ouroboros${FRAMEWORK_BIGVERSION} FILES_MATCHING PATTERN "*.h" PATTERN "*.th" PATTERN "*.tcc")
+#install(DIRECTORY .
+#    DESTINATION include/ouroboros
+#    FILES_MATCHING PATTERN "*.h" PATTERN "*.th" PATTERN "*.tcc"
+#)
+
+install(EXPORT OuroborosLua
+    FILE OuroborosLuaTargets.cmake
+    DESTINATION ${ConfigPackageLocation}
+)

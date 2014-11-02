@@ -62,16 +62,6 @@ bool PythonMachine::Initialize() {
     PyObject *path = PySys_GetObject("path");
     PyList_Append(path, PyString_FromString( SCRIPT_MANAGER()->scripts_path().c_str() ));
 
-#ifdef OUROBOROS_INSTALL_LOCATION
-    PyList_Append(path, PyString_FromString(OUROBOROS_INSTALL_LOCATION "/" OUROBOROS_BIGVERSION "/python"));
-#endif
-    const char* ugdk_dir = getenv("OUROBOROS_DIR");
-    if(ugdk_dir) {
-        std::string fullpath = ugdk_dir;
-        fullpath += "/" OUROBOROS_BIGVERSION "/python";
-        PyList_Append(path, PyString_FromString(fullpath.c_str()));
-    }
-
     RegisterModules(this);
 
     std::vector<PythonModule>::iterator it;
