@@ -1,7 +1,4 @@
 
-# Metadata test isn't a gtest.
-add_subdirectory(wrapper)
-
 ########################################################################
 # CMake build script for Google Test.
 #
