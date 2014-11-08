@@ -101,11 +101,10 @@ namespace {
                                             : nullptr,
                                          parameter_list,
                                          is_method ? data["pure"].as_bool() : false,
-                                         is_method ? data["virtual"].as_bool() : false);
+                                         is_method ? data["virtual"].as_bool() : false,
+                                         is_method ? data["const"].as_bool() : false);
         func->set_deleted(data["deleted"].as_bool());
         func->set_access(access_specifier_mapper.at(data["access"].as_string()));
-        if (is_method)
-            func->set_const(data["const"].as_bool());
         return func;
     }
 

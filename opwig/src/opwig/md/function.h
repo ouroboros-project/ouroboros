@@ -32,7 +32,7 @@ class Function : public MetadataObject {
     */
     static Ptr<Function> Create (const std::string& the_name, const Ptr<const Type>& the_return_type,
                                  const ParameterList& the_parameter_list, const bool the_is_pure_flag,
-                                 const bool the_virtual_flag);
+                                 const bool the_virtual_flag, const bool the_const_flag);
 
     /// Gets the signature for a function.
     /** Gets the signature (without return type) for a function, according to its given attributes.
@@ -113,9 +113,6 @@ class Function : public MetadataObject {
     
     /// Tells if the function is a const method
     bool is_const () const { return is_const_; }
-    
-    /// Sets if the method is const
-    void set_const (bool _const) { is_const_ = _const; }
 
   private:
     std::string   signature_;
@@ -132,28 +129,29 @@ class Function : public MetadataObject {
 
     Function (const std::string& the_name, const Ptr<const Type>& the_return_type,
               const ParameterList& the_parameter_list, const bool the_pure_flag,
-              const bool the_virtual_flag);
+              const bool the_virtual_flag, const bool the_const_flag);
 
 };
 
 inline Function::Function (const std::string& the_name, const Ptr<const Type>& the_return_type,
                            const ParameterList& the_parameter_list, const bool the_pure_flag,
-                           const bool the_virtual_flag)
+                           const bool the_virtual_flag, const bool the_const_flag)
     : MetadataObject(the_name), signature_(""), return_type_(the_return_type),
       parameter_list_(the_parameter_list), is_pure_(the_pure_flag), is_virtual_(the_virtual_flag),
       is_static_(false), is_default_(false), is_deleted_(false), is_declared_(false),
-      is_defined_(false) {
+      is_defined_(false), is_const_(the_const_flag) {
 
-    signature_ = Function::GetSignatureFor(name_, parameter_list_); // FIXME why no init list?
+    signature_ = Function::GetSignatureFor(name_, parameter_list_, is_const_); // FIXME why no init list?
 }
 
 inline Ptr<Function> Function::Create (const std::string& the_name,
                                        const Ptr<const Type>& the_return_type,
                                        const ParameterList& the_parameter_list,
                                        const bool the_pure_flag = false,
-                                       const bool the_virtual_flag = false) {
+                                       const bool the_virtual_flag = false,
+                                       const bool the_const_flag = false) {
     return Ptr<Function>(
-        new Function(the_name, the_return_type, the_parameter_list, the_pure_flag, the_virtual_flag)
+        new Function(the_name, the_return_type, the_parameter_list, the_pure_flag, the_virtual_flag, the_const_flag)
     );
 }
 

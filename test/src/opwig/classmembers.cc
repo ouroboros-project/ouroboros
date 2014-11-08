@@ -642,3 +642,52 @@ TEST_F (MDClassMembersTest, ConstructorAndDestructorDefinition) {
     TestFunctionParameter(ctor, 1, "", "type2");
 }
 */
+
+TEST_F(MDClassMembersTest, ConstOverload) {
+    auto json = R"({
+    "classes": [
+        {
+            "access": "public",
+            "base_class": [],
+            "methods": [
+                {
+                    "access": "public",
+                    "const": false,
+                    "deleted": false,
+                    "name": "foo",
+                    "params": [],
+                    "pure": false,
+                    "qualified_name": "A::foo",
+                    "return": "void",
+                    "static": false,
+                    "virtual": false
+                },
+                {
+                    "access": "public",
+                    "const": true,
+                    "deleted": false,
+                    "name": "foo",
+                    "params": [],
+                    "pure": false,
+                    "qualified_name": "A::foo",
+                    "return": "void",
+                    "static": false,
+                    "virtual": false
+                }
+            ],
+            "name": "A",
+            "qualified_name": "A"
+        }
+    ]})";
+    ASSERT_EQ(RunParse(json), 0);
+    // struct A { void foo(); void foo() const; };
+
+    auto c = TestClass("A", AccessSpecifier::PUBLIC, 0u, 2u, 0u);
+    TestClassAttributes(c, 0u, 0u, false);
+
+    auto f1 = TestFunction(c, "foo()", "foo", "void", AccessSpecifier::PUBLIC, false);
+    EXPECT_FALSE(f1->is_const());
+
+    auto f2 = TestFunction(c, "foo()const", "foo", "void", AccessSpecifier::PUBLIC, false);    
+    EXPECT_TRUE(f2->is_const());
+}
