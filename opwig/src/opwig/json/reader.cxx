@@ -104,7 +104,8 @@ namespace {
                                          is_method ? data["virtual"].as_bool() : false);
         func->set_deleted(data["deleted"].as_bool());
         func->set_access(access_specifier_mapper.at(data["access"].as_string()));
-        // FIXME: where is const?
+        if (is_method)
+            func->set_const(data["const"].as_bool());
         return func;
     }
 

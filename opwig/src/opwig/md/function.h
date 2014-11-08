@@ -38,9 +38,10 @@ class Function : public MetadataObject {
     /** Gets the signature (without return type) for a function, according to its given attributes.
     * @param the_name Name of the function.
     * @param the_parameter_list List of Parameters (@see opwig::md::Parameter) of the function.
+    * @param is_const If the method is const.
     * @return The signature without return type of the function.
     */
-    static std::string GetSignatureFor (const std::string& the_name, const ParameterList& the_parameter_list);
+    static std::string GetSignatureFor (const std::string& the_name, const ParameterList& the_parameter_list, bool is_const = false);
 
     /// Gets the function ID.
     /** opwig::md::MetadataObject::id overload - a Function ID is not its name,
@@ -109,6 +110,12 @@ class Function : public MetadataObject {
     
     /// Sets the function as defined
     void set_defined () { is_defined_ = true; }
+    
+    /// Tells if the function is a const method
+    bool is_const () const { return is_const_; }
+    
+    /// Sets if the method is const
+    void set_const (bool _const) { is_const_ = _const; }
 
   private:
     std::string   signature_;
@@ -121,6 +128,7 @@ class Function : public MetadataObject {
     bool          is_deleted_;
     bool          is_declared_;
     bool          is_defined_;
+    bool          is_const_;
 
     Function (const std::string& the_name, const Ptr<const Type>& the_return_type,
               const ParameterList& the_parameter_list, const bool the_pure_flag,
@@ -150,7 +158,8 @@ inline Ptr<Function> Function::Create (const std::string& the_name,
 }
 
 inline std::string Function::GetSignatureFor (const std::string& the_name,
-                                              const ParameterList& the_parameter_list) {
+                                              const ParameterList& the_parameter_list,
+                                              bool is_const) {
     std::string signature = the_name + "(";
     if (the_parameter_list.size() > 0) {
         for (auto param : the_parameter_list)
@@ -158,6 +167,8 @@ inline std::string Function::GetSignatureFor (const std::string& the_name,
         signature.pop_back();
     }
     signature += ")";
+    if (is_const)
+        signature += "const";
     return signature;
 }
 
