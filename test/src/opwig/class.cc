@@ -223,6 +223,7 @@ TEST_F (MDClassTest, ComplexClassInClass) {
                     "return": "name *",
                     "virtual": false,
                     "pure": false,
+                    "const": false,
                     "deleted": false
                 }
             ]
@@ -239,6 +240,7 @@ TEST_F (MDClassTest, ComplexClassInClass) {
                     "params": [ "type" ],
                     "return": "name *",
                     "virtual": false,
+                    "const": false,
                     "pure": false,
                     "deleted": false
                 }

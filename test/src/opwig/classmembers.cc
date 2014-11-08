@@ -109,6 +109,7 @@ TEST_F (MDClassMembersTest, SingleFunction) {
                     "params": [ "type" ],
                     "return": "rtype",
                     "virtual": false,
+                    "const": false,
                     "pure": false,
                     "deleted": false
                 }
@@ -141,6 +142,7 @@ TEST_F (MDClassMembersTest, SinglePureFunction) {
                     "pure": true,
                     "qualified_name": "name::func",
                     "return": "rtype",
+                    "const": false,
                     "virtual": true
                 }
             ],
@@ -184,6 +186,7 @@ TEST_F (MDClassMembersTest, SingleVarAndFunction) {
                     "params": [ "type" ],
                     "return": "rtype",
                     "virtual": false,
+                    "const": false,
                     "pure": false,
                     "deleted": false
                 }
@@ -225,6 +228,7 @@ TEST_F (MDClassMembersTest, SingleFunctionWithAccessSpecifier) {
                     "params": [ "type" ],
                     "return": "rtype",
                     "virtual": false,
+                    "const": false,
                     "pure": false,
                     "deleted": false
                 }
@@ -258,6 +262,7 @@ TEST_F (MDClassMembersTest, VarAndFunctionWithMultiAccessSpecifiers) {
                     "return": "rtype",
                     "virtual": false,
                     "pure": false,
+                    "const": false,
                     "deleted": false
                 }
             ]
@@ -314,6 +319,7 @@ TEST_F (MDClassMembersTest, NamesConflict) {
                     "params": [ "type" ],
                     "return": "rtype",
                     "virtual": false,
+                    "const": false,
                     "pure": false,
                     "deleted": false
                 }
