@@ -51,10 +51,16 @@ int Execute (const string& module_name, const list<string>& inputs,
         opwig::json::Reader parser(in, global);           
         
         std::cout << OPWIG_MARK << "Parsing JSON file \"" << input << "\"" << std::endl;
-        if (!parser.parse()) {
-            std::cerr << OPWIG_MARK << "Failed to JSON metadata." << std::endl;
+        try {
+            if (!parser.parse()) {
+                std::cerr << OPWIG_MARK << "Failed to parse JSON metadata." << std::endl;
+                return EXIT_FAILURE;
+            }
+        } catch (std::exception& err) {
+            std::cerr << OPWIG_MARK << "Error: " << err.what() << std::endl;
             return EXIT_FAILURE;
         }
+
         for (const string& header : parser.metadata_headers())
             headers.push_back(header);
     }
