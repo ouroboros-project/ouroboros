@@ -79,25 +79,25 @@ std::string WrapperGenerator::generateBootstrap() const {
 
 void WrapperGenerator::iterateAndWrapScope(const Ptr<const md::Scope>& scope) {
     for (auto entry : scope->IterateFunctions()) {
-        if (entry.second->access() != AccessSpecifier::PRIVATE)
+        if (entry.second->access() == AccessSpecifier::PUBLIC)
             wrap_file_ << spec_->WrapFunction(entry.second) << endl;
     }
     for (auto entry : scope->IterateVariables()) {
-        if (entry.second->access() != AccessSpecifier::PRIVATE)
+        if (entry.second->access() == AccessSpecifier::PUBLIC)
             wrap_file_ << spec_->WrapVariable(entry.second) << endl;
     }
     for (auto entry : scope->IterateEnums()) {
-        if (entry.second->access() != AccessSpecifier::PRIVATE)
+        if (entry.second->access() == AccessSpecifier::PUBLIC)
             wrap_file_ << spec_->WrapEnum(entry.second) << endl;
     }
     for (auto entry : scope->IterateClasses()) {
-        if (entry.second->access() != AccessSpecifier::PRIVATE)
+        if (entry.second->access() == AccessSpecifier::PUBLIC)
             handleClass(entry.second);
     }
     // FIXME
     if (dynamic_cast<const md::Namespace*>(scope.get()))
         for (auto entry : scope->IterateNamespaces()) {
-            if (entry.second->access() != AccessSpecifier::PRIVATE)
+            if (entry.second->access() == AccessSpecifier::PUBLIC)
                 handleNamespace(entry.second);
         }
 }
